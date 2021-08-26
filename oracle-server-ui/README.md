@@ -4,7 +4,7 @@ This project is a frontend for bitcoin-s oracleServer. It can perform all the ba
 
 ## Install Dependencies
 
-Run `npm i` in project root to install dependencies.
+This project requires local NodeJS `https://nodejs.org/`. Run `npm i` in the project root to install project dependencies.
 
 ## Starting Backend
 
@@ -14,10 +14,10 @@ Once bitcoin-s is building and configured, run `oracleServer/run` to start the o
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm run start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 The development server is configured for the default 127.0.0.1 IP and 9998 port of the oracle-server and should be ready to run. Try pressing the 'Get Public Key' button.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `npm build` to build the project. The build artifacts will be stored in the `dist/` directory.
