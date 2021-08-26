@@ -1,0 +1,70 @@
+{
+  "welcomeHeader": "Welcome to Oracle Server UI",
+  "oracleConfig": "Oracle Config",
+  "host": "Host",
+  "port": "Port",
+
+  "eventName": "Event Name",
+  "outcome": "Outcome",
+  "message": "Message",
+
+  "event": "Event",
+  "events": "Events",
+  "type": "Type",
+  "create": "Create",
+
+  "result": "Result",
+
+  "oracleOperations": {
+    "getpublickey": "Get Public Key",
+    "getstakingaddress": "Get Staking Address",
+    "listevents": "List Events",
+    "createenumevent": "Create Enum Event",
+    "createnumericevent": "Create Numeric Event",
+    "createdigitdecompevent": "Create Digit Decomp Event",
+    "getevent": "Get Event",
+    "signevent": "Sign Event",
+    "signdigits": "Sign Digits",
+    "getsignatures": "Get Signatures",
+    "signmessage": "Sign Message"
+  },
+
+  "eventType": {
+    "enum": "Enum",
+    "numeric": "Numeric",
+    "digitdecomp": "Digit Decomp"
+  },
+
+  "createEvent": {
+    "name": "Name",
+    "maturationTime": "Maturation Time",
+    "outcomes": "Outcomes",
+
+    "minvalue": "Min Value",
+    "maxvalue": "Max Value",
+    "unit": "Unit",
+    "precision": "Precision",
+
+    "base": "Base",
+    "numdigits": "Num Digits",
+    "signed": "Signed",
+
+    "attestations": "Attestations"
+  },
+
+  "createEventDescription": {
+    "name": "Name for this event",
+    "maturationtime": "The earliest expected time an outcome will be signed, given in epoch second",
+    "outcomes": "Outcomes",
+
+    "minvalue": "Minimum value of this event",
+    "maxvalue": "Maximum value of this event",
+    "unit": "The unit denomination of the outcome value",
+    "precision": "The precision of the outcome representing the base exponent by which to multiply the number represented by the composition of the digits to obtain the actual outcome value.",
+
+    "base": "The base in which the outcome value is decomposed",
+    "numdigits": "The max number of digits the outcome can have",
+    "signed": "Whether the outcomes can be negative"
+  }
+
+}

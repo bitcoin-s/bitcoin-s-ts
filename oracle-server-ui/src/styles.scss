@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+
+.form-label {
+  display: inline-block;
+  width: 8rem;
+}
+
+.result-area {
+  width: 25rem;
+  height: 4rem;
+}
+
+input.form-control {
+  width: 11rem;
+}
+
+td {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+ }
