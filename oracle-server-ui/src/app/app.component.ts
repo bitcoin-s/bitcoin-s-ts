@@ -25,7 +25,6 @@ export class AppComponent {
   newEventType = EventType.ENUM
   newEventName = ''
   maturationTime = '2030-01-01T00:00:00.000Z'
-  maturationTimeSeconds = 1893456000
   // Enum Event
   outcomes = 'One,Two,Three'
   // Numeric Event
@@ -34,6 +33,7 @@ export class AppComponent {
   unit = 'Unit'
   precision = 0
   // Digit Decomp Event
+  maturationTimeSeconds = 1893456000
   numdigits = 3 // to match maxValue
   base = 2
   signed = false
@@ -126,9 +126,6 @@ export class AppComponent {
         m = getMessageBody(MESSAGE_TYPE.createnumericevent, [this.newEventName, this.maturationTime, this.minValue, this.maxValue, this.unit, this.precision])
         break;
       case EventType.DIGIT_DECOMP:
-        // TODO : Not sure how signed is expressed here, tried with boolean and 0/1 numbers
-        // The ordering here seems to match ServerJsonModels.scala:116 or so CreateDigitDecompEvent.fromJsArr()
-        // like ["digitdecompEvent", "2030-01-01T00:00:00.000Z", 2, true, 3, "Unit", 0]
         m = getMessageBody(MESSAGE_TYPE.createdigitdecompevent, [this.newEventName, this.maturationTimeSeconds, this.base, this.signed, this.numdigits, this.unit, this.precision])
         break;
       default:
