@@ -81,12 +81,6 @@ export class AppComponent {
       if (result.result) {
         const e = <OracleEvent>result.result
         this.events[eventName] = e
-        // This seems to be server-side only
-        // const d = EventDescriptor.deserialize(Buffer.from(e.eventDescriptorTLV))
-        // console.debug('decoded EventDescriptor', d)
-
-        // Could make mapping to IEnumEventDescriptorV0JSON, IDigitDecompositionEventDescriptorV0JSON
-        // at a mid-tier proxy
       }
     })
   }
