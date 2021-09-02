@@ -1,0 +1,48 @@
+<section class="event-detail-section">
+  <div class="section-header">
+    <h2>Event Detail</h2>
+    <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+  
+  <form class="form-container" [formGroup]="form">
+    <mat-form-field>
+      <mat-label translate>createEvent.name</mat-label>
+      <input matInput formControlName="eventName" type="text" [(ngModel)]="event.eventName" readonly>
+    </mat-form-field>
+    <ng-container *ngIf="!event.signedOutcome">
+      <br>
+      <ng-container *ngIf="isEnum()">
+        <mat-form-field>
+          <mat-label translate>outcome</mat-label>
+          <input matInput formControlName="signEventInput" type="text" [(ngModel)]="signEventInput">
+        </mat-form-field>
+        <button type="button" (click)="onSignEvent()" translate>oracleOperations.signevent</button>
+      </ng-container>
+      <br>
+      <ng-container *ngIf="isNotEnum()">
+        <mat-form-field >
+          <mat-label translate>outcome</mat-label>
+          <input matInput formControlName="signDigitsInput" type="number" [(ngModel)]="signDigitsInput">
+        </mat-form-field>
+        <button type="button" (click)="onSignDigits()" translate>oracleOperations.signdigits</button>  
+      </ng-container>
+    </ng-container>
+  </form>
+
+  <ng-container *ngIf="event.signedOutcome">
+    <br>
+    <button type="button" (click)="onGetSignatures()" translate>oracleOperations.getsignatures</button>
+  </ng-container>
+  
+  <ng-container *ngIf="signatures">
+    <br>
+    <label translate>eventDetail.signatures</label>
+    <textarea class="signatures">{{ signatures | json }}</textarea>
+  </ng-container>
+  
+  <br>
+
+  <label translate>eventDetail.eventJSON</label>
+  <textarea class="event-json">{{ event | json }}</textarea>
+
+</section>

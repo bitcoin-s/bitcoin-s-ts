@@ -1,0 +1,21 @@
+.event-detail-section {
+  padding: 0 1rem;
+  min-width: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  .form-container > * {
+    width: 100%;
+  }
+
+  .signatures {
+    min-height: 4rem;
+  }
+
+  .event-json {
+    flex: 1;
+  }
+}

@@ -1,0 +1,19 @@
+<section class="sign-message-seection">
+  <div class="section-header">
+    <h2 translate>signMessage.header</h2>
+    <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <form class="form-container" [formGroup]="form">
+    <mat-form-field>
+      <input matInput type="text" formControlName="signMessageInput" [(ngModel)]="signMessageInput" placeholder="{{ 'message' | translate }}">
+    </mat-form-field>
+    <button type="button" (click)="onSignMessage()" translate>action.sign</button>
+  </form>
+
+  <ng-container *ngIf="signedMessage">
+    <br>
+    <label translate>result</label>
+    <textarea>{{ signedMessage }}</textarea>  
+  </ng-container>
+</section>

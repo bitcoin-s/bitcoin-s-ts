@@ -1,166 +1,25 @@
-<div>
-  <h1 translate>welcomeHeader</h1>
-  <div class="form-group">
-    <h4 class="form-label" translate>oracleConfig</h4>
-    <div class="input-group">
-      <label class="form-label" translate>host</label>
-      <input name="host" class="form-control" type="text" [(ngModel)]="host">
-    </div>
-    <div class="input-group">
-      <label class="form-label" translate>port</label>
-      <input name="port" class="form-control" type="text" [(ngModel)]="port">
-    </div>
-  </div>
+<mat-drawer-container class="">
+  <mat-drawer #leftDrawer mode="side">
+    <app-new-event *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
+    <app-sign-message *ngIf="showSignMessage" (close)="closeLeftDrawer()"></app-sign-message>
+  </mat-drawer>
 
-  <div class="form-group">
-    <h2>Oracle Functions</h2>
-    <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
-    <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
-    <button type="button" (click)="onListEvents()" translate>oracleOperations.listevents</button>
-  </div>
+  <mat-drawer-content>
+    <app-oracle (showCreateEvent)="onShowCreateEvent()" (showEventDetail)="onShowEventDetail($event)" (showSignMessage)="onShowSignMessage()"></app-oracle>
+  </mat-drawer-content>
 
-  <div *ngIf="eventNames.length > 0" class="event-list">
-    <h4 class="form-label" translate>events</h4>
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th translate>createEvent.name</th>
-          <th translate>createEvent.maturationTime</th>
-          <th translate>createEvent.outcomes</th>
-          <th translate>createEvent.attestations</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let e of eventNames">
-          <td><button *ngIf="!events[e]" type="button" (click)="onGetEvent(e)">+</button></td>
-          <td>{{e}}</td>
-          <td>{{events[e]?.maturationTime}}</td>
-          <td>{{events[e]?.outcomes}}</td>
-          <td>{{events[e]?.attestations}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <mat-drawer #rightDrawer mode="side" position="end">
+    <app-event *ngIf="showEvent" (close)="closeRightDrawer()"></app-event>
+    <app-event-detail *ngIf="showEventDetail" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
+  </mat-drawer>
+</mat-drawer-container>
 
-  <div class="form-group">
-    <h2>Event Functions</h2>
-    <div class="input-group">
-      <label class="form-label" translate>eventName</label>
-      <input name="eventNameInput" class="form-control" type="text" [(ngModel)]="eventNameInput">
-    </div>
+<!-- 
+<mat-sidenav-container>
+  <mat-sidenav>Start</mat-sidenav>
+  <mat-sidenav position="end">End</mat-sidenav>
+  <section>Main</section>
+</mat-sidenav-container>
+-->
 
-    <br>
-
-    <div class="input-group">
-      <button type="button" (click)="onGetEvent(eventNameInput)" translate>oracleOperations.getevent</button>
-      <button type="button" (click)="onGetSignatures()" translate>oracleOperations.getsignatures</button>
-    </div>
-    <div class="input-group">
-      <input name="signEventInput" class="form-control" type="text" [(ngModel)]="signEventInput" placeholder="{{ 'outcome' | translate }}">
-      <button type="button" (click)="onSignEvent()" translate>oracleOperations.signevent</button>
-    </div>
-    <div class="input-group">
-      <input name="signDigitsInput" class="form-control" type="number" [(ngModel)]="signDigitsInput" placeholder="{{ 'outcome' | translate }}">
-      <button type="button" (click)="onSignDigits()" translate>oracleOperations.signdigits</button>
-    </div>
-    <div class="input-group">
-      <input name="signMessageInput" class="form-control" type="text" [(ngModel)]="signMessageInput" placeholder="{{ 'message' | translate }}">
-      <button type="button" (click)="onSignMessage()" translate>oracleOperations.signmessage</button>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <h2>New Event</h2>
-    <label translate>type</label>
-    <div>
-      <label>
-        <input type="radio" name="newEventType" [value]="EventType.ENUM" [(ngModel)]="newEventType">{{ 'eventType.enum' | translate }}
-      </label>
-      <label>
-        <input type="radio" name="newEventType" [value]="EventType.NUMERIC" [(ngModel)]="newEventType">{{ 'eventType.numeric' | translate }}
-      </label>
-      <label>
-        <input type="radio" name="newEventType" [value]="EventType.DIGIT_DECOMP" [(ngModel)]="newEventType">{{ 'eventType.digitdecomp' | translate }}
-      </label>
-    </div>
-
-    <br>
-
-    <div class="input-group">
-      <label class="form-label" translate>createEvent.name</label>
-      <input name="newEventName" class="form-control" type="text" [(ngModel)]="newEventName">
-    </div>
-    <ng-container *ngIf="newEventType === EventType.ENUM || newEventType === EventType.NUMERIC">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.maturationTime</label>
-        <input name="maturationTime" class="form-control" type="text" [(ngModel)]="maturationTime" placeholder="ISO 8601">
-      </div>
-    </ng-container>
-    <ng-container *ngIf="newEventType === EventType.DIGIT_DECOMP">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.maturationTime</label>
-        <input name="maturationTimeSeconds" class="form-control" type="number" [(ngModel)]="maturationTimeSeconds" placeholder="epoch seconds">
-      </div>
-    </ng-container>
-    <ng-container *ngIf="newEventType === EventType.ENUM">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.outcomes</label>
-        <input name="outcomes" class="form-control" type="text" [(ngModel)]="outcomes">
-      </div>
-    </ng-container>
-
-    <br>
-
-    <ng-container *ngIf="newEventType === EventType.NUMERIC">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.minvalue</label>
-        <input name="minValue" class="form-control" type="number" [(ngModel)]="minValue">
-      </div>
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.maxvalue</label>
-        <input name="maxValue" class="form-control" type="number" [(ngModel)]="maxValue">
-      </div>
-      <br>
-    </ng-container>
-
-    <ng-container *ngIf="newEventType === EventType.DIGIT_DECOMP">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.base</label>
-        <input name="base" class="form-control" type="text" [(ngModel)]="base">
-      </div>
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.numdigits</label>
-        <input name="numdigits" class="form-control" type="number" [(ngModel)]="numdigits">
-      </div>
-      <br>
-    </ng-container>
-
-    <ng-container *ngIf="newEventType === EventType.NUMERIC || newEventType === EventType.DIGIT_DECOMP">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.unit</label>
-        <input name="unit" class="form-control" type="text" [(ngModel)]="unit">
-      </div>
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.precision</label>
-        <input name="unit" class="form-control" type="number" [(ngModel)]="precision">
-      </div>
-      <br>
-    </ng-container>
-    
-    <ng-container *ngIf="newEventType === EventType.DIGIT_DECOMP">
-      <div class="input-group">
-        <label class="form-label" translate>createEvent.signed</label>
-        <input name="signed" class="form-control" type="checkbox" [(ngModel)]="signed">
-      </div>
-    </ng-container>
-
-    <button type="button" (click)="onCreateEvent()" translate>create</button>
-  </div>
-
-  <div class="form-group">
-    <h4>{{ sentType }} result</h4>
-    <textarea class="result-area" [(ngModel)]="messageResults"></textarea>
-  </div>
-  
-</div>
+<app-last-result-detail></app-last-result-detail>

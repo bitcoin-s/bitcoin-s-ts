@@ -1,0 +1,81 @@
+.oracle-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .oracle-header {
+    display: flex;
+    flex-direction: row;
+    
+    .bull-image {
+      width: 300px;
+    }
+
+    .spacer {
+      width: 2rem;
+    }
+    
+    .oracle-form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      min-width: 400px;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding-bottom: 1rem;
+
+    .spacer {
+      width: 2rem;
+    }
+  }
+
+  .debug-button-group {
+    padding-bottom: 1rem;
+  }
+  
+  .table-container {
+    margin-bottom: 1rem;
+  
+    display: flex;
+    justify-content: center;
+    
+    .event-table {
+      width: 80%;
+  
+      th.mat-sort-header-sorted {
+        color: black;
+      }
+
+      tr {
+        cursor: pointer;
+      }
+  
+      td {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .mat-header-cell, .mat-cell, .mat-footer-cell {
+        padding-left: 16px;
+        padding-right: 40px;
+        &:first-of-type {
+          padding-left: 16px;
+        }
+        &:last-of-type {
+            padding-right: 16px;
+        }
+      }
+    }
+  }
+  
+}

@@ -1,0 +1,29 @@
+
+.new-event-section {
+  padding: 0 1rem;
+  min-width: 350px;
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container > * {
+    width: 100%;
+  }
+  
+  .mat-radio-button {
+    padding-right: 1rem;
+  }
+  
+  // .mat-form-field {
+  //   width: 16rem;
+  // }
+  
+  // Space out pseudo-mat checkbox field
+  // .mat-form-field-checkbox {
+  
+  // }
+  
+}
+
