@@ -50,10 +50,12 @@ app.get('/oracleHeartbeat', async (req: Request, res: Response) => {
 	res.send({ success })
 })
 
+const oracleEndpoint = process.env.API_HOST || Config.oracleUrl;
+
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 app.use(Config.apiRoot, createProxyMiddleware({
-  target: Config.oracleUrl,
+  target: oracleEndpoint,
   changeOrigin: true,
   pathRewrite: {
 		[`^${Config.apiRoot}`]: '',
