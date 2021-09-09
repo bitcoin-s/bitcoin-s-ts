@@ -88,7 +88,10 @@
 
   "createEventErrors": {
     "nonPositive": "Value must be positive",
-    "negative": "Value must be zero or more"
+    "negative": "Value must be zero or more",
+    "outcomeHasEmpty": "Outcome cannot be empty string",
+    "outcomeUnique": "Outcomes must be unique",
+    "outcomeMinTwo": "Must have at least two outcomes"
   },
 
   "eventDetail": {

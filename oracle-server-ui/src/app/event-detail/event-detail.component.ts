@@ -13,33 +13,27 @@ import { getMessageBody } from '~util/message-util';
 })
 export class EventDetailComponent implements OnInit {
 
-  @Input() event!: OracleEvent
+  // @Input() event!: OracleEvent
+
+  _event!: OracleEvent
+  get event(): OracleEvent { return this._event }
+  @Input() set event(e: OracleEvent) { this.reset(); this._event = e }
 
   @Output() close: EventEmitter<void> = new EventEmitter()
-
-  form: FormGroup
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls; }
 
   signEventInput = ''
   signDigitsInput: number|undefined = undefined
   signatures = ''
 
-  reset() {
+  private reset() {
     this.signEventInput = ''
     this.signDigitsInput = undefined
     this.signatures = ''
   }
 
-  constructor(private formBuilder: FormBuilder, private messageService: MessageService) { }
+  constructor(private messageService: MessageService) { }
 
-  ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      eventName: [null],
-      signEventInput: [null], // TODO : Validate against outcomes[]
-      signDigitsInput: [undefined], // TODO : Validate in range
-    })
-  }
+  ngOnInit(): void { }
 
   // Proxies for knowing eventType
   isEnum() {

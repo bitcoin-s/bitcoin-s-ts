@@ -5,7 +5,7 @@
   </div>
   
   <form class="form-container" [formGroup]="form">
-    <mat-radio-group formControlName="eventTypes" [(ngModel)]="newEventType">
+    <mat-radio-group formControlName="eventType" [(ngModel)]="eventType" (ngModelChange)="wipeInvalidFormStates()">
       <mat-radio-button *ngFor="let e of eventTypes"
         [value]="e">{{ 'eventType.' + e | translate }}</mat-radio-button>
     </mat-radio-group>
@@ -13,17 +13,25 @@
     <mat-form-field>
       <mat-label translate>createEvent.name</mat-label>
       <!-- #eventName="matInput" cdkFocusInitial -->
-      <input matInput formControlName="newEventName" type="text" [(ngModel)]="newEventName" autofocus>
+      <input matInput formControlName="eventName" type="text" autofocus>
       <app-more-info matSuffix tooltip="createEventDescription.name"></app-more-info>
     </mat-form-field>
 
-    <mat-form-field *ngIf="newEventType === EventType.ENUM || newEventType === EventType.NUMERIC">
+    <!-- <mat-form-field *ngIf="eventType === EventType.ENUM || eventType === EventType.NUMERIC">
       <mat-label translate>createEvent.maturationTime</mat-label>
       <input matInput formControlName="maturationTime" type="text" [(ngModel)]="maturationTime" placeholder="ISO 8601">
       <app-more-info matSuffix tooltip="createEventDescription.maturationTime"></app-more-info>
       <mat-hint>ISO 8601</mat-hint>
+    </mat-form-field> -->
+
+    <mat-form-field>
+      <mat-label translate>createEvent.maturationTime</mat-label>
+      <input matInput formControlName="maturationTime" [matDatepicker]="datePicker">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
-    <mat-form-field *ngIf="newEventType === EventType.DIGIT_DECOMP">
+
+    <!-- <mat-form-field *ngIf="eventType === EventType.DIGIT_DECOMP">
       <mat-label translate>createEvent.maturationTime</mat-label>
       <input matInput formControlName="maturationTimeSeconds" type="number" [(ngModel)]="maturationTimeSeconds" placeholder="epoch seconds">
       <app-more-info matSuffix tooltip="createEventDescription.maturationTimeSeconds"></app-more-info>
@@ -31,32 +39,41 @@
       <mat-error *ngIf="f.precision.errors?.nonPositive">
         {{ 'createEventErrors.nonPositive' | translate }}
       </mat-error>  
-    </mat-form-field>
+    </mat-form-field> -->
 
-    <mat-form-field *ngIf="newEventType === EventType.ENUM">
+    <mat-form-field *ngIf="eventType === EventType.ENUM">
       <mat-label translate>createEvent.outcomes</mat-label>
-      <input matInput formControlName="outcomes" type="text" [(ngModel)]="outcomes">
+      <input matInput formControlName="outcomes" type="text">
       <app-more-info matSuffix tooltip="createEventDescription.outcomes"></app-more-info>
+      <mat-error *ngIf="f.outcomes.errors?.outcomeHasEmpty">
+        {{ 'createEventErrors.outcomeHasEmpty' | translate }}
+      </mat-error>
+      <mat-error *ngIf="f.outcomes.errors?.outcomeUnique">
+        {{ 'createEventErrors.outcomeUnique' | translate }}
+      </mat-error> 
+      <mat-error *ngIf="f.outcomes.errors?.outcomeMinTwo">
+        {{ 'createEventErrors.outcomeMinTwo' | translate }}
+      </mat-error> 
     </mat-form-field>
 
-    <ng-container *ngIf="newEventType === EventType.NUMERIC">
+    <ng-container *ngIf="eventType === EventType.NUMERIC">
       <mat-form-field>
         <mat-label translate>createEvent.minvalue</mat-label>
-        <input matInput formControlName="minValue" type="number" [(ngModel)]="minValue">
+        <input matInput formControlName="minValue" type="number">
         <app-more-info matSuffix tooltip="createEventDescription.minvalue"></app-more-info>
       </mat-form-field>
       <mat-form-field>
         <mat-label translate>createEvent.maxvalue</mat-label>
-        <input matInput formControlName="maxValue" type="number" [(ngModel)]="maxValue">
+        <input matInput formControlName="maxValue" type="number">
         <app-more-info matSuffix tooltip="createEventDescription.maxvalue"></app-more-info>
       </mat-form-field>
       <br>
     </ng-container>
 
-    <ng-container *ngIf="newEventType === EventType.DIGIT_DECOMP">
+    <ng-container *ngIf="eventType === EventType.DIGIT_DECOMP">
       <mat-form-field>
         <mat-label class="form-label" translate>createEvent.base</mat-label>
-        <input matInput formControlName="base" type="text" [(ngModel)]="base">
+        <input matInput formControlName="base" type="text">
         <app-more-info matSuffix tooltip="createEventDescription.base"></app-more-info>
         <mat-error *ngIf="f.precision.errors?.nonPositive">
           {{ 'createEventErrors.nonPositive' | translate }}
@@ -64,7 +81,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label translate>createEvent.numdigits</mat-label>
-        <input matInput formControlName="numdigits" type="number" [(ngModel)]="numdigits">
+        <input matInput formControlName="numdigits" type="number">
         <app-more-info matSuffix tooltip="createEventDescription.numdigits"></app-more-info>
         <mat-error *ngIf="f.precision.errors?.nonPositive">
           {{ 'createEventErrors.nonPositive' | translate }}
@@ -73,27 +90,27 @@
       <br>
     </ng-container>
 
-    <ng-container *ngIf="newEventType === EventType.NUMERIC || newEventType === EventType.DIGIT_DECOMP">
+    <ng-container *ngIf="eventType === EventType.NUMERIC || eventType === EventType.DIGIT_DECOMP">
       <mat-form-field>
         <mat-label translate>createEvent.unit</mat-label>
-        <input matInput formControlName="unit" type="text" [(ngModel)]="unit">
+        <input matInput formControlName="unit" type="text">
         <app-more-info matSuffix tooltip="createEventDescription.unit"></app-more-info>
       </mat-form-field>
       <mat-form-field>
         <mat-label translate>createEvent.precision</mat-label>
-        <input matInput formControlName="precision" type="number" [(ngModel)]="precision">
+        <input matInput formControlName="precision" type="number">
         <app-more-info matSuffix tooltip="createEventDescription.precision"></app-more-info>
         <mat-error *ngIf="f.precision.errors?.negative">
           {{ 'createEventErrors.negative' | translate }}
         </mat-error>   
       </mat-form-field>
-      <br *ngIf="newEventType === EventType.DIGIT_DECOMP">
+      <br *ngIf="eventType === EventType.DIGIT_DECOMP">
     </ng-container>
 
-    <ng-container *ngIf="newEventType === EventType.DIGIT_DECOMP">
-      <div class="mat-form-field .mat-form-field-checkbox">
+    <ng-container *ngIf="eventType === EventType.DIGIT_DECOMP">
+      <div class="mat-form-field--checkbox">
         <mat-label translate>createEvent.signed</mat-label>
-        <mat-checkbox formControlName="signed" [(ngModel)]="signed" labelPosition="after"></mat-checkbox>
+        <mat-checkbox formControlName="signed"></mat-checkbox>
         <app-more-info matSuffix tooltip="createEventDescription.signed"></app-more-info>
       </div>
       <br>

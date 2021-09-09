@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { MessageService } from '~service/message.service';
 import { OracleEvent } from '~type/oracle-server-types';
+import { NewEventComponent } from './new-event/new-event.component';
 
 
 @Component({
@@ -17,13 +18,15 @@ export class AppComponent implements OnInit {
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
   @ViewChild('leftDrawer') leftDrawer: MatDrawer
 
+  @ViewChild('newEvent') newEvent: NewEventComponent
+
   showEvent = false
   showEventDetail = false
 
   showNewEvent = false
   showSignMessage = false
 
-  detailEvent: OracleEvent
+  detailEvent: OracleEvent|undefined
 
   constructor(private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar) {
 
@@ -34,7 +37,9 @@ export class AppComponent implements OnInit {
       if (result) {
         const oracleRunning = result.success
         const key = oracleRunning ? 'oracleEvent.serverFound' : 'oracleEvent.serverNotFound'
-        this.snackBar.open(this.translate.instant(key), this.translate.instant('action.dismiss'))
+        const config: any = { verticalPosition: 'top' }
+        if (oracleRunning) config.duration = 3000
+        this.snackBar.open(this.translate.instant(key), this.translate.instant('action.dismiss'), config)
       }
     })
   }
@@ -51,6 +56,11 @@ export class AppComponent implements OnInit {
 
   onShowCreateEvent() {
     console.debug('onShowCreateEvent()')
+    if (this.leftDrawer.opened && this.showNewEvent) {
+      return
+    } else if (this.newEvent) {
+      this.newEvent.reset()
+    }
     this.hideLeftDrawerItems()
     this.showNewEvent = true
     this.leftDrawer.open()
@@ -72,11 +82,17 @@ export class AppComponent implements OnInit {
   }
 
   onShowEventDetail(event: OracleEvent) {
-    console.debug('onShowEventDetail()', event)
-    this.hideRightDrawerItems()
-    this.detailEvent = event
-    this.showEventDetail = true
-    this.rightDrawer.open()
+    console.debug('onShowEventDetail()', event, 'detailEvent', this.detailEvent)
+
+    if (!event || this.detailEvent === event) {
+      this.rightDrawer.close()
+      this.detailEvent = undefined
+    } else {
+      this.hideRightDrawerItems()
+      this.detailEvent = event
+      this.showEventDetail = true
+      this.rightDrawer.open()
+    }
   }
 
   closeLeftDrawer() {
@@ -87,6 +103,7 @@ export class AppComponent implements OnInit {
   closeRightDrawer() {
     console.debug('closeRightDrawer()')
     this.rightDrawer.close()
+    this.detailEvent = undefined
   }
 
 }

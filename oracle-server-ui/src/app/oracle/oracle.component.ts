@@ -6,6 +6,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MessageService } from '~service/message.service';
 import { MessageType, OracleEvent } from '~type/oracle-server-types';
 import { getMessageBody } from '~util/message-util';
+import { KrystalBullImages } from '~util/ui-util';
 
 
 @Component({
@@ -19,14 +20,15 @@ export class OracleComponent implements OnInit, AfterViewInit {
   @Output() showEventDetail: EventEmitter<OracleEvent> = new EventEmitter();
   @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
 
-  hideRawButtons = true
+  public KrystalBullImages = KrystalBullImages
 
-  form: FormGroup
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls; }
+  hideRawButtons = true
 
   @ViewChild(MatTable) table: MatTable<OracleEvent>
   @ViewChild(MatSort) sort: MatSort
+
+  bullIndex = 0
+  bullSrc = KrystalBullImages[0]
 
   // Oracle Info
   oracleName = ''
@@ -43,16 +45,9 @@ export class OracleComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource(this.flatEvents)
   displayedColumns = ['eventName', 'maturationTime', 'outcomes', 'attestations']
 
-  constructor(private messageService: MessageService, private formBuilder: FormBuilder) { }
+  constructor(private messageService: MessageService) { }
 
-  ngOnInit() {
-    this.form = this.formBuilder.group({
-      oracleName: [null],
-      publicKey: [null],
-      stakingAddress: [null],
-      stakedAmount: [null],
-    })
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -126,6 +121,13 @@ export class OracleComponent implements OnInit, AfterViewInit {
   }
 
   /* UI Functions */
+
+  onImageClick() {
+    console.debug('onImageClick()')
+    let t = this.bullIndex + 1
+    if (t === KrystalBullImages.length) t = 0
+    this.bullIndex = t
+  }
 
   onShowCreateEvent() {
     console.debug('onShowCreateEvent()')

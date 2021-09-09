@@ -1,6 +1,6 @@
 <mat-drawer-container class="">
   <mat-drawer #leftDrawer mode="side">
-    <app-new-event *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
+    <app-new-event #newEvent *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
     <app-sign-message *ngIf="showSignMessage" (close)="closeLeftDrawer()"></app-sign-message>
   </mat-drawer>
 
@@ -10,7 +10,7 @@
 
   <mat-drawer #rightDrawer mode="side" position="end">
     <app-event *ngIf="showEvent" (close)="closeRightDrawer()"></app-event>
-    <app-event-detail *ngIf="showEventDetail" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
+    <app-event-detail *ngIf="showEventDetail && detailEvent" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
   </mat-drawer>
 </mat-drawer-container>
 

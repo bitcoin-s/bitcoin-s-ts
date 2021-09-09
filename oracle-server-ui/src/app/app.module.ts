@@ -43,7 +43,7 @@ export function appInitializerFactory(translate: TranslateService) {
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule, 
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

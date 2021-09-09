@@ -15,20 +15,12 @@ export class SignMessageComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  form: FormGroup
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls; }
-
   signMessageInput = ''
   signedMessage = ''
 
-  constructor(private formBuilder: FormBuilder, private messageService: MessageService) { }
+  constructor(private messageService: MessageService) { }
 
-  ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      signMessageInput: [null]
-    })
-  }
+  ngOnInit(): void { }
 
   onClose() {
     console.debug('onClose()')
