@@ -30,6 +30,8 @@ const app = express()
 const UI_PATH = path.join(__dirname, Config.uiPath)
 app.use(express.static(UI_PATH))
 
+const oracleEndpoint = process.env.ORACLE_SERVER_API_URL || Config.oracleUrl;
+
 // Heartbeat Routes
 
 app.get('/heartbeat', (req: Request, res: Response) => {
@@ -38,7 +40,7 @@ app.get('/heartbeat', (req: Request, res: Response) => {
 
 app.get('/oracleHeartbeat', async (req: Request, res: Response) => {
 	let success = false
-	await fetch(Config.oracleUrl, {
+	await fetch(oracleEndpoint, {
 		method: 'POST',
 		body: JSON.stringify({ method: 'getpublickey' })
 	}).then(_ => {
@@ -50,16 +52,14 @@ app.get('/oracleHeartbeat', async (req: Request, res: Response) => {
 	res.send({ success })
 })
 
-const oracleEndpoint = process.env.API_HOST || Config.oracleUrl;
-
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 app.use(Config.apiRoot, createProxyMiddleware({
-  target: oracleEndpoint,
-  changeOrigin: true,
-  pathRewrite: {
+	target: oracleEndpoint,
+	changeOrigin: true,
+	pathRewrite: {
 		[`^${Config.apiRoot}`]: '',
-  },
+	},
 	proxyTimeout: PROXY_TIMEOUT,
 	onError: (err: Error, req: Request, res: Response) => {
 		// Handle oracleServer is unavailable
