@@ -2,7 +2,7 @@
 name: CI to Docker Hub
 on:
   push:
-    branches: [master, main]
+    branches: [master, main, 2021-09-10-multiplatform-docker]
     tags: ["*"]
 jobs:
   build:
@@ -31,7 +31,8 @@ jobs:
       - name: Build and push
         env: 
           pkg-version: ${{steps.previoustag.outputs.tag}}
-        run: | 
-          docker build -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
+        run: |
+          docker buildx create --use --name multi-arch-builder
+          docker buildx build --platform=linux/amd64,linux/arm64 --push -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
           docker push bitcoinscala/oracle-server-ui:latest
           docker push bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
