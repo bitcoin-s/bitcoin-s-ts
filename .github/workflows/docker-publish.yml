@@ -17,7 +17,12 @@ jobs:
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
-          fallback: 0.0.0 # Optional fallback tag to use when no tag can be found
+          fallback: 0.0.1 # Optional fallback tag to use when no tag can be found
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.sha_short }}
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -29,4 +34,4 @@ jobs:
         run: | 
           cd oracle-server-ui
           docker build -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
-          docker push -a
+          docker push bitcoinscala/oracle-server-ui:latest bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
