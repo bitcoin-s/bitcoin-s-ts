@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-      - run: cd oracle-server-ui
-      - run: npm i
-      - run: tsc -p tsconfig.json 
+        run: |
+         cd oracle-server-ui
+         npm i
+         tsc -p tsconfig.json
