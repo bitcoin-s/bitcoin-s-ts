@@ -1,0 +1,30 @@
+.sign-message-seection {
+  padding: 0 1rem;
+  min-width: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  // .form-container {
+  //   display: flex;
+  //   flex-direction: column;
+  // }
+  
+  .form-container > * {
+    width: 100%;
+  }
+
+  .signed-message {
+
+  }
+
+  // .textarea-container {
+  //   display: flex;
+  //   flex-direction: column;
+
+    textarea {
+      flex: 1;
+    }
+}

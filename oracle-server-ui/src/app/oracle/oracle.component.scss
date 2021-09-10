@@ -1,0 +1,107 @@
+@import '../../scss/breakpoints';
+
+.oracle-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .oracle-header {
+    width: 96%; // feels like a hack
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    margin: 1rem;
+
+    // test
+    // flex: 1;
+    // flex-basis: 0;
+    
+    .bull-image {
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+    }
+
+    .oracle-form {
+      flex: 1;
+      max-width: 600px;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      margin: 0 1rem;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    margin-bottom: 1rem;
+
+    .spacer {
+      width: 2rem;
+    }
+  }
+
+  .debug-button-group {
+    padding-bottom: 1rem;
+  }
+  
+  .table-container {
+    display: flex;
+    justify-content: center;
+
+    margin-bottom: 1rem;
+    
+    .event-table {
+  
+      th.mat-sort-header-sorted {
+        color: black;
+      }
+
+      tr {
+        cursor: pointer;
+      }
+  
+      td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      // Column padding
+      .mat-header-cell, .mat-cell, .mat-footer-cell {
+        padding-left: 1rem;
+        padding-right: 2rem;
+        &:first-of-type {
+          padding-left: 1rem;
+        }
+        &:last-of-type {
+          padding-right: 1rem;
+        }
+      }
+
+      .mat-column-attestations {
+        max-width: 200px;
+      }
+      // Hide Outcomes and Attestations on narrow screens
+      @include lt-md {
+        .mat-column-outcomes {
+          display: none;
+        }
+      }
+      @include lt-lg {
+        .mat-column-attestations {
+          display: none;
+        }
+      }
+    }
+  }
+  
+}

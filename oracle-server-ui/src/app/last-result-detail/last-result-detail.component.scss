@@ -1,0 +1,13 @@
+.last-result-section {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  margin: 0.5rem;
+
+  .result-area {
+    width: 100%;
+    min-height: 10rem;
+    flex: 1;
+  }
+}

@@ -1,0 +1,8 @@
+{
+	"port": 3001,
+	"stopOnError": false,
+	"useHTTPS": false,
+	"apiRoot": "/api/v0",
+	"oracleUrl": "http://localhost:9998/",
+	"uiPath": "../oracle-server-ui/dist/oracle-server-ui"
+}

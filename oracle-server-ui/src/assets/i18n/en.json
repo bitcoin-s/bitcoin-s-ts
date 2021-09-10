@@ -26,7 +26,26 @@
     "signevent": "Sign Event",
     "signdigits": "Sign Digits",
     "getsignatures": "Get Signatures",
-    "signmessage": "Sign Message"
+    "signmessage": "Sign Message",
+
+    "heartbeat": "Oracle Heartbeat",
+    "getallEvents": "Get All Events"
+  },
+
+  "oracleEvent": {
+    "serverFound": "Found oracleServer! 😀",
+    "serverNotFound": "Did not find oracleServer! 😞"
+  },
+
+  "oracle": {
+    "name": "Oracle Name",
+    "publicKey": "Public Key",
+    "stakingAddress": "Staking Address",
+    "stakedAmount": "Staked Amount"
+  },
+
+  "signMessage": {
+    "header": "Sign Message"
   },
 
   "eventType": {
@@ -36,6 +55,8 @@
   },
 
   "createEvent": {
+    "heading": "Create Event",
+
     "name": "Name",
     "maturationTime": "Maturation Time",
     "outcomes": "Outcomes",
@@ -54,7 +75,8 @@
 
   "createEventDescription": {
     "name": "Name for this event",
-    "maturationtime": "The earliest expected time an outcome will be signed, given in epoch second",
+    "maturationTime": "The earliest expected time an outcome will be signed, given in ISO 8601 format",
+    "maturationTimeSeconds": "The earliest expected time an outcome will be signed, given in epoch second",
     "outcomes": "Outcomes",
 
     "minvalue": "Minimum value of this event",
@@ -65,6 +87,25 @@
     "base": "The base in which the outcome value is decomposed",
     "numdigits": "The max number of digits the outcome can have",
     "signed": "Whether the outcomes can be negative"
+  },
+
+  "createEventErrors": {
+    "nonPositive": "Value must be positive",
+    "negative": "Value must be zero or more",
+    "outcomeHasEmpty": "Outcome cannot be empty string",
+    "outcomeUnique": "Outcomes must be unique",
+    "outcomeMinTwo": "Must have at least two outcomes"
+  },
+
+  "eventDetail": {
+    "heading": "Event Detail",
+    "signatures": "Signatures",
+    "eventJSON": "Event JSON"
+  },
+
+  "action": {
+    "dismiss": "Dismiss",
+    "sign": "Sign"
   }
 
 }

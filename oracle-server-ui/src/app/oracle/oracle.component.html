@@ -1,0 +1,69 @@
+<section class="oracle-section">
+  
+  <div class="oracle-header">
+    <img class="bull-image" [src]="KrystalBullImages[bullIndex]" (click)="onImageClick()">
+    <form class="oracle-form">
+      <mat-form-field>
+        <mat-label translate>oracle.name</mat-label>
+        <input matInput name="oracleName" type="text" [(ngModel)]="oracleName">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>oracle.publicKey</mat-label>
+        <input matInput name="publicKey" type="text" [(ngModel)]="publicKey" readonly="true">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>oracle.stakingAddress</mat-label>
+        <input matInput name="stakingAddress" type="text" [(ngModel)]="stakingAddress" readonly="true">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>oracle.stakedAmount</mat-label>
+        <input matInput name="stakedAmount" type="text" [(ngModel)]="stakedAmount" readonly="true">
+      </mat-form-field>
+    </form>
+  </div>
+
+  <nav class="button-group">
+    <!-- <button type="button" (click)="onShowCreateEvent()" translate>createEvent.heading</button> -->
+    <button mat-stroked-button (click)="onShowCreateEvent()"><mat-icon>add_circle_outline</mat-icon></button>
+    <button mat-stroked-button (click)="getAllEvents()"><mat-icon>refresh</mat-icon></button>
+    <div class="spacer"></div>
+    <button mat-stroked-button (click)="onShowSignMessage()"><mat-icon>drive_file_rename_outline</mat-icon></button>
+    <button mat-stroked-button (click)="onShowDebug()"><mat-icon>pest_control</mat-icon></button>
+  </nav>
+
+  <nav class="debug-button-group" [hidden]="hideRawButtons">
+    <button type="button" (click)="onOracleHeartbeat()">oracleOperations.heartbeat</button>
+    <button type="button" (click)="getAllEvents()">oracleOperations.getallEvents</button>
+
+    <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
+    <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
+    <button type="button" (click)="onListEvents()" translate>oracleOperations.listevents</button>
+  </nav>
+ 
+  <div class="table-container">
+    <!-- mat-elevation-z8 -->
+    <table class="event-table mat-elevation-z8" mat-table #table matSort [dataSource]="dataSource">
+      <ng-container matColumnDef="eventName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'createEvent.name' | translate }}</th>
+        <td mat-cell *matCellDef="let event">{{ event.eventName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="maturationTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'createEvent.maturationTime' | translate }}</th>
+        <td mat-cell *matCellDef="let event">{{ event.maturationTime }}</td>
+      </ng-container>
+      <ng-container matColumnDef="outcomes">
+        <th mat-header-cell *matHeaderCellDef translate="createEvent.outcomes"></th>
+        <td mat-cell *matCellDef="let event">{{ event.outcomes }}</td>
+      </ng-container>
+      <ng-container matColumnDef="attestations">
+        <th mat-header-cell *matHeaderCellDef translate="createEvent.attestations"></th>
+        <td mat-cell *matCellDef="let event">{{ event.attestations }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let event; columns: displayedColumns"
+          (click)="onRowClick(event)"></tr>
+    </table>
+  </div>
+
+</section>

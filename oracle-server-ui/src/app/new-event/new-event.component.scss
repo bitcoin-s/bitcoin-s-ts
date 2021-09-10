@@ -1,0 +1,28 @@
+
+.new-event-section {
+  padding: 0 1rem;
+  min-width: 350px;
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container > * {
+    width: 100%;
+  }
+  
+  .mat-radio-button {
+    padding-right: 1rem;
+  }
+  
+  // Center checkbox in pseudo-mat-form-field
+  .mat-form-field--checkbox {
+    display: flex;
+    flex-direction: row;
+
+    mat-checkbox {
+      margin: auto;
+    }
+  }
+}
