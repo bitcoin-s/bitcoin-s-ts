@@ -10,7 +10,6 @@ import { MaterialModule } from './shared/modules/material/material.module';
 
 import { AppComponent } from './app.component';
 import { OracleComponent } from './oracle/oracle.component';
-import { EventComponent } from './event/event.component';
 import { NewEventComponent } from './new-event/new-event.component';
 import { MoreInfoComponent } from './component/more-info/more-info.component';
 import { EventDetailComponent } from './event-detail/event-detail.component';
@@ -34,7 +33,6 @@ export function appInitializerFactory(translate: TranslateService) {
   declarations: [
     AppComponent,
     OracleComponent,
-    EventComponent,
     NewEventComponent,
     MoreInfoComponent,
     EventDetailComponent,

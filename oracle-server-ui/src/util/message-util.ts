@@ -1,5 +1,5 @@
-import { OracleServerMessage, OracleServerMessageWithParameters } from "~type/oracle-server-message"
-import { MessageType } from "~type/oracle-server-types"
+import { OracleServerMessage, OracleServerMessageWithParameters } from '~type/oracle-server-message'
+import { MessageType } from '~type/oracle-server-types'
 
 
 export function getMessageBody(type: MessageType, params?: any[]): OracleServerMessage {
@@ -23,8 +23,8 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
 }
 
 export class OracleResponse<T> {
-  result: T|null = null; // Can also be a complex type like getevent response
-  error: string|null = null;
+  result: T|null = null // Can also be a complex type like getevent response
+  error: string|null = null
 }
 
 

@@ -32,8 +32,8 @@
   </nav>
 
   <nav class="debug-button-group" [hidden]="hideRawButtons">
-    <button type="button" (click)="onOracleHeartbeat()">Oracle Heartbeat</button>
-    <button type="button" (click)="getAllEvents()">Get All Events</button>
+    <button type="button" (click)="onOracleHeartbeat()">oracleOperations.heartbeat</button>
+    <button type="button" (click)="getAllEvents()">oracleOperations.getallEvents</button>
 
     <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
     <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
@@ -65,4 +65,5 @@
           (click)="onRowClick(event)"></tr>
     </table>
   </div>
+
 </section>

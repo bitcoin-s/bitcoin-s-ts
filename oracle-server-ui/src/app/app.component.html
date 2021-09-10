@@ -1,25 +1,20 @@
-<mat-drawer-container class="">
+<!-- TODO : Use mat-sidenav-container instead? -->
+<mat-drawer-container>
+  <!-- Left Drawer -->
   <mat-drawer #leftDrawer mode="side">
     <app-new-event #newEvent *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
     <app-sign-message *ngIf="showSignMessage" (close)="closeLeftDrawer()"></app-sign-message>
   </mat-drawer>
 
+  <!-- Main Content -->
   <mat-drawer-content>
     <app-oracle (showCreateEvent)="onShowCreateEvent()" (showEventDetail)="onShowEventDetail($event)" (showSignMessage)="onShowSignMessage()"></app-oracle>
   </mat-drawer-content>
 
+  <!-- Right Drawer -->
   <mat-drawer #rightDrawer mode="side" position="end">
-    <app-event *ngIf="showEvent" (close)="closeRightDrawer()"></app-event>
     <app-event-detail *ngIf="showEventDetail && detailEvent" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
   </mat-drawer>
 </mat-drawer-container>
-
-<!-- 
-<mat-sidenav-container>
-  <mat-sidenav>Start</mat-sidenav>
-  <mat-sidenav position="end">End</mat-sidenav>
-  <section>Main</section>
-</mat-sidenav-container>
--->
 
 <app-last-result-detail></app-last-result-detail>

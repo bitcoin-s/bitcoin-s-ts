@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { MessageService } from '~service/message.service';
 
 import { MessageType, OracleEvent } from '~type/oracle-server-types';
@@ -12,8 +11,6 @@ import { getMessageBody } from '~util/message-util';
   styleUrls: ['./event-detail.component.scss']
 })
 export class EventDetailComponent implements OnInit {
-
-  // @Input() event!: OracleEvent
 
   _event!: OracleEvent
   get event(): OracleEvent { return this._event }

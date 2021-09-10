@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
+import { MessageService } from '~service/message.service';
 
 import { EventType } from '~type/client-types';
 import { OracleServerMessage } from '~type/oracle-server-message';
@@ -130,7 +131,7 @@ export class NewEventComponent implements OnInit, AfterViewInit {
     })
   }
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private messageService: MessageService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -216,9 +217,9 @@ export class NewEventComponent implements OnInit, AfterViewInit {
         throw Error('onCreateEvent unknown newEventType: ' + v.eventType)
     }
     if (m !== undefined) {
-      // this.messageService.sendMessage(m).subscribe()
+      console.debug('form.value:', v, 'message:', m)
+      this.messageService.sendMessage(m).subscribe()
     }
-    console.warn('form.value:', v, 'm:', m)
   }
 
   onClose() {

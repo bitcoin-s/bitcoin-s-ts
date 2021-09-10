@@ -1,6 +1,6 @@
 <section class="last-result-section">
   <div class="section-header">
-    <h4>{{ messageService.lastMessageType }} result</h4>
+    <h4>{{ messageService.lastMessageType }} {{ 'result' | translate }}</h4>
   </div>
   <textarea class="result-area" [(ngModel)]="messageService.lastMessageResults"></textarea>
 </section>

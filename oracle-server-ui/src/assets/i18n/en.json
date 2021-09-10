@@ -95,6 +95,7 @@
   },
 
   "eventDetail": {
+    "heading": "Event Detail",
     "signatures": "Signatures",
     "eventJSON": "Event JSON"
   },

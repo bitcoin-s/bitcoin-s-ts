@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 
@@ -56,6 +55,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.onGetStakingAddress()
     this.getAllEvents()
   }
+
+  /* Debug button handlers */
 
   onOracleHeartbeat() {
     console.debug('onOracleHeartbeateartbeat')
