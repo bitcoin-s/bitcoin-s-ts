@@ -26,7 +26,10 @@
     "signevent": "Sign Event",
     "signdigits": "Sign Digits",
     "getsignatures": "Get Signatures",
-    "signmessage": "Sign Message"
+    "signmessage": "Sign Message",
+
+    "heartbeat": "Oracle Heartbeat",
+    "getallEvents": "Get All Events"
   },
 
   "oracleEvent": {
