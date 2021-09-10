@@ -27,7 +27,6 @@ jobs:
         env: 
           pkg-version: ${{steps.previoustag.outputs.tag}}
         run: | 
-        cd oracle-server-ui
-        docker build -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
-        docker push bitcoinscala/oracle-server-ui:latest
-        docker push bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
+          cd oracle-server-ui
+          docker build -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
+          docker push -a
