@@ -13,6 +13,8 @@ jobs:
         uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
+      - name: Install dependencies for docker buildx arm support
+        run: sudo apt-get install qemu qemu-user-static binfmt-support debootstrap -y
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
@@ -31,7 +33,6 @@ jobs:
       - name: Build and push
         env: 
           pkg-version: ${{steps.previoustag.outputs.tag}}
-        run: | 
-          docker build -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
-          docker push bitcoinscala/oracle-server-ui:latest
-          docker push bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
+        run: |
+          docker buildx create --use --name multi-arch-builder
+          docker buildx build --platform=linux/amd64,linux/arm64 --push -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
