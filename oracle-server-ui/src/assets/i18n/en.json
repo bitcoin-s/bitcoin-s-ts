@@ -60,6 +60,7 @@
     "name": "Name",
     "maturationTime": "Maturation Time",
     "outcomes": "Outcomes",
+    "signedOutcome": "Signed Outcome",
 
     "minvalue": "Min Value",
     "maxvalue": "Max Value",

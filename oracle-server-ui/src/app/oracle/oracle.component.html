@@ -55,6 +55,10 @@
         <th mat-header-cell *matHeaderCellDef translate="createEvent.outcomes"></th>
         <td mat-cell *matCellDef="let event">{{ formatOutcomes(event.outcomes) }}</td>
       </ng-container>
+      <ng-container matColumnDef="signedOutcome">
+        <th mat-header-cell *matHeaderCellDef translate="createEvent.signedOutcome"></th>
+        <td mat-cell *matCellDef="let event">{{ event.signedOutcome }}</td>
+      </ng-container>
       <ng-container matColumnDef="attestations">
         <th mat-header-cell *matHeaderCellDef translate="createEvent.attestations"></th>
         <td mat-cell *matCellDef="let event">{{ event.attestations }}</td>

@@ -42,7 +42,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   // Grid config
   dataSource = new MatTableDataSource(this.flatEvents)
-  displayedColumns = ['eventName', 'maturationTime', 'outcomes', 'attestations']
+  displayedColumns = ['eventName', 'maturationTime', 'outcomes', 'signedOutcome', 'attestations']
 
   constructor(private messageService: MessageService) { }
 
@@ -157,7 +157,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
         // numeric outcomes
         let signed = head[0] == "+" && head[1] == "-"
         let exp = signed ? outcomes.length - 1 : outcomes.length
-        let outcome = 2 ** exp
+        let outcome = (2 ** exp) - 1
         return signed ? "-" + outcome + ".." + outcome : "0.." + outcome
       } else  {
         // enum and all other outcomes
