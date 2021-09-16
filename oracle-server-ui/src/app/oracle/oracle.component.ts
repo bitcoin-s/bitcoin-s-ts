@@ -150,4 +150,22 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.showEventDetail.next(event)
   }
 
+  formatOutcomes(outcomes: [any]): string {
+    if (outcomes.length > 0) {
+      let head = outcomes[0]
+      if (typeof head == "object" && head.length == 2) {
+        // numeric outcomes
+        let signed = head[0] == "+" && head[1] == "-"
+        let exp = signed ? outcomes.length - 1 : outcomes.length
+        let outcome = 2 ** exp
+        return signed ? "-" + outcome + ".." + outcome : "0.." + outcome
+      } else  {
+        // enum and all other outcomes
+        return "" + outcomes
+      }
+    } else {
+      return ""
+    }
+  }
+
 }
