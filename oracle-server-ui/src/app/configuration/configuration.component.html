@@ -1,0 +1,15 @@
+<section class="configuration-section">
+  <div class="section-header">
+    <h2 translate>configuration.heading</h2>
+    <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <form class="form-container">
+    <mat-form-field>
+      <mat-label translate>oracleExplorer.heading</mat-label>
+      <mat-select [(value)]="oracleExplorer" (valueChange)="oracleExplorerChanged($event)">
+        <mat-option *ngFor="let o of ORACLE_EXPLORERS" [value]="o.value">{{ o.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</section>

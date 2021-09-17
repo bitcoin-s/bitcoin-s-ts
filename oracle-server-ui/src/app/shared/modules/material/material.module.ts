@@ -9,8 +9,9 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
-import { MatNativeDateModule } from '@angular/material/core'
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core'
 import { MatRadioModule } from '@angular/material/radio'
+import { MatSelectModule } from '@angular/material/select'
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatSortModule } from '@angular/material/sort'
@@ -27,6 +28,8 @@ const materialModules = [
   MatIconModule,
   MatInputModule,
   MatNativeDateModule,
+  MatOptionModule,
+  MatSelectModule,
   MatSidenavModule,
   MatSnackBarModule,
   MatSortModule,

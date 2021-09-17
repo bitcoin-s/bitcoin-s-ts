@@ -1,7 +1,7 @@
 <section class="event-detail-section">
   <div class="section-header">
     <h2 translate>eventDetail.heading</h2>
-    <button mat-icon-button (click)="onClose()"><mat-icon>close</mat-icon></button>
+    <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
   </div>
   
   <form class="form-container">
@@ -9,6 +9,10 @@
       <mat-label translate>createEvent.name</mat-label>
       <input matInput name="eventName" type="text" [(ngModel)]="event.eventName" readonly>
     </mat-form-field>
+    <ng-container>
+      <br>
+      <button type="button" (click)="onSendToOracleExplorer()" translate>oracleExplorer.sendTo</button>
+    </ng-container>
     <ng-container *ngIf="!event.signedOutcome">
       <br>
       <ng-container *ngIf="isEnum()">
@@ -24,7 +28,7 @@
           <mat-label translate>outcome</mat-label>
           <input matInput name="signDigits" type="number" [(ngModel)]="signDigitsInput">
         </mat-form-field>
-        <button type="button" (click)="onSignDigits()" translate>oracleOperations.signdigits</button>  
+        <button type="button" (click)="onSignDigits()" translate>oracleOperations.signdigits</button>
       </ng-container>
     </ng-container>
   </form>

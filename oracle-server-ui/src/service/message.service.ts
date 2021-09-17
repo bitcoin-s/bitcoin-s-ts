@@ -1,17 +1,18 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { catchError, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+import { TranslateService } from '@ngx-translate/core'
+import { tap } from 'rxjs/operators'
 
-import { environment } from "src/environments/environment";
+import { environment } from 'src/environments/environment'
 
-import { OracleServerMessage } from "~type/oracle-server-message";
-import { MessageType } from "~type/oracle-server-types";
-import { SuccessType } from "~type/proxy-server-types";
+import { OracleServerMessage } from '~type/oracle-server-message'
+import { MessageType } from '~type/oracle-server-types'
+import { SuccessType } from '~type/proxy-server-types'
 
-import { OracleResponse } from "~util/message-util";
+import { OracleResponse } from '~util/message-util'
 
 
+/** Service that communicates with underlying oracleServer instance through oracle-server-ui-proxy */
 @Injectable({ providedIn: 'root' })
 export class MessageService {
 
@@ -19,10 +20,9 @@ export class MessageService {
   lastMessageType: MessageType|undefined = undefined
   lastMessageResults: string|undefined = undefined
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private translate: TranslateService) { }
 
-  }
-
+  /** Serializes a OracleServerMessage for sending to oracleServer */
   sendMessage(m: OracleServerMessage) {
     let obs = this.sendServerMessage(m).pipe(tap(result => {
       this.lastMessageType = m.method
@@ -35,7 +35,7 @@ export class MessageService {
       } else if (result.error) {
         this.lastMessageResults = result.error
       } else {
-        this.lastMessageResults = 'Result was empty'
+        this.lastMessageResults = this.translate.instant('resultWasEmpty')
       }
     }))
 
@@ -43,19 +43,17 @@ export class MessageService {
   }
 
   private sendServerMessage(message: OracleServerMessage) {
-    const url = environment.apiRoot
+    const url = environment.oracleServerApi
     return this.http.post<OracleResponse<any>>(url, message)
   }
 
+  // Proxy server calls
+
   heartbeat() {
-    return this.http.get<SuccessType>('heartbeat')
+    return this.http.get<SuccessType>(environment.proxyApi + '/heartbeat')
   }
 
   oracleHeartbeat() {
-    return this.http.get<SuccessType>('oracleHeartbeat')
+    return this.http.get<SuccessType>(environment.proxyApi + '/oracleHeartbeat')
   }
-
-  // private errorLogger(error: any, caught: Observable<OracleResponse>) {
-  //   console.error('MessageService error:', error)
-  // }
 }

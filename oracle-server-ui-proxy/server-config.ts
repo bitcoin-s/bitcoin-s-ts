@@ -3,7 +3,12 @@ export class ServerConfig {
 	port: number
 	stopOnError: boolean = false
 	useHTTPS: boolean = false
-	apiRoot: string   // prefix on local endpoint paths like '/api/v0'
-	oracleUrl: string // oracle endpoint like 'http://host:port/'
+	apiRoot: string   // prefix on local forwarding endpoint paths like '/api/v0'
+	proxyRoot: string // prefix on local paths like '/proxy'
+	oracleExplorerRoot: string // prefix on local paths like '/oracleexplorer'
+	oracleServerUrl: string // oracle server endpoint like 'http://host:port/'
+	oracleExplorerHost: string // oracle explorer host like 'test.oracle.suredbits.com'
+	blockstreamRoot: string // prefix on local paths like '/blockstream'
+	blockstreamUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'
 	uiPath: string    // path to UI from local project root
 }

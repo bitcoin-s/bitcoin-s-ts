@@ -1,7 +1,7 @@
 {
   "/": {
-    "target": "http://localhost:9998/",
+    "target": "http://localhost:3001/",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": false
   }
 }

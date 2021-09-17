@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { MatDrawer } from '@angular/material/sidenav'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { Title } from '@angular/platform-browser'
+import { TranslateService } from '@ngx-translate/core'
 
-import { MessageService } from '~service/message.service';
-import { OracleEvent } from '~type/oracle-server-types';
-import { NewEventComponent } from './new-event/new-event.component';
+import { MessageService } from '~service/message.service'
+import { OracleEvent } from '~type/oracle-server-types'
+
+import { NewEventComponent } from './new-event/new-event.component'
 
 
 @Component({
@@ -20,19 +22,21 @@ export class AppComponent implements OnInit {
 
   @ViewChild('newEvent') newEvent: NewEventComponent
 
-  showEvent = false
-  showEventDetail = false
-
+  // Left side
   showNewEvent = false
+  // Right side
+  showConfiguration = false
+  showEventDetail = false
   showSignMessage = false
 
   detailEvent: OracleEvent|undefined
 
-  constructor(private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar) {
+  constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
+    this.titleService.setTitle(this.translate.instant('title'))
     this.messageService.oracleHeartbeat().subscribe(result => {
       if (result) {
         const oracleRunning = result.success
@@ -46,12 +50,14 @@ export class AppComponent implements OnInit {
 
   private hideLeftDrawerItems() {
     this.showNewEvent = false
-    this.showSignMessage = false
   }
 
   private hideRightDrawerItems() {
+    this.showConfiguration = false
     this.showEventDetail = false
-    this.showEvent = false
+    this.showSignMessage = false
+
+    this.detailEvent = undefined
   }
 
   onShowCreateEvent() {
@@ -64,21 +70,17 @@ export class AppComponent implements OnInit {
     this.hideLeftDrawerItems()
     this.showNewEvent = true
     this.leftDrawer.open()
-    // TODO : Would be nice to reset state and focus Name field each open
   }
 
   onShowSignMessage() {
     console.debug('onShowSignMessage()')
-    this.hideLeftDrawerItems()
-    this.showSignMessage = true
-    this.leftDrawer.open()
-  }
-
-  onShowEventDrawer() {
-    console.debug('onShowEventDrawer()')
+    if (this.showSignMessage) {
+      this.closeRightDrawer()
+      return;
+    }
     this.hideRightDrawerItems()
-    this.showEvent = true
-    this.rightDrawer.toggle()
+    this.showSignMessage = true
+    this.rightDrawer.open()
   }
 
   onShowEventDetail(event: OracleEvent) {
@@ -95,15 +97,32 @@ export class AppComponent implements OnInit {
     }
   }
 
+  onShowConfiguration() {
+    console.debug('onShowConfiguration()', this.showConfiguration)
+    if (this.showConfiguration) {
+      this.closeRightDrawer()
+      return;
+    }
+    this.hideRightDrawerItems()
+    this.showConfiguration = true
+    this.rightDrawer.open()
+  }
+
   closeLeftDrawer() {
     console.debug('closeLeftDrawer()')
     this.leftDrawer.close()
+    this.hideLeftDrawerItems()
   }
 
   closeRightDrawer() {
     console.debug('closeRightDrawer()')
     this.rightDrawer.close()
-    this.detailEvent = undefined
+    this.hideRightDrawerItems()
+  }
+
+  onBackdropClick(event: any) {
+    console.debug('onBackdropClick()')
+    this.hideRightDrawerItems()
   }
 
 }

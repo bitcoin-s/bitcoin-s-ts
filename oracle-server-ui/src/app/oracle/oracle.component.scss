@@ -33,7 +33,7 @@
       flex-direction: column;
       justify-content: center;
 
-      margin: 0 1rem;
+      margin: 1rem 1rem 0 1rem;
     }
   }
 
@@ -47,10 +47,29 @@
     .spacer {
       width: 2rem;
     }
+
+    button {
+      span {
+        margin-left: 0.4rem;
+      }
+      @include lt-md {
+        .button-label {
+          display: none;
+        }
+      }
+    }
   }
 
-  .debug-button-group {
-    padding-bottom: 1rem;
+  .debug-buttons {
+    text-align: center;
+
+    .debug-label {
+      
+    }
+
+    .debug-button-group {
+      margin-bottom: 1rem;
+    }
   }
   
   .table-container {
@@ -87,9 +106,22 @@
         }
       }
 
+      .mat-column-announcement {
+        text-align: center;
+        .outcome-label {
+          margin-left: 0.25rem;
+          vertical-align: super;
+        }
+      }
+
       .mat-column-attestations {
         max-width: 200px;
       }
+
+      .icon-inactive {
+        opacity: 0.25;
+      }
+
       // Hide Outcomes and Attestations on narrow screens
       @include lt-md {
         .mat-column-outcomes {
@@ -97,7 +129,7 @@
         }
       }
       @include lt-lg {
-        .mat-column-attestations {
+        .mat-column-maturationTime {
           display: none;
         }
       }

@@ -1,20 +1,23 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { APP_INITIALIZER, NgModule } from '@angular/core'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserModule } from '@angular/platform-browser'
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 
-import { MaterialModule } from './shared/modules/material/material.module';
+import { MaterialModule } from './shared/modules/material/material.module'
 
-import { AppComponent } from './app.component';
-import { OracleComponent } from './oracle/oracle.component';
-import { NewEventComponent } from './new-event/new-event.component';
-import { MoreInfoComponent } from './component/more-info/more-info.component';
-import { EventDetailComponent } from './event-detail/event-detail.component';
-import { LastResultDetailComponent } from './last-result-detail/last-result-detail.component';
-import { SignMessageComponent } from './sign-message/sign-message.component';
+import { AppComponent } from './app.component'
+import { OracleComponent } from './oracle/oracle.component'
+import { NewEventComponent } from './new-event/new-event.component'
+import { MoreInfoComponent } from './component/more-info/more-info.component'
+import { EventDetailComponent } from './event-detail/event-detail.component'
+import { LastResultDetailComponent } from './last-result-detail/last-result-detail.component'
+import { ConfigurationComponent } from './configuration/configuration.component'
+import { SignMessageComponent } from './sign-message/sign-message.component'
+
+import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -37,7 +40,10 @@ export function appInitializerFactory(translate: TranslateService) {
     MoreInfoComponent,
     EventDetailComponent,
     LastResultDetailComponent,
-    SignMessageComponent
+    SignMessageComponent,
+
+    ConfirmationDialogComponent,
+    ConfigurationComponent,
   ],
   imports: [
     BrowserModule,

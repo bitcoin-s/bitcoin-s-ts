@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MessageService } from '~service/message.service';
+import { OracleExplorerService } from '~service/oracle-explorer.service';
 
 import { MessageType, OracleEvent } from '~type/oracle-server-types';
 import { getMessageBody } from '~util/message-util';
@@ -28,7 +29,7 @@ export class EventDetailComponent implements OnInit {
     this.signatures = ''
   }
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
 
   ngOnInit(): void { }
 
@@ -38,6 +39,13 @@ export class EventDetailComponent implements OnInit {
   }
   isNotEnum() {
     return Array.isArray(this.event.outcomes[0])
+  }
+
+  onSendToOracleExplorer() {
+    console.debug('onSendToOracleExplorer()')
+    this.oracleExplorerService.createAnnouncement(this.event).subscribe(result => {
+      console.warn('createAnnouncement()', result)
+    })
   }
 
   onSignEvent() {

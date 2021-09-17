@@ -1,9 +1,6 @@
 {
-  "welcomeHeader": "Welcome to Oracle Server UI",
-  "oracleConfig": "Oracle Config",
-  "host": "Host",
-  "port": "Port",
-
+  "title": "Krystal Bull",
+  
   "eventName": "Event Name",
   "outcome": "Outcome",
   "message": "Message",
@@ -12,8 +9,10 @@
   "events": "Events",
   "type": "Type",
   "create": "Create",
-
+  "attestation": "Attestation",
+  
   "result": "Result",
+  "resultWasEmpty": "Result was Empty",
 
   "oracleOperations": {
     "getpublickey": "Get Public Key",
@@ -29,7 +28,8 @@
     "signmessage": "Sign Message",
 
     "heartbeat": "Oracle Heartbeat",
-    "getallEvents": "Get All Events"
+    "getAllEvents": "Get All Events",
+    "refreshEvents": "Refresh Events"
   },
 
   "oracleEvent": {
@@ -38,14 +38,51 @@
   },
 
   "oracle": {
+    "heading": "Oracle",
     "name": "Oracle Name",
     "publicKey": "Public Key",
     "stakingAddress": "Staking Address",
     "stakedAmount": "Staked Amount"
   },
 
+  "oracleExplorerOperations": {
+    "listAnnouncements": "List Announcements",
+    "getAnnouncement": "Get Announcement",
+    "createAnnouncement": "Create Announcement",
+    "createAttestations": "Create Attestations",
+    "getOracleName": "Get Oracle Name",
+
+    "getLocalEventAnnouncements": "Get Local Event Announcements"
+  },
+
   "signMessage": {
-    "header": "Sign Message"
+    "heading": "Sign Message"
+  },
+
+  "configuration": {
+    "heading": "Configuration"
+  },
+  
+  "oracleExplorer": {
+    "heading": "Oracle Explorer",
+    "sendTo": "Send to Oracle Explorer",
+
+    "announceTooltip": ""
+  },
+
+  "dialog": {
+    "confirmOracleName": {
+      "title": "Confirm Oracle Name",
+      "content": "Are you sure you want to set your Oracle Name to '{{oracleName}}'? Once used it cannot be changed.",
+      "action": "Set Oracle Name"
+    }
+  },
+
+  "eventTable": {
+    "announced": "Announced",
+    "announcementBroadcast": "Announcement Broadcast",
+    "broadcastAnnouncement": "Broadcast Announcement to Oracle Explorer",
+    "maturationDate": "Maturation Date"
   },
 
   "eventType": {
@@ -58,8 +95,11 @@
     "heading": "Create Event",
 
     "name": "Name",
+    "namePlaceholder": "Unique Event Name",
     "maturationTime": "Maturation Time",
+    "maturationTimePlaceholder": "MM/DD/YYYY",
     "outcomes": "Outcomes",
+    "outcomesPlaceholder": "Outcome1,Outcome2",
 
     "minvalue": "Min Value",
     "maxvalue": "Max Value",
@@ -104,6 +144,7 @@
   },
 
   "action": {
+    "cancel": "Cancel",
     "dismiss": "Dismiss",
     "sign": "Sign"
   }
