@@ -64,7 +64,7 @@
         <mat-label class="form-label" translate>createEvent.base</mat-label>
         <input matInput formControlName="base" type="text">
         <app-more-info matSuffix tooltip="createEventDescription.base"></app-more-info>
-        <mat-error *ngIf="f.precision.errors?.nonPositive">
+        <mat-error *ngIf="f.base.errors?.nonPositive">
           {{ 'createEventErrors.nonPositive' | translate }}
         </mat-error>  
       </mat-form-field>
@@ -72,7 +72,7 @@
         <mat-label translate>createEvent.numdigits</mat-label>
         <input matInput formControlName="numdigits" type="number">
         <app-more-info matSuffix tooltip="createEventDescription.numdigits"></app-more-info>
-        <mat-error *ngIf="f.precision.errors?.nonPositive">
+        <mat-error *ngIf="f.numdigits.errors?.nonPositive">
           {{ 'createEventErrors.nonPositive' | translate }}
         </mat-error>  
       </mat-form-field>
@@ -108,7 +108,11 @@
     </ng-container>
     -->
     
-    <button type="button" (click)="onCreateEvent()" [disabled]="form.invalid" translate>create</button>
+    <button type="button" (click)="onCreateEvent()" [disabled]="!oracleName || form.invalid" translate>create</button>
   </form>
   
+  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createEvent.error.oracleName">
+    <span translate>createEvent.error.oracleName</span>
+  </app-alert>
+
 </section>

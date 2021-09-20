@@ -94,6 +94,10 @@
   "createEvent": {
     "heading": "Create Event",
 
+    "error": {
+      "oracleName": "An Oracle Name must be set before creating events"
+    },
+
     "name": "Name",
     "namePlaceholder": "Unique Event Name",
     "maturationTime": "Maturation Time",

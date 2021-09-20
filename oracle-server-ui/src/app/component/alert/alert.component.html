@@ -1,0 +1,3 @@
+<div [ngClass]="{ 'alert': true, 'alert-danger':  type === AlertType.error, 'alert-warn':  type === AlertType.warn, 'alert-info': type === AlertType.info, 'alert-success': type === AlertType.success }">
+  {{ message | translate }}
+</div>

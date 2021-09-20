@@ -90,12 +90,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   private getOracleName(publicKey: string) {
     this.oracleExplorerService.getLocalOracleName(publicKey).subscribe(result => {
       console.debug('getOracleName()', result)
-      if (result) {
-        this.oracleName = result.oracleName
-        this.oracleNameReadOnly = true
-      } else {
-        this.oracleNameReadOnly = false
-      }
     })
   }
 

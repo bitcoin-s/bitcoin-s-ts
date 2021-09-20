@@ -17,7 +17,8 @@ import { LastResultDetailComponent } from './last-result-detail/last-result-deta
 import { ConfigurationComponent } from './configuration/configuration.component'
 import { SignMessageComponent } from './sign-message/sign-message.component'
 
-import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
+import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component';
+import { AlertComponent } from './component/alert/alert.component'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -36,14 +37,15 @@ export function appInitializerFactory(translate: TranslateService) {
   declarations: [
     AppComponent,
     OracleComponent,
-    NewEventComponent,
-    MoreInfoComponent,
     EventDetailComponent,
+    NewEventComponent,
+    AlertComponent,
+    MoreInfoComponent,
     LastResultDetailComponent,
-    SignMessageComponent,
-
+    
     ConfirmationDialogComponent,
     ConfigurationComponent,
+    SignMessageComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,11 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms'
 import { MatInput } from '@angular/material/input'
 
+import { AlertType } from '~app/component/alert/alert.component'
+
 import { MessageService } from '~service/message.service'
+import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { EventType } from '~type/client-types'
 import { OracleServerMessage } from '~type/oracle-server-message'
 import { MessageType } from '~type/oracle-server-types'
@@ -82,6 +85,7 @@ export class NewEventComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
+  public AlertType = AlertType
   public EventType = EventType
 
   form: FormGroup
@@ -131,7 +135,9 @@ export class NewEventComponent implements OnInit {
     })
   }
 
-  constructor(private formBuilder: FormBuilder, private messageService: MessageService) { }
+  oracleName: string
+
+  constructor(private formBuilder: FormBuilder, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -151,6 +157,11 @@ export class NewEventComponent implements OnInit {
       // numdigits: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
       //   positiveNumberValidator())]],
       // signed: [false],
+    })
+
+    this.oracleName = this.oracleExplorerService.oracleName.value
+    this.oracleExplorerService.oracleName.subscribe(oracleName => {
+      this.oracleName = oracleName
     })
   }
 
