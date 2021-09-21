@@ -5,6 +5,7 @@
   </div>
   
   <form class="form-container" [formGroup]="form">
+    <fieldset [disabled]="loading || eventCreated">
     <!-- May want to move this outside the form -->
     <mat-radio-group formControlName="eventType" [(ngModel)]="eventType" (ngModelChange)="wipeInvalidFormStates()">
       <mat-radio-button *ngFor="let e of eventTypes"
@@ -109,10 +110,11 @@
     -->
     
     <button type="button" (click)="onCreateEvent()" [disabled]="!oracleName || form.invalid" translate>create</button>
+    </fieldset>
   </form>
   
-  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createEvent.error.oracleName">
-    <span translate>createEvent.error.oracleName</span>
-  </app-alert>
+  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createEvent.error.oracleName" icon="warning_amber"></app-alert>
+
+  <app-alert *ngIf="eventCreated" [type]="AlertType.success" message="createEvent.success.created" icon="check_circle"></app-alert>
 
 </section>

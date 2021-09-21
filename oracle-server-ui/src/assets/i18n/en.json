@@ -81,7 +81,9 @@
   "eventTable": {
     "announced": "Announced",
     "announcementBroadcast": "Announcement Broadcast",
+    "viewOnOracleExplorer": "View on Oracle Explorer",
     "broadcastAnnouncement": "Broadcast Announcement to Oracle Explorer",
+    "broadcastOutcome": "Broadcast Outcome to Oracle Explorer",
     "maturationDate": "Maturation Date"
   },
 
@@ -96,6 +98,10 @@
 
     "error": {
       "oracleName": "An Oracle Name must be set before creating events"
+    },
+
+    "success": {
+      "created": "Event Created Successfully"
     },
 
     "name": "Name",

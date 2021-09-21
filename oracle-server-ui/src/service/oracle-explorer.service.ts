@@ -91,14 +91,16 @@ export class OracleExplorerService {
    * @param announcementHash 
    * @param attestations 
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#create-an-events-attestation
-   * @returns 
+   * @returns OracleAnnouncementsResponse
    */
-  createAttestations(announcementHash: string, attestations: any) {
-    // TODO : Test and finish
+  createAttestations(event: OracleEvent) {
+    if (!this.oracleName.value) {
+      throw(Error('Oracle Name must be set to create attestations'))
+    }
+
     const body = new HttpParams()
-      .set('attestment', attestations)
-    
-    return this.http.post<OracleNameResponse>(this.url + `/announcements/${announcementHash}/attestations`, body)
+      .set('attestations', event.attestations)
+    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body)
   }
 
   getOracleName(pubkey: string) {

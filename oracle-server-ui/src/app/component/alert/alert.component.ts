@@ -18,6 +18,7 @@ export class AlertComponent implements OnInit {
   @Input() type: AlertType
   @Input() message: string
   @Input() params: any
+  @Input() icon: string
 
   public AlertType = AlertType
 

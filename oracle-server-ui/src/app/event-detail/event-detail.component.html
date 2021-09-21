@@ -9,12 +9,18 @@
       <mat-label translate>createEvent.name</mat-label>
       <input matInput name="eventName" type="text" [(ngModel)]="event.eventName" readonly>
     </mat-form-field>
-    <ng-container>
+
+    <!-- <ng-container>
       <br>
       <button type="button" (click)="onSendToOracleExplorer()" translate>oracleExplorer.sendTo</button>
-    </ng-container>
+    </ng-container> -->
+
+    <mat-form-field *ngIf="event.signedOutcome">
+      <mat-label translate>outcome</mat-label>
+      <input matInput name="signedOutcome" type="text" [(ngModel)]="event.signedOutcome" readonly>
+    </mat-form-field>
+
     <ng-container *ngIf="!event.signedOutcome">
-      <br>
       <ng-container *ngIf="isEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
@@ -33,7 +39,7 @@
     </ng-container>
   </form>
 
-  <ng-container *ngIf="event.signedOutcome">
+  <!-- <ng-container *ngIf="event.signedOutcome">
     <br>
     <button type="button" (click)="onGetSignatures()" translate>oracleOperations.getsignatures</button>
   </ng-container>
@@ -42,7 +48,7 @@
     <br>
     <label translate>eventDetail.signatures</label>
     <textarea class="signatures">{{ signatures | json }}</textarea>
-  </ng-container>
+  </ng-container> -->
   
   <br>
   <label translate>eventDetail.eventJSON</label>

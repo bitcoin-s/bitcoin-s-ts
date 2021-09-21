@@ -3,7 +3,15 @@
   padding: 1.5rem;
   color: white;
   margin: 1rem;
-  text-align: center;
+  // text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    margin-right: 0.5rem;
+  }
 }
 
 .alert-danger {

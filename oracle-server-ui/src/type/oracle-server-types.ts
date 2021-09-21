@@ -18,7 +18,7 @@ export const enum MessageType {
 export interface OracleEvent {
   announcementSignature: string
   announcementTLV: string
-  attestations: string[]
+  attestations: string
   eventDescriptorTLV: string
   eventName: string
   eventTLV: string

@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmati
 import { BlockstreamService } from '~service/blockstream-service'
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
 import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 import { MessageType, OracleEvent } from '~type/oracle-server-types'
 import { getMessageBody } from '~util/message-util'
@@ -43,18 +44,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
   stakingAddress = ''
   stakedAmount = ''
 
-  // Server state
-  eventNames: string[] = []
-  events: { [eventName: string]: OracleEvent } = {}
-  announcements: { [eventName: string]: OracleAnnouncementsResponse } = {} // should this index on sha256 id instead?
-  flatEvents: OracleEvent[] = []
-
   // Grid config
-  dataSource = new MatTableDataSource(this.flatEvents)
+  dataSource = new MatTableDataSource(<OracleEvent[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
 
-  constructor(public dialog: MatDialog, private messageService: MessageService, public oracleExplorerService: OracleExplorerService, 
-    private blockstreamService: BlockstreamService) { }
+  constructor(public dialog: MatDialog, public oracleState: OracleStateService, private messageService: MessageService, 
+    public oracleExplorerService: OracleExplorerService, private blockstreamService: BlockstreamService) { }
 
   ngOnInit() {
     this.oracleExplorerService.oracleName.subscribe(name => {
@@ -63,9 +58,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
-    this.oracleExplorerService.oracleExplorer.subscribe(oe => {
-      this.getLocalEventAnnouncements() // Check for announcements on new Explorer
-    })
   }
 
   ngAfterViewInit() {
@@ -73,7 +65,13 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
     this.onGetPublicKey()
     this.onGetStakingAddress()
-    this.getAllEvents()
+
+    this.oracleState.flatEvents.subscribe(_ => {
+      this.dataSource.data = this.oracleState.flatEvents.value
+      this.table.renderRows()
+    })
+
+    this.oracleState.getAllEvents().subscribe()
   }
 
   /** Oracle Explorer handlers */
@@ -129,80 +127,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
         this.stakingAddress = result.result
         this.getStakingBalance(this.stakingAddress)
       }
-    })
-  }
-
-  onListEvents() {
-    console.debug('onListEvents')
-    const m = getMessageBody(MessageType.listevents)
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        this.eventNames = result.result
-      }
-    })
-  }
-
-  private onGetEvent(eventName: string) {
-    console.debug('onGetEvent', eventName)
-    const m = getMessageBody(MessageType.getevent, [eventName])
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        const e = <OracleEvent>result.result
-        this.addEventToState(e)
-        console.warn('flatEvents:', this.flatEvents)
-        this.dataSource.data = this.flatEvents
-        this.table.renderRows()
-
-        // Could auto-check for announcement here
-      }
-    })
-  }
-
-  private addEventToState(e: OracleEvent) {
-    if (e) {
-      this.events[e.eventName] = e
-      this.flatEvents.push(e)
-    }
-  }
-
-  // listevents, then get each event from the oracleServer
-  getAllEvents() {
-    console.debug('getAllEvents()')
-    const m = getMessageBody(MessageType.listevents)
-    this.flatEvents.length = 0
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        this.eventNames = result.result
-        const events = []
-        for (const e of this.eventNames) {
-          events.push(this.messageService.sendMessage(getMessageBody(MessageType.getevent, [e])))
-        }
-        forkJoin(events).subscribe((results) => {
-          if (results) {
-            for (const e of results) {
-              this.addEventToState(<OracleEvent>e.result)
-            }
-          }
-          this.dataSource.data = this.flatEvents
-          this.table.renderRows()
-          this.getLocalEventAnnouncements()
-        })
-      }
-    })
-  }
-
-  getLocalEventAnnouncements() {
-    console.debug('getLocalEventAnnouncements()', this.flatEvents)
-    for (const e of this.flatEvents) {
-      this.getAnnouncement(e)
-    }
-  }
-
-  // Check if the event is published to the oracle explorer
-  private getAnnouncement(e: OracleEvent) {
-    this.oracleExplorerService.getAnnouncement(e.announcementTLVsha256).subscribe(result => {
-      console.debug('getAnnouncement()', e.announcementTLVsha256, result)
-      this.announcements[e.eventName] = result // will be null for no result
     })
   }
 
@@ -285,18 +209,34 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onRowClick(event: OracleEvent) {
     console.debug('onRowClick()', event)
     this.showEventDetail.next(event)
-    if (!this.announcements[event.eventName]) {
-      this.getAnnouncement(event)
-    }
   }
 
   onAnnouncementClick(event: OracleEvent) {
     console.debug('onAnnouncementClick()', event)
-    if (!this.announcements[event.eventName]) {
+    if (!this.oracleState.announcements.value[event.eventName]) {
       this.oracleExplorerService.createAnnouncement(event).subscribe(result => {
-        console.warn('announcement:', result)
+        if (result) {
+          this.oracleState.getAnnouncement(event).subscribe() // Update oracleState
+        }
       })
+    } else {
+      console.warn('Oracle Explorer announcement already exists for', event)
     }
+  }
+
+  onAnnouncementLinkClick(event: OracleEvent) {
+    console.debug('onAnnouncementLinkClick()', event)
+    const url = `https://${this.oracleExplorerService.oracleExplorer.value.host}/announcement/${event.announcementTLVsha256}`
+    window.open(url, '_blank')
+  }
+
+  onAnnounceOutcome(event: OracleEvent) {
+    console.debug('onAnnounceOutcome()', event)
+    this.oracleExplorerService.createAttestations(event).subscribe(result => {
+      if (result) {
+        this.oracleState.getAnnouncement(event).subscribe() // Update oracleState
+      }
+    })
   }
 
 }

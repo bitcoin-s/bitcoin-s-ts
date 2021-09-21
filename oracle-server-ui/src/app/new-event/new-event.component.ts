@@ -6,6 +6,7 @@ import { AlertType } from '~app/component/alert/alert.component'
 
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
 import { EventType } from '~type/client-types'
 import { OracleServerMessage } from '~type/oracle-server-message'
 import { MessageType } from '~type/oracle-server-types'
@@ -94,6 +95,9 @@ export class NewEventComponent implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.form.controls }
 
+  loading = false // waiting for the server
+  eventCreated = false // a new event has been created
+
   eventTypeOptions = [
     { name: EventType.ENUM, ID: EventType.ENUM, checked: true },
     { name: EventType.NUMERIC, ID: EventType.NUMERIC, checked: false },
@@ -137,7 +141,7 @@ export class NewEventComponent implements OnInit {
 
   oracleName: string
 
-  constructor(private formBuilder: FormBuilder, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
+  constructor(private formBuilder: FormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -226,7 +230,19 @@ export class NewEventComponent implements OnInit {
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)
-      this.messageService.sendMessage(m).subscribe()
+      this.messageService.sendMessage(m).subscribe(result => {
+        if (result) {
+          this.eventCreated = true
+        }
+        this.loading = false
+        // Reload events
+        this.oracleState.getAllEvents().subscribe()
+        // TODO : close this panel, show event detail ?
+      }, error => {
+        console.error('error creating event')
+        this.loading = false
+        // TODO : Show error dialog? Probably don't have details
+      })
     }
   }
 

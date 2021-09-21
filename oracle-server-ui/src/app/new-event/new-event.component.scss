@@ -4,11 +4,17 @@
   min-width: 350px;
 
   .form-container {
-    display: flex;
-    flex-direction: column;
+    fieldset {
+      display: flex;
+      flex-direction: column;
+      // nuke default fieldset styling
+      margin: unset;
+      padding: unset;
+      border: unset;
+    }
   }
   
-  .form-container > * {
+  .form-container > fieldset > * {
     width: 100%;
   }
   

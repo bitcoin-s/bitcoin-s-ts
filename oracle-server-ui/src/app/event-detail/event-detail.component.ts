@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ThisReceiver } from '@angular/compiler';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MessageService } from '~service/message.service';
 import { OracleExplorerService } from '~service/oracle-explorer.service';
@@ -41,17 +43,41 @@ export class EventDetailComponent implements OnInit {
     return Array.isArray(this.event.outcomes[0])
   }
 
-  onSendToOracleExplorer() {
-    console.debug('onSendToOracleExplorer()')
-    this.oracleExplorerService.createAnnouncement(this.event).subscribe(result => {
-      console.warn('createAnnouncement()', result)
-    })
-  }
+  // onSendToOracleExplorer() {
+  //   console.debug('onSendToOracleExplorer()')
+  //   this.oracleExplorerService.createAnnouncement(this.event).subscribe(result => {
+  //     console.debug(' createAnnouncement', result)
+  //   }, (error: HttpErrorResponse) => {
+  //     console.error(' createAnnouncement error', error)
+  //     if (error.status === 500) {
+  //       // Already exists
+  //     }
+  //   })
+  //   // Attestations
+  //   if (this.event.attestations) {
+  //     this.oracleExplorerService.createAttestations(this.event).subscribe(result => {
+  //       console.warn(' createAttestations', result)
+  //     }, (error: HttpErrorResponse) => {
+  //       console.error(' createAttestations error', error)
+  //       if (error.status === 500) {
+  //         // Already exists
+  //       }
+  //     })
+  //   }
+  // }
 
   onSignEvent() {
     console.debug('onSignEvent', this.event.eventName, this.signEventInput)
     const m = getMessageBody(MessageType.signevent, [this.event.eventName, this.signEventInput])
-    this.messageService.sendMessage(m).subscribe()
+    this.messageService.sendMessage(m).subscribe(result => {
+      console.debug(' onSignEvent', result)
+      if (result.result) {
+        this.event.signedOutcome = this.signEventInput
+      }
+    }, error => {
+      console.error('error signing event')
+      // TODO : Error dialog
+    })
   }
   
   onSignDigits() {
