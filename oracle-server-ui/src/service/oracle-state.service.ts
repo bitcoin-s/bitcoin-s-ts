@@ -13,7 +13,7 @@ type OracleEventMap = { [eventName: string]: OracleEvent }
 type OracleAnnouncementMap = { [eventName: string]: OracleAnnouncementsResponse }
 
 @Injectable({ providedIn: 'root' })
-export class OracleStateService implements OnInit {
+export class OracleStateService {
 
   // Server state
   eventNames: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
@@ -32,10 +32,6 @@ export class OracleStateService implements OnInit {
   }
 
   constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
-
-  }
-  
-  ngOnInit() {
     this.oracleExplorerService.oracleExplorer.subscribe(oe => {
       this.getLocalEventAnnouncements().subscribe() // Check for announcements on new Explorer
     })
