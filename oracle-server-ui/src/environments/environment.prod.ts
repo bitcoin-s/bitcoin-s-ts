@@ -1,4 +1,7 @@
 export const environment = {
   production: true,
-  apiRoot: '/api/v0',
+  oracleServerApi: '/api/v0',
+  oracleExplorerApi: '/oracleexplorer',
+  blockstreamApi: '/blockstream',
+  proxyApi: '',
 };

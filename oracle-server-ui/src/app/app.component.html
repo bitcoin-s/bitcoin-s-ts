@@ -1,20 +1,24 @@
 <!-- TODO : Use mat-sidenav-container instead? -->
-<mat-drawer-container>
+<mat-drawer-container (backdropClick)="onBackdropClick($event)">
+
   <!-- Left Drawer -->
   <mat-drawer #leftDrawer mode="side">
     <app-new-event #newEvent *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
-    <app-sign-message *ngIf="showSignMessage" (close)="closeLeftDrawer()"></app-sign-message>
   </mat-drawer>
 
   <!-- Main Content -->
   <mat-drawer-content>
-    <app-oracle (showCreateEvent)="onShowCreateEvent()" (showEventDetail)="onShowEventDetail($event)" (showSignMessage)="onShowSignMessage()"></app-oracle>
+    <app-oracle (showCreateEvent)="onShowCreateEvent()" (showEventDetail)="onShowEventDetail($event)" 
+      (showSignMessage)="onShowSignMessage()" (showConfiguration)="onShowConfiguration()"></app-oracle>
   </mat-drawer-content>
 
   <!-- Right Drawer -->
-  <mat-drawer #rightDrawer mode="side" position="end">
+  <mat-drawer #rightDrawer [mode]="showEventDetail ? 'side' : 'over'" position="end">
     <app-event-detail *ngIf="showEventDetail && detailEvent" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
+    <app-configuration *ngIf="showConfiguration" (close)="closeRightDrawer()"></app-configuration>
+    <app-sign-message *ngIf="showSignMessage" (close)="closeRightDrawer()"></app-sign-message>
   </mat-drawer>
+
 </mat-drawer-container>
 
-<app-last-result-detail></app-last-result-detail>
+<!-- <app-last-result-detail></app-last-result-detail> -->

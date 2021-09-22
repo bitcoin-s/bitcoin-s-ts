@@ -3,6 +3,11 @@
 	"stopOnError": false,
 	"useHTTPS": false,
 	"apiRoot": "/api/v0",
-	"oracleUrl": "http://localhost:9998/",
+	"proxyRoot": "/proxy",
+	"oracleExplorerRoot": "/oracleexplorer",
+	"oracleServerUrl": "http://localhost:9998/",
+	"oracleExplorerHost": "test.oracle.suredbits.com",
+	"blockstreamRoot": "/blockstream",
+	"blockstreamUrl": "https://blockstream.info/api",
 	"uiPath": "../oracle-server-ui/dist/oracle-server-ui"
 }

@@ -23,7 +23,6 @@ export class MoreInfoComponent {
   @Input()
   set tooltip(value: string) {
     this._tooltip = this.translate.instant(value)
-    console.debug('set tooltip', value, this._tooltip)
   }
 
   constructor(private translate: TranslateService) { }

@@ -18,7 +18,7 @@ export const enum MessageType {
 export interface OracleEvent {
   announcementSignature: string
   announcementTLV: string
-  attestations: string[]
+  attestations: string
   eventDescriptorTLV: string
   eventName: string
   eventTLV: string
@@ -28,6 +28,10 @@ export interface OracleEvent {
   outcomes: string[] // enum, numeric: [["number"]]
   signedOutcome: string
   signingVersion: string
+
+  // ids
+  announcementTLVsha256: string
+  eventDescriptorTLVsha256: string
 }
 
 // Serverside message response

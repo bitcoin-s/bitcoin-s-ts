@@ -3,10 +3,11 @@
   <div class="oracle-header">
     <img class="bull-image" [src]="KrystalBullImages[bullIndex]" (click)="onImageClick()">
     <form class="oracle-form">
-      <mat-form-field>
-        <mat-label translate>oracle.name</mat-label>
-        <input matInput name="oracleName" type="text" [(ngModel)]="oracleName">
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>oracle.name</mat-label>
+          <input matInput name="oracleName" type="text" [(ngModel)]="oracleName" (blur)="onOracleName()" (keydown.Enter)="onOracleNameEnter($event)" [readonly]="oracleNameReadOnly">
+        </mat-form-field>
+        
       <mat-form-field>
         <mat-label translate>oracle.publicKey</mat-label>
         <input matInput name="publicKey" type="text" [(ngModel)]="publicKey" readonly="true">
@@ -22,24 +23,50 @@
     </form>
   </div>
 
+  <div class="debug-buttons" [hidden]="hideRawButtons">
+
+    <h4 class="debug-label" translate>oracle.heading</h4>
+    <nav class="debug-button-group">
+      <button type="button" (click)="onOracleHeartbeat()" translate>oracleOperations.heartbeat</button>
+      <!-- <button type="button" (click)="getAllEvents()" translate>oracleOperations.getAllEvents</button> -->
+  
+      <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
+      <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
+      <!-- <button type="button" (click)="onListEvents()" translate>oracleOperations.listevents</button> -->
+    </nav>
+  
+    <h4 class="debug-label" translate>oracleExplorer.heading</h4>
+    <nav class="debug-button-group">
+      <button type="button" (click)="listAnnouncements()" translate>oracleExplorerOperations.listAnnouncements</button>
+      <!-- <button type="button" (click)="getLocalEventAnnouncements()" translate>oracleExplorerOperations.getLocalEventAnnouncements</button> -->
+    </nav>
+  </div>
+
   <nav class="button-group">
-    <!-- <button type="button" (click)="onShowCreateEvent()" translate>createEvent.heading</button> -->
-    <button mat-stroked-button (click)="onShowCreateEvent()"><mat-icon>add_circle_outline</mat-icon></button>
-    <button mat-stroked-button (click)="getAllEvents()"><mat-icon>refresh</mat-icon></button>
+    <button mat-stroked-button (click)="onShowCreateEvent()">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span class="button-label" translate>createEvent.heading</span>
+    </button>
+    <button mat-stroked-button (click)="oracleState.getAllEvents().subscribe()">
+      <mat-icon>refresh</mat-icon>
+      <span class="button-label" translate>oracleOperations.refreshEvents</span>
+    </button>
     <div class="spacer"></div>
-    <button mat-stroked-button (click)="onShowSignMessage()"><mat-icon>drive_file_rename_outline</mat-icon></button>
-    <button mat-stroked-button (click)="onShowDebug()"><mat-icon>pest_control</mat-icon></button>
+    <button mat-stroked-button (click)="onShowSignMessage()">
+      <mat-icon>drive_file_rename_outline</mat-icon
+        ><span class="button-label" translate>signMessage.heading</span>
+    </button>
+    <div class="spacer"></div>
+    <button mat-stroked-button (click)="onShowConfiguration()">
+      <mat-icon>construction</mat-icon>
+      <span class="button-label" translate>configuration.heading</span>
+    </button>
+    <div class="spacer"></div>
+    <button mat-stroked-button (click)="onShowDebug()">
+      <mat-icon>pest_control</mat-icon>
+    </button>
   </nav>
-
-  <nav class="debug-button-group" [hidden]="hideRawButtons">
-    <button type="button" (click)="onOracleHeartbeat()">oracleOperations.heartbeat</button>
-    <button type="button" (click)="getAllEvents()">oracleOperations.getallEvents</button>
-
-    <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
-    <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
-    <button type="button" (click)="onListEvents()" translate>oracleOperations.listevents</button>
-  </nav>
- 
+  
   <div class="table-container">
     <!-- mat-elevation-z8 -->
     <table class="event-table mat-elevation-z8" mat-table #table matSort [dataSource]="dataSource">
@@ -47,17 +74,60 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'createEvent.name' | translate }}</th>
         <td mat-cell *matCellDef="let event">{{ event.eventName }}</td>
       </ng-container>
-      <ng-container matColumnDef="maturationTime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'createEvent.maturationTime' | translate }}</th>
-        <td mat-cell *matCellDef="let event">{{ event.maturationTime }}</td>
+      <ng-container matColumnDef="announcement">
+        <th mat-header-cell *matHeaderCellDef translate="eventTable.announced"></th>
+        <td mat-cell *matCellDef="let event">
+          <ng-container *ngIf="oracleName" [ngSwitch]="oracleState.announcements.value[event.eventName]">
+            <ng-container *ngSwitchCase="undefined"></ng-container>
+            <ng-container *ngSwitchCase="null">
+              <button mat-icon-button
+                matTooltip="{{'eventTable.broadcastAnnouncement' | translate}}" matTooltipPosition="right"
+                (click)="onAnnouncementClick(event); $event.stopPropagation()"
+              ><mat-icon class="material-icons-outlined">announcement</mat-icon>
+              </button>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <button mat-icon-button (click)="onAnnouncementLinkClick(event); $event.stopPropagation()">
+                <mat-icon class="material-icons-outlined icon-inactive"
+                  matTooltip="{{ 'eventTable.viewOnOracleExplorer' | translate }}"
+                  matTooltipPosition="right">link</mat-icon>
+              </button>
+            </ng-container>
+          </ng-container>
+        </td>
       </ng-container>
       <ng-container matColumnDef="outcomes">
         <th mat-header-cell *matHeaderCellDef translate="createEvent.outcomes"></th>
-        <td mat-cell *matCellDef="let event">{{ event.outcomes }}</td>
+        <td mat-cell *matCellDef="let event">
+          {{ formatOutcomes(event.outcomes) }}
+        </td>
       </ng-container>
-      <ng-container matColumnDef="attestations">
-        <th mat-header-cell *matHeaderCellDef translate="createEvent.attestations"></th>
-        <td mat-cell *matCellDef="let event">{{ event.attestations }}</td>
+      <ng-container matColumnDef="maturationTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'eventTable.maturationDate' | translate }}</th>
+        <td mat-cell *matCellDef="let event">{{ event.maturationTime | date }}</td>
+      </ng-container>
+      <ng-container matColumnDef="signedOutcome">
+        <th mat-header-cell *matHeaderCellDef translate="outcome"></th>
+        <td mat-cell *matCellDef="let event">
+          <ng-container *ngIf="event.signedOutcome">
+
+            <ng-container *ngIf="oracleName && oracleState.announcements.value[event.eventName]">
+              <ng-container *ngIf="oracleState.announcements.value[event.eventName]?.outcome; else announceOutcome">
+                <!-- TODO : Button only here to fix spacing, need to find magic -->
+                <button mat-icon-button (click)="onAnnouncementLinkClick(event); $event.stopPropagation()">
+                  <mat-icon class="material-icons-outlined icon-inactive" matTooltip="{{ 'eventTable.viewOnOracleExplorer' | translate }}">campaign</mat-icon>
+                </button>
+              </ng-container>
+              <ng-template #announceOutcome>
+                <button mat-icon-button (click)="onAnnounceOutcome(event); $event.stopPropagation()">
+                  <mat-icon class="material-icons-outlined" matTooltip="{{ 'eventTable.broadcastOutcome' | translate }}">campaign</mat-icon>
+                </button>
+              </ng-template>
+            </ng-container>
+
+            <span class="outcome-label">{{ event.signedOutcome }}</span>
+          </ng-container>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

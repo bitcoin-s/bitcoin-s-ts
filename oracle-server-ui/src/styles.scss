@@ -3,7 +3,8 @@
 @use '~@angular/material' as mat;
 
 // Include Material Icons
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
 
 // Set a theme
 
@@ -31,7 +32,7 @@
 // $my-palette: mat.$indigo-palette;
 
 
-// html, body { height: 100%; }
+html, body { height: 100%; }
 // body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 body { margin: 0; }
 
@@ -39,4 +40,8 @@ body { margin: 0; }
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.close-button {
+  align-self: center;
 }

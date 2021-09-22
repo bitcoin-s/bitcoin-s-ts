@@ -1,20 +1,24 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MessageService } from '~service/message.service';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms'
+import { MatInput } from '@angular/material/input'
 
-import { EventType } from '~type/client-types';
-import { OracleServerMessage } from '~type/oracle-server-message';
-import { MessageType } from '~type/oracle-server-types';
-import { getMessageBody } from '~util/message-util';
+import { AlertType } from '~app/component/alert/alert.component'
+
+import { MessageService } from '~service/message.service'
+import { OracleExplorerService } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
+import { EventType } from '~type/client-types'
+import { OracleServerMessage } from '~type/oracle-server-message'
+import { MessageType } from '~type/oracle-server-types'
+import { getMessageBody } from '~util/message-util'
 
 
 /** Validators */
 
-function validateValueAgainstRegex(isoDate: RegExp): ValidatorFn {
+function regexValidator(regex: RegExp): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const allowed = isoDate.test(control.value)
-    return allowed ? null : {regexInvalid: { value: control.value }}
+    const allowed = regex.test(control.value)
+    return allowed ? null : { regexInvalid: { value: control.value }}
   }
 }
 
@@ -78,10 +82,11 @@ function outcomeValidator(): ValidatorFn {
   templateUrl: './new-event.component.html',
   styleUrls: ['./new-event.component.scss']
 })
-export class NewEventComponent implements OnInit, AfterViewInit {
+export class NewEventComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
+  public AlertType = AlertType
   public EventType = EventType
 
   form: FormGroup
@@ -90,13 +95,16 @@ export class NewEventComponent implements OnInit, AfterViewInit {
   // convenience getter for easy access to form fields
   get f() { return this.form.controls }
 
+  loading = false // waiting for the server
+  eventCreated = false // a new event has been created
+
   eventTypeOptions = [
     { name: EventType.ENUM, ID: EventType.ENUM, checked: true },
     { name: EventType.NUMERIC, ID: EventType.NUMERIC, checked: false },
-    { name: EventType.DIGIT_DECOMP, ID: EventType.DIGIT_DECOMP, checked: false },
+    // { name: EventType.DIGIT_DECOMP, ID: EventType.DIGIT_DECOMP, checked: false },
   ]
 
-  eventTypes = [EventType.ENUM, EventType.NUMERIC, EventType.DIGIT_DECOMP]
+  eventTypes = [EventType.ENUM, EventType.NUMERIC/*, EventType.DIGIT_DECOMP*/]
   eventType = EventType.ENUM // for binding state
 
   // Values for testing event form state
@@ -125,13 +133,15 @@ export class NewEventComponent implements OnInit, AfterViewInit {
       maxValue: null,
       unit: null,
       precision: null,
-      numdigits: null,
-      base: null,
-      signed: false,
+      // numdigits: null,
+      // base: null,
+      // signed: false,
     })
   }
 
-  constructor(private formBuilder: FormBuilder, private messageService: MessageService) { }
+  oracleName: string
+
+  constructor(private formBuilder: FormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -143,19 +153,20 @@ export class NewEventComponent implements OnInit, AfterViewInit {
         Validators.required)]],
       maxValue: [null, [conditionalValidator(() => this.eventType === EventType.NUMERIC,
         Validators.required)]],
-      base: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
-        positiveNumberValidator())]],
-      numdigits: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
-        positiveNumberValidator())]],
       unit: [null], // not required by backend
       precision: [null, conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP || this.eventType === EventType.NUMERIC, 
         Validators.compose([nonNegativeNumberValidator(), Validators.required]))],
-      signed: [false],
+      // base: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
+      //   positiveNumberValidator())]],
+      // numdigits: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
+      //   positiveNumberValidator())]],
+      // signed: [false],
     })
-  }
 
-  ngAfterViewInit() {
-    console.debug('ngAfterViewInit()')
+    this.oracleName = this.oracleExplorerService.oracleName.value
+    this.oracleExplorerService.oracleName.subscribe(oracleName => {
+      this.oracleName = oracleName
+    })
   }
 
   reset() {
@@ -172,8 +183,8 @@ export class NewEventComponent implements OnInit, AfterViewInit {
     if (this.eventType === EventType.ENUM) {
       this.f['minValue'].setErrors(null)
       this.f['maxValue'].setErrors(null)
-      this.f['base'].setErrors(null)
-      this.f['numdigits'].setErrors(null)
+      // this.f['base'].setErrors(null)
+      // this.f['numdigits'].setErrors(null)
       this.f['precision'].setErrors(null)
 
       this.f['outcomes'].updateValueAndValidity()
@@ -183,13 +194,14 @@ export class NewEventComponent implements OnInit, AfterViewInit {
       this.f['minValue'].updateValueAndValidity()
       this.f['maxValue'].updateValueAndValidity()
       this.f['precision'].updateValueAndValidity()
-    } else if (EventType.DIGIT_DECOMP) {
-      this.f['outcomes'].setErrors(null)
+    } 
+    // else if (EventType.DIGIT_DECOMP) {
+    //   this.f['outcomes'].setErrors(null)
       
-      this.f['base'].updateValueAndValidity()
-      this.f['numdigits'].updateValueAndValidity()
-      this.f['precision'].updateValueAndValidity()
-    }
+    //   this.f['base'].updateValueAndValidity()
+    //   this.f['numdigits'].updateValueAndValidity()
+    //   this.f['precision'].updateValueAndValidity()
+    // }
   }
 
   onCreateEvent() {
@@ -203,22 +215,34 @@ export class NewEventComponent implements OnInit, AfterViewInit {
         const outcomes = <string[]>v.outcomes.split(',')
         outcomes.forEach(o => o.trim())
         m = getMessageBody(MessageType.createenumevent, [v.eventName, v.maturationTime.toISOString(), outcomes])
-        break;
+        break
       case EventType.NUMERIC:
         m = getMessageBody(MessageType.createnumericevent, [v.eventName, v.maturationTime.toISOString(), 
           v.minValue, v.maxValue, v.unit, v.precision])
-        break;
-      case EventType.DIGIT_DECOMP:
-        const epochSeconds = Math.round(v.maturationTime.getTime() / 1000)
-        m = getMessageBody(MessageType.createdigitdecompevent, [v.eventName, epochSeconds, 
-          v.base, v.signed, v.numdigits, v.unit, v.precision])
-        break;
+        break
+      // case EventType.DIGIT_DECOMP:
+      //   const epochSeconds = Math.round(v.maturationTime.getTime() / 1000)
+      //   m = getMessageBody(MessageType.createdigitdecompevent, [v.eventName, epochSeconds, 
+      //     v.base, v.signed, v.numdigits, v.unit, v.precision])
+      //   break
       default:
         throw Error('onCreateEvent unknown newEventType: ' + v.eventType)
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)
-      this.messageService.sendMessage(m).subscribe()
+      this.messageService.sendMessage(m).subscribe(result => {
+        if (result) {
+          this.eventCreated = true
+        }
+        this.loading = false
+        // Reload events
+        this.oracleState.getAllEvents().subscribe()
+        // TODO : close this panel, show event detail ?
+      }, error => {
+        console.error('error creating event')
+        this.loading = false
+        // TODO : Show error dialog? Probably don't have details
+      })
     }
   }
 

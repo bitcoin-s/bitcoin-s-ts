@@ -1,11 +1,18 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSort } from '@angular/material/sort'
+import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { forkJoin } from 'rxjs'
 
-import { MessageService } from '~service/message.service';
-import { MessageType, OracleEvent } from '~type/oracle-server-types';
-import { getMessageBody } from '~util/message-util';
-import { KrystalBullImages } from '~util/ui-util';
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { BlockstreamService } from '~service/blockstream-service'
+import { MessageService } from '~service/message.service'
+import { OracleExplorerService } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
+import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
+import { MessageType, OracleEvent } from '~type/oracle-server-types'
+import { getMessageBody } from '~util/message-util'
+import { KrystalBullImages } from '~util/ui-util'
 
 
 @Component({
@@ -17,6 +24,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   @Output() showCreateEvent: EventEmitter<void> = new EventEmitter();
   @Output() showEventDetail: EventEmitter<OracleEvent> = new EventEmitter();
+  @Output() showConfiguration: EventEmitter<void> = new EventEmitter();
   @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
 
   public KrystalBullImages = KrystalBullImages
@@ -31,32 +39,67 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   // Oracle Info
   oracleName = ''
+  oracleNameReadOnly = true // don't allow editing until checking for a name
   publicKey = ''
   stakingAddress = ''
   stakedAmount = ''
 
-  // Server state
-  eventNames: string[] = []
-  events: { [eventName: string]: OracleEvent } = {}
-  flatEvents: OracleEvent[] = []
-
   // Grid config
-  dataSource = new MatTableDataSource(this.flatEvents)
-  displayedColumns = ['eventName', 'maturationTime', 'outcomes', 'attestations']
+  dataSource = new MatTableDataSource(<OracleEvent[]>[])
+  displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
 
-  constructor(private messageService: MessageService) { }
+  constructor(public dialog: MatDialog, public oracleState: OracleStateService, private messageService: MessageService, 
+    public oracleExplorerService: OracleExplorerService, private blockstreamService: BlockstreamService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.oracleExplorerService.oracleName.subscribe(name => {
+      this.oracleName = name
+    })
+    this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
+      this.oracleNameReadOnly = serverSet
+    })
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
     this.onGetPublicKey()
     this.onGetStakingAddress()
-    this.getAllEvents()
+
+    this.oracleState.flatEvents.subscribe(_ => {
+      this.dataSource.data = this.oracleState.flatEvents.value
+      this.table.renderRows()
+    })
+
+    this.oracleState.getAllEvents().subscribe()
   }
 
-  /* Debug button handlers */
+  /** Oracle Explorer handlers */
+
+  listAnnouncements() {
+    this.oracleExplorerService.listAnnouncements().subscribe(result => {
+      console.debug('listAnnouncements()', result)
+      if (result) {
+        // TODO
+      }
+    })
+  }
+
+  private getOracleName(publicKey: string) {
+    this.oracleExplorerService.getLocalOracleName(publicKey).subscribe(result => {
+      console.debug('getOracleName()', result)
+    })
+  }
+
+  /** Blockstream handlers */
+
+  getStakingBalance(address: string) {
+    this.blockstreamService.getBalance(address).subscribe(result => {
+      this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
+    })
+  }
+
+  /** Debug button handlers */
 
   onOracleHeartbeat() {
     console.debug('onOracleHeartbeateartbeat')
@@ -70,6 +113,9 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).subscribe(result => {
       if (result.result) {
         this.publicKey = result.result
+        if (!this.oracleName) {
+          this.getOracleName(this.publicKey)
+        }
       }
     })
   }
@@ -79,44 +125,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).subscribe(result => {
       if (result.result) {
         this.stakingAddress = result.result
-      }
-    })
-  }
-
-  onListEvents() {
-    console.debug('onListEvents')
-    const m = getMessageBody(MessageType.listevents)
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        this.eventNames = result.result
-      }
-    })
-  }
-
-  onGetEvent(eventName: string) {
-    console.debug('onGetEvent', eventName)
-    const m = getMessageBody(MessageType.getevent, [eventName])
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        const e = <OracleEvent>result.result
-        this.events[eventName] = e
-
-        this.flatEvents.push(e)
-        this.dataSource.data = this.flatEvents
-        this.table.renderRows()
-      }
-    })
-  }
-
-  getAllEvents() {
-    const m = getMessageBody(MessageType.listevents)
-    this.flatEvents.length = 0
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        this.eventNames = result.result
-        for (const e of this.eventNames) {
-          this.onGetEvent(e)
-        }
+        this.getStakingBalance(this.stakingAddress)
       }
     })
   }
@@ -130,9 +139,43 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.bullIndex = t
   }
 
+  onOracleNameEnter(event: any) {
+    event.target.blur()
+    return false
+  }
+
+  onOracleName() {
+    console.debug('onOracleName()', this.oracleName)
+    if (this.oracleName && this.oracleName !== this.oracleExplorerService.oracleName.value) {
+      const dialog = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          title: 'dialog.confirmOracleName.title',
+          content: 'dialog.confirmOracleName.content',
+          params: { oracleName: this.oracleName },
+          action: 'dialog.confirmOracleName.action',
+        }
+      }).afterClosed().subscribe(result => {
+        console.debug(' set oracleName:', result)
+        if (result) {
+          // TODO : Test how Oracle Explorer handles uniqueness
+          this.oracleExplorerService.setOracleName(this.oracleName)
+        } else {
+          this.oracleName = this.oracleExplorerService.oracleName.value
+        }
+      })
+    } else {
+      this.oracleName = this.oracleExplorerService.oracleName.value
+    }
+  }
+
   onShowCreateEvent() {
     console.debug('onShowCreateEvent()')
     this.showCreateEvent.next()
+  }
+
+  onShowConfiguration() {
+    console.debug('onShowConfiguration()')
+    this.showConfiguration.next()
   }
 
   onShowSignMessage() {
@@ -145,9 +188,55 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.hideRawButtons = !this.hideRawButtons
   }
 
+  formatOutcomes(outcomes: [any]): string {
+    if (outcomes && outcomes.length > 0) {
+      const head = outcomes[0]
+      if (Array.isArray(head) && head.length === 2) {
+        // numeric outcomes
+        const signed = head[0] === '+' && head[1] === '-'
+        const exp = signed ? outcomes.length - 1 : outcomes.length
+        const outcome = (2 ** exp) - 1
+        return signed ? '-' + outcome + '..' + outcome : '0..' + outcome
+      } else {
+        // enum and all other outcomes
+        return '' + outcomes
+      }
+    } else {
+      return ''
+    }
+  }
+
   onRowClick(event: OracleEvent) {
     console.debug('onRowClick()', event)
     this.showEventDetail.next(event)
+  }
+
+  onAnnouncementClick(event: OracleEvent) {
+    console.debug('onAnnouncementClick()', event)
+    if (!this.oracleState.announcements.value[event.eventName]) {
+      this.oracleExplorerService.createAnnouncement(event).subscribe(result => {
+        if (result) {
+          this.oracleState.getAnnouncement(event).subscribe() // Update oracleState
+        }
+      })
+    } else {
+      console.warn('Oracle Explorer announcement already exists for', event)
+    }
+  }
+
+  onAnnouncementLinkClick(event: OracleEvent) {
+    console.debug('onAnnouncementLinkClick()', event)
+    const url = `https://${this.oracleExplorerService.oracleExplorer.value.host}/announcement/${event.announcementTLVsha256}`
+    window.open(url, '_blank')
+  }
+
+  onAnnounceOutcome(event: OracleEvent) {
+    console.debug('onAnnounceOutcome()', event)
+    this.oracleExplorerService.createAttestations(event).subscribe(result => {
+      if (result) {
+        this.oracleState.getAnnouncement(event).subscribe() // Update oracleState
+      }
+    })
   }
 
 }
