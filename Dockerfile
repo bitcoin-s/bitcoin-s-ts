@@ -1,4 +1,4 @@
-FROM node:12-buster-slim AS builder
+FROM node:16-buster-slim AS builder
 
 WORKDIR /build
 COPY . .
@@ -10,7 +10,7 @@ RUN npm run build
 WORKDIR /build/oracle-server-ui-proxy
 RUN npm i
 
-FROM node:12-buster-slim
+FROM node:16-buster-slim
 USER 1000
 WORKDIR /build
 COPY --from=builder /build .
