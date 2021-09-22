@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AlertType } from '~app/component/alert/alert.component';
 import { MessageService } from '~service/message.service';
 import { OracleExplorerService } from '~service/oracle-explorer.service';
 
@@ -21,9 +22,13 @@ export class EventDetailComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
+  public AlertType = AlertType
+
   signEventInput = ''
   signDigitsInput: number|undefined = undefined
   signatures = ''
+
+  showSigningSuccess = false
 
   private reset() {
     this.signEventInput = ''
@@ -73,6 +78,7 @@ export class EventDetailComponent implements OnInit {
       console.debug(' onSignEvent', result)
       if (result.result) {
         this.event.signedOutcome = this.signEventInput
+        this.showSigningSuccess = true
       }
     }, error => {
       console.error('error signing event')
@@ -83,7 +89,16 @@ export class EventDetailComponent implements OnInit {
   onSignDigits() {
     console.debug('onSignDigits', this.event.eventName, this.signDigitsInput)
     const m = getMessageBody(MessageType.signdigits, [this.event.eventName, this.signDigitsInput])
-    this.messageService.sendMessage(m).subscribe()
+    this.messageService.sendMessage(m).subscribe(result => {
+      console.debug(' onSignEvent', result)
+      if (result.result) {
+        this.event.signedOutcome = this.signDigitsInput?.toString() || ''
+        this.showSigningSuccess = true
+      }
+    }, error => {
+      console.error('error signing event')
+      // TODO : Error dialog
+    })
   }
 
   onGetSignatures() {
