@@ -150,7 +150,8 @@
   "eventDetail": {
     "heading": "Event Detail",
     "signatures": "Signatures",
-    "eventJSON": "Event JSON"
+    "eventJSON": "Event JSON",
+    "outcomeSigned": "Outcome Signed"
   },
 
   "action": {

@@ -109,7 +109,7 @@
       <ng-container matColumnDef="signedOutcome">
         <th mat-header-cell *matHeaderCellDef translate="outcome"></th>
         <td mat-cell *matCellDef="let event">
-          <ng-container *ngIf="event.signedOutcome">
+          <ng-container *ngIf="event.signedOutcome !== null">
 
             <ng-container *ngIf="oracleName && oracleState.announcements.value[event.eventName]">
               <ng-container *ngIf="oracleState.announcements.value[event.eventName]?.outcome; else announceOutcome">
