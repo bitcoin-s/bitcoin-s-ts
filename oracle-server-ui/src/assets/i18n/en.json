@@ -14,6 +14,9 @@
   "result": "Result",
   "resultWasEmpty": "Result was Empty",
 
+  "buildDate": "Build Date",
+  "buildHash": "Build Hash",
+
   "oracleOperations": {
     "getpublickey": "Get Public Key",
     "getstakingaddress": "Get Staking Address",

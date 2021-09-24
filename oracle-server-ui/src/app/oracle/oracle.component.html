@@ -136,4 +136,11 @@
     </table>
   </div>
 
+  <div *ngIf="buildConfig" class="footer">
+    <span class="label" translate>buildDate</span>
+    <span class="date">{{ buildConfig.dateString }}</span>
+    <span class="label" translate>buildHash</span>
+    <span class="version">{{ buildConfig.shortHash }}</span>
+  </div>
+
 </section>

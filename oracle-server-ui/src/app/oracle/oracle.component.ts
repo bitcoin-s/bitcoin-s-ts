@@ -11,6 +11,7 @@ import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 import { MessageType, OracleEvent } from '~type/oracle-server-types'
+import { BuildConfig } from '~type/proxy-server-types'
 import { getMessageBody } from '~util/message-util'
 import { KrystalBullImages } from '~util/ui-util'
 
@@ -44,6 +45,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
   stakingAddress = ''
   stakedAmount = ''
 
+  buildConfig: BuildConfig
+
   // Grid config
   dataSource = new MatTableDataSource(<OracleEvent[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
@@ -72,6 +75,13 @@ export class OracleComponent implements OnInit, AfterViewInit {
     })
 
     this.oracleState.getAllEvents().subscribe()
+
+    this.messageService.buildConfig().subscribe(result => {
+      if (result) {
+        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = result
+      }
+    })
   }
 
   /** Oracle Explorer handlers */

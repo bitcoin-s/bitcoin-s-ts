@@ -6,10 +6,8 @@ import { tap } from 'rxjs/operators'
 import { environment } from 'src/environments/environment'
 
 import { OracleServerMessage } from '~type/oracle-server-message'
-import { MessageType } from '~type/oracle-server-types'
-import { SuccessType } from '~type/proxy-server-types'
-
-import { OracleResponse } from '~util/message-util'
+import { MessageType, OracleResponse } from '~type/oracle-server-types'
+import { BuildConfig, SuccessType } from '~type/proxy-server-types'
 
 
 /** Service that communicates with underlying oracleServer instance through oracle-server-ui-proxy */
@@ -55,5 +53,9 @@ export class MessageService {
 
   oracleHeartbeat() {
     return this.http.get<SuccessType>(environment.proxyApi + '/oracleHeartbeat')
+  }
+
+  buildConfig() {
+    return this.http.get<BuildConfig>(environment.proxyApi + '/buildConfig')
   }
 }

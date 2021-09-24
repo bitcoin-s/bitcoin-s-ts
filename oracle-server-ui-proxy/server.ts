@@ -8,11 +8,18 @@ import fetch from 'node-fetch'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 import { ServerConfig } from './server-config'
+import { BuildConfig } from './build-config'
 
 
 console.debug(new Date().toISOString(), 'Starting oracle-server-ui-proxy')
 
 const Config = <ServerConfig>require('./config.json')
+let Build
+try {
+  Build = <BuildConfig>require('./build.json')
+} catch (err) {
+  console.error('did not find BuildConfig')
+}
 
 /** Error Handlers */
 
@@ -57,6 +64,9 @@ app.get(`/oracleHeartbeat`, async (req: Request, res: Response) => {
   })
   res.send({ success })
 })
+app.get('/buildConfig', (req: Request, res: Response) => {
+  res.json(Build)
+})
 
 /** External Proxy Routes */
 
@@ -83,9 +93,6 @@ app.use(Config.oracleExplorerRoot, createProxyMiddleware({
     [`^${Config.oracleExplorerRoot}`]: '',
   },
   proxyTimeout: EXPLORER_PROXY_TIMEOUT,
-  onOpen: () => {
-    console.warn('oracleExplorerProxyRoot onOpen')
-  },
   onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
     // Use HOST_OVERRIDE_HEADER value to set underlying oracle explorer proxyReq host header
     const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost
@@ -119,9 +126,6 @@ app.use(Config.blockstreamRoot, createProxyMiddleware({
     [`^${Config.blockstreamRoot}`]: '',
   },
   proxyTimeout: BLOCKSTREAM_PROXY_TIMEOUT,
-  onOpen: () => {
-    console.warn('blockstream onOpen')
-  },
   onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
     removeFrontendHeaders(proxyReq)
 
