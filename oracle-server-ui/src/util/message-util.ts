@@ -7,6 +7,7 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
     case MessageType.getpublickey:
     case MessageType.getstakingaddress:
     case MessageType.listevents:
+    case MessageType.getversion: // Common
       return new OracleServerMessage(type)
     case MessageType.getevent:
     case MessageType.signevent:

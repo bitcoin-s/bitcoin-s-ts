@@ -14,8 +14,8 @@
   "result": "Result",
   "resultWasEmpty": "Result was Empty",
 
-  "buildDate": "Build Date",
-  "buildHash": "Build Hash",
+  "server": "Server",
+  "ui": "UI",
 
   "oracleOperations": {
     "getpublickey": "Get Public Key",

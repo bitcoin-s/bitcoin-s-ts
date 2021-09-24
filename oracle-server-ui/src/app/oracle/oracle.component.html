@@ -137,10 +137,15 @@
   </div>
 
   <div *ngIf="buildConfig" class="footer">
-    <span class="label" translate>buildDate</span>
-    <span class="date">{{ buildConfig.dateString }}</span>
-    <span class="label" translate>buildHash</span>
-    <span class="version">{{ buildConfig.shortHash }}</span>
+    <div>
+      <span class="label" translate>server</span>
+      <span class="server-version">{{ oracleServerVersion }}</span>
+    </div>
+    <div>
+      <span class="label" translate>ui</span>
+      <span class="version">{{ buildConfig.shortHash }}</span>
+      <span class="date">{{ buildConfig.dateString }}</span>
+    </div>
   </div>
 
 </section>

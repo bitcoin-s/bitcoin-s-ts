@@ -137,19 +137,21 @@
   }
   
   .footer {
-    width: 100%;
-    text-align: right;
+    display: flex;
     font-size: smaller;
     color: #8c959f;
 
     .label {
       margin-right: 0.25rem;
     }
-    .date {
+    .server-version {
       margin-right: 1rem;
     }
     .version {
       margin-right: 0.25rem;
+    }
+    .date {
+      margin-right: 1rem;
     }
   }
 

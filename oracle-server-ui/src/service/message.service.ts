@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
+import { Observable } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { environment } from 'src/environments/environment'
 
 import { OracleServerMessage } from '~type/oracle-server-message'
-import { MessageType, OracleResponse } from '~type/oracle-server-types'
+import { MessageType, OracleResponse, ServerVersion } from '~type/oracle-server-types'
 import { BuildConfig, SuccessType } from '~type/proxy-server-types'
+import { getMessageBody } from '~util/message-util'
 
 
 /** Service that communicates with underlying oracleServer instance through oracle-server-ui-proxy */
@@ -57,5 +59,12 @@ export class MessageService {
 
   buildConfig() {
     return this.http.get<BuildConfig>(environment.proxyApi + '/buildConfig')
+  }
+
+  // Common bitcoin-s calls
+
+  getOracleServerVersion() {
+    const m = getMessageBody(MessageType.getversion)
+    return <Observable<OracleResponse<ServerVersion>>>this.sendMessage(m)
   }
 }
