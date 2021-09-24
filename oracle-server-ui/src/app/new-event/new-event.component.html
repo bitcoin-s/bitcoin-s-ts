@@ -23,7 +23,7 @@
 
     <mat-form-field>
       <mat-label translate>createEvent.maturationTime</mat-label>
-      <input matInput formControlName="maturationTime" [matDatepicker]="datePicker"
+      <input matInput formControlName="maturationTime" [matDatepicker]="datePicker" [min]="minDate"
         placeholder="{{ 'createEvent.maturationTimePlaceholder' | translate }}">
       <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>

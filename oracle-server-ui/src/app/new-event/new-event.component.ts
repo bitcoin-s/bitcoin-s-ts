@@ -107,6 +107,8 @@ export class NewEventComponent implements OnInit {
   eventTypes = [EventType.ENUM, EventType.NUMERIC/*, EventType.DIGIT_DECOMP*/]
   eventType = EventType.ENUM // for binding state
 
+  minDate = new Date() // Cannot set maturation date in the past
+
   // Values for testing event form state
   // private setDefaultEventValues() {
   //   this.form.setValue({

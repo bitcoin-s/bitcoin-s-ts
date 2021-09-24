@@ -1,4 +1,4 @@
-import { MessageType } from "~type/oracle-server-types"
+import { MessageType } from '~type/oracle-server-types'
 
 
 export class OracleServerMessage {

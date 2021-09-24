@@ -1,20 +1,20 @@
 
 // Serverside message types
 export const enum MessageType {
-  getpublickey = "getpublickey",
-  getstakingaddress = "getstakingaddress",
-  listevents = "listevents",
-  createenumevent = "createenumevent",
-  createnumericevent = "createnumericevent",
-  createdigitdecompevent = "createdigitdecompevent",
-  getevent = "getevent",
-  signevent = "signevent",
-  signdigits = "signdigits",
-  getsignatures = "getsignatures",
-  signmessage = "signmessage",
+  getpublickey = 'getpublickey',
+  getstakingaddress = 'getstakingaddress',
+  listevents = 'listevents',
+  createenumevent = 'createenumevent',
+  createnumericevent = 'createnumericevent',
+  createdigitdecompevent = 'createdigitdecompevent',
+  getevent = 'getevent',
+  signevent = 'signevent',
+  signdigits = 'signdigits',
+  getsignatures = 'getsignatures',
+  signmessage = 'signmessage',
 
   // Common
-  getversion = "getversion",
+  getversion = 'getversion',
 }
 
 // Serverside OracleEvent response
