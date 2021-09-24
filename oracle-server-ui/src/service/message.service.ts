@@ -63,7 +63,7 @@ export class MessageService {
 
   // Common bitcoin-s calls
 
-  getOracleServerVersion() {
+  getServerVersion() {
     const m = getMessageBody(MessageType.getversion)
     return <Observable<OracleResponse<ServerVersion>>>this.sendMessage(m)
   }

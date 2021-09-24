@@ -45,8 +45,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
   stakingAddress = ''
   stakedAmount = ''
 
+  serverVersion = ''
   buildConfig: BuildConfig
-  oracleServerVersion = ''
 
   // Grid config
   dataSource = new MatTableDataSource(<OracleEvent[]>[])
@@ -67,10 +67,10 @@ export class OracleComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
-    this.messageService.getOracleServerVersion().subscribe(result => {
+    this.messageService.getServerVersion().subscribe(result => {
       console.debug('messageService.getOracleServerVersion()', result)
       if (result && result.result) {
-        this.oracleServerVersion = result.result.version
+        this.serverVersion = result.result.version
       }
     })
 

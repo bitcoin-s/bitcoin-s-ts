@@ -7,14 +7,14 @@ import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
-import { ServerConfig } from './server-config'
 import { BuildConfig } from './build-config'
+import { ServerConfig } from './server-config'
 
 
 console.debug(new Date().toISOString(), 'Starting oracle-server-ui-proxy')
 
 const Config = <ServerConfig>require('./config.json')
-let Build
+let Build: BuildConfig
 try {
   Build = <BuildConfig>require('./build.json')
 } catch (err) {
