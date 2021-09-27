@@ -22,10 +22,3 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
       throw(Error('getMessageBody() unknown message type: ' + type))
   }
 }
-
-export class OracleResponse<T> {
-  result: T|null = null // Can also be a complex type like getevent response
-  error: string|null = null
-}
-
-

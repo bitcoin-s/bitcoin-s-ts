@@ -107,6 +107,8 @@ export class NewEventComponent implements OnInit {
   eventTypes = [EventType.ENUM, EventType.NUMERIC/*, EventType.DIGIT_DECOMP*/]
   eventType = EventType.ENUM // for binding state
 
+  minDate: Date
+
   // Values for testing event form state
   // private setDefaultEventValues() {
   //   this.form.setValue({
@@ -141,7 +143,11 @@ export class NewEventComponent implements OnInit {
 
   oracleName: string
 
-  constructor(private formBuilder: FormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
+  constructor(private formBuilder: FormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
+    // Set minimum Maturation date to tomorrow
+    this.minDate = new Date()
+    this.minDate.setDate(this.minDate.getDate() + 1)
+  }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
