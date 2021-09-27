@@ -11,7 +11,10 @@ export const enum MessageType {
   signevent = "signevent",
   signdigits = "signdigits",
   getsignatures = "getsignatures",
-  signmessage = "signmessage"
+  signmessage = "signmessage",
+
+  // Common
+  getversion = "getversion",
 }
 
 // Serverside OracleEvent response
@@ -38,4 +41,10 @@ export interface OracleEvent {
 export interface OracleResponse<T> {
   result: T|null // Can also be a complex type like getevent response
   error: string|null
+}
+
+// Common bitcoin-s responses
+
+export interface ServerVersion {
+  version: string
 }

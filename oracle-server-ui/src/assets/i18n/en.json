@@ -14,6 +14,9 @@
   "result": "Result",
   "resultWasEmpty": "Result was Empty",
 
+  "server": "Server",
+  "ui": "UI",
+
   "oracleOperations": {
     "getpublickey": "Get Public Key",
     "getstakingaddress": "Get Staking Address",

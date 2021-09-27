@@ -11,6 +11,7 @@ import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 import { MessageType, OracleEvent } from '~type/oracle-server-types'
+import { BuildConfig } from '~type/proxy-server-types'
 import { getMessageBody } from '~util/message-util'
 import { KrystalBullImages } from '~util/ui-util'
 
@@ -44,6 +45,9 @@ export class OracleComponent implements OnInit, AfterViewInit {
   stakingAddress = ''
   stakedAmount = ''
 
+  serverVersion = ''
+  buildConfig: BuildConfig
+
   // Grid config
   dataSource = new MatTableDataSource(<OracleEvent[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
@@ -63,6 +67,13 @@ export class OracleComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
+    this.messageService.getServerVersion().subscribe(result => {
+      console.debug('messageService.getOracleServerVersion()', result)
+      if (result && result.result) {
+        this.serverVersion = result.result.version
+      }
+    })
+
     this.onGetPublicKey()
     this.onGetStakingAddress()
 
@@ -72,6 +83,14 @@ export class OracleComponent implements OnInit, AfterViewInit {
     })
 
     this.oracleState.getAllEvents().subscribe()
+
+    this.messageService.buildConfig().subscribe(result => {
+      console.debug('messageService.buildConfig()', result)
+      if (result) {
+        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = result
+      }
+    })
   }
 
   /** Oracle Explorer handlers */
