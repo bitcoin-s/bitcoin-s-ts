@@ -17,19 +17,19 @@
   "oracleOperations": {
     "getpublickey": "Get Public Key",
     "getstakingaddress": "Get Staking Address",
-    "listevents": "List Events",
-    "createenumevent": "Create Enum Event",
-    "createnumericevent": "Create Numeric Event",
-    "createdigitdecompevent": "Create Digit Decomp Event",
-    "getevent": "Get Event",
-    "signevent": "Sign Event",
+    "listevents": "List Announcements",
+    "createenumevent": "Create Enum Announcement",
+    "createnumericevent": "Create Numeric Announcement",
+    "createdigitdecompevent": "Create Digit Decomp Announcement",
+    "getevent": "Get Announcement",
+    "signevent": "Sign Announcement",
     "signdigits": "Sign Digits",
     "getsignatures": "Get Signatures",
     "signmessage": "Sign Message",
 
     "heartbeat": "Oracle Heartbeat",
-    "getAllEvents": "Get All Events",
-    "refreshEvents": "Refresh Events"
+    "getAllEvents": "Get All Announcements",
+    "refreshEvents": "Refresh Announcements"
   },
 
   "oracleEvent": {
@@ -94,18 +94,18 @@
   },
 
   "createEvent": {
-    "heading": "Create Event",
+    "heading": "Create Announcement",
 
     "error": {
-      "oracleName": "An Oracle Name must be set before creating events"
+      "oracleName": "An Oracle Name must be set before creating announcements"
     },
 
     "success": {
-      "created": "Event Created Successfully"
+      "created": "Announcement Created Successfully"
     },
 
     "name": "Name",
-    "namePlaceholder": "Unique Event Name",
+    "namePlaceholder": "Unique Announcement Name",
     "maturationTime": "Maturation Time",
     "maturationTimePlaceholder": "MM/DD/YYYY",
     "outcomes": "Outcomes",
@@ -124,13 +124,13 @@
   },
 
   "createEventDescription": {
-    "name": "Name for this event",
+    "name": "Name for this announcement",
     "maturationTime": "The earliest expected time an outcome will be signed, given in ISO 8601 format",
     "maturationTimeSeconds": "The earliest expected time an outcome will be signed, given in epoch second",
     "outcomes": "Outcomes",
 
-    "minvalue": "Minimum value of this event",
-    "maxvalue": "Maximum value of this event",
+    "minvalue": "Minimum value of this announcement",
+    "maxvalue": "Maximum value of this announcement",
     "unit": "The unit denomination of the outcome value",
     "precision": "The precision of the outcome representing the base exponent by which to multiply the number represented by the composition of the digits to obtain the actual outcome value.",
 
@@ -148,9 +148,9 @@
   },
 
   "eventDetail": {
-    "heading": "Event Detail",
+    "heading": "Announcement Detail",
     "signatures": "Signatures",
-    "eventJSON": "Event JSON",
+    "eventJSON": "Announcement JSON",
     "outcomeSigned": "Outcome Signed"
   },
 
