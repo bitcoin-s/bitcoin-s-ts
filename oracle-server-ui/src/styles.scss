@@ -45,3 +45,13 @@ body { margin: 0; }
 .close-button {
   align-self: center;
 }
+
+// Center checkbox in pseudo-mat-form-field
+.mat-form-field--checkbox {
+  display: flex;
+  flex-direction: row;
+
+  mat-checkbox {
+    margin: auto;
+  }
+}

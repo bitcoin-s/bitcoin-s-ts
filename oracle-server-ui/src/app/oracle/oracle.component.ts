@@ -52,6 +52,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource(<OracleEvent[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
 
+  loading = true
+
   constructor(public dialog: MatDialog, public oracleState: OracleStateService, private messageService: MessageService, 
     public oracleExplorerService: OracleExplorerService, private blockstreamService: BlockstreamService) { }
 
@@ -62,34 +64,35 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
+    this.oracleState.eventsReceived.subscribe(received => {
+      console.debug('eventsReceived', received)
+      this.loading = !received
+    })
+
+    this.messageService.getServerVersion().subscribe(result => {
+      if (result && result.result) {
+        this.serverVersion = result.result.version
+      }
+    })
+    this.messageService.buildConfig().subscribe(result => {
+      if (result) {
+        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = result
+      }
+    })
+    this.onGetPublicKey()
+    this.onGetStakingAddress()
+    this.oracleState.getAllEvents().subscribe(_ => {
+      console.debug('initial getAllEvents() complete')
+    })
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
-    this.messageService.getServerVersion().subscribe(result => {
-      console.debug('messageService.getOracleServerVersion()', result)
-      if (result && result.result) {
-        this.serverVersion = result.result.version
-      }
-    })
-
-    this.onGetPublicKey()
-    this.onGetStakingAddress()
-
     this.oracleState.flatEvents.subscribe(_ => {
       this.dataSource.data = this.oracleState.flatEvents.value
       this.table.renderRows()
-    })
-
-    this.oracleState.getAllEvents().subscribe()
-
-    this.messageService.buildConfig().subscribe(result => {
-      console.debug('messageService.buildConfig()', result)
-      if (result) {
-        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
-        this.buildConfig = result
-      }
     })
   }
 
@@ -190,6 +193,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onShowCreateEvent() {
     console.debug('onShowCreateEvent()')
     this.showCreateEvent.next()
+  }
+
+  onRefreshEvents() {
+    console.debug('onShowRefreshEvents()')
+    this.loading = true
+    this.oracleState.getAllEvents().subscribe()
   }
 
   onShowConfiguration() {

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   oracleServerApi: '/api/v0',
+  torApi: '/tor',
   oracleExplorerApi: '/oracleexplorer',
   blockstreamApi: '/blockstream',
   proxyApi: '',

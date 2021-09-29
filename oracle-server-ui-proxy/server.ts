@@ -6,6 +6,7 @@ import path from 'path'
 import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import { createProxyMiddleware } from 'http-proxy-middleware'
+import { SocksProxyAgent } from 'socks-proxy-agent'
 
 import { BuildConfig } from './build-config'
 import { ServerConfig } from './server-config'
@@ -83,66 +84,91 @@ function hostRouter(req: http.IncomingMessage) {
   return `https://${host}/v1`
 }
 
-// Proxy calls to this server on to Oracle Explorer
 const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-app.use(Config.oracleExplorerRoot, createProxyMiddleware({
-  // target: oracleExplorerUrl,
-  router: hostRouter, // Dynamic target
-  changeOrigin: true,
-  pathRewrite: {
-    [`^${Config.oracleExplorerRoot}`]: '',
-  },
-  proxyTimeout: EXPLORER_PROXY_TIMEOUT,
-  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-    // Use HOST_OVERRIDE_HEADER value to set underlying oracle explorer proxyReq host header
-    const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost
-    proxyReq.setHeader('host', host)
-    proxyReq.removeHeader(HOST_OVERRIDE_HEADER)
-    // Remove unnecessary headers
-    removeFrontendHeaders(proxyReq)
-    res.removeHeader('x-powered-by')
+const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 
-    // console.debug('onProxyReq() req headers:', req.headers)
-    // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
-    // console.debug('onProxyReq() res headers:', res.getHeaders())
-  },
-  onError: (err: Error, req: Request, res: Response) => {
-    // Handle oracleServer is unavailable
-    console.error('oracleExplorerProxyRoot onError')
-    if (err && (<any>err).code === 'ECONNREFUSED') {
-      res.writeHead(500, 'Oracle Explorer connection refused').end()
-    } else {
-      console.error(new Date().toISOString(), 'onError', err, res.statusCode, res.statusMessage)
+// Proxy calls to this server on to Oracle Explorer
+function createOracleExplorerProxy(agent?: SocksProxyAgent) {
+  const root = (agent ? Config.torProxyRoot : '') + Config.oracleExplorerRoot
+  app.use(root, createProxyMiddleware({
+    // target: oracleExplorerUrl,
+    agent,
+    router: hostRouter, // Dynamic target
+    changeOrigin: true,
+    pathRewrite: {
+      [`^${root}`]: '',
+    },
+    proxyTimeout: EXPLORER_PROXY_TIMEOUT,
+    onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+      // Use HOST_OVERRIDE_HEADER value to set underlying oracle explorer proxyReq host header
+      // const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost // this throws error with 'agent' set
+      // proxyReq.setHeader('host', host) // this throws error with 'agent' set
+      // proxyReq.removeHeader(HOST_OVERRIDE_HEADER) // this throws error with 'agent' set
+      // Remove unnecessary headers
+      // removeFrontendHeaders(proxyReq) // this throws error with 'agent' set
+      // res.removeHeader('x-powered-by') // this throws error with 'agent' set
+
+      // console.debug('onProxyReq() req headers:', req.headers)
+      // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
+      // console.debug('onProxyReq() res headers:', res.getHeaders())
+    },
+    onError: (err: Error, req: Request, res: Response) => {
+      // Handle oracleServer is unavailable
+      console.error('oracleExplorerProxyRoot onError')
+      if (err && (<any>err).code === 'ECONNREFUSED') {
+        res.writeHead(500, 'Oracle Explorer connection refused').end()
+      } else {
+        console.error(new Date().toISOString(), 'onError', err, res.statusCode, res.statusMessage)
+      }
     }
-  }
-}))
+  }))
+}
 
 // Proxy calls to this server to Blockstream API
-const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-app.use(Config.blockstreamRoot, createProxyMiddleware({
-  target: blockstreamUrl,
-  changeOrigin: true,
-  pathRewrite: {
-    [`^${Config.blockstreamRoot}`]: '',
-  },
-  proxyTimeout: BLOCKSTREAM_PROXY_TIMEOUT,
-  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-    removeFrontendHeaders(proxyReq)
+function createBlockstreamProxy(agent?: SocksProxyAgent | null) {
+  const root = (agent ? Config.torProxyRoot : '') + Config.blockstreamRoot
+  app.use(root, createProxyMiddleware({
+    agent,
+    target: blockstreamUrl,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^${root}`]: '',
+    },
+    proxyTimeout: BLOCKSTREAM_PROXY_TIMEOUT,
+    onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+      // removeFrontendHeaders(proxyReq) // this throws error with 'agent' set
 
-    // console.debug('onProxyReq() req headers:', req.headers)
-    // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
-    // console.debug('onProxyReq() res headers:', res.getHeaders())
-  },
-  onError: (err: Error, req: Request, res: Response) => {
-    // Handle oracleServer is unavailable
-    console.error('blockstreamRoot onError')
-    if (err && (<any>err).code === 'ECONNREFUSED') {
-      res.writeHead(500, 'Blockstream connection refused').end()
-    } else {
-      console.error(new Date().toISOString(), 'onError', err, res.statusCode, res.statusMessage)
+      // console.debug('onProxyReq() req headers:', req.headers)
+      // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
+      // console.debug('onProxyReq() res headers:', res.getHeaders())
+    },
+    onError: (err: Error, req: Request, res: Response) => {
+      // Handle oracleServer is unavailable
+      console.error('blockstreamRoot onError')
+      if (err && (<any>err).code === 'ECONNREFUSED') {
+        res.writeHead(500, 'Blockstream connection refused').end()
+      } else {
+        console.error(new Date().toISOString(), 'onError', err, res.statusCode, res.statusMessage)
+      }
     }
-  }
-}))
+  }))
+}
+
+function createProxies(agent?: SocksProxyAgent) {
+  createOracleExplorerProxy(agent)
+  createBlockstreamProxy(agent)
+}
+
+createProxies()
+
+const DEFAULT_TOR_PROXY = Config.torProxyUrl
+const USE_TOR_PROXY = !!process.env.TOR_PROXY || !!DEFAULT_TOR_PROXY
+let agent = null
+if (USE_TOR_PROXY) {
+  const torProxyUrl = process.env.TOR_PROXY || DEFAULT_TOR_PROXY
+  agent = new SocksProxyAgent(torProxyUrl)
+  createProxies(agent)
+}
 
 /** Oracle Server Proxy */
 

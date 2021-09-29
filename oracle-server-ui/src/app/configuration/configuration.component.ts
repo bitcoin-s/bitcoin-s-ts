@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { MatCheckboxChange } from '@angular/material/checkbox'
 
 import { OracleExplorerService, ORACLE_EXPLORERS } from '~service/oracle-explorer.service'
+import { TorService } from '~service/tor.service'
 
 
 @Component({
@@ -15,11 +17,13 @@ export class ConfigurationComponent implements OnInit {
   public ORACLE_EXPLORERS = ORACLE_EXPLORERS
 
   oracleExplorer: string // 'test', 'prod'
+  useTor: boolean
 
-  constructor(private oracleExplorerService: OracleExplorerService) { }
+  constructor(private oracleExplorerService: OracleExplorerService, private torService: TorService) { }
 
   ngOnInit(): void {
     this.oracleExplorer = this.oracleExplorerService.oracleExplorer.value.value
+    this.useTor = this.torService.useTor
   }
 
   onClose() {
@@ -33,6 +37,11 @@ export class ConfigurationComponent implements OnInit {
     if (oracleExplorer) {
       this.oracleExplorerService.setOracleExplorer(oracleExplorer)
     }
+  }
+
+  useTorChanged(change: MatCheckboxChange) {
+    console.debug('useTorChanged()', change)
+    this.torService.useTor = change.checked
   }
 
 }

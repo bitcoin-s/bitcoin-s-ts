@@ -4,6 +4,8 @@ export class ServerConfig {
 	stopOnError: boolean = false
 	useHTTPS: boolean = false
 	apiRoot: string   // prefix on local forwarding endpoint paths like '/api/v0'
+	torProxyRoot: string // prefix on local paths like '/tor'
+	torProxyUrl: string // like 'socks5://127.0.0.1:9050'
 	proxyRoot: string // prefix on local paths like '/proxy'
 	oracleExplorerRoot: string // prefix on local paths like '/oracleexplorer'
 	oracleServerUrl: string // oracle server endpoint like 'http://host:port/'

@@ -23,6 +23,8 @@ export class OracleStateService {
   // Oracle Explorer state
   announcements: BehaviorSubject<OracleAnnouncementMap> = new BehaviorSubject({}) // should this index on sha256 id instead?
 
+  eventsReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
   private updateFlatEvents() {
     this.flatEvents.next([...this.flatEvents.value])
   }
@@ -33,13 +35,14 @@ export class OracleStateService {
 
   constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
     this.oracleExplorerService.oracleExplorer.subscribe(oe => {
-      this.getLocalEventAnnouncements().subscribe() // Check for announcements on new Explorer
+      this.getLocalEventAnnouncements().subscribe() // Check for announcements on new Explorer selection
     })
   }
 
   getAllEvents() {
     console.debug('getAllEvents()')
-    this.flatEvents.value.length = 0 // probably want to reassign
+    this.eventsReceived.next(false)
+    this.flatEvents.next([])
     const m = getMessageBody(MessageType.listevents)
     const obs = this.messageService.sendMessage(m)
     return obs.pipe(tap(result => {
@@ -55,18 +58,20 @@ export class OracleStateService {
             for (const e of results) {
               this.addEventToState(<OracleEvent>e.result)
             }
-          }
-          this.getLocalEventAnnouncements().subscribe(_ => {
             this.updateFlatEvents()
-          })
+            this.eventsReceived.next(true)
+          }
+          this.getLocalEventAnnouncements().subscribe()
         })
       }
     }))
   }
 
-  getLocalEventAnnouncements() {
+  private getLocalEventAnnouncements() {
     console.debug('getLocalEventAnnouncements()', this.flatEvents)
 
+    this.announcements.next({})
+    // Have seen these 403 against the Production Oracle Server over Tor
     const obs = forkJoin(this.flatEvents.value.map(e => this.getAnnouncement(e)))
     return obs
   }

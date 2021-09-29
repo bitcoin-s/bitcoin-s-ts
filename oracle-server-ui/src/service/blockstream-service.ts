@@ -4,14 +4,17 @@ import { Injectable } from '@angular/core'
 import { environment } from '~environments'
 
 import { AddressResponse } from '~type/blockstream-types'
+import { TorService } from './tor.service'
 
 
 @Injectable({ providedIn: 'root' })
 export class BlockstreamService {
 
-  private url = environment.blockstreamApi // if we want to change at runtime, will need host-override header like Oracle Explorer
+  private get url() {
+    return (this.torService.useTor ? environment.torApi : '') + environment.blockstreamApi
+  }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private torService: TorService) {}
 
   /** Helper functions */
 

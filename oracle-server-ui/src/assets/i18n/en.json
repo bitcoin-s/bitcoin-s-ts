@@ -63,7 +63,9 @@
   },
 
   "configuration": {
-    "heading": "Configuration"
+    "heading": "Configuration",
+    "useTor": "Use Tor",
+    "useTorTooltip": "Use Tor network for external interactions"
   },
   
   "oracleExplorer": {

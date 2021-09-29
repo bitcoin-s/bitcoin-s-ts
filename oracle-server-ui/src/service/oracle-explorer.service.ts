@@ -7,6 +7,7 @@ import { environment } from '~environments'
 
 import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
 import { OracleEvent } from '~type/oracle-server-types'
+import { TorService } from './tor.service'
 
 
 // Host replacement header for proxy
@@ -26,7 +27,9 @@ const DEFAULT_ORACLE_EXPLORER_VALUE = 'test'
 @Injectable({ providedIn: 'root' })
 export class OracleExplorerService {
 
-  private url = environment.oracleExplorerApi
+  private get url() {
+    return (this.torService.useTor ? environment.torApi : '') + environment.oracleExplorerApi
+  }
 
   readonly oracleName: BehaviorSubject<string> = new BehaviorSubject('')
   readonly serverOracleName: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -37,7 +40,7 @@ export class OracleExplorerService {
     localStorage.setItem(ORACLE_EXPLORER_VALUE_KEY, oe.value)
   }
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private torService: TorService) {
     const oracleValue = localStorage.getItem(ORACLE_EXPLORER_VALUE_KEY) || DEFAULT_ORACLE_EXPLORER_VALUE
     const oracle = ORACLE_EXPLORERS.find(o => o.value === oracleValue)
     this.oracleExplorer = new BehaviorSubject(oracle ? oracle : ORACLE_EXPLORERS[0])
