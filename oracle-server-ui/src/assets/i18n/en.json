@@ -47,7 +47,8 @@
     "name": "Oracle Name",
     "publicKey": "Public Key",
     "stakingAddress": "Staking Address",
-    "stakedAmount": "Staked Amount"
+    "stakedAmount": "Staked Amount",
+    "refreshData": "Refresh Local Oracle Data"
   },
 
   "oracleExplorerOperations": {
@@ -182,7 +183,9 @@
     "cancel": "Cancel",
     "dismiss": "Dismiss",
     "sign": "Sign",
-    "ok": "Ok"
+    "ok": "Ok",
+    "yes": "Yes",
+    "no": "No"
   }
 
 }

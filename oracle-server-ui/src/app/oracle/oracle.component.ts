@@ -10,10 +10,10 @@ import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 
-import { MessageType, OracleEvent } from '~type/oracle-server-types'
+import { OracleEvent } from '~type/oracle-server-types'
 import { BuildConfig } from '~type/proxy-server-types'
 
-import { formatOutcomes, getMessageBody } from '~util/oracle-server-util'
+import { formatOutcomes } from '~util/oracle-server-util'
 import { KrystalBullImages } from '~util/ui-util'
 
 
@@ -43,9 +43,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   // Oracle Info
   oracleName = ''
   oracleNameReadOnly = true // don't allow editing until checking for a name
-  publicKey = ''
-  stakingAddress = ''
-  stakedAmount = ''
 
   serverVersion = ''
   buildConfig: BuildConfig
@@ -82,8 +79,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
         this.buildConfig = result
       }
     })
-    this.onGetPublicKey()
-    this.onGetStakingAddress()
     this.oracleState.getAllEvents().subscribe(_ => {
       console.debug('initial getAllEvents() complete')
     })
@@ -109,48 +104,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
     })
   }
 
-  private getOracleName(publicKey: string) {
-    this.oracleExplorerService.getLocalOracleName(publicKey).subscribe(result => {
-      console.debug('getOracleName()', result)
-    })
-  }
-
-  /** Blockstream handlers */
-
-  getStakingBalance(address: string) {
-    this.blockstreamService.getBalance(address).subscribe(result => {
-      this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
-    })
-  }
-
   /** Debug button handlers */
 
   onOracleHeartbeat() {
     console.debug('onOracleHeartbeateartbeat')
     this.messageService.oracleHeartbeat().subscribe(result => {
       console.debug('oracle heartbeat:', result)
-    })
-  }
-
-  onGetPublicKey() {
-    console.debug('onGetPublicKey')
-    this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).subscribe(result => {
-      if (result.result) {
-        this.publicKey = result.result
-        if (!this.oracleName) {
-          this.getOracleName(this.publicKey)
-        }
-      }
-    })
-  }
-
-  onGetStakingAddress() {
-    console.debug('onGetStakingAddress')
-    this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).subscribe(result => {
-      if (result.result) {
-        this.stakingAddress = result.result
-        this.getStakingBalance(this.stakingAddress)
-      }
     })
   }
 

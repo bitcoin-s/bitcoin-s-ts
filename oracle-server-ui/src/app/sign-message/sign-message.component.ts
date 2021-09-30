@@ -1,8 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 
-import { MessageService } from '~service/message.service';
-import { MessageType } from '~type/oracle-server-types';
-import { getMessageBody } from '~util/message-util';
+import { MessageService } from '~service/message.service'
+
+import { MessageType } from '~type/oracle-server-types'
+
+import { getMessageBody } from '~util/oracle-server-util'
 
 
 @Component({

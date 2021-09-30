@@ -10,15 +10,15 @@
         
       <mat-form-field>
         <mat-label translate>oracle.publicKey</mat-label>
-        <input matInput name="publicKey" type="text" [(ngModel)]="publicKey" readonly="true">
+        <input matInput name="publicKey" type="text" [(ngModel)]="oracleState.publicKey" readonly="true">
       </mat-form-field>
       <mat-form-field>
         <mat-label translate>oracle.stakingAddress</mat-label>
-        <input matInput name="stakingAddress" type="text" [(ngModel)]="stakingAddress" readonly="true">
+        <input matInput name="stakingAddress" type="text" [(ngModel)]="oracleState.stakingAddress" readonly="true">
       </mat-form-field>
       <mat-form-field>
         <mat-label translate>oracle.stakedAmount</mat-label>
-        <input matInput name="stakedAmount" type="text" [(ngModel)]="stakedAmount" readonly="true">
+        <input matInput name="stakedAmount" type="text" [(ngModel)]="oracleState.stakedAmount" readonly="true">
       </mat-form-field>
     </form>
   </div>

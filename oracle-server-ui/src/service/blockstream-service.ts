@@ -9,6 +9,7 @@ import { environment } from '~environments'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { AddressResponse } from '~type/blockstream-types'
+import { getProxyErrorHandler } from '~type/proxy-server-types'
 
 import { TorService } from './tor.service'
 
@@ -22,18 +23,14 @@ export class BlockstreamService {
 
   constructor(private http: HttpClient, private torService: TorService, private dialog: MatDialog) {}
 
-  private errorHandler(error: any, caught: Observable<unknown>) {
-    console.error('Blockstream errorHandler')
-    let message = error?.message
+  private errorHandler = getProxyErrorHandler('blockstream', (message: string) => {
     const dialog = this.dialog.open(ErrorDialogComponent, {
       data: {
         title: 'dialog.blockstreamError.title',
         content: message,
       }
     })
-    throw(Error('Blockstream error ' + error))
-    return new Observable<any>() // required for type checking...
-  }
+  }).bind(this)
 
   /** Helper functions */
 
@@ -47,7 +44,8 @@ export class BlockstreamService {
   /** API Calls */
 
   getBalance(address: string) {
+    console.debug('getBalance()')
     return this.http.get<AddressResponse>(this.url + `/address/${address}`)
-      .pipe(catchError(this.errorHandler.bind(this)))
+      .pipe(catchError(this.errorHandler))
   }
 }

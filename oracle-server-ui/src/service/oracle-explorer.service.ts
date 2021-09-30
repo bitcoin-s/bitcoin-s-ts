@@ -10,6 +10,7 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
 import { OracleEvent } from '~type/oracle-server-types'
+import { getProxyErrorHandler } from '~type/proxy-server-types'
 
 import { TorService } from './tor.service'
 
@@ -56,18 +57,14 @@ export class OracleExplorerService {
     return { headers }
   }
 
-  private errorHandler(error: any, caught: Observable<unknown>) {
-    console.error('OracleExplorer errorHandler')
-    let message = error?.message
+  private errorHandler = getProxyErrorHandler('oracleExplorer', (message: string) => {
     const dialog = this.dialog.open(ErrorDialogComponent, {
       data: {
         title: 'dialog.oracleExplorerError.title',
         content: message,
       }
     })
-    throw(Error('OracleExplorer error ' + error))
-    return new Observable<any>() // required for type checking...
-  }
+  }).bind(this)
 
   /**
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#list-all-events
@@ -75,7 +72,7 @@ export class OracleExplorerService {
    */
   listAnnouncements() {
     return this.http.get<OracleAnnouncementsResponse[]>(this.url + '/announcements', 
-      this.getHeaders()).pipe(catchError(this.errorHandler.bind(this)))
+      this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -84,7 +81,7 @@ export class OracleExplorerService {
    */
   getAnnouncement(announcementHash: string) {
     return this.http.get<OracleAnnouncementsResponse>(this.url + `/announcements/${announcementHash}`,
-      this.getHeaders()).pipe(catchError(this.errorHandler.bind(this)))
+      this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -105,7 +102,7 @@ export class OracleExplorerService {
     // TODO : Could allow user to enter URI
     
     return this.http.post<string>(this.url + '/announcements', body, this.getHeaders())
-      .pipe(catchError(this.errorHandler.bind(this)))
+      .pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -122,12 +119,12 @@ export class OracleExplorerService {
     const body = new HttpParams()
       .set('attestations', event.attestations)
     return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body, this.getHeaders())
-      .pipe(catchError(this.errorHandler.bind(this)))
+      .pipe(catchError(this.errorHandler))
   }
 
   getOracleName(pubkey: string) {
     return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
-      .pipe(catchError(this.errorHandler.bind(this)))
+      .pipe(catchError(this.errorHandler))
   }
 
   getLocalOracleName(pubkey: string) {

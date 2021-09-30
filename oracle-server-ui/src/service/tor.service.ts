@@ -8,6 +8,8 @@ const TOR_KEY = 'USE_TOR'
 
 const DEFAULT_USE_TOR = false
 
+// const TOR_ERROR_THRESHOLD = 0
+
 @Injectable({ providedIn: 'root' })
 export class TorService {
 
@@ -17,8 +19,17 @@ export class TorService {
     localStorage.setItem(TOR_KEY, value.toString())
   }
   get useTor() {
+    // if (this._errors > TOR_ERROR_THRESHOLD) {
+    //   return false;
+    // }
     return this._useTor
   }
+
+  // Could track error count and doing something here...
+  // private _errors = 0
+  // addError() {
+  //   ++this._errors
+  // }
 
   constructor() {
     const value = localStorage.getItem(TOR_KEY)

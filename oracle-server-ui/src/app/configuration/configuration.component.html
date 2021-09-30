@@ -17,4 +17,12 @@
       <app-more-info matSuffix tooltip="configuration.useTorTooltip"></app-more-info>
     </div>
   </form>
+
+  <div class="button-container">
+    <button mat-stroked-button (click)="onRefreshOracleData()">
+      <mat-icon>refresh</mat-icon>
+      <span class="button-label" translate>oracle.refreshData</span>
+    </button>
+  </div>
+
 </section>

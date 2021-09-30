@@ -12,7 +12,8 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { OracleServerMessage } from '~type/oracle-server-message'
 import { MessageType, OracleResponse, ServerVersion } from '~type/oracle-server-types'
 import { BuildConfig, SuccessType } from '~type/proxy-server-types'
-import { getMessageBody } from '~util/message-util'
+
+import { getMessageBody } from '~util/oracle-server-util'
 
 
 /** Service that communicates with underlying oracleServer instance through oracle-server-ui-proxy */

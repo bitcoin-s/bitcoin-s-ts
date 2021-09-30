@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatCheckboxChange } from '@angular/material/checkbox'
 
 import { OracleExplorerService, ORACLE_EXPLORERS } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
 import { TorService } from '~service/tor.service'
 
 
@@ -19,7 +20,7 @@ export class ConfigurationComponent implements OnInit {
   oracleExplorer: string // 'test', 'prod'
   useTor: boolean
 
-  constructor(private oracleExplorerService: OracleExplorerService, private torService: TorService) { }
+  constructor(private oracleExplorerService: OracleExplorerService, private torService: TorService, private oracleState: OracleStateService) { }
 
   ngOnInit(): void {
     this.oracleExplorer = this.oracleExplorerService.oracleExplorer.value.value
@@ -42,6 +43,13 @@ export class ConfigurationComponent implements OnInit {
   useTorChanged(change: MatCheckboxChange) {
     console.debug('useTorChanged()', change)
     this.torService.useTor = change.checked
+  }
+
+  // Refresh oracleExplorer / Blockstream data that may not have loaded over tor previously
+  onRefreshOracleData() {
+    console.debug('onRefreshOracleData()')
+    this.oracleState.getOracleName()
+    this.oracleState.getStakingBalance()
   }
 
 }
