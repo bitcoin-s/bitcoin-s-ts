@@ -24,21 +24,9 @@
   </div>
 
   <div class="debug-buttons" [hidden]="hideRawButtons">
-
-    <h4 class="debug-label" translate>oracle.heading</h4>
-    <nav class="debug-button-group">
-      <button type="button" (click)="onOracleHeartbeat()" translate>oracleOperations.heartbeat</button>
-      <!-- <button type="button" (click)="getAllEvents()" translate>oracleOperations.getAllEvents</button> -->
-  
-      <button type="button" (click)="onGetPublicKey()" translate>oracleOperations.getpublickey</button>
-      <button type="button" (click)="onGetStakingAddress()" translate>oracleOperations.getstakingaddress</button>
-      <!-- <button type="button" (click)="onListEvents()" translate>oracleOperations.listevents</button> -->
-    </nav>
-  
     <h4 class="debug-label" translate>oracleExplorer.heading</h4>
     <nav class="debug-button-group">
       <button type="button" (click)="listAnnouncements()" translate>oracleExplorerOperations.listAnnouncements</button>
-      <!-- <button type="button" (click)="getLocalEventAnnouncements()" translate>oracleExplorerOperations.getLocalEventAnnouncements</button> -->
     </nav>
   </div>
 

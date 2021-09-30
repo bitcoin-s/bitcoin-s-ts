@@ -2,17 +2,18 @@ import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } fro
 import { MatDialog } from '@angular/material/dialog'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
-import { forkJoin } from 'rxjs'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+
 import { BlockstreamService } from '~service/blockstream-service'
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
-import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
+
 import { MessageType, OracleEvent } from '~type/oracle-server-types'
 import { BuildConfig } from '~type/proxy-server-types'
-import { getMessageBody } from '~util/message-util'
+
+import { formatOutcomes, getMessageBody } from '~util/oracle-server-util'
 import { KrystalBullImages } from '~util/ui-util'
 
 
@@ -29,6 +30,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
 
   public KrystalBullImages = KrystalBullImages
+  public formatOutcomes = formatOutcomes
 
   hideRawButtons = true
 
@@ -214,24 +216,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onShowDebug() {
     console.debug('onShowDebug()')
     this.hideRawButtons = !this.hideRawButtons
-  }
-
-  formatOutcomes(outcomes: [any]): string {
-    if (outcomes && outcomes.length > 0) {
-      const head = outcomes[0]
-      if (Array.isArray(head) && head.length === 2) {
-        // numeric outcomes
-        const signed = head[0] === '+' && head[1] === '-'
-        const exp = signed ? outcomes.length - 1 : outcomes.length
-        const outcome = (2 ** exp) - 1
-        return signed ? '-' + outcome + '..' + outcome : '0..' + outcome
-      } else {
-        // enum and all other outcomes
-        return '' + outcomes
-      }
-    } else {
-      return ''
-    }
   }
 
   onRowClick(event: OracleEvent) {

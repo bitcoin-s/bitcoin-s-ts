@@ -163,10 +163,9 @@ createProxies()
 
 const DEFAULT_TOR_PROXY = Config.torProxyUrl
 const USE_TOR_PROXY = !!process.env.TOR_PROXY || !!DEFAULT_TOR_PROXY
-let agent = null
 if (USE_TOR_PROXY) {
   const torProxyUrl = process.env.TOR_PROXY || DEFAULT_TOR_PROXY
-  agent = new SocksProxyAgent(torProxyUrl)
+  const agent = new SocksProxyAgent(torProxyUrl)
   createProxies(agent)
 }
 

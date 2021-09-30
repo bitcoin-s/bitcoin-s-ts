@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core'
-import { BehaviorSubject, forkJoin } from 'rxjs'
+import { BehaviorSubject, forkJoin, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { MessageService } from './message.service'
@@ -69,10 +69,10 @@ export class OracleStateService {
 
   private getLocalEventAnnouncements() {
     console.debug('getLocalEventAnnouncements()', this.flatEvents)
-
     this.announcements.next({})
     // Have seen these 403 against the Production Oracle Server over Tor
-    const obs = forkJoin(this.flatEvents.value.map(e => this.getAnnouncement(e)))
+    const obs = forkJoin(this.flatEvents.value.map(e => this.announcements.value[e.eventName] ? 
+      of(this.announcements.value[e.eventName]) : this.getAnnouncement(e)))
     return obs
   }
 

@@ -6,7 +6,7 @@ import { stringToBoolean } from '~util/ui-util'
 // LocalStorage Keys
 const TOR_KEY = 'USE_TOR'
 
-const DEFAULT_USE_TOR = true
+const DEFAULT_USE_TOR = false
 
 @Injectable({ providedIn: 'root' })
 export class TorService {

@@ -1,12 +1,16 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { BehaviorSubject } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { MatDialog } from '@angular/material/dialog'
+import { BehaviorSubject, Observable } from 'rxjs'
+import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
 
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+
 import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
 import { OracleEvent } from '~type/oracle-server-types'
+
 import { TorService } from './tor.service'
 
 
@@ -40,7 +44,7 @@ export class OracleExplorerService {
     localStorage.setItem(ORACLE_EXPLORER_VALUE_KEY, oe.value)
   }
   
-  constructor(private http: HttpClient, private torService: TorService) {
+  constructor(private http: HttpClient, private torService: TorService, private dialog: MatDialog) {
     const oracleValue = localStorage.getItem(ORACLE_EXPLORER_VALUE_KEY) || DEFAULT_ORACLE_EXPLORER_VALUE
     const oracle = ORACLE_EXPLORERS.find(o => o.value === oracleValue)
     this.oracleExplorer = new BehaviorSubject(oracle ? oracle : ORACLE_EXPLORERS[0])
@@ -52,13 +56,26 @@ export class OracleExplorerService {
     return { headers }
   }
 
+  private errorHandler(error: any, caught: Observable<unknown>) {
+    console.error('OracleExplorer errorHandler')
+    let message = error?.message
+    const dialog = this.dialog.open(ErrorDialogComponent, {
+      data: {
+        title: 'dialog.oracleExplorerError.title',
+        content: message,
+      }
+    })
+    throw(Error('OracleExplorer error ' + error))
+    return new Observable<any>() // required for type checking...
+  }
+
   /**
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#list-all-events
    * @returns OracleAnnouncementsResponse[]
    */
   listAnnouncements() {
     return this.http.get<OracleAnnouncementsResponse[]>(this.url + '/announcements', 
-      this.getHeaders())
+      this.getHeaders()).pipe(catchError(this.errorHandler.bind(this)))
   }
 
   /**
@@ -67,7 +84,7 @@ export class OracleExplorerService {
    */
   getAnnouncement(announcementHash: string) {
     return this.http.get<OracleAnnouncementsResponse>(this.url + `/announcements/${announcementHash}`,
-      this.getHeaders())
+      this.getHeaders()).pipe(catchError(this.errorHandler.bind(this)))
   }
 
   /**
@@ -87,7 +104,8 @@ export class OracleExplorerService {
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
-    return this.http.post<string>(this.url + '/announcements', body)
+    return this.http.post<string>(this.url + '/announcements', body, this.getHeaders())
+      .pipe(catchError(this.errorHandler.bind(this)))
   }
 
   /**
@@ -103,11 +121,13 @@ export class OracleExplorerService {
 
     const body = new HttpParams()
       .set('attestations', event.attestations)
-    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body)
+    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body, this.getHeaders())
+      .pipe(catchError(this.errorHandler.bind(this)))
   }
 
   getOracleName(pubkey: string) {
     return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
+      .pipe(catchError(this.errorHandler.bind(this)))
   }
 
   getLocalOracleName(pubkey: string) {
