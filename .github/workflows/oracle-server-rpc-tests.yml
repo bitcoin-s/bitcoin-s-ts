@@ -15,4 +15,7 @@ jobs:
         run: docker pull bitcoinscala/bitcoin-s-oracle-server:latest
       - name: 'Run oracle server docker image'
         run: docker run -d -p 9998:9998 bitcoinscala/bitcoin-s-oracle-server:latest
-      # run typescript tests next
+      - name: 'Run tests'
+        run: |
+          cd oracle-server-ts
+          npm i && npm run test
