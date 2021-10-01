@@ -10,4 +10,15 @@
   .form-container > * {
     width: 100%;
   }
+
+  .button-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    button {
+      span {
+        margin-left: 0.4rem;
+      }
+    }
+  }
 }

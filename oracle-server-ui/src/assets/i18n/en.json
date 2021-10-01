@@ -17,6 +17,8 @@
   "server": "Server",
   "ui": "UI",
 
+  "error": "Error",
+
   "oracleOperations": {
     "getpublickey": "Get Public Key",
     "getstakingaddress": "Get Staking Address",
@@ -45,7 +47,8 @@
     "name": "Oracle Name",
     "publicKey": "Public Key",
     "stakingAddress": "Staking Address",
-    "stakedAmount": "Staked Amount"
+    "stakedAmount": "Staked Amount",
+    "refreshData": "Refresh Local Oracle Data"
   },
 
   "oracleExplorerOperations": {
@@ -63,7 +66,9 @@
   },
 
   "configuration": {
-    "heading": "Configuration"
+    "heading": "Configuration",
+    "useTor": "Use Tor",
+    "useTorTooltip": "Use Tor network for external interactions"
   },
   
   "oracleExplorer": {
@@ -74,10 +79,27 @@
   },
 
   "dialog": {
+    "sendMessageError": {
+      "title": "Error sending message to OracleServer"
+    },
+    "oracleExplorerError": {
+      "title": "Error communicating to Oracle Explorer"
+    },
+    "blockstreamError": {
+      "title": "Error communicating to Blockstream"
+    },
     "confirmOracleName": {
       "title": "Confirm Oracle Name",
       "content": "Are you sure you want to set your Oracle Name to '{{oracleName}}'? Once used it cannot be changed.",
       "action": "Set Oracle Name"
+    },
+    "signedBelowMinimum": {
+      "title": "Signed message below minimum",
+      "content": "You entered {{input}}, which is below the minimum value. {{min}} was signed."
+    },
+    "signedAboveMaximum": {
+      "title": "Signed message above maximum",
+      "content": "You entered {{input}}, which is above the maximum value. {{max}} was signed."
     }
   },
 
@@ -160,7 +182,10 @@
   "action": {
     "cancel": "Cancel",
     "dismiss": "Dismiss",
-    "sign": "Sign"
+    "sign": "Sign",
+    "ok": "Ok",
+    "yes": "Yes",
+    "no": "No"
   }
 
 }

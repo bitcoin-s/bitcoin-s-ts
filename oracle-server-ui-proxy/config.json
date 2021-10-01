@@ -3,6 +3,8 @@
 	"stopOnError": false,
 	"useHTTPS": false,
 	"apiRoot": "/api/v0",
+	"torProxyRoot": "/tor",
+	"torProxyUrl": "socks5://127.0.0.1:9050",
 	"proxyRoot": "/proxy",
 	"oracleExplorerRoot": "/oracleexplorer",
 	"oracleServerUrl": "http://localhost:9998/",

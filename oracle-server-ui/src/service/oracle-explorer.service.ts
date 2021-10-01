@@ -1,12 +1,18 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { BehaviorSubject } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { MatDialog } from '@angular/material/dialog'
+import { BehaviorSubject, Observable } from 'rxjs'
+import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
 
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+
 import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
 import { OracleEvent } from '~type/oracle-server-types'
+import { getProxyErrorHandler } from '~type/proxy-server-types'
+
+import { TorService } from './tor.service'
 
 
 // Host replacement header for proxy
@@ -26,7 +32,9 @@ const DEFAULT_ORACLE_EXPLORER_VALUE = 'test'
 @Injectable({ providedIn: 'root' })
 export class OracleExplorerService {
 
-  private url = environment.oracleExplorerApi
+  private get url() {
+    return (this.torService.useTor ? environment.torApi : '') + environment.oracleExplorerApi
+  }
 
   readonly oracleName: BehaviorSubject<string> = new BehaviorSubject('')
   readonly serverOracleName: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -37,7 +45,7 @@ export class OracleExplorerService {
     localStorage.setItem(ORACLE_EXPLORER_VALUE_KEY, oe.value)
   }
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private torService: TorService, private dialog: MatDialog) {
     const oracleValue = localStorage.getItem(ORACLE_EXPLORER_VALUE_KEY) || DEFAULT_ORACLE_EXPLORER_VALUE
     const oracle = ORACLE_EXPLORERS.find(o => o.value === oracleValue)
     this.oracleExplorer = new BehaviorSubject(oracle ? oracle : ORACLE_EXPLORERS[0])
@@ -49,13 +57,22 @@ export class OracleExplorerService {
     return { headers }
   }
 
+  private errorHandler = getProxyErrorHandler('oracleExplorer', (message: string) => {
+    const dialog = this.dialog.open(ErrorDialogComponent, {
+      data: {
+        title: 'dialog.oracleExplorerError.title',
+        content: message,
+      }
+    })
+  }).bind(this)
+
   /**
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#list-all-events
    * @returns OracleAnnouncementsResponse[]
    */
   listAnnouncements() {
     return this.http.get<OracleAnnouncementsResponse[]>(this.url + '/announcements', 
-      this.getHeaders())
+      this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -64,7 +81,7 @@ export class OracleExplorerService {
    */
   getAnnouncement(announcementHash: string) {
     return this.http.get<OracleAnnouncementsResponse>(this.url + `/announcements/${announcementHash}`,
-      this.getHeaders())
+      this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -84,7 +101,8 @@ export class OracleExplorerService {
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
-    return this.http.post<string>(this.url + '/announcements', body)
+    return this.http.post<string>(this.url + '/announcements', body, this.getHeaders())
+      .pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -100,11 +118,13 @@ export class OracleExplorerService {
 
     const body = new HttpParams()
       .set('attestations', event.attestations)
-    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body)
+    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body, this.getHeaders())
+      .pipe(catchError(this.errorHandler))
   }
 
   getOracleName(pubkey: string) {
     return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
+      .pipe(catchError(this.errorHandler))
   }
 
   getLocalOracleName(pubkey: string) {

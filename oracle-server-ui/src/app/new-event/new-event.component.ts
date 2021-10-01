@@ -7,10 +7,12 @@ import { AlertType } from '~app/component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
+
 import { EventType } from '~type/client-types'
 import { OracleServerMessage } from '~type/oracle-server-message'
 import { MessageType } from '~type/oracle-server-types'
-import { getMessageBody } from '~util/message-util'
+
+import { getMessageBody } from '~util/oracle-server-util'
 
 
 /** Validators */

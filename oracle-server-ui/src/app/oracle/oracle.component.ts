@@ -2,17 +2,18 @@ import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } fro
 import { MatDialog } from '@angular/material/dialog'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
-import { forkJoin } from 'rxjs'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+
 import { BlockstreamService } from '~service/blockstream-service'
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
-import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
-import { MessageType, OracleEvent } from '~type/oracle-server-types'
+
+import { OracleEvent } from '~type/oracle-server-types'
 import { BuildConfig } from '~type/proxy-server-types'
-import { getMessageBody } from '~util/message-util'
+
+import { formatOutcomes } from '~util/oracle-server-util'
 import { KrystalBullImages } from '~util/ui-util'
 
 
@@ -29,6 +30,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
 
   public KrystalBullImages = KrystalBullImages
+  public formatOutcomes = formatOutcomes
 
   hideRawButtons = true
 
@@ -41,9 +43,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   // Oracle Info
   oracleName = ''
   oracleNameReadOnly = true // don't allow editing until checking for a name
-  publicKey = ''
-  stakingAddress = ''
-  stakedAmount = ''
 
   serverVersion = ''
   buildConfig: BuildConfig
@@ -51,6 +50,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
   // Grid config
   dataSource = new MatTableDataSource(<OracleEvent[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
+
+  loading = true
 
   constructor(public dialog: MatDialog, public oracleState: OracleStateService, private messageService: MessageService, 
     public oracleExplorerService: OracleExplorerService, private blockstreamService: BlockstreamService) { }
@@ -62,34 +63,33 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
+    this.oracleState.eventsReceived.subscribe(received => {
+      console.debug('eventsReceived', received)
+      this.loading = !received
+    })
+
+    this.messageService.getServerVersion().subscribe(result => {
+      if (result && result.result) {
+        this.serverVersion = result.result.version
+      }
+    })
+    this.messageService.buildConfig().subscribe(result => {
+      if (result) {
+        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = result
+      }
+    })
+    this.oracleState.getAllEvents().subscribe(_ => {
+      console.debug('initial getAllEvents() complete')
+    })
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
-    this.messageService.getServerVersion().subscribe(result => {
-      console.debug('messageService.getOracleServerVersion()', result)
-      if (result && result.result) {
-        this.serverVersion = result.result.version
-      }
-    })
-
-    this.onGetPublicKey()
-    this.onGetStakingAddress()
-
     this.oracleState.flatEvents.subscribe(_ => {
       this.dataSource.data = this.oracleState.flatEvents.value
       this.table.renderRows()
-    })
-
-    this.oracleState.getAllEvents().subscribe()
-
-    this.messageService.buildConfig().subscribe(result => {
-      console.debug('messageService.buildConfig()', result)
-      if (result) {
-        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
-        this.buildConfig = result
-      }
     })
   }
 
@@ -104,48 +104,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
     })
   }
 
-  private getOracleName(publicKey: string) {
-    this.oracleExplorerService.getLocalOracleName(publicKey).subscribe(result => {
-      console.debug('getOracleName()', result)
-    })
-  }
-
-  /** Blockstream handlers */
-
-  getStakingBalance(address: string) {
-    this.blockstreamService.getBalance(address).subscribe(result => {
-      this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
-    })
-  }
-
   /** Debug button handlers */
 
   onOracleHeartbeat() {
     console.debug('onOracleHeartbeateartbeat')
     this.messageService.oracleHeartbeat().subscribe(result => {
       console.debug('oracle heartbeat:', result)
-    })
-  }
-
-  onGetPublicKey() {
-    console.debug('onGetPublicKey')
-    this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).subscribe(result => {
-      if (result.result) {
-        this.publicKey = result.result
-        if (!this.oracleName) {
-          this.getOracleName(this.publicKey)
-        }
-      }
-    })
-  }
-
-  onGetStakingAddress() {
-    console.debug('onGetStakingAddress')
-    this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).subscribe(result => {
-      if (result.result) {
-        this.stakingAddress = result.result
-        this.getStakingBalance(this.stakingAddress)
-      }
     })
   }
 
@@ -192,6 +156,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.showCreateEvent.next()
   }
 
+  onRefreshEvents() {
+    console.debug('onShowRefreshEvents()')
+    this.loading = true
+    this.oracleState.getAllEvents().subscribe()
+  }
+
   onShowConfiguration() {
     console.debug('onShowConfiguration()')
     this.showConfiguration.next()
@@ -205,24 +175,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onShowDebug() {
     console.debug('onShowDebug()')
     this.hideRawButtons = !this.hideRawButtons
-  }
-
-  formatOutcomes(outcomes: [any]): string {
-    if (outcomes && outcomes.length > 0) {
-      const head = outcomes[0]
-      if (Array.isArray(head) && head.length === 2) {
-        // numeric outcomes
-        const signed = head[0] === '+' && head[1] === '-'
-        const exp = signed ? outcomes.length - 1 : outcomes.length
-        const outcome = (2 ** exp) - 1
-        return signed ? '-' + outcome + '..' + outcome : '0..' + outcome
-      } else {
-        // enum and all other outcomes
-        return '' + outcomes
-      }
-    } else {
-      return ''
-    }
   }
 
   onRowClick(event: OracleEvent) {

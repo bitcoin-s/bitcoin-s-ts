@@ -22,13 +22,4 @@
     padding-right: 1rem;
   }
   
-  // Center checkbox in pseudo-mat-form-field
-  .mat-form-field--checkbox {
-    display: flex;
-    flex-direction: row;
-
-    mat-checkbox {
-      margin: auto;
-    }
-  }
 }

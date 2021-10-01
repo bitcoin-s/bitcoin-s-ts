@@ -118,6 +118,19 @@
         max-width: 200px;
       }
 
+      .mat-column-signedOutcome {
+        .signedOutcome-container {
+          display: flex;
+          align-items: center;
+
+          max-height: 45px; // spinner blows out height otherwise
+
+          .spinner {
+            margin-left: 0.5rem;
+          }
+        }
+      }
+
       .icon-inactive {
         opacity: 0.25;
       }
@@ -135,11 +148,18 @@
       }
     }
   }
+
+  .spinner {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
   
   .footer {
     display: flex;
     font-size: smaller;
     color: #8c959f;
+    
+    margin-bottom: 0.25rem;
 
     .label {
       margin-right: 0.25rem;

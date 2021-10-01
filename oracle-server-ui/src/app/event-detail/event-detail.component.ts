@@ -1,12 +1,14 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ThisReceiver } from '@angular/compiler';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AlertType } from '~app/component/alert/alert.component';
-import { MessageService } from '~service/message.service';
-import { OracleExplorerService } from '~service/oracle-explorer.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 
-import { MessageType, OracleEvent } from '~type/oracle-server-types';
-import { getMessageBody } from '~util/message-util';
+import { AlertType } from '~app/component/alert/alert.component'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+
+import { MessageService } from '~service/message.service'
+
+import { MessageType, OracleEvent } from '~type/oracle-server-types'
+
+import { getMessageBody, outcomesToMinMax } from '~util/oracle-server-util'
 
 
 @Component({
@@ -36,7 +38,7 @@ export class EventDetailComponent implements OnInit {
     this.signatures = ''
   }
 
-  constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService) { }
+  constructor(private messageService: MessageService, private dialog: MatDialog) { }
 
   ngOnInit(): void { }
 
@@ -48,31 +50,9 @@ export class EventDetailComponent implements OnInit {
     return Array.isArray(this.event.outcomes[0])
   }
 
-  // onSendToOracleExplorer() {
-  //   console.debug('onSendToOracleExplorer()')
-  //   this.oracleExplorerService.createAnnouncement(this.event).subscribe(result => {
-  //     console.debug(' createAnnouncement', result)
-  //   }, (error: HttpErrorResponse) => {
-  //     console.error(' createAnnouncement error', error)
-  //     if (error.status === 500) {
-  //       // Already exists
-  //     }
-  //   })
-  //   // Attestations
-  //   if (this.event.attestations) {
-  //     this.oracleExplorerService.createAttestations(this.event).subscribe(result => {
-  //       console.warn(' createAttestations', result)
-  //     }, (error: HttpErrorResponse) => {
-  //       console.error(' createAttestations error', error)
-  //       if (error.status === 500) {
-  //         // Already exists
-  //       }
-  //     })
-  //   }
-  // }
-
   onSignEvent() {
     console.debug('onSignEvent', this.event.eventName, this.signEventInput)
+    // TODO : Could validate this.signEventInput here
     const m = getMessageBody(MessageType.signevent, [this.event.eventName, this.signEventInput])
     this.messageService.sendMessage(m).subscribe(result => {
       console.debug(' onSignEvent', result)
@@ -80,24 +60,46 @@ export class EventDetailComponent implements OnInit {
         this.event.signedOutcome = this.signEventInput
         this.showSigningSuccess = true
       }
-    }, error => {
-      console.error('error signing event')
-      // TODO : Error dialog
     })
   }
   
   onSignDigits() {
-    console.debug('onSignDigits', this.event.eventName, this.signDigitsInput)
-    const m = getMessageBody(MessageType.signdigits, [this.event.eventName, this.signDigitsInput])
+    const input = this.signDigitsInput
+    console.debug('onSignDigits', this.event.eventName, input)
+    const m = getMessageBody(MessageType.signdigits, [this.event.eventName, input])
     this.messageService.sendMessage(m).subscribe(result => {
-      console.debug(' onSignEvent', result)
+      console.debug(' onSignDigits', result)
       if (result.result) {
-        this.event.signedOutcome = this.signDigitsInput?.toString() || ''
+        if (input !== undefined) {
+          let val = input
+          // Find input out of valid range and show dialog
+          const mm = outcomesToMinMax(this.event.outcomes);
+          if (mm) {
+            (<any>mm).input = input
+            let key
+            if (input < mm.min) {
+              key = 'signedBelowMinimum'
+              val = mm.min
+            } else if (input > mm.max) {
+              key = 'signedAboveMaximum'
+              val = mm.max
+            }
+            if (key) {
+              const dialog = this.dialog.open(ErrorDialogComponent, {
+                data: {
+                  title: `dialog.${key}.title`,
+                  content: `dialog.${key}.content`,
+                  params: mm,
+                }
+              })
+              this.event.signedOutcome = '' + val
+            }
+          }
+        } else {
+          this.event.signedOutcome = ''
+        }
         this.showSigningSuccess = true
       }
-    }, error => {
-      console.error('error signing event')
-      // TODO : Error dialog
     })
   }
 
