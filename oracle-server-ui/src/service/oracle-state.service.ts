@@ -102,16 +102,20 @@ export class OracleStateService {
         for (const e of announcementNames) {
           announcements.push(this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [e])))
         }
-        forkJoin(announcements).subscribe((results) => {
-          if (results) {
-            for (const e of results) {
-              this.addEventToState(<OracleAnnouncement>e.result)
+        if (announcements.length > 0) {
+          forkJoin(announcements).subscribe((results) => {
+            if (results) {
+              for (const e of results) {
+                this.addEventToState(<OracleAnnouncement>e.result)
+              }
+              this.updateFlatAnnouncements()
+              this.announcementsReceived.next(true)
             }
-            this.updateFlatAnnouncements()
-            this.announcementsReceived.next(true)
-          }
-          this.getAnnouncementsFromOracleExplorer().subscribe()
-        })
+            this.getAnnouncementsFromOracleExplorer().subscribe()
+          })
+        } else {
+          this.announcementsReceived.next(true)
+        }
       }
     }))
   }
