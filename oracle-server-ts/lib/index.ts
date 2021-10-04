@@ -146,3 +146,25 @@ export function GetSignatures(eventName: string) {
     return <OracleResponse<OracleEvent>>response
   })
 }
+
+export function DeleteAnnouncement(eventName: string) {
+  console.debug('DeleteAnnouncement()')
+  validateString(eventName, 'DeleteAnnouncement()', 'eventName')
+
+  const m = getMessageBody(MessageType.deleteannouncement, [eventName])
+  return SendOracleMessage(m).then(response => {
+    // console.debug('DeleteAnnouncement response:', response)
+    return <OracleResponse<OracleEvent>>response
+  })
+}
+
+export function DeleteAttestation(eventName: string) {
+  console.debug('DeleteAttestation()')
+  validateString(eventName, 'DeleteAttestation()', 'eventName')
+
+  const m = getMessageBody(MessageType.deleteattestation, [eventName])
+  return SendOracleMessage(m).then(response => {
+    // console.debug('DeleteAttestation response:', response)
+    return <OracleResponse<OracleEvent>>response
+  })
+}

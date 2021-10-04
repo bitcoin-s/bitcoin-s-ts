@@ -18,6 +18,8 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
     case MessageType.createenumannouncement:
     case MessageType.createnumericannouncement:
     case MessageType.createdigitdecompannouncement:
+    case MessageType.deleteannouncement:
+    case MessageType.deleteattestation:
       return new OracleServerMessageWithParameters(type, params!)
     default:
       throw(Error('getMessageBody() unknown message type: ' + type))

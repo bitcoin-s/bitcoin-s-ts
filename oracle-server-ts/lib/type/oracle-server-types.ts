@@ -13,6 +13,9 @@ export const enum MessageType {
   getsignatures = 'getsignatures',
   signmessage = 'signmessage',
 
+  deleteannouncement = 'deleteannouncement',
+  deleteattestation = 'deleteattestation',
+
   // Common
   getversion = 'getversion',
 
