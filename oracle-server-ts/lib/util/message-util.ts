@@ -1,22 +1,23 @@
-import { OracleServerMessage, OracleServerMessageWithParameters } from '~type/oracle-server-message'
-import { MessageType } from '~type/oracle-server-types'
+import { OracleServerMessage, OracleServerMessageWithParameters } from '../type/oracle-server-message'
+import { MessageType } from '../type/oracle-server-types'
 
 
 export function getMessageBody(type: MessageType, params?: any[]): OracleServerMessage {
   switch (type) {
     case MessageType.getpublickey:
     case MessageType.getstakingaddress:
-    case MessageType.listevents:
-    case MessageType.getversion: // Common
+    case MessageType.listannouncements:
+    // Common
+    case MessageType.getversion:
       return new OracleServerMessage(type)
-    case MessageType.getevent:
-    case MessageType.signevent:
+    case MessageType.getannouncement:
+    case MessageType.signenum:
     case MessageType.signdigits:
     case MessageType.signmessage:
     case MessageType.getsignatures:
-    case MessageType.createenumevent:
-    case MessageType.createnumericevent:
-    case MessageType.createdigitdecompevent:
+    case MessageType.createenumannouncement:
+    case MessageType.createnumericannouncement:
+    case MessageType.createdigitdecompannouncement:
       return new OracleServerMessageWithParameters(type, params!)
     default:
       throw(Error('getMessageBody() unknown message type: ' + type))

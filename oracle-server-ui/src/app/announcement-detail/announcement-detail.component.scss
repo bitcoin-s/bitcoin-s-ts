@@ -1,4 +1,4 @@
-.event-detail-section {
+.announcement-detail-section {
   padding: 0 1rem;
   min-width: 350px;
 
@@ -15,7 +15,8 @@
     min-height: 4rem;
   }
 
-  .event-json {
+  .announcement-json {
     flex: 1;
+    margin-bottom: 0.5rem;
   }
 }

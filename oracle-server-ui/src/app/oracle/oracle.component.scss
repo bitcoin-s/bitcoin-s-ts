@@ -78,7 +78,7 @@
 
     margin-bottom: 1rem;
     
-    .event-table {
+    .announcement-table {
   
       th.mat-sort-header-sorted {
         color: black;
@@ -108,10 +108,6 @@
 
       .mat-column-announcement {
         text-align: center;
-        .outcome-label {
-          margin-left: 0.25rem;
-          vertical-align: super;
-        }
       }
 
       .mat-column-attestations {
@@ -125,6 +121,10 @@
 
           max-height: 45px; // spinner blows out height otherwise
 
+          .outcome-label {
+            margin-right: 0.25rem;
+            vertical-align: super;
+          }
           .spinner {
             margin-left: 0.5rem;
           }

@@ -1,13 +1,13 @@
-<section class="event-detail-section">
+<section class="announcement-detail-section">
   <div class="section-header">
-    <h2 translate>eventDetail.heading</h2>
+    <h2 translate>announcementDetail.heading</h2>
     <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
   </div>
   
   <form class="form-container">
     <mat-form-field>
-      <mat-label translate>createEvent.name</mat-label>
-      <input matInput name="eventName" type="text" [(ngModel)]="event.eventName" readonly>
+      <mat-label translate>createAnnouncement.name</mat-label>
+      <input matInput name="eventName" type="text" [(ngModel)]="announcement.eventName" readonly>
     </mat-form-field>
 
     <!-- <ng-container>
@@ -15,20 +15,20 @@
       <button type="button" (click)="onSendToOracleExplorer()" translate>oracleExplorer.sendTo</button>
     </ng-container> -->
 
-    <mat-form-field *ngIf="event.signedOutcome !== null">
+    <mat-form-field *ngIf="announcement.signedOutcome !== null">
       <mat-label translate>outcome</mat-label>
-      <input matInput name="signedOutcome" type="text" [(ngModel)]="event.signedOutcome" readonly>
+      <input matInput name="signedOutcome" type="text" [(ngModel)]="announcement.signedOutcome" readonly>
     </mat-form-field>
 
-    <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="eventDetail.outcomeSigned" icon="check_circle"></app-alert>
+    <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="announcementDetail.outcomeSigned" icon="check_circle"></app-alert>
 
-    <ng-container *ngIf="event.signedOutcome === null">
+    <ng-container *ngIf="announcement.signedOutcome === null">
       <ng-container *ngIf="isEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
           <input matInput name="signEnum" type="text" [(ngModel)]="signEventInput">
         </mat-form-field>
-        <button type="button" (click)="onSignEvent()" translate>oracleOperations.signevent</button>
+        <button type="button" (click)="onSignEnum()" translate>oracleOperations.signenum</button>
       </ng-container>
       <br>
       <ng-container *ngIf="isNotEnum()">
@@ -48,12 +48,12 @@
   
   <ng-container *ngIf="signatures">
     <br>
-    <label translate>eventDetail.signatures</label>
+    <label translate>announcementDetail.signatures</label>
     <textarea class="signatures">{{ signatures | json }}</textarea>
   </ng-container> -->
   
   <br>
-  <label translate>eventDetail.eventJSON</label>
-  <textarea class="event-json">{{ event | json }}</textarea>
+  <label translate>announcementDetail.eventJSON</label>
+  <textarea class="announcement-json">{{ announcement | json }}</textarea>
 
 </section>

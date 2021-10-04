@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetSignatures = exports.SignDigits = exports.SignEvent = exports.CreateNumericEvent = exports.CreateEnumEvent = exports.GetEvent = exports.SignMessage = exports.ListEvents = exports.GetStakingAddress = exports.GetPublicKey = exports.SendOracleMessage = exports.ConfigureOracleServerURL = void 0;
+exports.GetSignatures = exports.SignDigits = exports.SignEnum = exports.CreateNumericAnnouncement = exports.CreateEnumAnnouncement = exports.GetAnnouncement = exports.SignMessage = exports.ListAnnouncements = exports.GetStakingAddress = exports.GetPublicKey = exports.SendOracleMessage = exports.ConfigureOracleServerURL = void 0;
 var needle_1 = __importDefault(require("needle"));
-var message_util_1 = require("./message-util");
-var util_1 = require("./util");
+var message_util_1 = require("./util/message-util");
+var validation_util_1 = require("./util/validation-util");
 var ORACLE_SERVER_URL = 'http://localhost:9998/';
 /** Set Oracle Server endpoint */
 function ConfigureOracleServerURL(url) {
@@ -49,18 +49,18 @@ function GetStakingAddress() {
     });
 }
 exports.GetStakingAddress = GetStakingAddress;
-function ListEvents() {
-    console.debug('ListEvents()');
-    var m = (0, message_util_1.getMessageBody)("listevents" /* listevents */);
+function ListAnnouncements() {
+    console.debug('ListAnnouncements()');
+    var m = (0, message_util_1.getMessageBody)("listannouncements" /* listannouncements */);
     return SendOracleMessage(m).then(function (response) {
-        // console.debug('ListEvents response:', response)
+        // console.debug('ListAnnouncements response:', response)
         return response;
     });
 }
-exports.ListEvents = ListEvents;
+exports.ListAnnouncements = ListAnnouncements;
 function SignMessage(message) {
     console.debug('SignMessage()', message);
-    (0, util_1.validateString)(message, 'SignMessage()', 'message');
+    (0, validation_util_1.validateString)(message, 'SignMessage()', 'message');
     var m = (0, message_util_1.getMessageBody)("signmessage" /* signmessage */, [message]);
     return SendOracleMessage(m).then(function (response) {
         // console.debug('SignMessage response:', response)
@@ -68,62 +68,62 @@ function SignMessage(message) {
     });
 }
 exports.SignMessage = SignMessage;
-function GetEvent(eventName) {
-    console.debug('GetEvent()', eventName);
-    (0, util_1.validateString)(eventName, 'GetEvent()', 'eventName');
-    var m = (0, message_util_1.getMessageBody)("getevent" /* getevent */, [eventName]);
+function GetAnnouncement(eventName) {
+    console.debug('GetAnnouncement()', eventName);
+    (0, validation_util_1.validateString)(eventName, 'GetAnnouncement()', 'eventName');
+    var m = (0, message_util_1.getMessageBody)("getannouncement" /* getannouncement */, [eventName]);
     return SendOracleMessage(m).then(function (response) {
-        // console.debug('GetEvent response:', response)
+        // console.debug('GetAnnouncement response:', response)
         return response;
     });
 }
-exports.GetEvent = GetEvent;
-function CreateEnumEvent(eventName, maturationTimeISOString, outcomes) {
-    console.debug('CreateEnumEvent()');
-    (0, util_1.validateString)(eventName, 'CreateEnumEvent()', 'eventName');
-    (0, util_1.validateISODateString)(maturationTimeISOString, 'CreateEnumEvent()', 'maturationTimeISOString');
-    (0, util_1.validateEnumOutcomes)(outcomes, 'CreateEnumEvent()');
-    var m = (0, message_util_1.getMessageBody)("createenumevent" /* createenumevent */, [eventName, maturationTimeISOString, outcomes]);
+exports.GetAnnouncement = GetAnnouncement;
+function CreateEnumAnnouncement(eventName, maturationTimeISOString, outcomes) {
+    console.debug('CreateEnumAnnouncement()');
+    (0, validation_util_1.validateString)(eventName, 'CreateEnumAnnouncement()', 'eventName');
+    (0, validation_util_1.validateISODateString)(maturationTimeISOString, 'CreateEnumAnnouncement()', 'maturationTimeISOString');
+    (0, validation_util_1.validateEnumOutcomes)(outcomes, 'CreateEnumAnnouncement()');
+    var m = (0, message_util_1.getMessageBody)("createenumannouncement" /* createenumannouncement */, [eventName, maturationTimeISOString, outcomes]);
     return SendOracleMessage(m).then(function (response) {
         // console.debug('CreateEnumEvent response:', response)
         return response;
     });
 }
-exports.CreateEnumEvent = CreateEnumEvent;
-function CreateNumericEvent(eventName, maturationTimeISOString, minValue, maxValue, unit, precision) {
-    console.debug('CreateNumericEvent()');
-    (0, util_1.validateString)(eventName, 'CreateEnumEvent()', 'eventName');
-    (0, util_1.validateISODateString)(maturationTimeISOString, 'CreateEnumEvent()', 'maturationTimeISOString');
-    (0, util_1.validateNumber)(minValue, 'CreateEnumEvent()', 'minValue');
-    (0, util_1.validateNumber)(maxValue, 'CreateEnumEvent()', 'maxValue');
+exports.CreateEnumAnnouncement = CreateEnumAnnouncement;
+function CreateNumericAnnouncement(eventName, maturationTimeISOString, minValue, maxValue, unit, precision) {
+    console.debug('CreateNumericAnnouncement()');
+    (0, validation_util_1.validateString)(eventName, 'CreateNumericAnnouncement()', 'eventName');
+    (0, validation_util_1.validateISODateString)(maturationTimeISOString, 'CreateNumericAnnouncement()', 'maturationTimeISOString');
+    (0, validation_util_1.validateNumber)(minValue, 'CreateNumericAnnouncement()', 'minValue');
+    (0, validation_util_1.validateNumber)(maxValue, 'CreateNumericAnnouncement()', 'maxValue');
     // TODO : Validate minValue/maxValue?
-    (0, util_1.validateString)(unit, 'CreateEnumEvent()', 'unit'); // unit can be an empty string
-    (0, util_1.validateNumber)(precision, 'CreateEnumEvent()', 'precision');
+    (0, validation_util_1.validateString)(unit, 'CreateNumericAnnouncement()', 'unit'); // unit can be an empty string
+    (0, validation_util_1.validateNumber)(precision, 'CreateNumericAnnouncement()', 'precision');
     if (precision < 0)
-        throw (Error('CreateEnumEvent() precision must be >= 0'));
-    var m = (0, message_util_1.getMessageBody)("createnumericevent" /* createnumericevent */, [eventName, maturationTimeISOString, minValue, maxValue, unit, precision]);
+        throw (Error('CreateNumericAnnouncement() precision must be >= 0'));
+    var m = (0, message_util_1.getMessageBody)("createnumericannouncement" /* createnumericannouncement */, [eventName, maturationTimeISOString, minValue, maxValue, unit, precision]);
     return SendOracleMessage(m).then(function (response) {
-        // console.debug('CreateNumericEvent response:', response)
+        // console.debug('CreateNumericAnnouncement response:', response)
         return response;
     });
 }
-exports.CreateNumericEvent = CreateNumericEvent;
+exports.CreateNumericAnnouncement = CreateNumericAnnouncement;
 // Rename SignEnum()?
-function SignEvent(eventName, outcome) {
-    console.debug('SignEvent()', eventName, outcome);
-    (0, util_1.validateString)(eventName, 'SignEvent()', 'eventName');
-    (0, util_1.validateString)(outcome, 'SignEvent()', 'outcome');
-    var m = (0, message_util_1.getMessageBody)("signevent" /* signevent */, [eventName, outcome]);
+function SignEnum(eventName, outcome) {
+    console.debug('SignEnum()', eventName, outcome);
+    (0, validation_util_1.validateString)(eventName, 'SignEnum()', 'eventName');
+    (0, validation_util_1.validateString)(outcome, 'SignEnum()', 'outcome');
+    var m = (0, message_util_1.getMessageBody)("signenum" /* signenum */, [eventName, outcome]);
     return SendOracleMessage(m).then(function (response) {
-        // console.debug('SignEvent response:', response)
+        // console.debug('SignEnum response:', response)
         return response;
     });
 }
-exports.SignEvent = SignEvent;
+exports.SignEnum = SignEnum;
 function SignDigits(eventName, outcome) {
     console.debug('SignDigits()', eventName, outcome);
-    (0, util_1.validateString)(eventName, 'SignDigits()', 'eventName');
-    (0, util_1.validateNumber)(outcome, 'SignDigits()', 'outcome');
+    (0, validation_util_1.validateString)(eventName, 'SignDigits()', 'eventName');
+    (0, validation_util_1.validateNumber)(outcome, 'SignDigits()', 'outcome');
     var m = (0, message_util_1.getMessageBody)("signdigits" /* signdigits */, [eventName, outcome]);
     return SendOracleMessage(m).then(function (response) {
         // console.debug('SignDigits response:', response)
@@ -133,7 +133,7 @@ function SignDigits(eventName, outcome) {
 exports.SignDigits = SignDigits;
 function GetSignatures(eventName) {
     console.debug('GetSignatures()');
-    (0, util_1.validateString)(eventName, 'GetSignatures()', 'eventName');
+    (0, validation_util_1.validateString)(eventName, 'GetSignatures()', 'eventName');
     var m = (0, message_util_1.getMessageBody)("getsignatures" /* getsignatures */, [eventName]);
     return SendOracleMessage(m).then(function (response) {
         // console.debug('GetSignatures response:', response)

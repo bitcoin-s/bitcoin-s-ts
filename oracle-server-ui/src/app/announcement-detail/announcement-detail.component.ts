@@ -6,21 +6,21 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
 
-import { MessageType, OracleEvent } from '~type/oracle-server-types'
+import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
 
 import { getMessageBody, outcomesToMinMax } from '~util/oracle-server-util'
 
 
 @Component({
-  selector: 'app-event-detail',
-  templateUrl: './event-detail.component.html',
-  styleUrls: ['./event-detail.component.scss']
+  selector: 'announcement-detail',
+  templateUrl: './announcement-detail.component.html',
+  styleUrls: ['./announcement-detail.component.scss']
 })
-export class EventDetailComponent implements OnInit {
+export class AnnouncementDetailComponent implements OnInit {
 
-  _event!: OracleEvent
-  get event(): OracleEvent { return this._event }
-  @Input() set event(e: OracleEvent) { this.reset(); this._event = e }
+  _announcement!: OracleAnnouncement
+  get announcement(): OracleAnnouncement { return this._announcement }
+  @Input() set announcement(e: OracleAnnouncement) { this.reset(); this._announcement = e }
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
@@ -44,20 +44,20 @@ export class EventDetailComponent implements OnInit {
 
   // Proxies for knowing eventType
   isEnum() {
-    return typeof this.event.outcomes[0] === 'string'
+    return typeof this.announcement.outcomes[0] === 'string'
   }
   isNotEnum() {
-    return Array.isArray(this.event.outcomes[0])
+    return Array.isArray(this.announcement.outcomes[0])
   }
 
-  onSignEvent() {
-    console.debug('onSignEvent', this.event.eventName, this.signEventInput)
+  onSignEnum() {
+    console.debug('onSignEnum()', this.announcement.eventName, this.signEventInput)
     // TODO : Could validate this.signEventInput here
-    const m = getMessageBody(MessageType.signevent, [this.event.eventName, this.signEventInput])
+    const m = getMessageBody(MessageType.signenum, [this.announcement.eventName, this.signEventInput])
     this.messageService.sendMessage(m).subscribe(result => {
-      console.debug(' onSignEvent', result)
+      console.debug(' onSignEnum()', result)
       if (result.result) {
-        this.event.signedOutcome = this.signEventInput
+        this.announcement.signedOutcome = this.signEventInput
         this.showSigningSuccess = true
       }
     })
@@ -65,15 +65,15 @@ export class EventDetailComponent implements OnInit {
   
   onSignDigits() {
     const input = this.signDigitsInput
-    console.debug('onSignDigits', this.event.eventName, input)
-    const m = getMessageBody(MessageType.signdigits, [this.event.eventName, input])
+    console.debug('onSignDigits()', this.announcement.eventName, input)
+    const m = getMessageBody(MessageType.signdigits, [this.announcement.eventName, input])
     this.messageService.sendMessage(m).subscribe(result => {
-      console.debug(' onSignDigits', result)
+      console.debug(' onSignDigits()', result)
       if (result.result) {
         if (input !== undefined) {
           let val = input
           // Find input out of valid range and show dialog
-          const mm = outcomesToMinMax(this.event.outcomes);
+          const mm = outcomesToMinMax(this.announcement.outcomes);
           if (mm) {
             (<any>mm).input = input
             let key
@@ -92,11 +92,11 @@ export class EventDetailComponent implements OnInit {
                   params: mm,
                 }
               })
-              this.event.signedOutcome = '' + val
+              this.announcement.signedOutcome = '' + val
             }
           }
         } else {
-          this.event.signedOutcome = ''
+          this.announcement.signedOutcome = ''
         }
         this.showSigningSuccess = true
       }
@@ -104,8 +104,8 @@ export class EventDetailComponent implements OnInit {
   }
 
   onGetSignatures() {
-    console.debug('onGetSignatures', this.event.eventName)
-    const m = getMessageBody(MessageType.getsignatures, [this.event.eventName])
+    console.debug('onGetSignatures()', this.announcement.eventName)
+    const m = getMessageBody(MessageType.getsignatures, [this.announcement.eventName])
     this.messageService.sendMessage(m).subscribe(result => {
       if (result.result) {
         this.signatures = result.result

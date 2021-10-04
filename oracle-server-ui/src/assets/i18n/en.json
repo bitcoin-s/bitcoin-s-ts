@@ -22,19 +22,21 @@
   "oracleOperations": {
     "getpublickey": "Get Public Key",
     "getstakingaddress": "Get Staking Address",
-    "listevents": "List Announcements",
-    "createenumevent": "Create Enum Announcement",
-    "createnumericevent": "Create Numeric Announcement",
-    "createdigitdecompevent": "Create Digit Decomp Announcement",
-    "getevent": "Get Announcement",
-    "signevent": "Sign Announcement",
+    "listannouncements": "List Announcements",
+    "createenumannouncement": "Create Enum Announcement",
+    "createnumericannouncement": "Create Numeric Announcement",
+    "createdigitdecompannouncement": "Create Digit Decomp Announcement",
+    "getannouncement": "Get Announcement",
+    "signenum": "Sign Announcement",
     "signdigits": "Sign Digits",
     "getsignatures": "Get Signatures",
     "signmessage": "Sign Message",
 
+    "getversion": "Get Version",
+
     "heartbeat": "Oracle Heartbeat",
-    "getAllEvents": "Get All Announcements",
-    "refreshEvents": "Refresh Announcements"
+    "getAllAnnouncements": "Get All Announcements",
+    "refreshAnnouncements": "Refresh Announcements"
   },
 
   "oracleEvent": {
@@ -56,9 +58,7 @@
     "getAnnouncement": "Get Announcement",
     "createAnnouncement": "Create Announcement",
     "createAttestations": "Create Attestations",
-    "getOracleName": "Get Oracle Name",
-
-    "getLocalEventAnnouncements": "Get Local Event Announcements"
+    "getOracleName": "Get Oracle Name"
   },
 
   "signMessage": {
@@ -103,7 +103,7 @@
     }
   },
 
-  "eventTable": {
+  "announcementTable": {
     "announced": "Announced",
     "announcementBroadcast": "Announcement Broadcast",
     "viewOnOracleExplorer": "View on Oracle Explorer",
@@ -112,13 +112,13 @@
     "maturationDate": "Maturation Date"
   },
 
-  "eventType": {
+  "announcementType": {
     "enum": "Enum",
     "numeric": "Numeric",
     "digitdecomp": "Digit Decomp"
   },
 
-  "createEvent": {
+  "createAnnouncement": {
     "heading": "Create Announcement",
 
     "error": {
@@ -148,7 +148,7 @@
     "attestations": "Attestations"
   },
 
-  "createEventDescription": {
+  "createAnnouncementDescription": {
     "name": "Name for this announcement",
     "maturationTime": "The earliest expected time an outcome will be signed, given in ISO 8601 format",
     "maturationTimeSeconds": "The earliest expected time an outcome will be signed, given in epoch second",
@@ -164,7 +164,7 @@
     "signed": "Whether the outcomes can be negative"
   },
 
-  "createEventErrors": {
+  "createAnnouncementErrors": {
     "nonPositive": "Value must be positive",
     "negative": "Value must be zero or more",
     "outcomeHasEmpty": "Outcome cannot be empty string",
@@ -172,7 +172,7 @@
     "outcomeMinTwo": "Must have at least two outcomes"
   },
 
-  "eventDetail": {
+  "announcementDetail": {
     "heading": "Announcement Detail",
     "signatures": "Signatures",
     "eventJSON": "Announcement JSON",

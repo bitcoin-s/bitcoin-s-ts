@@ -1,0 +1,120 @@
+<section class="new-announcement-section">
+  <div class="section-header">
+    <h2 translate>createAnnouncement.heading</h2>
+    <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+  
+  <form class="form-container" [formGroup]="form">
+    <fieldset [disabled]="loading || announcementCreated">
+    <!-- May want to move this outside the form -->
+    <mat-radio-group formControlName="announcementType" [(ngModel)]="announcementType" (ngModelChange)="wipeInvalidFormStates()">
+      <mat-radio-button *ngFor="let e of announcementTypes"
+        [value]="e">{{ 'announcementType.' + e | translate }}</mat-radio-button>
+    </mat-radio-group>
+    <br>
+
+    <mat-form-field>
+      <mat-label translate>createAnnouncement.name</mat-label>
+      <!-- TODO : Initial focus -- cdkFocusInitial -->
+      <input matInput formControlName="announcementName" type="text" autofocus
+        placeholder="{{ 'createAnnouncement.namePlaceholder' | translate }}">
+      <app-more-info matSuffix tooltip="createAnnouncementDescription.name"></app-more-info>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label translate>createAnnouncement.maturationTime</mat-label>
+      <input matInput formControlName="maturationTime" [matDatepicker]="datePicker" [min]="minDate"
+        placeholder="{{ 'createAnnouncement.maturationTimePlaceholder' | translate }}">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="announcementType === AnnouncementType.ENUM">
+      <mat-label translate>createAnnouncement.outcomes</mat-label>
+      <input matInput formControlName="outcomes" type="text"
+        placeholder="{{ 'createAnnouncement.outcomesPlaceholder' | translate }}">
+      <app-more-info matSuffix tooltip="createAnnouncementDescription.outcomes"></app-more-info>
+      <mat-error *ngIf="f.outcomes.errors?.outcomeHasEmpty">
+        {{ 'createAnnouncementErrors.outcomeHasEmpty' | translate }}
+      </mat-error>
+      <mat-error *ngIf="f.outcomes.errors?.outcomeUnique">
+        {{ 'createAnnouncementErrors.outcomeUnique' | translate }}
+      </mat-error> 
+      <mat-error *ngIf="f.outcomes.errors?.outcomeMinTwo">
+        {{ 'createAnnouncementErrors.outcomeMinTwo' | translate }}
+      </mat-error> 
+    </mat-form-field>
+
+    <ng-container *ngIf="announcementType === AnnouncementType.NUMERIC">
+      <mat-form-field>
+        <mat-label translate>createAnnouncement.minvalue</mat-label>
+        <input matInput formControlName="minValue" type="number">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.minvalue"></app-more-info>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>createAnnouncement.maxvalue</mat-label>
+        <input matInput formControlName="maxValue" type="number">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.maxvalue"></app-more-info>
+      </mat-form-field>
+      <br>
+    </ng-container>
+
+    <!--
+    <ng-container *ngIf="announcementType === AnnouncementType.DIGIT_DECOMP">
+      <mat-form-field>
+        <mat-label class="form-label" translate>createAnnouncement.base</mat-label>
+        <input matInput formControlName="base" type="text">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.base"></app-more-info>
+        <mat-error *ngIf="f.base.errors?.nonPositive">
+          {{ 'createAnnouncementErrors.nonPositive' | translate }}
+        </mat-error>  
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>createAnnouncement.numdigits</mat-label>
+        <input matInput formControlName="numdigits" type="number">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.numdigits"></app-more-info>
+        <mat-error *ngIf="f.numdigits.errors?.nonPositive">
+          {{ 'createAnnouncementErrors.nonPositive' | translate }}
+        </mat-error>  
+      </mat-form-field>
+      <br>
+    </ng-container>
+    -->
+
+    <ng-container *ngIf="announcementType === AnnouncementType.NUMERIC || announcementType === AnnouncementType.DIGIT_DECOMP">
+      <mat-form-field>
+        <mat-label translate>createAnnouncement.unit</mat-label>
+        <input matInput formControlName="unit" type="text">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.unit"></app-more-info>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>createAnnouncement.precision</mat-label>
+        <input matInput formControlName="precision" type="number">
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.precision"></app-more-info>
+        <mat-error *ngIf="f.precision.errors?.negative">
+          {{ 'createAnnouncementErrors.negative' | translate }}
+        </mat-error>   
+      </mat-form-field>
+      <br *ngIf="announcementType === AnnouncementType.DIGIT_DECOMP">
+    </ng-container>
+
+    <!--
+    <ng-container *ngIf="announcementType === AnnouncementType.DIGIT_DECOMP">
+      <div class="mat-form-field--checkbox">
+        <mat-label translate>createAnnouncement.signed</mat-label>
+        <mat-checkbox formControlName="signed"></mat-checkbox>
+        <app-more-info matSuffix tooltip="createAnnouncementDescription.signed"></app-more-info>
+      </div>
+      <br>
+    </ng-container>
+    -->
+    
+    <button type="button" (click)="onCreateAnnouncement()" [disabled]="!oracleName || form.invalid" translate>create</button>
+    </fieldset>
+  </form>
+  
+  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createAnnouncement.error.oracleName" icon="warning_amber"></app-alert>
+
+  <app-alert *ngIf="announcementCreated" [type]="AlertType.success" message="createAnnouncement.success.created" icon="check_circle"></app-alert>
+
+</section>

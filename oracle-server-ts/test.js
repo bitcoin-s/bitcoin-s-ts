@@ -45,8 +45,8 @@ OracleServer.GetStakingAddress().then(response => {
   console.debug('test.js GetStakingAddress response:', response)
 })
 
-OracleServer.ListEvents().then(response => {
-  console.debug('test.js ListEvents response:', response)
+OracleServer.ListAnnouncements().then(response => {
+  console.debug('test.js ListAnnouncements response:', response)
 })
 
 OracleServer.SignMessage(TEST_MESSAGE).then(response => {
@@ -59,46 +59,46 @@ OracleServer.GetEvent(EXISTING_EVENT_NAME).then(response => {
 
 // These work, but couldn't recreate with same name or cleanup after creation
 
-// OracleServer.CreateEnumEvent(...BAD_ISODATE_ENUM_EVENT).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_ISODATE_ENUM_EVENT).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...BAD_OUTCOMES_ENUM_EVENT_1).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_OUTCOMES_ENUM_EVENT_1).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...BAD_OUTCOMES_ENUM_EVENT_2).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_OUTCOMES_ENUM_EVENT_2).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...BAD_OUTCOMES_ENUM_EVENT_3).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_OUTCOMES_ENUM_EVENT_3).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...BAD_OUTCOMES_ENUM_EVENT_4).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_OUTCOMES_ENUM_EVENT_4).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...BAD_OUTCOMES_ENUM_EVENT_5).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...BAD_OUTCOMES_ENUM_EVENT_5).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
-// OracleServer.CreateEnumEvent(...VALID_ENUM_EVENT).then(response => {
-//   console.debug('test.js CreateEnumEvent response:', response)
+// OracleServer.CreateEnumAnnouncement(...VALID_ENUM_EVENT).then(response => {
+//   console.debug('test.js CreateEnumAnnouncement response:', response)
 // })
 
 // TODO : Numeric test cases
 
-// OracleServer.CreateNumericEvent(...VALID_NUMERIC_EVENT).then(response => {
+// OracleServer.CreateNumericAnnouncement(...VALID_NUMERIC_EVENT).then(response => {
 //   console.debug('test.js CreateNumericEvent response:', response)
 // })
 
-// OracleServer.SignEvent(...SIGN_ENUM).then(response => {
-//   console.debug('test.js SignEvent response:', response)
+// OracleServer.SignEnum(...SIGN_ENUM).then(response => {
+//   console.debug('test.js SignEnum response:', response)
 // })
 
-// OracleServer.SignEvent(...BAD_SIGN_ENUM).then(response => {
-//   console.debug('test.js SignEvent response:', response)
+// OracleServer.SignEnum(...BAD_SIGN_ENUM).then(response => {
+//   console.debug('test.js SignEnum response:', response)
 // })
 
 // OracleServer.SignDigits(...SIGN_NUMERIC).then(response => {
