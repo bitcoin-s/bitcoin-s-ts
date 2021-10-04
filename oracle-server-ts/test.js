@@ -53,8 +53,8 @@ OracleServer.SignMessage(TEST_MESSAGE).then(response => {
   console.debug('test.js SignMessage response:', response)
 })
 
-OracleServer.GetEvent(EXISTING_EVENT_NAME).then(response => {
-  console.debug('test.js GetEvent response:', response)
+OracleServer.GetAnnouncement(EXISTING_EVENT_NAME).then(response => {
+  console.debug('test.js GetAnnouncement response:', response)
 })
 
 // These work, but couldn't recreate with same name or cleanup after creation
