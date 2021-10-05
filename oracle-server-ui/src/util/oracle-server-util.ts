@@ -6,22 +6,27 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
   switch (type) {
     case MessageType.getpublickey:
     case MessageType.getstakingaddress:
-    case MessageType.listevents:
-    case MessageType.getversion: // Common
+    case MessageType.listannouncements:
+    // Common
+    case MessageType.getversion:
       return new OracleServerMessage(type)
-    case MessageType.getevent:
-    case MessageType.signevent:
+    case MessageType.getannouncement:
+    case MessageType.signenum:
     case MessageType.signdigits:
     case MessageType.signmessage:
     case MessageType.getsignatures:
-    case MessageType.createenumevent:
-    case MessageType.createnumericevent:
-    case MessageType.createdigitdecompevent:
+    case MessageType.createenumannouncement:
+    case MessageType.createnumericannouncement:
+    case MessageType.createdigitdecompannouncement:
+    case MessageType.deleteannouncement:
+    case MessageType.deleteattestation:
       return new OracleServerMessageWithParameters(type, params!)
     default:
       throw(Error('getMessageBody() unknown message type: ' + type))
   }
 }
+
+const DIGIT_SPACER = '..'
 
 export function formatOutcomes(outcomes: any[]): string {
   if (outcomes && outcomes.length > 0) {
@@ -31,7 +36,7 @@ export function formatOutcomes(outcomes: any[]): string {
       const signed = head[0] === '+' && head[1] === '-'
       const exp = signed ? outcomes.length - 1 : outcomes.length
       const outcome = (2 ** exp) - 1
-      return signed ? '-' + outcome + '..' + outcome : '0..' + outcome
+      return signed ? '-' + outcome + DIGIT_SPACER + outcome : '0' + DIGIT_SPACER + outcome
     } else {
       // enum and all other outcomes
       return '' + outcomes

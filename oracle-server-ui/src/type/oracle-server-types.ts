@@ -3,22 +3,32 @@
 export const enum MessageType {
   getpublickey = 'getpublickey',
   getstakingaddress = 'getstakingaddress',
-  listevents = 'listevents',
-  createenumevent = 'createenumevent',
-  createnumericevent = 'createnumericevent',
-  createdigitdecompevent = 'createdigitdecompevent',
-  getevent = 'getevent',
-  signevent = 'signevent',
+  listannouncements = 'listannouncements',
+  createenumannouncement = 'createenumannouncement',
+  createnumericannouncement = 'createnumericannouncement',
+  createdigitdecompannouncement = 'createdigitdecompannouncement',
+  getannouncement = 'getannouncement',
+  signenum = 'signenum',
   signdigits = 'signdigits',
   getsignatures = 'getsignatures',
   signmessage = 'signmessage',
 
+  deleteannouncement = 'deleteannouncement',
+  deleteattestation = 'deleteattestation',
+
   // Common
   getversion = 'getversion',
+
+  // Deprecated event endpoints
+  // createenumevent = 'createenumevent',
+  // createnumericevent = 'createnumericevent',
+  // createdigitdecompevent = 'createdigitdecompevent',
+  // getevent = 'getevent',
+  // signevent = 'signevent',
 }
 
-// Serverside OracleEvent response
-export interface OracleEvent {
+// Serverside OracleAnnouncement response
+export interface OracleAnnouncement {
   announcementSignature: string
   announcementTLV: string
   attestations: string
@@ -28,8 +38,8 @@ export interface OracleEvent {
   maturationTime: string // "2030-01-03T00:30:00Z"
   maturationTimeEpoch: number // 1893630600
   nonces: string[]
-  outcomes: string[] // enum, numeric: [["number"]]
-  signedOutcome: string
+  outcomes: string[] // enum: ["value","value2"], numeric: [["number"]]
+  signedOutcome: string|null
   signingVersion: string
 
   // ids

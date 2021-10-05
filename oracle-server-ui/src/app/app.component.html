@@ -3,18 +3,18 @@
 
   <!-- Left Drawer -->
   <mat-drawer #leftDrawer mode="side">
-    <app-new-event #newEvent *ngIf="showNewEvent" (close)="closeLeftDrawer()"></app-new-event>
+    <new-announcement #newAnnouncement *ngIf="showNewAnnouncement" (close)="closeLeftDrawer()"></new-announcement>
   </mat-drawer>
 
   <!-- Main Content -->
   <mat-drawer-content>
-    <app-oracle (showCreateEvent)="onShowCreateEvent()" (showEventDetail)="onShowEventDetail($event)" 
+    <app-oracle (showCreateAnnouncement)="onShowCreateAnnouncement()" (showAnnouncementDetail)="onShowAnnouncementDetail($event)" 
       (showSignMessage)="onShowSignMessage()" (showConfiguration)="onShowConfiguration()"></app-oracle>
   </mat-drawer-content>
 
   <!-- Right Drawer -->
-  <mat-drawer #rightDrawer [mode]="showEventDetail ? 'side' : 'over'" position="end">
-    <app-event-detail *ngIf="showEventDetail && detailEvent" [event]="detailEvent" (close)="closeRightDrawer()"></app-event-detail>
+  <mat-drawer #rightDrawer [mode]="showAnnouncementDetail ? 'side' : 'over'" position="end">
+    <announcement-detail *ngIf="showAnnouncementDetail && detailAnnouncement" [announcement]="detailAnnouncement" (close)="closeRightDrawer()"></announcement-detail>
     <app-configuration *ngIf="showConfiguration" (close)="closeRightDrawer()"></app-configuration>
     <app-sign-message *ngIf="showSignMessage" (close)="closeRightDrawer()"></app-sign-message>
   </mat-drawer>

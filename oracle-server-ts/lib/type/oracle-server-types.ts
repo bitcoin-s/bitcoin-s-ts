@@ -3,15 +3,28 @@
 export const enum MessageType {
   getpublickey = 'getpublickey',
   getstakingaddress = 'getstakingaddress',
-  listevents = 'listevents',
-  createenumevent = 'createenumevent',
-  createnumericevent = 'createnumericevent',
-  createdigitdecompevent = 'createdigitdecompevent',
-  getevent = 'getevent',
-  signevent = 'signevent',
+  listannouncements = 'listannouncements',
+  createenumannouncement = 'createenumannouncement',
+  createnumericannouncement = 'createnumericannouncement',
+  createdigitdecompannouncement = 'createdigitdecompannouncement',
+  getannouncement = 'getannouncement',
+  signenum = 'signenum',
   signdigits = 'signdigits',
   getsignatures = 'getsignatures',
   signmessage = 'signmessage',
+
+  deleteannouncement = 'deleteannouncement',
+  deleteattestation = 'deleteattestation',
+
+  // Common
+  getversion = 'getversion',
+
+  // Deprecated event endpoints
+  // createenumevent = 'createenumevent',
+  // createnumericevent = 'createnumericevent',
+  // createdigitdecompevent = 'createdigitdecompevent',
+  // getevent = 'getevent',
+  // signevent = 'signevent',
 }
 
 // Serverside OracleEvent response

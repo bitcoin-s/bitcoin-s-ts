@@ -10,9 +10,9 @@ import { MaterialModule } from './shared/modules/material/material.module'
 
 import { AppComponent } from './app.component'
 import { OracleComponent } from './oracle/oracle.component'
-import { NewEventComponent } from './new-event/new-event.component'
+import { NewAnnouncementComponent } from './new-announcement/new-announcement.component'
 import { MoreInfoComponent } from './component/more-info/more-info.component'
-import { EventDetailComponent } from './event-detail/event-detail.component'
+import { AnnouncementDetailComponent } from './announcement-detail/announcement-detail.component'
 import { LastResultDetailComponent } from './last-result-detail/last-result-detail.component'
 import { ConfigurationComponent } from './configuration/configuration.component'
 import { SignMessageComponent } from './sign-message/sign-message.component'
@@ -40,8 +40,8 @@ export function appInitializerFactory(translate: TranslateService) {
   declarations: [
     AppComponent,
     OracleComponent,
-    EventDetailComponent,
-    NewEventComponent,
+    AnnouncementDetailComponent,
+    NewAnnouncementComponent,
     AlertComponent,
     MoreInfoComponent,
     LastResultDetailComponent,

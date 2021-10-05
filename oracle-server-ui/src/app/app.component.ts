@@ -5,9 +5,9 @@ import { Title } from '@angular/platform-browser'
 import { TranslateService } from '@ngx-translate/core'
 
 import { MessageService } from '~service/message.service'
-import { OracleEvent } from '~type/oracle-server-types'
+import { OracleAnnouncement } from '~type/oracle-server-types'
 
-import { NewEventComponent } from './new-event/new-event.component'
+import { NewAnnouncementComponent } from './new-announcement/new-announcement.component'
 
 
 @Component({
@@ -20,16 +20,16 @@ export class AppComponent implements OnInit {
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
   @ViewChild('leftDrawer') leftDrawer: MatDrawer
 
-  @ViewChild('newEvent') newEvent: NewEventComponent
+  @ViewChild('newAnnouncement') newAnnouncement: NewAnnouncementComponent
 
   // Left side
-  showNewEvent = false
+  showNewAnnouncement = false
   // Right side
   showConfiguration = false
-  showEventDetail = false
+  showAnnouncementDetail = false
   showSignMessage = false
 
-  detailEvent: OracleEvent|undefined
+  detailAnnouncement: OracleAnnouncement|undefined
 
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar) {
 
@@ -49,26 +49,26 @@ export class AppComponent implements OnInit {
   }
 
   private hideLeftDrawerItems() {
-    this.showNewEvent = false
+    this.showNewAnnouncement = false
   }
 
   private hideRightDrawerItems() {
     this.showConfiguration = false
-    this.showEventDetail = false
+    this.showAnnouncementDetail = false
     this.showSignMessage = false
 
-    this.detailEvent = undefined
+    this.detailAnnouncement = undefined
   }
 
-  onShowCreateEvent() {
-    console.debug('onShowCreateEvent()')
-    if (this.leftDrawer.opened && this.showNewEvent) {
+  onShowCreateAnnouncement() {
+    console.debug('onShowCreateAnnouncement()')
+    if (this.leftDrawer.opened && this.showNewAnnouncement) {
       return
-    } else if (this.newEvent) {
-      this.newEvent.reset()
+    } else if (this.newAnnouncement) {
+      this.newAnnouncement.reset()
     }
     this.hideLeftDrawerItems()
-    this.showNewEvent = true
+    this.showNewAnnouncement = true
     this.leftDrawer.open()
   }
 
@@ -83,16 +83,16 @@ export class AppComponent implements OnInit {
     this.rightDrawer.open()
   }
 
-  onShowEventDetail(event: OracleEvent) {
-    console.debug('onShowEventDetail()', event, 'detailEvent', this.detailEvent)
+  onShowAnnouncementDetail(announcement: OracleAnnouncement) {
+    console.debug('onShowAnnouncementDetail()', announcement, 'detailEvent', this.detailAnnouncement)
 
-    if (!event || this.detailEvent === event) {
+    if (!announcement || this.detailAnnouncement === announcement) {
       this.rightDrawer.close()
-      this.detailEvent = undefined
+      this.detailAnnouncement = undefined
     } else {
       this.hideRightDrawerItems()
-      this.detailEvent = event
-      this.showEventDetail = true
+      this.detailAnnouncement = announcement
+      this.showAnnouncementDetail = true
       this.rightDrawer.open()
     }
   }

@@ -35,6 +35,7 @@ const materialModules = [
   MatSidenavModule,
   MatSnackBarModule,
   MatSortModule,
+  MatProgressSpinnerModule,
   MatRadioModule,
   MatTableModule,
   MatTooltipModule,

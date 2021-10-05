@@ -9,7 +9,7 @@ import { environment } from '~environments'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
-import { OracleEvent } from '~type/oracle-server-types'
+import { OracleAnnouncement } from '~type/oracle-server-types'
 import { getProxyErrorHandler } from '~type/proxy-server-types'
 
 import { TorService } from './tor.service'
@@ -88,7 +88,7 @@ export class OracleExplorerService {
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#create-an-event
    * @returns announcementTLVsha256
    */
-  createAnnouncement(event: OracleEvent) {
+  createAnnouncement(a: OracleAnnouncement) {
     // Java does get then send to see if oracle has it already
     if (!this.oracleName.value) {
       throw(Error('Oracle Name must be set to create announcements'))
@@ -96,8 +96,8 @@ export class OracleExplorerService {
     
     // This sets application/x-www-form-urlencoded when sent
     const body = new HttpParams()
-      .set('oracleAnnouncementV0', event.announcementTLV)
-      .set('description', event.eventName)
+      .set('oracleAnnouncementV0', a.announcementTLV)
+      .set('description', a.eventName)
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
@@ -111,14 +111,14 @@ export class OracleExplorerService {
    * @see https://gist.github.com/Christewart/a9e55d9ba582ac9a5ceffa96db9d7e1f#create-an-events-attestation
    * @returns OracleAnnouncementsResponse
    */
-  createAttestations(event: OracleEvent) {
+  createAttestations(a: OracleAnnouncement) {
     if (!this.oracleName.value) {
       throw(Error('Oracle Name must be set to create attestations'))
     }
 
     const body = new HttpParams()
-      .set('attestations', event.attestations)
-    return this.http.post<OracleNameResponse>(this.url + `/announcements/${event.announcementTLVsha256}/attestations`, body, this.getHeaders())
+      .set('attestations', a.attestations)
+    return this.http.post<OracleNameResponse>(this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
       .pipe(catchError(this.errorHandler))
   }
 
@@ -161,4 +161,11 @@ export class OracleExplorerService {
     }
   }
 
+  /** GUI Util */
+
+  openAnnouncementTab(a: OracleAnnouncement) {
+    const url = `https://${this.oracleExplorer.value.host}/announcement/${a.announcementTLVsha256}`
+    window.open(url, '_blank')
+  }
+  
 }

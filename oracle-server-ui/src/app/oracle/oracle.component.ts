@@ -10,7 +10,7 @@ import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 
-import { OracleEvent } from '~type/oracle-server-types'
+import { OracleAnnouncement } from '~type/oracle-server-types'
 import { BuildConfig } from '~type/proxy-server-types'
 
 import { formatOutcomes } from '~util/oracle-server-util'
@@ -24,8 +24,8 @@ import { KrystalBullImages } from '~util/ui-util'
 })
 export class OracleComponent implements OnInit, AfterViewInit {
 
-  @Output() showCreateEvent: EventEmitter<void> = new EventEmitter();
-  @Output() showEventDetail: EventEmitter<OracleEvent> = new EventEmitter();
+  @Output() showCreateAnnouncement: EventEmitter<void> = new EventEmitter();
+  @Output() showAnnouncementDetail: EventEmitter<OracleAnnouncement> = new EventEmitter();
   @Output() showConfiguration: EventEmitter<void> = new EventEmitter();
   @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
 
@@ -34,7 +34,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   hideRawButtons = true
 
-  @ViewChild(MatTable) table: MatTable<OracleEvent>
+  @ViewChild(MatTable) table: MatTable<OracleAnnouncement>
   @ViewChild(MatSort) sort: MatSort
 
   bullIndex = 0
@@ -48,7 +48,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   buildConfig: BuildConfig
 
   // Grid config
-  dataSource = new MatTableDataSource(<OracleEvent[]>[])
+  dataSource = new MatTableDataSource(<OracleAnnouncement[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
 
   loading = true
@@ -63,8 +63,8 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
-    this.oracleState.eventsReceived.subscribe(received => {
-      console.debug('eventsReceived', received)
+    this.oracleState.announcementsReceived.subscribe(received => {
+      console.debug('announcementsReceived', received)
       this.loading = !received
     })
 
@@ -79,16 +79,16 @@ export class OracleComponent implements OnInit, AfterViewInit {
         this.buildConfig = result
       }
     })
-    this.oracleState.getAllEvents().subscribe(_ => {
-      console.debug('initial getAllEvents() complete')
+    this.oracleState.getAllAnnouncements().subscribe(_ => {
+      console.debug('initial getAllAnnouncements() complete')
     })
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
-    this.oracleState.flatEvents.subscribe(_ => {
-      this.dataSource.data = this.oracleState.flatEvents.value
+    this.oracleState.flatAnnouncements.subscribe(_ => {
+      this.dataSource.data = this.oracleState.flatAnnouncements.value
       this.table.renderRows()
     })
   }
@@ -151,15 +151,15 @@ export class OracleComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onShowCreateEvent() {
-    console.debug('onShowCreateEvent()')
-    this.showCreateEvent.next()
+  onShowCreateAnnouncement() {
+    console.debug('onShowCreateAnnouncement()')
+    this.showCreateAnnouncement.next()
   }
 
-  onRefreshEvents() {
-    console.debug('onShowRefreshEvents()')
+  onRefreshAnnouncements() {
+    console.debug('onRefreshAnnouncements()')
     this.loading = true
-    this.oracleState.getAllEvents().subscribe()
+    this.oracleState.getAllAnnouncements().subscribe()
   }
 
   onShowConfiguration() {
@@ -177,14 +177,14 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.hideRawButtons = !this.hideRawButtons
   }
 
-  onRowClick(event: OracleEvent) {
+  onRowClick(event: OracleAnnouncement) {
     console.debug('onRowClick()', event)
-    this.showEventDetail.next(event)
+    this.showAnnouncementDetail.next(event)
   }
 
-  onAnnouncementClick(event: OracleEvent) {
+  onAnnouncementClick(event: OracleAnnouncement) {
     console.debug('onAnnouncementClick()', event)
-    if (!this.oracleState.announcements.value[event.eventName]) {
+    if (!this.oracleState.oeAnnouncements.value[event.eventName]) {
       this.oracleExplorerService.createAnnouncement(event).subscribe(result => {
         if (result) {
           this.oracleState.getAnnouncement(event).subscribe() // Update oracleState
@@ -195,13 +195,12 @@ export class OracleComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onAnnouncementLinkClick(event: OracleEvent) {
-    console.debug('onAnnouncementLinkClick()', event)
-    const url = `https://${this.oracleExplorerService.oracleExplorer.value.host}/announcement/${event.announcementTLVsha256}`
-    window.open(url, '_blank')
+  onAnnouncementLinkClick(a: OracleAnnouncement) {
+    console.debug('onAnnouncementLinkClick()', a)
+    this.oracleExplorerService.openAnnouncementTab(a)
   }
 
-  onAnnounceOutcome(event: OracleEvent) {
+  onAnnounceOutcome(event: OracleAnnouncement) {
     console.debug('onAnnounceOutcome()', event)
     this.oracleExplorerService.createAttestations(event).subscribe(result => {
       if (result) {

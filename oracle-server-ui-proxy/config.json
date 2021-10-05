@@ -11,5 +11,7 @@
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",
 	"blockstreamUrl": "https://blockstream.info/api",
+	"mempoolRoot": "/mempool",
+	"mempoolUrl": "https://mempool.space/api",
 	"uiPath": "../oracle-server-ui/dist/oracle-server-ui"
 }

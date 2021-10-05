@@ -1,9 +1,9 @@
 import needle from 'needle'
 
-import { getMessageBody } from './message-util'
-import { OracleServerMessage, OracleServerMessageWithParameters } from './oracle-server-message'
-import { MessageType, OracleEvent, OracleResponse } from './oracle-server-types'
-import { validateEnumOutcomes, validateISODateString, validateNumber, validateString } from './util'
+import { getMessageBody } from './util/message-util'
+import { OracleServerMessage, OracleServerMessageWithParameters } from './type/oracle-server-message'
+import { MessageType, OracleEvent, OracleResponse } from './type/oracle-server-types'
+import { validateEnumOutcomes, validateISODateString, validateNumber, validateString } from './util/validation-util'
 
 
 let ORACLE_SERVER_URL = 'http://localhost:9998/'
@@ -18,8 +18,9 @@ export function ConfigureOracleServerURL(url: string) {
 export function SendOracleMessage(message: OracleServerMessage) {
   if (message) {
     return needle('post', `${ORACLE_SERVER_URL}`, message, { json: true }).then(response => {
-      // console.debug(' SendOracleMessage', response)
-      return <OracleResponse<any>>response.body
+      const body = <OracleResponse<any>>response.body
+      if (body.error) throw(body.error)
+      return body
     }).catch(err => {
       console.error('SendOracleMessage() error', err)
       throw(err)
@@ -33,27 +34,27 @@ export function SendOracleMessage(message: OracleServerMessage) {
 
 export function GetPublicKey() {
   console.debug('GetPublicKey()')
+
   const m = getMessageBody(MessageType.getpublickey)
   return SendOracleMessage(m).then(response => {
-    // console.debug('GetPublicKey response:', response)
     return <OracleResponse<string>>response
   })
 }
 
 export function GetStakingAddress() {
   console.debug('GetStakingAddress()')
+
   const m = getMessageBody(MessageType.getstakingaddress)
   return SendOracleMessage(m).then(response => {
-    // console.debug('GetStakingAddress response:', response)
     return <OracleResponse<string>>response
   })
 }
 
-export function ListEvents() {
-  console.debug('ListEvents()')
-  const m = getMessageBody(MessageType.listevents)
+export function ListAnnouncements() {
+  console.debug('ListAnnouncements()')
+
+  const m = getMessageBody(MessageType.listannouncements)
   return SendOracleMessage(m).then(response => {
-    // console.debug('ListEvents response:', response)
     return <OracleResponse<string[]>>response
   })
 }
@@ -64,62 +65,56 @@ export function SignMessage(message: string) {
 
   const m = getMessageBody(MessageType.signmessage, [message])
   return SendOracleMessage(m).then(response => {
-    // console.debug('SignMessage response:', response)
     return <OracleResponse<string>>response
   })
 }
 
-export function GetEvent(eventName: string) {
-  console.debug('GetEvent()', eventName)
-  validateString(eventName, 'GetEvent()', 'eventName')
+export function GetAnnouncement(eventName: string) {
+  console.debug('GetAnnouncement()', eventName)
+  validateString(eventName, 'GetAnnouncement()', 'eventName')
 
-  const m = getMessageBody(MessageType.getevent, [eventName])
+  const m = getMessageBody(MessageType.getannouncement, [eventName])
   return SendOracleMessage(m).then(response => {
-    // console.debug('GetEvent response:', response)
     return <OracleResponse<OracleEvent>>response
   })
 }
  
-export function CreateEnumEvent(eventName: string, maturationTimeISOString: string, outcomes: string[]) {
-  console.debug('CreateEnumEvent()')
-  validateString(eventName, 'CreateEnumEvent()', 'eventName')
-  validateISODateString(maturationTimeISOString, 'CreateEnumEvent()', 'maturationTimeISOString')
-  validateEnumOutcomes(outcomes, 'CreateEnumEvent()')
+export function CreateEnumAnnouncement(eventName: string, maturationTimeISOString: string, outcomes: string[]) {
+  console.debug('CreateEnumAnnouncement()', eventName, maturationTimeISOString, outcomes)
+  validateString(eventName, 'CreateEnumAnnouncement()', 'eventName')
+  validateISODateString(maturationTimeISOString, 'CreateEnumAnnouncement()', 'maturationTimeISOString')
+  validateEnumOutcomes(outcomes, 'CreateEnumAnnouncement()')
 
-  const m = getMessageBody(MessageType.createenumevent, [eventName, maturationTimeISOString, outcomes])
+  const m = getMessageBody(MessageType.createenumannouncement, [eventName, maturationTimeISOString, outcomes])
   return SendOracleMessage(m).then(response => {
-    // console.debug('CreateEnumEvent response:', response)
     return <OracleResponse<string>>response
   })
 }
 
-export function CreateNumericEvent(eventName: string, maturationTimeISOString: string, minValue: number, maxValue: number, unit: string, precision: number) {
-  console.debug('CreateNumericEvent()')
-  validateString(eventName, 'CreateEnumEvent()', 'eventName')
-  validateISODateString(maturationTimeISOString, 'CreateEnumEvent()', 'maturationTimeISOString')
-  validateNumber(minValue, 'CreateEnumEvent()', 'minValue')
-  validateNumber(maxValue, 'CreateEnumEvent()', 'maxValue')
+export function CreateNumericAnnouncement(eventName: string, maturationTimeISOString: string, minValue: number, maxValue: number, unit: string, precision: number) {
+  console.debug('CreateNumericAnnouncement()', eventName, maturationTimeISOString, minValue, maxValue, unit, precision)
+  validateString(eventName, 'CreateNumericAnnouncement()', 'eventName')
+  validateISODateString(maturationTimeISOString, 'CreateNumericAnnouncement()', 'maturationTimeISOString')
+  validateNumber(minValue, 'CreateNumericAnnouncement()', 'minValue')
+  validateNumber(maxValue, 'CreateNumericAnnouncement()', 'maxValue')
   // TODO : Validate minValue/maxValue?
-  validateString(unit, 'CreateEnumEvent()', 'unit') // unit can be an empty string
-  validateNumber(precision, 'CreateEnumEvent()', 'precision')
-  if (precision < 0) throw(Error('CreateEnumEvent() precision must be >= 0'))
+  validateString(unit, 'CreateNumericAnnouncement()', 'unit') // unit can be an empty string
+  validateNumber(precision, 'CreateNumericAnnouncement()', 'precision')
+  if (precision < 0) throw(Error('CreateNumericAnnouncement() precision must be >= 0'))
 
-  const m = getMessageBody(MessageType.createnumericevent, [eventName, maturationTimeISOString, minValue, maxValue, unit, precision])
+  const m = getMessageBody(MessageType.createnumericannouncement, [eventName, maturationTimeISOString, minValue, maxValue, unit, precision])
   return SendOracleMessage(m).then(response => {
-    // console.debug('CreateNumericEvent response:', response)
     return <OracleResponse<string>>response
   })
 }
 
-// Rename SignEnum()?
-export function SignEvent(eventName: string, outcome: string) {
-  console.debug('SignEvent()', eventName, outcome)
-  validateString(eventName, 'SignEvent()', 'eventName')
-  validateString(outcome, 'SignEvent()', 'outcome')
+export function SignEnum(eventName: string, outcome: string) {
+  console.debug('SignEnum()', eventName, outcome)
+  validateString(eventName, 'SignEnum()', 'eventName')
+  validateString(outcome, 'SignEnum()', 'outcome')
 
-  const m = getMessageBody(MessageType.signevent, [eventName, outcome])
+  const m = getMessageBody(MessageType.signenum, [eventName, outcome])
   return SendOracleMessage(m).then(response => {
-    // console.debug('SignEvent response:', response)
     return <OracleResponse<string>>response
   })
 }
@@ -131,18 +126,36 @@ export function SignDigits(eventName: string, outcome: number) {
 
   const m = getMessageBody(MessageType.signdigits, [eventName, outcome])
   return SendOracleMessage(m).then(response => {
-    // console.debug('SignDigits response:', response)
     return <OracleResponse<string>>response
   })
 }
 
 export function GetSignatures(eventName: string) {
-  console.debug('GetSignatures()')
+  console.debug('GetSignatures()', eventName)
   validateString(eventName, 'GetSignatures()', 'eventName')
 
   const m = getMessageBody(MessageType.getsignatures, [eventName])
   return SendOracleMessage(m).then(response => {
-    // console.debug('GetSignatures response:', response)
+    return <OracleResponse<OracleEvent>>response
+  })
+}
+
+export function DeleteAnnouncement(eventName: string) {
+  console.debug('DeleteAnnouncement()', eventName)
+  validateString(eventName, 'DeleteAnnouncement()', 'eventName')
+
+  const m = getMessageBody(MessageType.deleteannouncement, [eventName])
+  return SendOracleMessage(m).then(response => {
+    return <OracleResponse<OracleEvent>>response
+  })
+}
+
+export function DeleteAttestation(eventName: string) {
+  console.debug('DeleteAttestation()', eventName)
+  validateString(eventName, 'DeleteAttestation()', 'eventName')
+
+  const m = getMessageBody(MessageType.deleteattestation, [eventName])
+  return SendOracleMessage(m).then(response => {
     return <OracleResponse<OracleEvent>>response
   })
 }

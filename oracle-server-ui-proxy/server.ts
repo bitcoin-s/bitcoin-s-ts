@@ -7,30 +7,49 @@ import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { SocksProxyAgent } from 'socks-proxy-agent'
+import winston from 'winston'
+const  { combine, timestamp, label, printf } = winston.format
 
 import { BuildConfig } from './build-config'
 import { ServerConfig } from './server-config'
 
 
-console.debug(new Date().toISOString(), 'Starting oracle-server-ui-proxy')
-
 const Config = <ServerConfig>require('./config.json')
+
+// Setup logging
+const logFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp} ${level}: ${message}`
+})
+const LOG_PATH = '' // TODO : Inject path here
+const LOG_FILENAME = 'oracle-server-ui-proxy.log'
+const logger = winston.createLogger({
+  exitOnError: Config.stopOnError,
+  level: 'info',
+  format: combine(timestamp(), logFormat),
+  transports: [
+    new winston.transports.Console(), // Log to console
+    new winston.transports.File({ filename: LOG_PATH + LOG_FILENAME }), // Log to file
+  ],
+})
+
+logger.info('Starting oracle-server-ui-proxy')
+
 let Build: BuildConfig
 try {
   Build = <BuildConfig>require('./build.json')
 } catch (err) {
-  console.error('did not find BuildConfig')
+  logger.error('did not find BuildConfig')
 }
 
 /** Error Handlers */
 
 process.on('uncaughtException', error => {
-  console.error(new Date().toISOString(), 'uncaught error', error)
+  logger.error('uncaught error', error)
   if (Config.stopOnError) process.exit(1)
 })
 
 process.on('unhandledRejection', error => {
-  console.error(new Date().toISOString(), 'uncaught rejection', error)
+  logger.error('uncaught rejection', error)
   if (Config.stopOnError) process.exit(1)
 })
 
@@ -39,8 +58,10 @@ const proxyRoot = Config.proxyRoot
 const oracleServerUrl = process.env.ORACLE_SERVER_API_URL || Config.oracleServerUrl
 const oracleExplorerHost = Config.oracleExplorerHost // overriden by 'host-override' header
 const blockstreamUrl = Config.blockstreamUrl
+const mempoolUrl = process.env.MEMPOOL_API_URL || Config.mempoolUrl
 
-console.debug('proxyRoot:', proxyRoot, 'oracleServerEndpoint:', oracleServerUrl, 'oracleExplorerHost:', oracleExplorerHost)
+logger.info('proxyRoot: ' + proxyRoot + ' oracleServerEndpoint: ' + oracleServerUrl + 
+  ' oracleExplorerHost: ' + oracleExplorerHost + ' mempoolUrl: ' + mempoolUrl)
 
 const app = express()
 
@@ -86,6 +107,7 @@ function hostRouter(req: http.IncomingMessage) {
 
 const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
+const MEMPOOL_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 
 const ECONNREFUSED = 'ECONNREFUSED'
 const ECONNREFUSED_REGEX = /ECONNREFUSED/
@@ -96,9 +118,9 @@ const CONNECTION_ERROR = 'connection error' // generic error
 
 function getProxyErrorHandler(name: string, agent?: SocksProxyAgent) {
   return (err: Error, req: Request, res: Response) => {
-    console.error(new Date().toISOString(), `${name} onError`)
     if (err) {
-      console.error(err, res.statusCode, res.statusMessage)
+      // console.error(err, res.statusCode, res.statusMessage)
+      logger.error(`${name}`, { err, statusCode: res.statusCode, statusMessage: res.statusMessage })
       const connectionRefused = ECONNREFUSED_REGEX.test(err.message)
       if (connectionRefused) {
         if (agent) {
@@ -168,9 +190,34 @@ function createBlockstreamProxy(agent?: SocksProxyAgent | null) {
   }))
 }
 
+// Proxy calls to this server to Mempool API
+function createMempoolProxy(agent?: SocksProxyAgent | null) {
+  const root = (agent ? Config.torProxyRoot : '') + Config.mempoolRoot
+  app.use(root, createProxyMiddleware({
+    agent,
+    target: mempoolUrl,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^${root}`]: '',
+    },
+    proxyTimeout: MEMPOOL_PROXY_TIMEOUT,
+    onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+      if (!agent) { // this throws error with 'agent' set
+        removeFrontendHeaders(proxyReq)
+      }
+
+      // console.debug('onProxyReq() req headers:', req.headers)
+      // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
+      // console.debug('onProxyReq() res headers:', res.getHeaders())
+    },
+    onError: getProxyErrorHandler('mempool', agent),
+  }))
+}
+
 function createProxies(agent?: SocksProxyAgent) {
   createOracleExplorerProxy(agent)
   createBlockstreamProxy(agent)
+  createMempoolProxy(agent)
 }
 
 createProxies()
@@ -199,7 +246,7 @@ app.use(Config.apiRoot, createProxyMiddleware({
     if (err && (<any>err).code === ECONNREFUSED) {
       res.writeHead(500, 'oracleServer connection refused').end()
     } else {
-      console.error(new Date().toISOString(), 'onError', err, res.statusCode, res.statusMessage)
+      logger.error('onError', err, res.statusCode, res.statusMessage)
     }
   }
 }))
@@ -208,17 +255,17 @@ app.use(Config.apiRoot, createProxyMiddleware({
 
 let server
 if (Config.useHTTPS) {
-  console.debug(new Date().toISOString(), 'starting HTTPS server with certs')
+  logger.info('starting HTTPS server with certs')
   const options = {
     key: fs.readFileSync('config/keys/key.pem'),
     cert: fs.readFileSync('config/keys/cert.pem'),
   }
   server = https.createServer(options, app)
 } else {
-  console.debug(new Date().toISOString(), 'starting HTTP server')
+  logger.info('starting HTTP server')
   server = http.createServer(app)
 }
 
 server.listen(Config.port, async () => {
-  console.debug(new Date().toISOString(), `Web Server started on port: ${Config.port} ⚡`)
+  logger.info(`Web Server started on port: ${Config.port} ⚡`)
 })

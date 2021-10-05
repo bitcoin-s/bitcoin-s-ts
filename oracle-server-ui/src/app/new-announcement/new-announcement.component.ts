@@ -8,7 +8,7 @@ import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 
-import { EventType } from '~type/client-types'
+import { AnnouncementType } from '~type/client-types'
 import { OracleServerMessage } from '~type/oracle-server-message'
 import { MessageType } from '~type/oracle-server-types'
 
@@ -80,41 +80,41 @@ function outcomeValidator(): ValidatorFn {
 }
 
 @Component({
-  selector: 'app-new-event',
-  templateUrl: './new-event.component.html',
-  styleUrls: ['./new-event.component.scss']
+  selector: 'new-announcement',
+  templateUrl: './new-announcement.component.html',
+  styleUrls: ['./new-announcement.component.scss']
 })
-export class NewEventComponent implements OnInit {
+export class NewAnnouncementComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
   public AlertType = AlertType
-  public EventType = EventType
+  public AnnouncementType = AnnouncementType
 
   form: FormGroup
-  @ViewChild('eventNameInput') eventNameInput: MatInput;
+  @ViewChild('announcementNameInput') announcementNameInput: MatInput;
 
   // convenience getter for easy access to form fields
   get f() { return this.form.controls }
 
   loading = false // waiting for the server
-  eventCreated = false // a new event has been created
+  announcementCreated = false // a new event has been created
 
-  eventTypeOptions = [
-    { name: EventType.ENUM, ID: EventType.ENUM, checked: true },
-    { name: EventType.NUMERIC, ID: EventType.NUMERIC, checked: false },
-    // { name: EventType.DIGIT_DECOMP, ID: EventType.DIGIT_DECOMP, checked: false },
+  announcementTypeOptions = [
+    { name: AnnouncementType.ENUM, ID: AnnouncementType.ENUM, checked: true },
+    { name: AnnouncementType.NUMERIC, ID: AnnouncementType.NUMERIC, checked: false },
+    // { name: AnnouncementType.DIGIT_DECOMP, ID: AnnouncementType.DIGIT_DECOMP, checked: false },
   ]
 
-  eventTypes = [EventType.ENUM, EventType.NUMERIC/*, EventType.DIGIT_DECOMP*/]
-  eventType = EventType.ENUM // for binding state
+  announcementTypes = [AnnouncementType.ENUM, AnnouncementType.NUMERIC/*, AnnouncementType.DIGIT_DECOMP*/]
+  announcementType = AnnouncementType.ENUM // for binding state
 
   minDate: Date
 
   // Values for testing event form state
   // private setDefaultEventValues() {
   //   this.form.setValue({
-  //     eventType: EventType.ENUM,
+  //     announcementType: EventType.ENUM,
   //     maturationTime: null,
   //     eventName: '',
   //     outcomes: 'One,Two,Three',
@@ -127,9 +127,9 @@ export class NewEventComponent implements OnInit {
   //     signed: false,
   //   })
   // }
-  private resetEventValues() {
+  private resetAnnouncementValues() {
     this.form.setValue({
-      eventType: EventType.ENUM,
+      announcementType: AnnouncementType.ENUM,
       maturationTime: null,
       eventName: null,
       outcomes: null,
@@ -153,16 +153,16 @@ export class NewEventComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      eventType: [this.eventType],
-      eventName: [null, Validators.required], // TODO : maxlength?
+      announcementType: [this.announcementType],
+      announcementName: [null, Validators.required], // TODO : maxlength?
       maturationTime: [null, Validators.required],
-      outcomes: [null, [conditionalValidator(() => this.eventType === EventType.ENUM, outcomeValidator())]],
-      minValue: [null, [conditionalValidator(() => this.eventType === EventType.NUMERIC,
+      outcomes: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.ENUM, outcomeValidator())]],
+      minValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
         Validators.required)]],
-      maxValue: [null, [conditionalValidator(() => this.eventType === EventType.NUMERIC,
+      maxValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
         Validators.required)]],
       unit: [null], // not required by backend
-      precision: [null, conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP || this.eventType === EventType.NUMERIC, 
+      precision: [null, conditionalValidator(() => this.announcementType === AnnouncementType.DIGIT_DECOMP || this.announcementType === AnnouncementType.NUMERIC, 
         Validators.compose([nonNegativeNumberValidator(), Validators.required]))],
       // base: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
       //   positiveNumberValidator())]],
@@ -179,16 +179,16 @@ export class NewEventComponent implements OnInit {
 
   reset() {
     console.debug('reset()')
-    this.resetEventValues()
+    this.resetAnnouncementValues()
     this.form.markAsUntouched()
   }
 
   // Clear out invalid state from form items the user can't interact with for EventType selection on change
   wipeInvalidFormStates() {
-    console.debug('wipeInvalidFormStates()', this.eventType)
+    console.debug('wipeInvalidFormStates()', this.announcementType)
     
     // Seeing ExpressionChangedAfterItHasBeenCheckedError in log sometimes on Create button disable binding related to this
-    if (this.eventType === EventType.ENUM) {
+    if (this.announcementType === AnnouncementType.ENUM) {
       this.f['minValue'].setErrors(null)
       this.f['maxValue'].setErrors(null)
       // this.f['base'].setErrors(null)
@@ -196,7 +196,7 @@ export class NewEventComponent implements OnInit {
       this.f['precision'].setErrors(null)
 
       this.f['outcomes'].updateValueAndValidity()
-    } else if (EventType.NUMERIC) {
+    } else if (AnnouncementType.NUMERIC) {
       this.f['outcomes'].setErrors(null)
 
       this.f['minValue'].updateValueAndValidity()
@@ -212,20 +212,20 @@ export class NewEventComponent implements OnInit {
     // }
   }
 
-  onCreateEvent() {
-    console.debug('onCreateEvent')
+  onCreateAnnouncement() {
+    console.debug('onCreateAnnouncement')
 
     const v = this.form.value
     let m: OracleServerMessage
-    switch (v.eventType) {
-      case this.EventType.ENUM:
+    switch (v.announcementType) {
+      case AnnouncementType.ENUM:
         // TODO : Process outcomes in component / make a custom component - https://netbasal.com/angular-formatters-and-parsers-8388e2599a0e
         const outcomes = <string[]>v.outcomes.split(',')
         outcomes.forEach(o => o.trim())
-        m = getMessageBody(MessageType.createenumevent, [v.eventName, v.maturationTime.toISOString(), outcomes])
+        m = getMessageBody(MessageType.createenumannouncement, [v.eventName, v.maturationTime.toISOString(), outcomes])
         break
-      case EventType.NUMERIC:
-        m = getMessageBody(MessageType.createnumericevent, [v.eventName, v.maturationTime.toISOString(), 
+      case AnnouncementType.NUMERIC:
+        m = getMessageBody(MessageType.createnumericannouncement, [v.eventName, v.maturationTime.toISOString(), 
           v.minValue, v.maxValue, v.unit, v.precision])
         break
       // case EventType.DIGIT_DECOMP:
@@ -234,20 +234,20 @@ export class NewEventComponent implements OnInit {
       //     v.base, v.signed, v.numdigits, v.unit, v.precision])
       //   break
       default:
-        throw Error('onCreateEvent unknown newEventType: ' + v.eventType)
+        throw Error('onCreateAnnouncement unknown newEventType: ' + v.eventType)
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)
       this.messageService.sendMessage(m).subscribe(result => {
         if (result) {
-          this.eventCreated = true
+          this.announcementCreated = true
         }
         this.loading = false
         // Reload events
-        this.oracleState.getAllEvents().subscribe()
+        this.oracleState.getAllAnnouncements().subscribe()
         // TODO : close this panel, show event detail ?
       }, error => {
-        console.error('error creating event')
+        console.error('error creating announcement')
         this.loading = false
         // TODO : Show error dialog? Probably don't have details
       })

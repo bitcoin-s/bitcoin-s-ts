@@ -7,7 +7,9 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "node test.js"
+    "test": "node test.js",
+    "demo": "npx ts-node demo.ts",
+    "tests": "npx ts-node tests.ts"
   },
   "private": true,
   "dependencies": {
