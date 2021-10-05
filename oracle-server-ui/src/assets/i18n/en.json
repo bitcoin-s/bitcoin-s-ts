@@ -88,6 +88,9 @@
     "blockstreamError": {
       "title": "Error communicating to Blockstream"
     },
+    "mempoolError": {
+      "title": "Error communicating to Mempool"
+    },
     "confirmOracleName": {
       "title": "Confirm Oracle Name",
       "content": "Are you sure you want to set your Oracle Name to '{{oracleName}}'? Once used it cannot be changed.",

@@ -12,7 +12,8 @@
     "http-proxy-middleware": "^2.0.1",
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",
-    "socks-proxy-agent": "^6.1.0"
+    "socks-proxy-agent": "^6.1.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
