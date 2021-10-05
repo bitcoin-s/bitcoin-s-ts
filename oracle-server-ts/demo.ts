@@ -1,11 +1,8 @@
 
 import * as OracleServer from './lib/index'
-
 import * as validationUtil from './lib/util/validation-util'
 
-const KEY = 'demo.ts'
-
-console.debug(KEY)
+console.debug('demo.ts')
 
 const ENUM_NAME = 'enum_' + validationUtil.makeId(4)
 const NUMERIC_NAME = 'numeric_' + validationUtil.makeId(4)

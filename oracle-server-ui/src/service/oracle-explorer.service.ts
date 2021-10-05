@@ -161,4 +161,11 @@ export class OracleExplorerService {
     }
   }
 
+  /** GUI Util */
+
+  openAnnouncementTab(a: OracleAnnouncement) {
+    const url = `https://${this.oracleExplorer.value.host}/announcement/${a.announcementTLVsha256}`
+    window.open(url, '_blank')
+  }
+  
 }

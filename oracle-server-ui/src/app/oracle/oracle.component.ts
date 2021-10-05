@@ -195,10 +195,9 @@ export class OracleComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onAnnouncementLinkClick(event: OracleAnnouncement) {
-    console.debug('onAnnouncementLinkClick()', event)
-    const url = `https://${this.oracleExplorerService.oracleExplorer.value.host}/announcement/${event.announcementTLVsha256}`
-    window.open(url, '_blank')
+  onAnnouncementLinkClick(a: OracleAnnouncement) {
+    console.debug('onAnnouncementLinkClick()', a)
+    this.oracleExplorerService.openAnnouncementTab(a)
   }
 
   onAnnounceOutcome(event: OracleAnnouncement) {

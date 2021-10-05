@@ -38,8 +38,8 @@ export interface OracleAnnouncement {
   maturationTime: string // "2030-01-03T00:30:00Z"
   maturationTimeEpoch: number // 1893630600
   nonces: string[]
-  outcomes: string[] // enum, numeric: [["number"]]
-  signedOutcome: string
+  outcomes: string[] // enum: ["value","value2"], numeric: [["number"]]
+  signedOutcome: string|null
   signingVersion: string
 
   // ids

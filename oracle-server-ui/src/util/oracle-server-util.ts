@@ -26,6 +26,8 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
   }
 }
 
+const DIGIT_SPACER = '..'
+
 export function formatOutcomes(outcomes: any[]): string {
   if (outcomes && outcomes.length > 0) {
     const head = outcomes[0]
@@ -34,7 +36,7 @@ export function formatOutcomes(outcomes: any[]): string {
       const signed = head[0] === '+' && head[1] === '-'
       const exp = signed ? outcomes.length - 1 : outcomes.length
       const outcome = (2 ** exp) - 1
-      return signed ? '-' + outcome + '..' + outcome : '0..' + outcome
+      return signed ? '-' + outcome + DIGIT_SPACER + outcome : '0' + DIGIT_SPACER + outcome
     } else {
       // enum and all other outcomes
       return '' + outcomes

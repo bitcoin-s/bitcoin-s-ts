@@ -19,7 +19,9 @@ export function SendOracleMessage(message: OracleServerMessage) {
   if (message) {
     return needle('post', `${ORACLE_SERVER_URL}`, message, { json: true }).then(response => {
       // console.debug(' SendOracleMessage', response)
-      return <OracleResponse<any>>response.body
+      const body = <OracleResponse<any>>response.body
+      if (body.error) throw(body.error)
+      return body
     }).catch(err => {
       console.error('SendOracleMessage() error', err)
       throw(err)
