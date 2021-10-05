@@ -80,7 +80,7 @@ export function GetAnnouncement(eventName: string) {
 }
  
 export function CreateEnumAnnouncement(eventName: string, maturationTimeISOString: string, outcomes: string[]) {
-  console.debug('CreateEnumAnnouncement()', eventName)
+  console.debug('CreateEnumAnnouncement()', eventName, maturationTimeISOString, outcomes)
   validateString(eventName, 'CreateEnumAnnouncement()', 'eventName')
   validateISODateString(maturationTimeISOString, 'CreateEnumAnnouncement()', 'maturationTimeISOString')
   validateEnumOutcomes(outcomes, 'CreateEnumAnnouncement()')
@@ -92,7 +92,7 @@ export function CreateEnumAnnouncement(eventName: string, maturationTimeISOStrin
 }
 
 export function CreateNumericAnnouncement(eventName: string, maturationTimeISOString: string, minValue: number, maxValue: number, unit: string, precision: number) {
-  console.debug('CreateNumericAnnouncement()', eventName)
+  console.debug('CreateNumericAnnouncement()', eventName, maturationTimeISOString, minValue, maxValue, unit, precision)
   validateString(eventName, 'CreateNumericAnnouncement()', 'eventName')
   validateISODateString(maturationTimeISOString, 'CreateNumericAnnouncement()', 'maturationTimeISOString')
   validateNumber(minValue, 'CreateNumericAnnouncement()', 'minValue')
@@ -108,7 +108,6 @@ export function CreateNumericAnnouncement(eventName: string, maturationTimeISOSt
   })
 }
 
-// Rename SignEnum()?
 export function SignEnum(eventName: string, outcome: string) {
   console.debug('SignEnum()', eventName, outcome)
   validateString(eventName, 'SignEnum()', 'eventName')
