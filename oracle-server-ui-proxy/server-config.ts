@@ -12,5 +12,7 @@ export class ServerConfig {
 	oracleExplorerHost: string // oracle explorer host like 'test.oracle.suredbits.com'
 	blockstreamRoot: string // prefix on local paths like '/blockstream'
 	blockstreamUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'
+	mempoolRoot: string // prefix on local paths like '/blockstream'
+	mempoolUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'
 	uiPath: string    // path to UI from local project root
 }

@@ -8,6 +8,7 @@ import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 import { getMessageBody } from '~util/oracle-server-util'
 
 import { BlockstreamService } from './blockstream-service'
+import { MempoolService } from './mempool-service'
 import { MessageService } from './message.service'
 import { OracleExplorerService } from './oracle-explorer.service'
 
@@ -42,7 +43,7 @@ export class OracleStateService {
   }
 
   constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService, 
-    private blockstreamService: BlockstreamService) {
+    private blockstreamService: BlockstreamService, private mempoolService: MempoolService) {
     this.oracleExplorerService.oracleExplorer.subscribe(oe => {
       this.getAnnouncementsFromOracleExplorer().subscribe() // Check for announcements on new Explorer selection
     })
@@ -82,7 +83,10 @@ export class OracleStateService {
   getStakingBalance() {
     console.debug('getStakingBalance()')
     if (this.stakingAddress) {
-      this.blockstreamService.getBalance(this.stakingAddress).subscribe(result => {
+      // this.blockstreamService.getBalance(this.stakingAddress).subscribe(result => {
+      //   this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
+      // })
+      this.mempoolService.getBalance(this.stakingAddress).subscribe(result => {
         this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
       })
     }

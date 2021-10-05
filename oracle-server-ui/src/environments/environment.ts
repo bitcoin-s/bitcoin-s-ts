@@ -8,6 +8,7 @@ export const environment = {
   torApi: '/tor',
   oracleExplorerApi: '/oracleexplorer',
   blockstreamApi: '/blockstream',
+  mempoolApi: '/mempool',
   proxyApi: '',
 };
 
