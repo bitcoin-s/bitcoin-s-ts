@@ -34,15 +34,16 @@
       <input matInput formControlName="outcomes" type="text"
         placeholder="{{ 'createAnnouncement.outcomesPlaceholder' | translate }}">
       <app-more-info matSuffix tooltip="createAnnouncementDescription.outcomes"></app-more-info>
+      <mat-hint align="start" translate>createAnnouncement.outcomesHint</mat-hint>
       <mat-error *ngIf="f.outcomes.errors?.outcomeHasEmpty">
         {{ 'createAnnouncementErrors.outcomeHasEmpty' | translate }}
       </mat-error>
       <mat-error *ngIf="f.outcomes.errors?.outcomeUnique">
         {{ 'createAnnouncementErrors.outcomeUnique' | translate }}
-      </mat-error> 
+      </mat-error>
       <mat-error *ngIf="f.outcomes.errors?.outcomeMinTwo">
         {{ 'createAnnouncementErrors.outcomeMinTwo' | translate }}
-      </mat-error> 
+      </mat-error>
     </mat-form-field>
 
     <ng-container *ngIf="announcementType === AnnouncementType.NUMERIC">
@@ -56,7 +57,6 @@
         <input matInput formControlName="maxValue" type="number">
         <app-more-info matSuffix tooltip="createAnnouncementDescription.maxvalue"></app-more-info>
       </mat-form-field>
-      <br>
     </ng-container>
 
     <!--
@@ -109,7 +109,8 @@
     </ng-container>
     -->
     
-    <button type="button" (click)="onCreateAnnouncement()" [disabled]="!oracleName || form.invalid" translate>create</button>
+    <button mat-raised-button color="primary" (click)="onCreateAnnouncement()"
+      [disabled]="!oracleName || form.invalid">{{ 'create' | translate }}</button>
     </fieldset>
   </form>
   

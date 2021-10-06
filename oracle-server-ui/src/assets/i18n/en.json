@@ -27,8 +27,8 @@
     "createnumericannouncement": "Create Numeric Announcement",
     "createdigitdecompannouncement": "Create Digit Decomp Announcement",
     "getannouncement": "Get Announcement",
-    "signenum": "Sign Announcement",
-    "signdigits": "Sign Digits",
+    "signenum": "Sign Outcome",
+    "signdigits": "Sign Outcome",
     "getsignatures": "Get Signatures",
     "signmessage": "Sign Message",
 
@@ -103,6 +103,14 @@
     "signedAboveMaximum": {
       "title": "Signed message above maximum",
       "content": "You entered {{input}}, which is above the maximum value. {{max}} was signed."
+    },
+    "deleteAnnouncement": {
+      "title": "Delete Announcement",
+      "content": "Are you sure you want to delete this announcement?"
+    },
+    "deleteAttestation": {
+      "title": "Delete Attestation",
+      "content": "Are you sure you want to delete this attestation? If you have shared the previous attestation it can expose your private keys."
     }
   },
 
@@ -138,6 +146,7 @@
     "maturationTimePlaceholder": "MM/DD/YYYY",
     "outcomes": "Outcomes",
     "outcomesPlaceholder": "Outcome1,Outcome2",
+    "outcomesHint": "Outcomes seperated by commas",
 
     "minvalue": "Min Value",
     "maxvalue": "Max Value",
@@ -155,7 +164,7 @@
     "name": "Name for this announcement",
     "maturationTime": "The earliest expected time an outcome will be signed, given in ISO 8601 format",
     "maturationTimeSeconds": "The earliest expected time an outcome will be signed, given in epoch second",
-    "outcomes": "Outcomes",
+    "outcomes": "Potential Outcomes for this announcement",
 
     "minvalue": "Minimum value of this announcement",
     "maxvalue": "Maximum value of this announcement",
@@ -179,7 +188,15 @@
     "heading": "Announcement Detail",
     "signatures": "Signatures",
     "eventJSON": "Announcement JSON",
-    "outcomeSigned": "Outcome Signed"
+    "outcomeSigned": "Outcome Signed",
+    "attestationDeleted": "Attestation Deleted",
+    "broadcastAnnouncement": "Broadcast Announcement",
+    "broadcastOutcome": "Broadcast Outcome",
+    "announcementIsBroadcast": "This announcement is broadcast",
+    "announcementIsNotBroadcast": "This announcement is not broadcast",
+    "outcomeIsBroadcast": "This announcement outcome is broadcast",
+    "outcomeIsNotBroadcast": "This announcement outcome is not broadcast",
+    "deleteAnnouncement": "Delete Announcement"
   },
 
   "action": {

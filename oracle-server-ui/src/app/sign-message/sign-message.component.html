@@ -8,7 +8,8 @@
     <mat-form-field>
       <input matInput name="signMessage" type="text" [(ngModel)]="signMessageInput" placeholder="{{ 'message' | translate }}">
     </mat-form-field>
-    <button type="button" (click)="onSignMessage()" translate>action.sign</button>
+    <button mat-raised-button color="primary" 
+      (click)="onSignMessage()">{{ 'action.sign' | translate }}</button>
   </form>
 
   <ng-container *ngIf="signedMessage">

@@ -2,13 +2,16 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 
 import { AlertType } from '~app/component/alert/alert.component'
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
+import { OracleExplorerService } from '~service/oracle-explorer.service'
+import { OracleStateService } from '~service/oracle-state.service'
 
 import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
 
-import { getMessageBody, outcomesToMinMax } from '~util/oracle-server-util'
+import { formatOutcomes, getMessageBody, outcomesToMinMax } from '~util/oracle-server-util'
 
 
 @Component({
@@ -25,20 +28,25 @@ export class AnnouncementDetailComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter()
 
   public AlertType = AlertType
+  public formatOutcomes = formatOutcomes
 
-  signEventInput = ''
+  signEnumInput = ''
   signDigitsInput: number|undefined = undefined
   signatures = ''
 
   showSigningSuccess = false
+  showAttestationDeleted = false
 
   private reset() {
-    this.signEventInput = ''
+    this.signEnumInput = ''
     this.signDigitsInput = undefined
     this.signatures = ''
+    this.showSigningSuccess = false
+    this.showAttestationDeleted = false
   }
 
-  constructor(private messageService: MessageService, private dialog: MatDialog) { }
+  constructor(private messageService: MessageService, private dialog: MatDialog, 
+    public oracleState: OracleStateService, public oracleExplorer: OracleExplorerService) { }
 
   ngOnInit(): void { }
 
@@ -51,13 +59,13 @@ export class AnnouncementDetailComponent implements OnInit {
   }
 
   onSignEnum() {
-    console.debug('onSignEnum()', this.announcement.eventName, this.signEventInput)
+    console.debug('onSignEnum()', this.announcement.eventName, this.signEnumInput)
     // TODO : Could validate this.signEventInput here
-    const m = getMessageBody(MessageType.signenum, [this.announcement.eventName, this.signEventInput])
+    const m = getMessageBody(MessageType.signenum, [this.announcement.eventName, this.signEnumInput])
     this.messageService.sendMessage(m).subscribe(result => {
       console.debug(' onSignEnum()', result)
       if (result.result) {
-        this.announcement.signedOutcome = this.signEventInput
+        this.announcement.signedOutcome = this.signEnumInput
         this.showSigningSuccess = true
       }
     })
@@ -92,23 +100,84 @@ export class AnnouncementDetailComponent implements OnInit {
                   params: mm,
                 }
               })
-              this.announcement.signedOutcome = '' + val
             }
           }
+          this.announcement.signedOutcome = '' + val
         } else {
           this.announcement.signedOutcome = ''
         }
+        this.showAttestationDeleted = false
         this.showSigningSuccess = true
       }
     })
   }
 
-  onGetSignatures() {
-    console.debug('onGetSignatures()', this.announcement.eventName)
-    const m = getMessageBody(MessageType.getsignatures, [this.announcement.eventName])
-    this.messageService.sendMessage(m).subscribe(result => {
-      if (result.result) {
-        this.signatures = result.result
+  onDeleteAttestation() {
+    console.debug('onDeleteAttestation()', this.announcement.eventName)
+    const dialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'dialog.deleteAttestation.title',
+        content: 'dialog.deleteAttestation.content',
+        action: 'action.yes',
+      }
+    }).afterClosed().subscribe(result => {
+      console.debug(' onDeleteAttestation():', result)
+      if (result) {
+        const m = getMessageBody(MessageType.deleteattestation, [this.announcement.eventName])
+        this.messageService.sendMessage(m).subscribe(result => {
+          if (result.result) {
+            this.announcement.signedOutcome = null
+            this.signEnumInput = ''
+            this.signDigitsInput = undefined
+            this.showSigningSuccess = false
+            this.showAttestationDeleted = true
+          }
+        })
+      }
+    })
+  }
+
+  onDeleteClick() {
+    console.debug('onDeleteClick()')
+    const dialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'dialog.deleteAnnouncement.title',
+        content: 'dialog.deleteAnnouncement.content',
+        action: 'action.yes',
+      }
+    }).afterClosed().subscribe(result => {
+      console.debug(' onDeleteClick():', result)
+      if (result) {
+        const m = getMessageBody(MessageType.deleteannouncement, [this.announcement.eventName])
+        this.messageService.sendMessage(m).subscribe(result => {
+          if (result.result) {
+            this.oracleState.getAllAnnouncements().subscribe()
+            this.onClose()
+          }
+        })
+      }
+    })
+  }
+
+  onBroadcastClick() {
+    console.debug('onBroadcastClick()')
+    this.oracleExplorer.createAnnouncement(this.announcement).subscribe(result => {
+      if (result) {
+        this.oracleState.getAnnouncement(this.announcement).subscribe() // Update oracleState
+      }
+    })
+  }
+
+  onViewOnOEClick() {
+    console.debug('onViewAnnouncementClick()')
+    this.oracleExplorer.openAnnouncementTab(this.announcement)
+  }
+
+  onAttestClick() {
+    console.debug('onAttestClick()')
+    this.oracleExplorer.createAttestations(this.announcement).subscribe(result => {
+      if (result) {
+        this.oracleState.getAnnouncement(this.announcement).subscribe() // Update oracleState
       }
     })
   }
