@@ -18,42 +18,96 @@
     <mat-form-field *ngIf="announcement.signedOutcome !== null">
       <mat-label translate>outcome</mat-label>
       <input matInput name="signedOutcome" type="text" [(ngModel)]="announcement.signedOutcome" readonly>
+      <button mat-icon-button matSuffix (click)="onDeleteAttestation()"
+        [disabled]="announcement.signedOutcome !== null && 
+          oracleState.oeAnnouncements.value[announcement.eventName] && 
+          oracleState.oeAnnouncements.value[announcement.eventName].outcome !== null">
+        <mat-icon>delete</mat-icon>
+      </button>
     </mat-form-field>
-
-    <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="announcementDetail.outcomeSigned" icon="check_circle"></app-alert>
 
     <ng-container *ngIf="announcement.signedOutcome === null">
       <ng-container *ngIf="isEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
-          <input matInput name="signEnum" type="text" [(ngModel)]="signEventInput">
+          <input matInput name="signEnum" type="text" [(ngModel)]="signEnumInput" 
+            placeholder="{{ announcement.outcomes.join() }}">
         </mat-form-field>
-        <button type="button" (click)="onSignEnum()" translate>oracleOperations.signenum</button>
+        <button mat-raised-button color="primary" (click)="onSignEnum()">
+          {{ 'oracleOperations.signenum' | translate }}</button>
       </ng-container>
       <br>
       <ng-container *ngIf="isNotEnum()">
-        <mat-form-field >
+        <mat-form-field>
           <mat-label translate>outcome</mat-label>
-          <input matInput name="signDigits" type="number" [(ngModel)]="signDigitsInput">
+          <input matInput name="signDigits" type="number" [(ngModel)]="signDigitsInput" 
+            placeholder="{{ formatOutcomes(announcement.outcomes) }}">
         </mat-form-field>
-        <button type="button" (click)="onSignDigits()" translate>oracleOperations.signdigits</button>
+        <button mat-raised-button color="primary" (click)="onSignDigits()">
+          {{ 'oracleOperations.signdigits' | translate }}</button>
       </ng-container>
     </ng-container>
+
+    <app-alert *ngIf="showAttestationDeleted" [type]="AlertType.success" message="announcementDetail.attestationDeleted" icon="check_circle"></app-alert>
+    <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="announcementDetail.outcomeSigned" icon="check_circle"></app-alert>
+
   </form>
 
-  <!-- <ng-container *ngIf="event.signedOutcome">
-    <br>
-    <button type="button" (click)="onGetSignatures()" translate>oracleOperations.getsignatures</button>
-  </ng-container>
-  
-  <ng-container *ngIf="signatures">
-    <br>
-    <label translate>announcementDetail.signatures</label>
-    <textarea class="signatures">{{ signatures | json }}</textarea>
-  </ng-container> -->
-  
-  <br>
-  <label translate>announcementDetail.eventJSON</label>
-  <textarea class="announcement-json">{{ announcement | json }}</textarea>
+  <div class="status">
+    <ng-template [ngIf]="oracleState.oeAnnouncements.value[announcement.eventName] === null"
+      [ngIfElse]="announcementBroadcast">
+      <p translate>announcementDetail.announcementIsNotBroadcast</p>
+    </ng-template>
+    <ng-template #announcementBroadcast>
+      <p translate>announcementDetail.announcementIsBroadcast</p>
+    </ng-template>
+    <ng-template [ngIf]="announcement.signedOutcome !== null && 
+      oracleExplorer.oracleName.value && 
+      oracleState.oeAnnouncements.value[announcement.eventName] &&
+      oracleState.oeAnnouncements.value[announcement.eventName].outcome !== null"
+      [ngIfElse]="outcomeNotBroadcast">
+      <p translate>announcementDetail.outcomeIsBroadcast</p>
+    </ng-template>
+    <ng-template #outcomeNotBroadcast>
+      <p translate>announcementDetail.outcomeIsNotBroadcast</p>
+    </ng-template>
 
+    <ng-container *ngIf="!oracleState.oeAnnouncements.value[announcement.eventName]; else viewOnExplorer">
+      <button mat-stroked-button (click)="onDeleteClick(); $event.stopPropagation()"
+        matTooltip="{{ 'announcementTable.broadcastAnnouncement' | translate }}">
+        <mat-icon class="material-icons-outlined">delete</mat-icon>
+        <span class="button-label" translate>announcementDetail.deleteAnnouncement</span>
+      </button>
+      <button mat-stroked-button (click)="onBroadcastClick(); $event.stopPropagation()"
+        matTooltip="{{ 'announcementTable.broadcastAnnouncement' | translate }}">
+        <mat-icon class="material-icons-outlined">announcement</mat-icon>
+        <span class="button-label" translate>announcementDetail.broadcastAnnouncement</span>
+      </button>
+    </ng-container>
+    <ng-template #viewOnExplorer>
+      <button mat-stroked-button (click)="onViewOnOEClick(); $event.stopPropagation()"
+        matTooltip="{{ '' | translate }}">
+        <mat-icon>open_in_new</mat-icon>
+        <span class="button-label" translate>announcementTable.viewOnOracleExplorer</span>
+      </button>
+    </ng-template>
+
+    <ng-container *ngIf="announcement.signedOutcome !== null && 
+      oracleExplorer.oracleName.value && 
+      oracleState.oeAnnouncements.value[announcement.eventName]">
+      <ng-container *ngIf="oracleState.oeAnnouncements.value[announcement.eventName].outcome === null">
+        <button mat-stroked-button (click)="onAttestClick(); $event.stopPropagation()"
+          matTooltip="{{ 'announcementTable.broadcastOutcome' | translate }}">
+          <mat-icon class="material-icons-outlined">campaign</mat-icon>
+          <span class="button-label" translate>announcementDetail.broadcastOutcome</span>
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="json">
+    <label translate>announcementDetail.eventJSON</label>
+    <textarea class="announcement-json">{{ announcement | json }}</textarea>
+  </div>
+ 
 </section>

@@ -19,6 +19,7 @@ export function SendOracleMessage(message: OracleServerMessage) {
   if (message) {
     return needle('post', `${ORACLE_SERVER_URL}`, message, { json: true }).then(response => {
       const body = <OracleResponse<any>>response.body
+      // Throw backend error to break promise chain for catch handling
       if (body.error) throw(body.error)
       return body
     }).catch(err => {
@@ -30,7 +31,7 @@ export function SendOracleMessage(message: OracleServerMessage) {
   }
 }
 
-/* Specific Oracle Server message functions */
+/** Specific Oracle Server message functions */
 
 export function GetPublicKey() {
   console.debug('GetPublicKey()')

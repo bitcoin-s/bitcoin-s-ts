@@ -20,7 +20,7 @@ const Config = <ServerConfig>require('./config.json')
 const logFormat = printf(({ level, message, timestamp }) => {
   return `${timestamp} ${level}: ${message}`
 })
-const LOG_PATH = '' // TODO : Inject path here
+const LOG_PATH = process.env.LOG_PATH || ''
 const LOG_FILENAME = 'oracle-server-ui-proxy.log'
 const logger = winston.createLogger({
   exitOnError: Config.stopOnError,
@@ -52,6 +52,8 @@ process.on('unhandledRejection', error => {
   logger.error('uncaught rejection', error)
   if (Config.stopOnError) process.exit(1)
 })
+
+/** State */
 
 const UI_PATH = path.join(__dirname, Config.uiPath)
 const proxyRoot = Config.proxyRoot

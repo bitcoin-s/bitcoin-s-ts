@@ -1,6 +1,6 @@
 .announcement-detail-section {
   padding: 0 1rem;
-  min-width: 350px;
+  width: 350px; // using min-width was leading to changes as page state changed
 
   display: flex;
   flex-direction: column;
@@ -9,14 +9,47 @@
 
   .form-container > * {
     width: 100%;
+
+    button {
+      padding-bottom: 1.25em; // to match outcome field
+    }
   }
 
-  .signatures {
-    min-height: 4rem;
+  .status {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+
+    p ~ p {
+      margin-block-start: 0em;
+      margin-block-end: 2em;
+    }
+
+    button {
+      align-self: center;
+      span {
+        margin-left: 0.5rem;
+      }
+    }
+    button ~ button {
+      margin-top: 1rem;
+    }
   }
 
-  .announcement-json {
-    flex: 1;
-    margin-bottom: 0.5rem;
+  .json {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    label {
+
+      margin-bottom: 0.5rem;
+    }
+    .announcement-json {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
   }
+  
 }
