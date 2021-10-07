@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
@@ -123,8 +123,9 @@ export class OracleExplorerService {
   }
 
   getOracleName(pubkey: string) {
+    // This eats the 404 error that will occur if the address does not exist and returns null
     return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
-      .pipe(catchError(this.errorHandler))
+      .pipe(catchError((error: any, caught: Observable<OracleNameResponse>) => of(null)))
   }
 
   getLocalOracleName(pubkey: string) {
