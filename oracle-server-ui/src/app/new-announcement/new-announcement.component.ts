@@ -193,6 +193,7 @@ export class NewAnnouncementComponent implements OnInit {
       this.f['maxValue'].setErrors(null)
       // this.f['base'].setErrors(null)
       // this.f['numdigits'].setErrors(null)
+      this.f['unit'].setErrors(null)
       this.f['precision'].setErrors(null)
 
       this.f['outcomes'].updateValueAndValidity()
@@ -201,6 +202,7 @@ export class NewAnnouncementComponent implements OnInit {
 
       this.f['minValue'].updateValueAndValidity()
       this.f['maxValue'].updateValueAndValidity()
+      this.f['unit'].updateValueAndValidity()
       this.f['precision'].updateValueAndValidity()
     } 
     // else if (EventType.DIGIT_DECOMP) {
