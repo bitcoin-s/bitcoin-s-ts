@@ -154,7 +154,7 @@ export class NewAnnouncementComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       announcementType: [this.announcementType],
-      announcementName: [null, Validators.required], // TODO : maxlength?
+      eventName: [null, Validators.required], // TODO : maxlength?
       maturationTime: [null, Validators.required],
       outcomes: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.ENUM, outcomeValidator())]],
       minValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
@@ -234,7 +234,7 @@ export class NewAnnouncementComponent implements OnInit {
       //     v.base, v.signed, v.numdigits, v.unit, v.precision])
       //   break
       default:
-        throw Error('onCreateAnnouncement unknown newEventType: ' + v.announcementType)
+        throw Error('onCreateAnnouncement unknown announcementType: ' + v.announcementType)
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)

@@ -65,8 +65,13 @@ export class AnnouncementDetailComponent implements OnInit {
     this.messageService.sendMessage(m).subscribe(result => {
       console.debug(' onSignEnum()', result)
       if (result.result) {
-        this.announcement.signedOutcome = this.signEnumInput
-        this.showSigningSuccess = true
+        this.oracleState.reloadAnnouncement(this.announcement).subscribe(result => {
+          if (result.result) {
+            this.announcement = result.result
+            this.showAttestationDeleted = false
+            this.showSigningSuccess = true
+          }
+        })
       }
     })
   }
@@ -102,12 +107,14 @@ export class AnnouncementDetailComponent implements OnInit {
               })
             }
           }
-          this.announcement.signedOutcome = '' + val
-        } else {
-          this.announcement.signedOutcome = ''
-        }
-        this.showAttestationDeleted = false
-        this.showSigningSuccess = true
+        } 
+        this.oracleState.reloadAnnouncement(this.announcement).subscribe(result => {
+          if (result.result) {
+            this.announcement = result.result
+            this.showAttestationDeleted = false
+            this.showSigningSuccess = true
+          }
+        })
       }
     })
   }
@@ -163,7 +170,7 @@ export class AnnouncementDetailComponent implements OnInit {
     console.debug('onBroadcastClick()')
     this.oracleExplorer.createAnnouncement(this.announcement).subscribe(result => {
       if (result) {
-        this.oracleState.getAnnouncement(this.announcement).subscribe() // Update oracleState
+        this.oracleState.getOEAnnouncement(this.announcement).subscribe() // Update oracleState
       }
     })
   }
@@ -177,7 +184,7 @@ export class AnnouncementDetailComponent implements OnInit {
     console.debug('onAttestClick()')
     this.oracleExplorer.createAttestations(this.announcement).subscribe(result => {
       if (result) {
-        this.oracleState.getAnnouncement(this.announcement).subscribe() // Update oracleState
+        this.oracleState.getOEAnnouncement(this.announcement).subscribe() // Update oracleState
       }
     })
   }
