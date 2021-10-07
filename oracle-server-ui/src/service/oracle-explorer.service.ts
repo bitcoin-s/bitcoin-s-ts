@@ -123,8 +123,8 @@ export class OracleExplorerService {
   }
 
   getOracleName(pubkey: string) {
-    // This eats the 404 error that will occur if the address does not exist and returns null
     return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
+      // This eats the 404 error that will occur if the pubkey does not exist and returns null
       .pipe(catchError((error: any, caught: Observable<OracleNameResponse>) => of(null)))
   }
 
