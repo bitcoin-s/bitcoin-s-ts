@@ -222,19 +222,19 @@ export class NewAnnouncementComponent implements OnInit {
         // TODO : Process outcomes in component / make a custom component - https://netbasal.com/angular-formatters-and-parsers-8388e2599a0e
         const outcomes = <string[]>v.outcomes.split(',')
         outcomes.forEach(o => o.trim())
-        m = getMessageBody(MessageType.createenumannouncement, [v.eventName, v.maturationTime.toISOString(), outcomes])
+        m = getMessageBody(MessageType.createenumannouncement, [v.announcementName, v.maturationTime.toISOString(), outcomes])
         break
       case AnnouncementType.NUMERIC:
-        m = getMessageBody(MessageType.createnumericannouncement, [v.eventName, v.maturationTime.toISOString(), 
+        m = getMessageBody(MessageType.createnumericannouncement, [v.announcementName, v.maturationTime.toISOString(), 
           v.minValue, v.maxValue, v.unit, v.precision])
         break
       // case EventType.DIGIT_DECOMP:
       //   const epochSeconds = Math.round(v.maturationTime.getTime() / 1000)
-      //   m = getMessageBody(MessageType.createdigitdecompevent, [v.eventName, epochSeconds, 
+      //   m = getMessageBody(MessageType.createdigitdecompevent, [v.announcementName, epochSeconds, 
       //     v.base, v.signed, v.numdigits, v.unit, v.precision])
       //   break
       default:
-        throw Error('onCreateAnnouncement unknown newEventType: ' + v.eventType)
+        throw Error('onCreateAnnouncement unknown newEventType: ' + v.announcementType)
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)
