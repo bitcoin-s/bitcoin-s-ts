@@ -17,7 +17,7 @@ type ProxyErrorFn = (message: string) => void
 
 export function getProxyErrorHandler(name: string, onError: ProxyErrorFn) {
   return (error: any, caught: Observable<unknown>) => {
-    console.error('OracleExplorer errorHandler', error)
+    console.error('getProxyErrorHandler', error)
     const statusText = error?.statusText
     if (CONNECTION_REFUSED_ERROR.test(statusText)) {
       console.error('tor connection failed')
