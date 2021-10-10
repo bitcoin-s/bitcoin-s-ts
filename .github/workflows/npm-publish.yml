@@ -1,4 +1,4 @@
-# https://github.com/marketplace/actions/publish-to-npm
+# https://github.com/JS-DevTools/npm-publish
 name: npm-publish
 on:
   push:
@@ -12,9 +12,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
+      - run: cd oracle-server-ts
       - run: npm install
       - run: npm test
-      
       - name: Set outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short=8 HEAD)"
