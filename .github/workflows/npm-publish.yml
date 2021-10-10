@@ -3,7 +3,7 @@ name: npm-publish
 on:
   push:
     branches:
-      - [master, main, 2021-10-10-oracle-server-npm-publish] # Change this to your default branch
+      [master, main, 2021-10-10-oracle-server-npm-publish] # Change this to your default branch
 jobs:
   npm-publish:
     name: npm-publish
