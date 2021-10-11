@@ -128,7 +128,7 @@ export class OracleStateService {
   reloadAnnouncement(a: OracleAnnouncement) {
     console.debug('reloadAnnouncement()', a)
     // Remove previous event state
-    const i = this.flatAnnouncements.value.findIndex(a => a.eventName === a.eventName)
+    const i = this.flatAnnouncements.value.findIndex(i => i.eventName === a.eventName)
     if (i !== -1) {
       this.flatAnnouncements.value.splice(i, 1)
     }

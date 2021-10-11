@@ -2,7 +2,6 @@ import { animate, animateChild, query, style, transition, trigger } from '@angul
 import { Component, OnInit } from '@angular/core';
 
 
-
 const SPLASH_KEY = 'noSplash'
 
 @Component({
@@ -26,14 +25,12 @@ export class SplashComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // To re-show
-    localStorage.removeItem(SPLASH_KEY)
-
     const show = localStorage.getItem(SPLASH_KEY) === null
     this.showSplash = show
   }
 
   dontShowSplashAgainClick() {
+    console.debug('dontShowSplashAgainClick()')
     localStorage.setItem(SPLASH_KEY, '1')
   }
 
