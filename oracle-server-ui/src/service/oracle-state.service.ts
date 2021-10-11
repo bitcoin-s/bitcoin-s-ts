@@ -165,8 +165,10 @@ export class OracleStateService {
     const obs = this.oracleExplorerService.getAnnouncement(a.announcementTLVsha256)
     const pipe = obs.pipe(tap(result => {
       console.debug('getOEAnnouncement()', a.announcementTLVsha256, result)
-      this.oeAnnouncements.value[a.eventName] = result // will be null for no result
-      this.updateAnnouncements()
+      if (result) {
+        this.oeAnnouncements.value[a.eventName] = result.result // will be null for no result
+        this.updateAnnouncements()
+      }
     }))
     return pipe
   }

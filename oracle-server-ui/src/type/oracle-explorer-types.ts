@@ -1,4 +1,9 @@
 
+export interface OracleExplorerResponse<T> {
+  result: T
+  error: string
+}
+
 export interface OracleNameResponse {
   pubkey: string
   oracleName: string
