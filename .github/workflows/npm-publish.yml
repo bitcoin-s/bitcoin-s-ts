@@ -12,8 +12,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
-      - run: cd oracle-server-ts
-      - run: npm install
+      - run: |
+          cd oracle-server-ts
+          npm install
       - name: Set outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short=8 HEAD)"
