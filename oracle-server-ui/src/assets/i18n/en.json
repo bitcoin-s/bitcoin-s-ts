@@ -206,6 +206,15 @@
     "ok": "Ok",
     "yes": "Yes",
     "no": "No"
+  },
+
+  "splashScreen": {
+    "heading": "Welcome to Krystal Bull",
+    "betaSoftware": "This application is beta software.",
+    "significantValue": "Please do not use it with significant amounts of value at this time.",
+    "caveatEmptor": "caveat emptor",
+    "haveFun": "And have fun!",
+    "dontShowSplashAgain": "Don't show this screen again"
   }
 
 }

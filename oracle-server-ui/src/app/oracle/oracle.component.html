@@ -50,9 +50,9 @@
       <span class="button-label" translate>configuration.heading</span>
     </button>
     <div class="spacer"></div>
-    <button mat-stroked-button (click)="onShowDebug()">
+    <!-- <button mat-stroked-button (click)="onShowDebug()">
       <mat-icon>pest_control</mat-icon>
-    </button>
+    </button> -->
   </nav>
   
   <div class="table-container">
@@ -121,7 +121,8 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let announcement; columns: displayedColumns"
-          (click)="onRowClick(announcement)"></tr>
+          (click)="onRowClick(announcement)"
+          [class.focus-row]="selectedAnnouncement === announcement"></tr>
     </table>
   </div>
 

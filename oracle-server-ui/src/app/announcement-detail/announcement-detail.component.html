@@ -10,10 +10,10 @@
       <input matInput name="eventName" type="text" [(ngModel)]="announcement.eventName" readonly>
     </mat-form-field>
 
-    <!-- <ng-container>
-      <br>
-      <button type="button" (click)="onSendToOracleExplorer()" translate>oracleExplorer.sendTo</button>
-    </ng-container> -->
+    <mat-form-field>
+      <mat-label translate>createAnnouncement.maturationTime</mat-label>
+      <input matInput name="maturationTime" [(ngModel)]="announcement.maturationTime" readonly>
+    </mat-form-field>
 
     <mat-form-field *ngIf="announcement.signedOutcome !== null">
       <mat-label translate>outcome</mat-label>
@@ -36,7 +36,6 @@
         <button mat-raised-button color="primary" (click)="onSignEnum()">
           {{ 'oracleOperations.signenum' | translate }}</button>
       </ng-container>
-      <br>
       <ng-container *ngIf="isNotEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>

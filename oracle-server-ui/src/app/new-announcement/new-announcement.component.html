@@ -7,11 +7,11 @@
   <form class="form-container" [formGroup]="form">
     <fieldset [disabled]="loading || announcementCreated">
     <!-- May want to move this outside the form -->
-    <mat-radio-group formControlName="announcementType" [(ngModel)]="announcementType" (ngModelChange)="wipeInvalidFormStates()">
+    <mat-radio-group formControlName="announcementType" class="announcement-type"
+    [(ngModel)]="announcementType" (ngModelChange)="wipeInvalidFormStates()">
       <mat-radio-button *ngFor="let e of announcementTypes"
         [value]="e">{{ 'announcementType.' + e | translate }}</mat-radio-button>
     </mat-radio-group>
-    <br>
 
     <mat-form-field>
       <mat-label translate>createAnnouncement.name</mat-label>
@@ -24,6 +24,7 @@
     <mat-form-field>
       <mat-label translate>createAnnouncement.maturationTime</mat-label>
       <input matInput formControlName="maturationTime" [matDatepicker]="datePicker" [min]="minDate"
+        (cdkAutofill)="onMaturationTimeAutofill($event)"
         placeholder="{{ 'createAnnouncement.maturationTimePlaceholder' | translate }}">
       <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
@@ -95,7 +96,7 @@
           {{ 'createAnnouncementErrors.negative' | translate }}
         </mat-error>   
       </mat-form-field>
-      <br *ngIf="announcementType === AnnouncementType.DIGIT_DECOMP">
+      <!-- <br *ngIf="announcementType === AnnouncementType.DIGIT_DECOMP"> -->
     </ng-container>
 
     <!--
