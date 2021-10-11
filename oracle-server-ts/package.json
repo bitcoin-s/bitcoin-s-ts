@@ -1,5 +1,5 @@
 {
-  "name": "oracle-server-ts",
+  "name": "@bitcoin-s-ts/oracle-server-ts",
   "version": "0.0.1",
   "description": "NodeJS package for accessing bitcoin-s oracleServer",
   "main": "dist/index.js",
@@ -11,7 +11,6 @@
     "demo": "npx ts-node demo.ts",
     "tests": "npx ts-node tests.ts"
   },
-  "private": true,
   "dependencies": {
     "needle": "^3.0.0"
   },
