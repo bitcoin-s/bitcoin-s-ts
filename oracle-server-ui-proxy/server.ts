@@ -104,7 +104,7 @@ function removeFrontendHeaders(proxyReq: http.ClientRequest) {
 const HOST_OVERRIDE_HEADER = 'host-override'
 function hostRouter(req: http.IncomingMessage) {
   const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost
-  return `https://${host}/v1`
+  return `https://${host}/v2`
 }
 
 const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
