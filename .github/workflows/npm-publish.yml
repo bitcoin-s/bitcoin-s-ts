@@ -23,6 +23,6 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
-          package: oracle-server-ts/package.json
+          package: ./oracle-server-ts/package.json
           tag: "${{steps.vars.outputs.sha_short}}"
           check-version: true # will not publish unless version is changed
