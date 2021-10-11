@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms'
+import { MatDatepickerInput } from '@angular/material/datepicker'
 import { MatInput } from '@angular/material/input'
 
 import { AlertType } from '~app/component/alert/alert.component'
@@ -93,6 +94,7 @@ export class NewAnnouncementComponent implements OnInit {
 
   form: FormGroup
   @ViewChild('announcementNameInput') announcementNameInput: MatInput;
+  @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>;
 
   // convenience getter for easy access to form fields
   get f() { return this.form.controls }
@@ -212,6 +214,14 @@ export class NewAnnouncementComponent implements OnInit {
     //   this.f['numdigits'].updateValueAndValidity()
     //   this.f['precision'].updateValueAndValidity()
     // }
+  }
+
+  onMaturationTimeAutofill(event: any) {
+    console.debug('onMaturationTimeAutofill()', event);
+    if (event.isAutofilled && event.target) {
+      const date = event.target.value
+      this.datePicker.value = new Date(date)
+    }
   }
 
   onCreateAnnouncement() {

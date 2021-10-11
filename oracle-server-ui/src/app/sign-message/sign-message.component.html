@@ -12,10 +12,9 @@
       (click)="onSignMessage()">{{ 'action.sign' | translate }}</button>
   </form>
 
-  <ng-container *ngIf="signedMessage">
-    <br>
+  <div *ngIf="signedMessage" class="signed-message">
     <label translate>result</label>
     <textarea>{{ signedMessage }}</textarea>  
-  </ng-container>
+  </div>
 
 </section>

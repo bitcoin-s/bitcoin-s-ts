@@ -50,6 +50,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   // Grid config
   dataSource = new MatTableDataSource(<OracleAnnouncement[]>[])
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
+  selectedAnnouncement: OracleAnnouncement
 
   loading = true
 
@@ -177,21 +178,22 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.hideRawButtons = !this.hideRawButtons
   }
 
-  onRowClick(event: OracleAnnouncement) {
-    console.debug('onRowClick()', event)
-    this.showAnnouncementDetail.next(event)
+  onRowClick(a: OracleAnnouncement) {
+    console.debug('onRowClick()', a)
+    this.selectedAnnouncement = a
+    this.showAnnouncementDetail.next(a)
   }
 
-  onAnnouncementClick(event: OracleAnnouncement) {
-    console.debug('onAnnouncementClick()', event)
-    if (!this.oracleState.oeAnnouncements.value[event.eventName]) {
-      this.oracleExplorerService.createAnnouncement(event).subscribe(result => {
+  onAnnouncementClick(a: OracleAnnouncement) {
+    console.debug('onAnnouncementClick()', a)
+    if (!this.oracleState.oeAnnouncements.value[a.eventName]) {
+      this.oracleExplorerService.createAnnouncement(a).subscribe(result => {
         if (result) {
-          this.oracleState.getOEAnnouncement(event).subscribe() // Update oracleState
+          this.oracleState.getOEAnnouncement(a).subscribe() // Update oracleState
         }
       })
     } else {
-      console.warn('Oracle Explorer announcement already exists for', event)
+      console.warn('Oracle Explorer announcement already exists for', a)
     }
   }
 
@@ -200,11 +202,11 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.openAnnouncementTab(a)
   }
 
-  onAnnounceOutcome(event: OracleAnnouncement) {
-    console.debug('onAnnounceOutcome()', event)
-    this.oracleExplorerService.createAttestations(event).subscribe(result => {
+  onAnnounceOutcome(a: OracleAnnouncement) {
+    console.debug('onAnnounceOutcome()', a)
+    this.oracleExplorerService.createAttestations(a).subscribe(result => {
       if (result) {
-        this.oracleState.getOEAnnouncement(event).subscribe() // Update oracleState
+        this.oracleState.getOEAnnouncement(a).subscribe() // Update oracleState
       }
     })
   }

@@ -126,6 +126,7 @@ export class AnnouncementDetailComponent implements OnInit {
         title: 'dialog.deleteAttestation.title',
         content: 'dialog.deleteAttestation.content',
         action: 'action.yes',
+        actionColor: 'warn',
       }
     }).afterClosed().subscribe(result => {
       console.debug(' onDeleteAttestation():', result)
@@ -151,6 +152,7 @@ export class AnnouncementDetailComponent implements OnInit {
         title: 'dialog.deleteAnnouncement.title',
         content: 'dialog.deleteAnnouncement.content',
         action: 'action.yes',
+        actionColor: 'warn',
       }
     }).afterClosed().subscribe(result => {
       console.debug(' onDeleteClick():', result)

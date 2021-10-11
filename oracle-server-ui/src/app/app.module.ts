@@ -18,9 +18,10 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { SignMessageComponent } from './sign-message/sign-message.component'
 
 import { AlertComponent } from './component/alert/alert.component'
+import { SplashComponent } from './component/splash/splash.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
-import { ErrorDialogComponent } from './dialog/error/error.component'
+import { ErrorDialogComponent } from './dialog/error/error.component';
 
 
 // AoT requires an exported function for factories
@@ -45,6 +46,7 @@ export function appInitializerFactory(translate: TranslateService) {
     AlertComponent,
     MoreInfoComponent,
     LastResultDetailComponent,
+    SplashComponent,
     
     ConfigurationComponent,
     SignMessageComponent,
