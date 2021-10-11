@@ -25,6 +25,9 @@ export class SplashComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    // Force reset splash key
+    // localStorage.removeItem(SPLASH_KEY)
+
     const show = localStorage.getItem(SPLASH_KEY) === null
     this.showSplash = show
   }
