@@ -3,7 +3,7 @@ name: npm-publish
 on:
   push:
     branches:
-      [master, main, 2021-10-10-oracle-server-npm-publish] # Change this to your default branch
+      [master, main] # Change this to your default branch
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: 16
       - run: cd oracle-server-ts
       - run: npm install
       - name: Set outputs
@@ -24,3 +24,4 @@ jobs:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
           package: oracle-server-ts/package.json
           tag: "${{steps.vars.outputs.sha_short}}"
+          check-version: true # will not publish unless version is changed
