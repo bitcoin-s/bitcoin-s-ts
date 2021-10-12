@@ -188,7 +188,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
     console.debug('onAnnouncementClick()', a)
     if (!this.oracleState.oeAnnouncements.value[a.eventName]) {
       this.oracleExplorerService.createAnnouncement(a).subscribe(result => {
-        if (result) {
+        if (result && result.result) {
           this.oracleState.getOEAnnouncement(a).subscribe() // Update oracleState
         }
       })
@@ -205,7 +205,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onAnnounceOutcome(a: OracleAnnouncement) {
     console.debug('onAnnounceOutcome()', a)
     this.oracleExplorerService.createAttestations(a).subscribe(result => {
-      if (result) {
+      if (result && result.result) {
         this.oracleState.getOEAnnouncement(a).subscribe() // Update oracleState
       }
     })

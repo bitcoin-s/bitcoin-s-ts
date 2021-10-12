@@ -8,7 +8,7 @@ import { environment } from '~environments'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
-import { OracleAnnouncementsResponse, OracleNameResponse } from '~type/oracle-explorer-types'
+import { OracleAnnouncementsResponse, OracleExplorerResponse, OracleNameResponse } from '~type/oracle-explorer-types'
 import { OracleAnnouncement } from '~type/oracle-server-types'
 import { getProxyErrorHandler } from '~type/proxy-server-types'
 
@@ -71,7 +71,7 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse[]
    */
   listAnnouncements() {
-    return this.http.get<OracleAnnouncementsResponse[]>(this.url + '/announcements', 
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse[]>>(this.url + '/announcements', 
       this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
@@ -80,7 +80,7 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse
    */
   getAnnouncement(announcementHash: string) {
-    return this.http.get<OracleAnnouncementsResponse>(this.url + `/announcements/${announcementHash}`,
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${announcementHash}`,
       this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
@@ -101,7 +101,7 @@ export class OracleExplorerService {
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
-    return this.http.post<string>(this.url + '/announcements', body, this.getHeaders())
+    return this.http.post<OracleExplorerResponse<string>>(this.url + '/announcements', body, this.getHeaders())
       .pipe(catchError(this.errorHandler))
   }
 
@@ -118,26 +118,26 @@ export class OracleExplorerService {
 
     const body = new HttpParams()
       .set('attestations', a.attestations)
-    return this.http.post<OracleNameResponse>(this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
+    return this.http.post<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
       .pipe(catchError(this.errorHandler))
   }
 
   getOracleName(pubkey: string) {
-    return this.http.get<OracleNameResponse>(this.url + `/oracle/${pubkey}`)
+    return this.http.get<OracleExplorerResponse<OracleNameResponse>>(this.url + `/oracle/${pubkey}`)
       // This eats the 404 error that will occur if the pubkey does not exist and returns null
-      .pipe(catchError((error: any, caught: Observable<OracleNameResponse>) => of(null)))
+      .pipe(catchError((error: any) => of(null)))
   }
 
   getLocalOracleName(pubkey: string) {
     return this.getOracleName(pubkey).pipe(tap(result => {
       const lsOracleName = localStorage.getItem(ORACLE_NAME_KEY);
-      if (result) {
-        this.oracleName.next(result.oracleName)
+      if (result && result.result) {
+        this.oracleName.next(result.result.oracleName)
         this.serverOracleName.next(true)
-        if (result.oracleName && lsOracleName && lsOracleName !== result.oracleName) {
+        if (result.result.oracleName && lsOracleName && lsOracleName !== result.result.oracleName) {
           console.error('local oracleName and oracle explorer oracleName do not match!')
           // Force server oracleName
-          localStorage.setItem(ORACLE_NAME_KEY, result.oracleName)
+          localStorage.setItem(ORACLE_NAME_KEY, result.result.oracleName)
         }
       } else if (lsOracleName) {
         // Use localStorage oracleName if it's set, but hasn't been used on the Oracle Explorer yet
