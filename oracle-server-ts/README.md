@@ -1,6 +1,6 @@
-# WalletServerTS
+# OracleServerTS
 
-This project is a NodeJS module for making calls to bitcoin-s walletServer.
+This project is a NodeJS module for making calls to bitcoin-s oracleServer.
 
 ## Install Dependencies
 
