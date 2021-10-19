@@ -160,3 +160,21 @@ export function DeleteAttestation(eventName: string) {
     return <OracleResponse<OracleEvent>>response
   })
 }
+
+export function GetOracleName() {
+  console.debug('GetOracleName()')
+
+  const m = getMessageBody(MessageType.getoraclename)
+  return SendOracleMessage(m).then(response => {
+    return <OracleResponse<OracleEvent>>response
+  })
+}
+
+export function SetOracleName(oracleName: string) {
+  console.debug('SetOracleName()', oracleName)
+
+  const m = getMessageBody(MessageType.setoraclename, [oracleName])
+  return SendOracleMessage(m).then(response => {
+    return <OracleResponse<OracleEvent>>response
+  })
+}

@@ -28,4 +28,9 @@ export async function noinputTests() {
     assert(r.result)
     assert.ifError(r.error)
   })
+  await OracleServer.GetOracleName().then(r => {
+    console.debug('GetOracleName() response:', r)
+    assert(r.result)
+    assert.ifError(r.error)
+  })
 }

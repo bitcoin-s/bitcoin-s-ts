@@ -14,7 +14,7 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 Run `npm run test` to start JavaScript invocation test script.
 
-## Basic Proof of System Working Programs
+## Proof of System Working Programs
 
 ### Typescript
 ```
@@ -23,7 +23,7 @@ import * as OracleServer from '@bitcoin-s-ts/oracle-server-ts'
 OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
 
 OracleServer.GetPublicKey().then(r => {
-	console.debug('GetPublicKey()', r)
+  console.debug('GetPublicKey()', r)
 })
 ```
 
@@ -34,6 +34,6 @@ const OracleServer = require('@bitcoin-s-ts/oracle-server-ts')
 OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
 
 OracleServer.GetPublicKey().then(r => {
-	console.debug('GetPublicKey()', r)
+  console.debug('GetPublicKey()', r)
 })
 ```
