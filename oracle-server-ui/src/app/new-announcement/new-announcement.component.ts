@@ -164,7 +164,7 @@ export class NewAnnouncementComponent implements OnInit {
       maxValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
         Validators.required)]],
       unit: [null, Validators.required],
-      precision: [null, conditionalValidator(() => this.announcementType === AnnouncementType.DIGIT_DECOMP || this.announcementType === AnnouncementType.NUMERIC, 
+      precision: [0, conditionalValidator(() => this.announcementType === AnnouncementType.DIGIT_DECOMP || this.announcementType === AnnouncementType.NUMERIC, 
         Validators.compose([nonNegativeNumberValidator(), Validators.required]))],
       // base: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
       //   positiveNumberValidator())]],

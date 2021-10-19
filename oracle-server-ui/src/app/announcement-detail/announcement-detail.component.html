@@ -32,8 +32,9 @@
           <mat-label translate>outcome</mat-label>
           <input matInput name="signEnum" type="text" [(ngModel)]="signEnumInput" 
             placeholder="{{ announcement.outcomes.join() }}">
+          <mat-hint *ngIf="signEnumInput && !announcement.outcomes.includes(signEnumInput)" align="start" translate [translateParams]="{ outcomes: announcement.outcomes.join() }">announcementDetail.outcomeMustBeInSet</mat-hint>
         </mat-form-field>
-        <button mat-raised-button color="primary" (click)="onSignEnum()">
+        <button class="sign-button" mat-raised-button color="primary" (click)="onSignEnum()" [disabled]="!announcement.outcomes.includes(signEnumInput)">
           {{ 'oracleOperations.signenum' | translate }}</button>
       </ng-container>
       <ng-container *ngIf="isNotEnum()">
@@ -42,7 +43,7 @@
           <input matInput name="signDigits" type="number" [(ngModel)]="signDigitsInput" 
             placeholder="{{ formatOutcomes(announcement.outcomes) }}">
         </mat-form-field>
-        <button mat-raised-button color="primary" (click)="onSignDigits()">
+        <button class="sign-button" mat-raised-button color="primary" (click)="onSignDigits()">
           {{ 'oracleOperations.signdigits' | translate }}</button>
       </ng-container>
     </ng-container>
@@ -104,7 +105,12 @@
     </ng-container>
   </div>
 
-  <div class="json">
+  <button *ngIf="!showAnnouncementJSON" mat-stroked-button 
+    (click)="onShowAnnouncementJSON(); $event.stopPropagation()">
+    <span class="button-label" translate>announcementDetail.showAnnouncementJSON</span>
+  </button>
+
+  <div *ngIf="showAnnouncementJSON" class="json">
     <label translate>announcementDetail.eventJSON</label>
     <textarea class="announcement-json">{{ announcement | json }}</textarea>
   </div>
