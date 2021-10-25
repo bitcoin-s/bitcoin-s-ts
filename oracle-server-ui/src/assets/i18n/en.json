@@ -140,6 +140,11 @@
       "created": "Announcement Created Successfully"
     },
 
+    "description": {
+      "enum": "This announcement type has a fixed set of possible outcomes",
+      "numeric": "This announcement type has a numeric range of outcomes"
+    },
+
     "name": "Name",
     "namePlaceholder": "Unique Announcement Name",
     "maturationTime": "Maturation Time",
@@ -196,7 +201,9 @@
     "announcementIsNotBroadcast": "This announcement is not broadcast",
     "outcomeIsBroadcast": "This announcement outcome is broadcast",
     "outcomeIsNotBroadcast": "This announcement outcome is not broadcast",
-    "deleteAnnouncement": "Delete Announcement"
+    "deleteAnnouncement": "Delete Announcement",
+    "showAnnouncementJSON": "Show Announcement JSON",
+    "outcomeMustBeInSet": "The outcome must be one of {{ outcomes }}"
   },
 
   "action": {

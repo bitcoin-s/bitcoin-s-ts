@@ -13,6 +13,10 @@
         [value]="e">{{ 'announcementType.' + e | translate }}</mat-radio-button>
     </mat-radio-group>
 
+    <div class="description">
+      {{ 'createAnnouncement.description.' + announcementType | translate }}
+    </div>
+
     <mat-form-field>
       <mat-label translate>createAnnouncement.name</mat-label>
       <!-- TODO : Initial focus -- cdkFocusInitial -->
@@ -28,6 +32,7 @@
         placeholder="{{ 'createAnnouncement.maturationTimePlaceholder' | translate }}">
       <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
+      <app-more-info matSuffix tooltip="createAnnouncementDescription.maturationTime"></app-more-info>
     </mat-form-field>
 
     <mat-form-field *ngIf="announcementType === AnnouncementType.ENUM">

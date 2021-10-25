@@ -37,6 +37,8 @@ export class AnnouncementDetailComponent implements OnInit {
   showSigningSuccess = false
   showAttestationDeleted = false
 
+  showAnnouncementJSON = false
+
   private reset() {
     this.signEnumInput = ''
     this.signDigitsInput = undefined
@@ -189,6 +191,11 @@ export class AnnouncementDetailComponent implements OnInit {
         this.oracleState.getOEAnnouncement(this.announcement).subscribe() // Update oracleState
       }
     })
+  }
+
+  onShowAnnouncementJSON() {
+    console.debug('onShowAnnouncementJSON()')
+    this.showAnnouncementJSON = true
   }
 
   onClose() {
