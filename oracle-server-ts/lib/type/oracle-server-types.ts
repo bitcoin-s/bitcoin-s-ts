@@ -16,6 +16,9 @@ export const enum MessageType {
   deleteannouncement = 'deleteannouncement',
   deleteattestation = 'deleteattestation',
 
+  getoraclename = 'getoraclename',
+  setoraclename = 'setoraclename',
+
   // Common
   getversion = 'getversion',
 

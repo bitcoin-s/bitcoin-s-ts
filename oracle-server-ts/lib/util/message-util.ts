@@ -7,6 +7,7 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
     case MessageType.getpublickey:
     case MessageType.getstakingaddress:
     case MessageType.listannouncements:
+    case MessageType.getoraclename:
     // Common
     case MessageType.getversion:
       return new OracleServerMessage(type)
@@ -20,6 +21,7 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
     case MessageType.createdigitdecompannouncement:
     case MessageType.deleteannouncement:
     case MessageType.deleteattestation:
+    case MessageType.setoraclename:
       return new OracleServerMessageWithParameters(type, params!)
     default:
       throw(Error('getMessageBody() unknown message type: ' + type))

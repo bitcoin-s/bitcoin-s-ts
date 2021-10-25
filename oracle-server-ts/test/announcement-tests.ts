@@ -1,5 +1,5 @@
 
-import assert from 'assert/strict';
+import assert from 'assert/strict'
 
 import * as OracleServer from '../lib/index'
 import * as validationUtil from '../lib/util/validation-util'
