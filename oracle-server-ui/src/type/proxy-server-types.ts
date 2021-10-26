@@ -23,7 +23,7 @@ export function getProxyErrorHandler(name: string, onError: ProxyErrorFn) {
       console.error('tor connection failed')
       // Could record error count here...
     }
-    let message = error?.message
+    let message = error?.error.error || error?.message
     if (onError) {
       onError(message)
     }
