@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { BehaviorSubject, of } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
@@ -9,10 +9,13 @@ import { environment } from '~environments'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { OracleAnnouncementsResponse, OracleExplorerResponse, OracleNameResponse } from '~type/oracle-explorer-types'
-import { OracleAnnouncement } from '~type/oracle-server-types'
+import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
 import { getProxyErrorHandler } from '~type/proxy-server-types'
 
+import { getMessageBody } from '~util/oracle-server-util'
+
 import { TorService } from './tor.service'
+import { MessageService } from './message.service'
 
 
 // Host replacement header for proxy
@@ -45,7 +48,7 @@ export class OracleExplorerService {
     localStorage.setItem(ORACLE_EXPLORER_VALUE_KEY, oe.value)
   }
   
-  constructor(private http: HttpClient, private torService: TorService, private dialog: MatDialog) {
+  constructor(private http: HttpClient, private messageService: MessageService, private torService: TorService, private dialog: MatDialog) {
     const oracleValue = localStorage.getItem(ORACLE_EXPLORER_VALUE_KEY) || DEFAULT_ORACLE_EXPLORER_VALUE
     const oracle = ORACLE_EXPLORERS.find(o => o.value === oracleValue)
     this.oracleExplorer = new BehaviorSubject(oracle ? oracle : ORACLE_EXPLORERS[0])
@@ -130,24 +133,43 @@ export class OracleExplorerService {
 
   getLocalOracleName(pubkey: string) {
     return this.getOracleName(pubkey).pipe(tap(result => {
-      const lsOracleName = localStorage.getItem(ORACLE_NAME_KEY);
-      if (result && result.result) {
-        this.oracleName.next(result.result.oracleName)
-        this.serverOracleName.next(true)
-        if (result.result.oracleName && lsOracleName && lsOracleName !== result.result.oracleName) {
-          console.error('local oracleName and oracle explorer oracleName do not match!')
-          // Force server oracleName
-          localStorage.setItem(ORACLE_NAME_KEY, result.result.oracleName)
+
+      let osOracleName: string // oracleName according to oracleServer
+      this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)).subscribe(result2 => {
+        if (result2 && result2.result) {
+          osOracleName = result2.result
+          console.warn('oracleServer OracleName:', osOracleName)
         }
-      } else if (lsOracleName) {
-        // Use localStorage oracleName if it's set, but hasn't been used on the Oracle Explorer yet
-        this.oracleName.next(lsOracleName)
-        this.serverOracleName.next(false)
-      } else {
-        console.warn('no oracleName found')
-        this.oracleName.next('')
-        this.serverOracleName.next(false)
-      }
+
+        const lsOracleName = localStorage.getItem(ORACLE_NAME_KEY); // historical
+        if (result && result.result) { // OracleExplorer.getOracleName()
+          this.oracleName.next(result.result.oracleName)
+          this.serverOracleName.next(true)
+          if (result.result.oracleName && lsOracleName && lsOracleName !== result.result.oracleName) {
+            console.warn('lsOracleName:', lsOracleName)
+            console.error('local oracleName and oracle explorer oracleName do not match!')
+            // Force server oracleName
+            // localStorage.setItem(ORACLE_NAME_KEY, result.result.oracleName)
+            this.setOracleName(result.result.oracleName, true)
+          } else if (result.result.oracleName && osOracleName !== result.result.oracleName) {
+            console.error('local oracleServer oracleName and oracle explorer oracleName do not match!')
+            // Force server oracleName
+            this.setOracleName(result.result.oracleName, true)
+          }
+        } else if (osOracleName) {
+          this.oracleName.next(osOracleName)
+          this.serverOracleName.next(false)
+        } else if (lsOracleName) {
+          // Use localStorage oracleName if it's set, but hasn't been used on the Oracle Explorer yet
+          this.oracleName.next(lsOracleName)
+          this.setOracleName(lsOracleName, true)
+          this.serverOracleName.next(false)
+        } else {
+          console.warn('no oracleName found')
+          this.oracleName.next('')
+          this.serverOracleName.next(false)
+        }
+      })
     }))
   }
 
@@ -157,8 +179,11 @@ export class OracleExplorerService {
       return
     }
     if (name) {
-      localStorage.setItem(ORACLE_NAME_KEY, name)
-      this.oracleName.next(name)
+      // localStorage.setItem(ORACLE_NAME_KEY, name) // historically used as oracleName, now databased in oracleServer
+      localStorage.removeItem(ORACLE_NAME_KEY) // ignore this from now on
+      this.messageService.sendMessage(getMessageBody(MessageType.setoraclename, [name])).subscribe(_ => {
+        this.oracleName.next(name)
+      })
     }
   }
 
