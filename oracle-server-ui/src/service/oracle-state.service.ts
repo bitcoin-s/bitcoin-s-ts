@@ -58,15 +58,15 @@ export class OracleStateService {
       if (result.result) {
         this.publicKey = result.result
         if (!this.oracleExplorerService.oracleName.value) {
-          this.getOracleName()
+          this.getOracleNameFromOracleExplorer()
         }
       }
     })
   }
 
-  getOracleName() {
+  getOracleNameFromOracleExplorer() {
     this.oracleExplorerService.getLocalOracleName(this.publicKey).subscribe(result => {
-      console.debug(' getOracleName()', result)
+      console.debug(' getOracleNameFromOracleExplorer()', result)
     })
   }
 

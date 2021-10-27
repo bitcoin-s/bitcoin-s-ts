@@ -1,6 +1,6 @@
 {
   "name": "@bitcoin-s-ts/oracle-server-ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "NodeJS package for accessing bitcoin-s oracleServer",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",

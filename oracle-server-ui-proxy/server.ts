@@ -79,6 +79,7 @@ app.get(`/oracleHeartbeat`, async (req: Request, res: Response) => {
   let success = false
   await fetch(oracleServerUrl, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ method: 'getpublickey' })
   }).then(_ => {
     success = true

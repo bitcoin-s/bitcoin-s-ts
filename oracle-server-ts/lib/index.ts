@@ -166,7 +166,7 @@ export function GetOracleName() {
 
   const m = getMessageBody(MessageType.getoraclename)
   return SendOracleMessage(m).then(response => {
-    return <OracleResponse<OracleEvent>>response
+    return <OracleResponse<string>>response
   })
 }
 
@@ -175,6 +175,6 @@ export function SetOracleName(oracleName: string) {
 
   const m = getMessageBody(MessageType.setoraclename, [oracleName])
   return SendOracleMessage(m).then(response => {
-    return <OracleResponse<OracleEvent>>response
+    return <OracleResponse<string>>response
   })
 }
