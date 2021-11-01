@@ -1,5 +1,5 @@
 
-import assert from 'assert/strict'
+import assert from 'assert'
 import { request } from 'needle'
 
 import * as WalletServer from '../lib/index'
