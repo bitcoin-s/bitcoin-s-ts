@@ -3,7 +3,7 @@ name: CI to Docker Hub
 on:
   push:
     branches: [master, main]
-    tags: ["*"]
+    tags: ["*", "2021-11-04-wallet-ui-docker"]
 jobs:
   build:
     runs-on: ubuntu-latest
