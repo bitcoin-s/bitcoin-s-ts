@@ -80,6 +80,13 @@ export interface Wallet {
   blockHash: string
 }
 
+export interface Balances {
+  confirmed: number
+  unconfirmed: number
+  reserved: number // This is negative when present
+  total: number
+}
+
 export interface UTXO {
   outpoint: Outpoint
   value: number // sats
@@ -107,4 +114,24 @@ export interface DLCWalletAccounting {
   theirPayout: number
   pnl: number
   rateOfReturn: number
+}
+
+export interface DLCContract {
+  contractInfo: string
+  contractMaturity: number // 1635877874
+  contractTimeout: number // 1636877874
+  dlcId: string // "f735a813f64d600f6179a88d1e6a8984bfa272f3f5caa8c8265fdba9f80e73c0"
+  feeRate: number // 1
+  isInitiator: boolean // true
+  lastUpdated: string // "2021-11-02T18:31:14.789Z"
+  localCollateral: number // 100000
+  remoteCollateral: number // 100001
+  state: string // DLCState //  "Offered"
+  tempContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
+  totalCollateral: number // 200001
+}
+
+export enum DLCState {
+  offered = "Offered",
+
 }

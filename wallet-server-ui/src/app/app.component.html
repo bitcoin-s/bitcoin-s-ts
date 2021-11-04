@@ -1,0 +1,64 @@
+<section class="content-root mat-app-background">
+
+  <splash></splash>
+
+  <mat-sidenav-container>
+    <mat-sidenav-content>
+
+      <!-- Main -->
+
+      <button mat-stroked-button (click)="showConfiguration()">Config</button>
+
+      <app-build-accept-offer></app-build-accept-offer>
+
+      <app-wallet-balance></app-wallet-balance>
+
+      <app-contracts></app-contracts>
+
+      <!--
+      <button mat-stroked-button color="primary">Primary</button>
+      <button mat-stroked-button color="accent">Accent</button>
+      <button mat-stroked-button color="warn">Warn</button>
+      -->
+      
+      <!-- <div class="fundedAddresses">
+        {{ walletStateService.fundedAddresses | json }}
+      </div> -->
+
+      <div class="feeEstimate">
+        Estimated Fee Rate: {{ walletStateService.feeEstimate }}
+      </div>
+
+      <div>
+        <!-- <button mat-stroked-button (click)="createContractInfo()">Create Contract Info</button> -->
+      </div>
+
+      <div>
+        <!-- <button mat-stroked-button (click)="makeNewOffer()">Make New Offer</button> -->
+      </div>
+
+      <div *ngIf="walletStateService.info" class="state-info">
+        <div class="network">Network: {{ walletStateService.info.network }}</div>
+        <div class="block-height">Block Height: {{ walletStateService.info.blockHeight }}</div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-section">
+          <span class="label" translate>server</span>
+          <span class="server-version">{{ walletStateService.serverVersion }}</span>
+        </div>
+        <div *ngIf="walletStateService.buildConfig" class="footer-section">
+          <span class="label" translate>ui</span>
+          <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
+          <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
+        </div>
+      </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #rightDrawer position="end" mode="over">
+      <app-configuration (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+    </mat-sidenav>
+
+  </mat-sidenav-container>
+
+</section>

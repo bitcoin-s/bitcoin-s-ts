@@ -1,0 +1,17 @@
+{
+	"port": 3002,
+	"stopOnError": false,
+	"useHTTPS": false,
+	"apiRoot": "/api/v0",
+	"torProxyRoot": "/tor",
+	"torProxyUrl": "socks5://127.0.0.1:9050",
+	"proxyRoot": "/proxy",
+	"oracleExplorerRoot": "/oracleexplorer",
+	"walletServerUrl": "http://localhost:9999/",
+	"oracleExplorerHost": "test.oracle.suredbits.com",
+	"blockstreamRoot": "/blockstream",
+	"blockstreamUrl": "https://blockstream.info/api",
+	"mempoolRoot": "/mempool",
+	"mempoolUrl": "https://mempool.space/api",
+	"uiPath": "../wallet-server-ui/dist/wallet-server-ui"
+}

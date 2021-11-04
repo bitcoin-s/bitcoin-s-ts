@@ -1,0 +1,12 @@
+<div class="splash-screen" *ngIf="showSplash" @fadeOut>
+  <div class="app-splash-inner" (click)="onClick()">
+    <div class="app-logo"></div>
+    <div class="app-label" translate>splashScreen.heading</div>
+
+    <p translate>splashScreen.betaSoftware</p>
+    <p translate>splashScreen.significantValue</p>
+    <p class="italic" translate>splashScreen.caveatEmptor</p>
+    <div class="spacer"></div>
+    <button mat-raised-button (click)="dontShowSplashAgainClick()">{{ 'splashScreen.dontShowSplashAgain' | translate }}</button>
+  </div>
+</div>

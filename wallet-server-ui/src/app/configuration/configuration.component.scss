@@ -1,0 +1,22 @@
+.configuration-section {
+  padding: 0 1rem;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  .dark-mode {
+    display: flex;
+    // vertical-align: middle;
+    align-items: center;
+
+    label {
+      margin-right: 1rem;
+    }
+    mat-slide-toggle {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+}
