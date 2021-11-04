@@ -37,10 +37,10 @@ jobs:
           pkg-version: ${{steps.previoustag.outputs.tag}}
         run: |
           docker buildx create --use --name multi-arch-builder
-          docker buildx build --platform=linux/amd64,linux/arm64 --push -f oracle-server-ui/Dockerfile -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
+          docker buildx build --platform=linux/amd64,linux/arm64 --push -f oracle-server-ui/Dockerfile -t bitcoinscala/oracle-server-ui:latest -t bitcoinscala/oracle-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
       - name: Build and push wallet server ui
         env:
           pkg-version: ${{steps.previoustag.outputs.tag}}
         run: |
           docker buildx create --use --name multi-arch-builder
-          docker buildx build --platform=linux/amd64,linux/arm64 --push -f oracle-server-ui/Dockerfile -t bitcoinscala/wallet-server-ui:latest -t bitcoinscala/wallet-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT
+          docker buildx build --platform=linux/amd64,linux/arm64 --push -f wallet-server-ui/Dockerfile -t bitcoinscala/wallet-server-ui:latest -t bitcoinscala/wallet-server-ui:${{steps.previoustag.outputs.tag}}-${{ steps.vars.outputs.sha_short }}-SNAPSHOT .
