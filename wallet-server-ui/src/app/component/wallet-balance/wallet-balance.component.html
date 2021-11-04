@@ -1,0 +1,52 @@
+<section class="wallet-balance">
+  <div class="section-header">
+    <h2 translate>walletBalance.heading</h2>
+    <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+  </div>
+
+  <div *ngIf="walletStateService.balances" class="balances">
+    <div class="balance-group">
+      <label translate>walletBalance.confirmedBalance</label>
+      <span>{{ walletStateService.balances.confirmed }}</span>
+      <span class="unit" translate>unit.sats</span>
+    </div>
+    <div class="balance-group">
+      <label translate>walletBalance.unconfirmedBalance</label>
+      <span>{{ walletStateService.balances.unconfirmed }}</span>
+      <span class="unit" translate>unit.sats</span>
+    </div>
+    <div class="balance-group">
+      <label translate>walletBalance.reserveBalance</label>
+      <span>{{ walletStateService.balances.reserved }}</span>
+      <span class="unit" translate>unit.sats</span>
+    </div>
+    <div class="balance-group">
+      <label translate>walletBalance.totalBalance</label>
+      <span>{{ walletStateService.balances.total }}</span>
+      <span class="unit" translate>unit.sats</span>
+    </div>
+  </div>
+
+  <div *ngIf="walletStateService.dlcWalletAccounting" class="pnl">
+    <div class="balance-group">
+      <label translate>walletBalance.profitAndLoss</label>
+      <span>{{ walletStateService.dlcWalletAccounting.pnl }}</span>
+      <span class="unit" translate>unit.sats</span>
+    </div>
+    <div class="balance-group">
+      <label translate>walletBalance.rateOfReturn</label>
+      <span>{{ walletStateService.dlcWalletAccounting.rateOfReturn }}</span>
+      <span class="unit" translate>unit.percent</span>
+    </div>
+  </div>
+
+  <div class="feeEstimate">
+    Estimated Fee Rate: {{ walletStateService.feeEstimate }}
+  </div>
+
+  <div class="button-group">
+    <button mat-stroked-button (click)="getNewAddress()">{{ 'walletBalance.getNewAddress' | translate }}</button>
+    <button mat-stroked-button (click)="sendFunds()">{{ 'walletBalance.sendFunds' | translate }}</button>
+  </div>
+
+</section>

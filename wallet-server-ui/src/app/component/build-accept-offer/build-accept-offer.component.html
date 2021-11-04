@@ -1,0 +1,17 @@
+<section class="build-accept-offer">
+  <!-- <div class="section-header">
+    <h2 translate>buildAcceptOffer.heading</h2>
+  </div> -->
+
+  <div class="paste-input">
+    <label translate>buildAcceptOffer.buildOffer</label>
+    <input #buildOfferInput type="text" placeholder="{{ 'buildAcceptOffer.pasteHex' | translate }}"
+      (paste)="onBuildOfferPaste($event)" (input)="onBuildOfferInput($event)">
+  </div>
+
+  <div class="paste-input">
+    <label translate>buildAcceptOffer.acceptOffer</label>
+    <input #acceptOfferInput type="text" placeholder="{{ 'buildAcceptOffer.pasteHex' | translate }}"
+      (paste)="onAcceptOfferPaste($event)" (input)="onAcceptOfferInput($event)">
+  </div>
+</section>

@@ -1,0 +1,15 @@
+<section class="configuration-section">
+  <div class="section-header">
+    <h2 translate>configuration.heading</h2>
+    <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="dark-mode">
+    <label translate>configuration.darkMode</label>
+    <mat-icon class="mr-8">brightness_5</mat-icon>
+    <mat-slide-toggle ngDefaultControl [formControl]="toggleControl"></mat-slide-toggle>
+    <mat-icon>bedtime</mat-icon>
+  </div>
+
+</section>

@@ -1,0 +1,122 @@
+{
+  "title": "Bitcoin-S Wallet",
+
+  "splashScreen": {
+    "heading": "Welcome to Bitcoin-S Wallet",
+    "betaSoftware": "This application is beta software.",
+    "significantValue": "Please do not use it with significant amounts of value at this time.",
+    "caveatEmptor": "caveat emptor",
+    "dontShowSplashAgain": "Don't show this screen again"
+  },
+
+  "status": {
+    "network": "Network",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  },
+
+  "serverEvent": {
+    "serverFound": "Found appServer! 😀",
+    "serverNotFound": "Did not find appServer! 😞"
+  },
+
+  "action": {
+    "cancel": "Cancel",
+    "dismiss": "Dismiss",
+    "sign": "Sign",
+    "ok": "Ok",
+    "yes": "Yes",
+    "no": "No",
+    "execute": "Execute",
+    "saveToFile": "Save to File"
+  },
+
+  "unit": {
+    "bitcoin": "Bitcoin",
+    "bitcoins": "Bitcoins",
+    "satoshi": "Satoshi",
+    "satoshis": "Satoshis",
+    "sat": "Sat",
+    "sats": "Sats",
+    "percent": "%"
+  },
+
+  "configuration": {
+    "heading": "Configuration",
+    "darkMode": "Dark Mode"
+  },
+
+  "buildAcceptOffer": {
+    "buildOffer": "Build Offer",
+    "acceptOffer": "Accept Offer",
+    "pasteHex": "Paste Hex"
+  },
+
+  "walletBalance": {
+    "heading": "Wallet",
+    "confirmedBalance": "Confirmed Balance",
+    "unconfirmedBalance": "Unconfirmed Balance",
+    "reserveBalance": "Reserve Balance",
+    "totalBalance": "Total Balance",
+    "profitAndLoss": "Profit and Loss",
+    "rateOfReturn": "Rate of Return",
+    "getNewAddress": "Get New Address",
+    "sendFunds": "Send Funds"
+  },
+
+  "newOffer": {
+    "heading": "New Offer",
+    "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",
+    "eventId": "Event Id",
+    "points": "Points",
+    "outcome": "OUtcome",
+    "payout": "Payout",
+    "endpoint": "Endpoint",
+    "roundingInfo": "Rounding Info",
+    "roundingIntervals": "Rounding Intervals",
+    "roundingLevel": "Rounding Level",
+    "yourCollateral": "Your Collateral",
+    "feeRate": "Fee Rate (sats/vbyte)",
+    "refundDate": "Refund Date"
+  },
+
+  "contracts": {
+    "heading": "Contracts",
+    "eventId": "Event Id",
+    "contractId": "Contract Id",
+    "status": "Status",
+    "realizedPNL": "Realized PNL",
+    "rateOfReturn": "Rate of Return",
+    "collateral": "Collateral",
+    "counterpartyCollateral": "Counterparty Collateral",
+    "totalCollateral": "Total Collateral",
+    "lastUpdated": "Last Updated"
+  },
+
+  "contractDetail": {
+    "heading": "Contract Detail",
+    "dlcId": "DLC Id",
+    "eventId": "Event Id",
+    "initiator": "Initiator",
+    "state": "State",
+    "contractId": "Contract Id",
+    "contractInfo": "Contract Info",
+    "feeRate": "Fee Rate",
+    "contractTimeout": "Contract Timeout",
+    "collateral": "Collateral",
+    "fundingTransactionId": "Funding Transaction Id",
+    "closingTransactionId": "Closing Transaction Id",
+    "oracleSignatures": "Oracle Signatures",
+    "rebroadcast": "Rebroadcast"
+  },
+
+  "events": {
+    "heading": "Events"
+  },
+
+  "eventDetail": {
+    "heading": "Event Detail"
+  }
+
+
+}

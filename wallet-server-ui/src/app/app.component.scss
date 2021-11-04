@@ -1,0 +1,42 @@
+.content-root {
+  height: 100%;
+
+  .mat-sidenav-container {
+    height: 100%;
+  }
+
+  .state-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    .network {
+
+    }
+    .block-height {
+
+    }
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    font-size: smaller;
+    color: #8c959f;
+    
+    margin-bottom: 0.25rem;
+
+    .label {
+      margin-right: 0.25rem;
+    }
+    .server-version {
+      margin-right: 1rem;
+    }
+    .version {
+      margin-right: 0.25rem;
+    }
+    .date {
+      margin-right: 1rem;
+    }
+  }
+}

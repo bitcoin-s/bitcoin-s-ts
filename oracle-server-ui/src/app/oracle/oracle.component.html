@@ -3,11 +3,10 @@
   <div class="oracle-header">
     <img class="bull-image" [src]="KrystalBullImages[bullIndex]" (click)="onImageClick()">
     <form class="oracle-form">
-        <mat-form-field>
-          <mat-label translate>oracle.name</mat-label>
-          <input matInput name="oracleName" type="text" [(ngModel)]="oracleName" (blur)="onOracleName()" (keydown.Enter)="onOracleNameEnter($event)" [readonly]="oracleNameReadOnly">
-        </mat-form-field>
-        
+      <mat-form-field>
+        <mat-label translate>oracle.name</mat-label>
+        <input matInput name="oracleName" type="text" [(ngModel)]="oracleName" (blur)="onOracleName()" (keydown.Enter)="onOracleNameEnter($event)" [readonly]="oracleNameReadOnly">
+      </mat-form-field>
       <mat-form-field>
         <mat-label translate>oracle.publicKey</mat-label>
         <input matInput name="publicKey" type="text" [(ngModel)]="oracleState.publicKey" readonly="true">

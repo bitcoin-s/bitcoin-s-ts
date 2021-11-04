@@ -11,7 +11,7 @@ import { BlockchainMessageType, BlockHeaderResponse, GetInfoResponse } from './t
 import { Announcement, Attestment, CoreMessageType, Offer } from './type/core-types'
 import { DLCMessageType } from './type/dlc-types'
 import { NetworkMessageType } from './type/network-types'
-import { AddressInfo, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
+import { AddressInfo, Balances, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
 
 // Expose all 'common' endpoints
 export * from '../../common-ts/lib/index';
@@ -168,7 +168,7 @@ export function GetBalances(inSats: boolean) {
   const m = getMessageBody(WalletMessageType.getbalances, [inSats])
   return SendServerMessage(m).then(response => {
     // This comes with ' sats' or ' BTC' label
-    return <ServerResponse<string>>response
+    return <ServerResponse<Balances>>response
   })
 }
 
@@ -260,13 +260,14 @@ export function GetDLCHostAddress() {
   })
 }
 
-// payoutsVal: ContractDescriptorV0TLV
+// payoutsVal: ContractDescriptorV0TLV / tlvPoints
 export function CreateContractInfo(announcementTLV: string, totalCollateral: number, payoutsVal: any) {
   console.debug('CreateContractInfo()')
 
   const m = getMessageBody(DLCMessageType.createcontractinfo, [announcementTLV, totalCollateral, payoutsVal])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // on fail returns "failure"
+    return <ServerResponse<string>|string>response
   })
 }
 
@@ -293,7 +294,8 @@ export function CancelDLC(sha256hash: string) {
 
   const m = getMessageBody(WalletMessageType.canceldlc, [sha256hash])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // result like 'Success'
+    return <ServerResponse<string>>response
   })
 }
 
@@ -310,7 +312,7 @@ export function CreateDLCOffer(contractInfoTLV: string, collateral: number, feeR
 
   const m = getMessageBody(WalletMessageType.createdlcoffer, [contractInfoTLV, collateral, feeRate, locktime, refundLT])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    return <ServerResponse<string>>response
   })
 }
 
