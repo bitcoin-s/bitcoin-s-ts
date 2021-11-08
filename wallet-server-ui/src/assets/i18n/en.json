@@ -12,7 +12,10 @@
   "status": {
     "network": "Network",
     "connected": "Connected",
-    "disconnected": "Disconnected"
+    "disconnected": "Disconnected",
+    "networkLabel": "Network: {{ network }}",
+    "blockHeightLabel": "Block Height: {{ height }}",
+    "feeEstimateLabel": "Fee Estimate: {{ fee }}"
   },
 
   "serverEvent": {
@@ -28,16 +31,17 @@
     "yes": "Yes",
     "no": "No",
     "execute": "Execute",
-    "saveToFile": "Save to File"
+    "saveToFile": "Save to File",
+    "copyToClipboard": "Copy to Clipboard"
   },
 
   "unit": {
-    "bitcoin": "Bitcoin",
-    "bitcoins": "Bitcoins",
-    "satoshi": "Satoshi",
-    "satoshis": "Satoshis",
-    "sat": "Sat",
-    "sats": "Sats",
+    "bitcoin": "bitcoin",
+    "bitcoins": "bitcoins",
+    "satoshi": "satoshi",
+    "satoshis": "satoshis",
+    "sat": "sat",
+    "sats": "sats",
     "percent": "%"
   },
 
@@ -69,7 +73,7 @@
     "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",
     "eventId": "Event Id",
     "points": "Points",
-    "outcome": "OUtcome",
+    "outcome": "Outcome",
     "payout": "Payout",
     "endpoint": "Endpoint",
     "roundingInfo": "Rounding Info",
@@ -80,11 +84,44 @@
     "refundDate": "Refund Date"
   },
 
+  "newOfferDescription": {
+    "outcomes": "Payout values are to you, in sats, for the given outcome",
+    "yourCollateral": "Your collateral at stake",
+    "feeRate": "Fee Rate built into contract",
+    "refundDate": "Refund Date"
+  },
+
+  "newOfferValidation": {
+    "outcomeValues": "Outcome values must be positive",
+    "yourCollateral": "Your Collateral must be positive",
+    "feeRate": "Fee Rate must be positive",
+    "maxCollateral": "Your Collateral is greater than the maximum payout"
+  },
+
+  "acceptOffer": {
+    "heading": "Accept Offer",
+    "dlcOffer": "DLC Offer",
+    "peerAddress": "Peer Address",
+    "optional": "optional",
+    "eventId": "Event Id",
+    "oraclePublicKey": "Oracle Public Key",
+    "yourCollateral": "Your Collateral",
+    "counterpartyCollateral": "Counterparty Collateral",
+    "potentialOutcome": "Potential Outcome",
+    "outcomes": "Outcomes",
+    "feeRate": "Fee Rate",
+    "refundDate": "Refund Date"
+  },
+
+  "acceptOfferDescription": {
+    "peerAddress": "Tor address of the person you'd like to complete the contract with"
+  },
+
   "contracts": {
     "heading": "Contracts",
     "eventId": "Event Id",
     "contractId": "Contract Id",
-    "status": "Status",
+    "state": "State",
     "realizedPNL": "Realized PNL",
     "rateOfReturn": "Rate of Return",
     "collateral": "Collateral",
@@ -103,11 +140,13 @@
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
     "contractTimeout": "Contract Timeout",
-    "collateral": "Collateral",
+    "totalCollateral": "Total Collateral",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
     "oracleSignatures": "Oracle Signatures",
-    "rebroadcast": "Rebroadcast"
+    "rebroadcast": "Rebroadcast",
+    "cancelContract": "Cancel Contract",
+    "cancelContractSuccess": "Successfully canceled contract"
   },
 
   "events": {
@@ -116,6 +155,13 @@
 
   "eventDetail": {
     "heading": "Event Detail"
+  },
+
+  "dialog": {
+    "newAddress": {
+      "title": "New Address",
+      "content": "{{address}}"
+    }
   }
 
 

@@ -9,8 +9,11 @@ import { TranslateService } from '@ngx-translate/core'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { BuildConfig } from '~type/proxy-server-types'
-import { DLCMessageType, WalletMessageType } from '~type/wallet-server-types'
+import { Announcement, ContractInfo, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
+import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
 import { getMessageBody } from '~util/wallet-server-util'
+import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component'
+import { NewOfferComponent } from './component/new-offer/new-offer.component'
 
 
 const CSS_DARK_MODE = 'CSS_DARK_MODE'
@@ -25,6 +28,9 @@ export class AppComponent implements OnInit {
   title = 'wallet-server-ui'
 
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
+
+  @ViewChild('buildOffer') buildOffer: NewOfferComponent
+  @ViewChild('acceptOffer') acceptOffer: AcceptOfferComponent
 
   // Root styling class to support darkMode
   @HostBinding('class') className = ''
@@ -75,29 +81,53 @@ export class AppComponent implements OnInit {
     }
   }
 
-  createContractInfo() {
-    console.debug('createContractInfo()')
-    // Data : https://test.oracle.suredbits.com/announcement/63fa7885e3c6052e97956961698cde2b286dc1621544bbd8fcfbd78b2b1dbdcf
+  // createContractInfo() {
+  //   console.debug('createContractInfo()')
+  //   // Data : https://test.oracle.suredbits.com/announcement/63fa7885e3c6052e97956961698cde2b286dc1621544bbd8fcfbd78b2b1dbdcf
 
-    const announcementTLV: string = 'fdd824a8823cf7a3e449260f46d3d9a5bb0ddf1a367e0d3c9ce8858e16cd783392560bd1c9671314d54b6cb258bc6d85ab8fe238a27feb5a27d75323524a54d712a80b70a305b66d790ea4afe15b3fb61cae4d77f050e57b41f10f530c48a23dddbe335afdd822440001c3b0ecdaeaa3bbbd53386dec623b3a884b0ca2e2777cc62f0b6f891d9226114d614ebae0fdd80611000205546f64617908546f6d6f72726f7708546f6d6f72726f77'
-    const totalCollateral = 100000
-    const payoutsVal: any = {}
-    this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, [announcementTLV, totalCollateral, payoutsVal])).subscribe(r => {
-      console.warn(' createContractInfo()', r)
-    })
-  }
+  //   const announcementTLV: string = 'fdd824a8823cf7a3e449260f46d3d9a5bb0ddf1a367e0d3c9ce8858e16cd783392560bd1c9671314d54b6cb258bc6d85ab8fe238a27feb5a27d75323524a54d712a80b70a305b66d790ea4afe15b3fb61cae4d77f050e57b41f10f530c48a23dddbe335afdd822440001c3b0ecdaeaa3bbbd53386dec623b3a884b0ca2e2777cc62f0b6f891d9226114d614ebae0fdd80611000205546f64617908546f6d6f72726f7708546f6d6f72726f77'
+  //   const totalCollateral = 100000
+  //   const payoutsVal: any = {}
+  //   this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, [announcementTLV, totalCollateral, payoutsVal])).subscribe(r => {
+  //     console.warn(' createContractInfo()', r)
+  //   })
+  // }
 
   // https://github.com/AtomicFinance/node-dlc/blob/master/packages/messaging/lib/messages/DlcOffer.ts
-  makeNewOffer() {
-    console.debug('makeNewOffer()')
-    const contractInfoTLV = ''
-    const collateral = 100000
-    const feeRate = 1
-    const locktime = new Date().getMilliseconds()
-    const refundLT = new Date().getMilliseconds() + 100000
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
-      console.warn(' makeNewOffer()', r)
-    })
+  // makeNewOffer() {
+  //   console.debug('makeNewOffer()')
+  //   const contractInfoTLV = ''
+  //   const collateral = 100000
+  //   const feeRate = 1
+  //   const locktime = new Date().getMilliseconds()
+  //   const refundLT = new Date().getMilliseconds() + 100000
+  //   this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
+  //     console.warn(' makeNewOffer()', r)
+  //   })
+  // }
+
+  onAnnouncement(announcement: AnnouncementWithHex) {
+    console.debug('onAnnouncement()', announcement)
+
+    this.buildOffer.announcement = announcement;
+  }
+
+  onContractInfo(contractInfo: ContractInfoWithHex) {
+    console.debug('onContractInfo()', contractInfo)
+
+    console.warn('onContractInfo() NOT HANDLED YET')
+  }
+
+  onOffer(offer: OfferWithHex) {
+    console.debug('onOffer()', offer)
+
+    console.warn('onOffer() NOT HANDLED YET')
+  }
+
+  onAcceptOffer(offer: OfferWithHex) {
+    console.debug('onAcceptOffer()', offer)
+    
+    this.acceptOffer.offer = offer
   }
 
 }

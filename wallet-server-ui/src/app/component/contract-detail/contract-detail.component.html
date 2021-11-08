@@ -4,6 +4,62 @@
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
   </div>
 
+  <div *ngIf="dlc && contractInfo">
+    <div class="field-group">
+      <label translate>contractDetail.dlcId</label>
+      <input [value]="dlc.dlcId" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.eventId</label>
+      <input [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.initiator</label>
+      <input [value]="dlc.isInitiator" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.state</label>
+      <input [value]="dlc.state" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.contractId</label>
+      <input [value]="" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.contractInfo</label>
+      <input [value]="dlc.contractInfo" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.feeRate</label>
+      <input [value]="dlc.feeRate" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.contractTimeout</label>
+      <input [value]="dlc.contractTimeout" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.totalCollateral</label>
+      <input [value]="dlc.totalCollateral" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.fundingTransactionId</label>
+      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.closingTransactionId</label>
+      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.oracleSignatures</label>
+      <button mat-stroked-button (click)="onOracleSignatures()" disabled>{{ 'action.execute' | translate }}</button>
+    </div>
+  </div>
+
+  <div>
+    TODO : Graph
+  </div>
+
+  <!--
   <div>
     {{ dlc | json }}
   </div>
@@ -11,6 +67,11 @@
   <div>
     {{ contractInfo | json }}
   </div>
+  -->
+
+  <button mat-stroked-button color="warn" (click)="onCancelContract()">{{ 'contractDetail.cancelContract' | translate }}</button>
+
+  <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 
   <div class="contract-detail-grid">
     

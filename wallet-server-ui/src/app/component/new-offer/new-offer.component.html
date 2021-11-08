@@ -4,11 +4,86 @@
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
   </div>
 
-  <div class="enum-offer">
-    TODO : Enum Offer Fields
+  <div *ngIf="announcement">
+
+    <div class="both">
+      <div class="field-group">
+        <label translate>newOffer.oracleAnnouncementOrContractInfo</label>
+        <input [value]="announcement.hex" disabled>
+      </div>
+      <div class="field-group">
+        <label translate>newOffer.eventId</label>
+        <input [value]="announcement.announcement.event.eventId" disabled>
+      </div>
+    </div>
+
+    <div *ngIf="isEnum()" class="enum-offer">
+      <div class="outcome-group">
+        <div class="field-group">
+          <label class="outcome-label text-center" translate>newOffer.outcome</label>
+          <label class="payout-label text-center" translate>newOffer.payout</label>
+          <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
+        </div>
+        <div *ngFor="let label of enumEventDescriptor.outcomes" class="field-group">
+          <label>{{ label }}</label>
+          <input type="number" [(ngModel)]="outcomeValues[label]">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isNumeric()" class="numeric-offer">
+      
+      <div class="points-group text-center">
+        <label translate>newOffer.points</label>
+        <button mat-icon-button (click)="addNewPoint()">+</button>
+      </div>
+
+      <div class="outcome-group">
+        <div class="numeric-payout-group">
+          <label class="outcome-label text-center" translate>newOffer.outcome</label>
+          <label class="payout-label text-center" translate>newOffer.payout</label>
+          <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
+        </div>
+
+        <div *ngFor="let point of points" class="numeric-payout-group">
+          <input class="text-right" type="text" [(ngModel)]="point.outcome" disabled>
+          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
+          <input type="checkbox" [(ngModel)]="point.isEndpoint">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="both">
+      <div class="field-group">
+        <label translate>newOffer.yourCollateral</label>
+        <input type="nummber" [(ngModel)]="yourCollateral">
+        <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral"></app-more-info>
+      </div>
+      <div class="field-group">
+        <label translate>newOffer.feeRate</label>
+        <input type="nummber" [(ngModel)]="feeRate">
+        <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
+      </div>
+      <div class="field-group">
+        <label translate>newOffer.refundDate</label>
+        <input [value]="announcement.announcement.event.maturity">
+        <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="button-group">
+        <button mat-stroked-button color="primary" (click)="onExecute()"
+          [disabled]="!inputsValid()">{{ 'action.execute' | translate }}</button>
+      </div>
+      <fieldset class="result-group" [disabled]="!newOfferResult">
+        <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>
+        <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+          (click)="onCopyResult()"><mat-icon>content_copy</mat-icon></button>
+      </fieldset>
+    </div>
+
   </div>
 
-  <div class="numeric-offer">
-    TODO : Numeric Offer Fields
-  </div>
 </section>

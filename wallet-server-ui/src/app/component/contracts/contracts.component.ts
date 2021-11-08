@@ -18,11 +18,15 @@ export class ContractsComponent implements OnInit, AfterViewInit {
 
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
-  displayedColumns = ['eventId', 'contractId', 'status', 'realizedPNL', 'rateOfReturn', 
+  displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
 
   selectedDLC: DLCContract
   selectedContractInfo: ContractInfo
+
+  getContractInfo(dlcId: string) {
+    return this.walletStateService.contractInfos.value[dlcId]
+  }
 
   constructor(public walletStateService: WalletStateService) { }
 
@@ -49,7 +53,13 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     console.debug('showContractDetail()', dlcContract)
 
     this.selectedContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
-    // TODO
+    console.debug('selectedContractInfo:', this.selectedContractInfo)
+  }
+
+  onCloseContractDetail() {
+    console.debug('onCloseContractDetail()')
+    this.selectedDLC = <DLCContract><unknown>undefined
+    this.selectedContractInfo = <ContractInfo><unknown>undefined
   }
 
 }

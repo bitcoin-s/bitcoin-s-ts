@@ -53,6 +53,10 @@ html, body { height: 100%; }
 body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 body { margin: 0; }
 
+fieldset {
+  border: 0;
+}
+
 .section-header {
   display: flex;
   flex-direction: row;
@@ -61,4 +65,24 @@ body { margin: 0; }
 
 .close-button {
   align-self: center;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+
+
+.horizontal-pane {
+  display: flex;
+  flex-direction: row;
+
+  .pane {
+
+  }
 }

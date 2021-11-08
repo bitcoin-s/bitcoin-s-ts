@@ -1,4 +1,4 @@
-.new-offer {
+.accept-offer {
 
   .both, .enum-offer, .numeric-offer {
     .field-group {
@@ -12,7 +12,7 @@
       }
     }
     .outcome-group {
-      margin: 1rem;
+      margin: 2rem;
 
       .field-group {
         &:first-of-type {
@@ -30,46 +30,11 @@
           width: 24rem;
         }
       }
-      .numeric-payout-group {
-        &:first-of-type {
-          margin-bottom: 0.5rem;
-        }
-
-        label {
-          display: inline-block;
-        }
-        .outcome-label {
-          width: 6rem;
-        }
-        .payout-label {
-          width: 6rem;
-        }
-        .endpoint-label {
-          width: 3rem;
-        }
-        input[type="text"] {
-          width: 6rem;
-        }
-        input[type="number"] {
-          width: 6rem;
-        }
-        input[type="checkbox"] {
-          width: 3rem;
-        }
-      }
     }
-    .points-group {
-      width: 18rem;
+
+    .payout-curve {
+      margin: 2rem;
     }
-  }
-
-  .numeric-offer {
-    display: flex;
-    flex-direction: column;
-
-    width: 36rem;
-
-    align-items: center;
   }
 
   .footer {
@@ -87,5 +52,5 @@
       }
     }
   }
-  
+
 }

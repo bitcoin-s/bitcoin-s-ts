@@ -59,6 +59,10 @@ export class WalletStateService {
         this.feeEstimate = r.result
       }
     })
+    this.refreshDLCStates()
+  }
+
+  refreshDLCStates() {
     this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
       if (r.result) {
         this.dlcs.next(r.result)
@@ -75,6 +79,5 @@ export class WalletStateService {
       }
     })
   }
-
 
 }

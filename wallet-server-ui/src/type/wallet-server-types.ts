@@ -188,8 +188,17 @@ export interface DLCContract {
 }
 
 export enum DLCState {
-  offered = "Offered",
-
+  // InProgressState
+  offered = 'Offered',
+  accepted = 'Accepted',
+  signed = 'Signed',
+  broadcast = 'Broadcasted',
+  confirmed = 'Confirmed',
+  // ClosedViaOracleOutcomeState
+  claimed = 'Claimed',
+  remoteClaimed = 'RemoteClaimed',
+  // ClosedState
+  refunded = 'Refunded',
 }
 
 // EO wallet-types.ts
@@ -228,6 +237,10 @@ export interface Event {
 
 export interface EnumEventDescriptor {
   outcomes: string[] // ['Outcome1','Outcome2']
+
+  // Set on Announcement - Is Announcement structured differently from elsewhere?
+  eventId: string
+  maturity: string // "2021-09-25T06:00:00Z"
 }
 
 export interface NumericEventDescriptor {
