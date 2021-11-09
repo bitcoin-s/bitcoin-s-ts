@@ -1,0 +1,56 @@
+.accept-offer {
+
+  .both, .enum-offer, .numeric-offer {
+    .field-group {
+      label {
+        display: inline-block;
+        width: 12rem;
+      }
+      input {
+        display: inline-block;
+        width: 24rem;
+      }
+    }
+    .outcome-group {
+      margin: 2rem;
+
+      .field-group {
+        &:first-of-type {
+          margin-bottom: 0.5rem;
+        }
+        
+        label {
+          width: 10rem;
+        }
+
+        label.outcome-label {
+          width: 10rem;
+        }
+        label.payout-label {
+          width: 24rem;
+        }
+      }
+    }
+
+    .payout-curve {
+      margin: 2rem;
+    }
+  }
+
+  .footer {
+    // display: flex;
+    // flex-direction: row;
+    width: 36rem;
+    .button-group {
+      text-align: right;
+    }
+    .result-group {
+      // flex: 1;
+
+      .result-textarea {
+        width: 80%;
+      }
+    }
+  }
+
+}

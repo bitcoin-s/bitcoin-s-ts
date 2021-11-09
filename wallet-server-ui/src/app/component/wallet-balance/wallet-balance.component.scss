@@ -1,17 +1,41 @@
 .wallet-balance {
 
-
   .balances, .pnl {
     .balance-group {
+      margin-bottom: 0.25rem;
       label {
-        width: 8rem;
+        display: inline-block;
+        width: 10rem;
       }
-      span {
-        width: 8rem;
+      .value {
+        width: 6rem;
       }
-      .unit {
-        
-      }
+      // span {
+      //   display: inline-block;
+      //   width: 6rem;
+      // }
+    }
+  }
+  .pnl-group {
+    margin-bottom: 0.25rem;
+    label {
+      display: inline-block;
+      width: 8rem;
+    }
+    .value {
+      // width: 3rem; // autosizing for now
+    }
+  }
+
+  .balance-group, .pnl-group {
+    .value {
+      display: inline-block;
+      margin-right: 0.25rem;
+      text-align: right;
+    }
+    .unit {
+      display: inline-block;
+      width: 3rem;
     }
   }
 }

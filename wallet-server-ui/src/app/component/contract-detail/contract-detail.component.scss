@@ -1,5 +1,15 @@
 .contract-detail {
 
+  .field-group {
+    label {
+      display: inline-block;
+      width: 12rem;
+    }
+    input {
+      display: inline-block;
+      width: 24rem;
+    }
+  }
 
   .contract-detail-grid {
     

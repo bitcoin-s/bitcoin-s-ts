@@ -9,7 +9,10 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 import { MaterialModule } from './shared/modules/material/material.module'
 
 import { AppComponent } from './app.component'
+import { AlertComponent } from './component/alert/alert.component'
+import { MoreInfoComponent } from './component/more-info/more-info.component'
 import { SplashComponent } from './component/splash/splash.component'
+import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component';
@@ -18,7 +21,10 @@ import { EventsComponent } from './component/events/events.component';
 import { ContractDetailComponent } from './component/contract-detail/contract-detail.component';
 import { EventDetailComponent } from './component/event-detail/event-detail.component';
 import { NewOfferComponent } from './component/new-offer/new-offer.component';
-import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component'
+import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component';
+import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component';
+import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component';
+import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -38,15 +44,21 @@ export function appInitializerFactory(translate: TranslateService) {
     AppComponent,
     SplashComponent,
 
+    AlertComponent,
+    MoreInfoComponent,
+    ConfirmationDialogComponent,
     ErrorDialogComponent,
-     ConfigurationComponent,
-     WalletBalanceComponent,
-     ContractsComponent,
-     EventsComponent,
-     ContractDetailComponent,
-     EventDetailComponent,
-     NewOfferComponent,
-     BuildAcceptOfferComponent,
+    ConfigurationComponent,
+    WalletBalanceComponent,
+    ContractsComponent,
+    EventsComponent,
+    ContractDetailComponent,
+    EventDetailComponent,
+    NewOfferComponent,
+    BuildAcceptOfferComponent,
+    AcceptOfferComponent,
+    NewAddressDialogComponent,
+    SendFundsDialogComponent,
   ],
   imports: [
     BrowserModule,

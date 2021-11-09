@@ -9,11 +9,19 @@
 
       <button mat-stroked-button (click)="showConfiguration()">Config</button>
 
-      <app-build-accept-offer></app-build-accept-offer>
+      <app-build-accept-offer
+        (announcement)="onAnnouncement($event)" 
+        (contractInfo)="onContractInfo($event)"
+        (offer)="onOffer($event)"
+        (acceptOffer)="onAcceptOffer($event)"></app-build-accept-offer>
 
       <app-wallet-balance></app-wallet-balance>
 
       <app-contracts></app-contracts>
+
+      <app-new-offer #buildOffer></app-new-offer>
+
+      <app-accept-offer #acceptOffer></app-accept-offer>
 
       <!--
       <button mat-stroked-button color="primary">Primary</button>
@@ -25,10 +33,6 @@
         {{ walletStateService.fundedAddresses | json }}
       </div> -->
 
-      <div class="feeEstimate">
-        Estimated Fee Rate: {{ walletStateService.feeEstimate }}
-      </div>
-
       <div>
         <!-- <button mat-stroked-button (click)="createContractInfo()">Create Contract Info</button> -->
       </div>
@@ -38,8 +42,9 @@
       </div>
 
       <div *ngIf="walletStateService.info" class="state-info">
-        <div class="network">Network: {{ walletStateService.info.network }}</div>
-        <div class="block-height">Block Height: {{ walletStateService.info.blockHeight }}</div>
+        <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.info.network }"></div>
+        <div class="block-height" translate="status.blockHeightLabel" [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
+        <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
       </div>
 
       <div class="footer">

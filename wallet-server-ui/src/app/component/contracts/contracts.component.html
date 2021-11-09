@@ -8,15 +8,22 @@
     <table class="contract-table mat-elevation-z8" mat-table #table matSort [dataSource]="dataSource">
       <ng-container matColumnDef="eventId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.eventId' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.eventId }}</td>
+        <!-- Compiler Not happy with the following type of notation -->
+        <!-- let contractInfo = walletStateService.contractInfos.value[contract.dlcId]" -->
+        <td mat-cell *matCellDef="let contract">
+          {{ getContractInfo(contract.dlcId)?.oracleInfo?.announcement?.event?.eventId }}
+          <!-- {{ contractInfo.oracleInfo.announcement.event.eventId }} -->
+        </td>
       </ng-container>
       <ng-container matColumnDef="contractId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.contractId' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.contractId }}</td>
+        <td mat-cell *matCellDef="let contract">
+          <!-- Not sure yet -->
+        </td>
       </ng-container>
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.status' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.status }}</td>
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.state' | translate }}</th>
+        <td mat-cell *matCellDef="let contract">{{ contract.state }}</td>
       </ng-container>
       <ng-container matColumnDef="realizedPNL">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.realizedPNL' | translate }}</th>
@@ -28,11 +35,11 @@
       </ng-container>
       <ng-container matColumnDef="collateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.collateral' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.collateral }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.localCollateral }}</td>
       </ng-container>
       <ng-container matColumnDef="counterpartyCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.counterpartyCollateral' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.counterpartyCollateral }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.remoteCollateral }}</td>
       </ng-container>
       <ng-container matColumnDef="totalCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.totalCollateral' | translate }}</th>
@@ -50,6 +57,8 @@
     </table>
   </div>
 
-  <app-contract-detail *ngIf="selectedDLC" [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"></app-contract-detail>
+  <app-contract-detail *ngIf="selectedDLC" 
+    [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"
+    (close)="onCloseContractDetail()"></app-contract-detail>
 
 </section>

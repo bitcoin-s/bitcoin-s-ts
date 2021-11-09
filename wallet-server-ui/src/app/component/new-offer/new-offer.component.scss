@@ -1,10 +1,97 @@
 .new-offer {
 
-  .enum-offer {
+  .both, .enum-offer, .numeric-offer {
+    .field-group {
+      label {
+        display: inline-block;
+        width: 12rem;
+      }
+      input {
+        display: inline-block;
+        width: 10rem;
+      }
+    }
+    .outcome-group {
+      margin: 1.5rem;
 
+      .outcome-label {
+        margin-right: 0.5rem;
+      }
+
+      .field-group {
+        &:first-of-type {
+          margin-bottom: 0.5rem;
+        }
+        
+        label {
+          width: 10rem;
+        }
+
+        label.outcome-label {
+          width: 10rem;
+        }
+        label.payout-label {
+          width: 10rem;
+        }
+      }
+      .numeric-payout-group {
+        &:first-of-type {
+          margin-bottom: 0.5rem;
+        }
+
+        label {
+          display: inline-block;
+        }
+        .outcome-label {
+          width: 6rem;
+        }
+        .payout-label {
+          width: 6rem;
+        }
+        .endpoint-label {
+          width: 3rem;
+        }
+        input[type="text"] {
+          width: 6rem;
+        }
+        input[type="number"] {
+          width: 6rem;
+        }
+        input[type="checkbox"] {
+          width: 3rem;
+          vertical-align: middle;
+        }
+      }
+    }
+    .points-group {
+      width: 18rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .numeric-offer {
+    display: flex;
+    flex-direction: column;
+
+    width: 36rem;
+
+    align-items: center;
+  }
+
+  .footer {
+    // display: flex;
+    // flex-direction: row;
+    width: 36rem;
+    .button-group {
+      text-align: right;
+    }
+    .result-group {
+      // flex: 1;
+
+      .result-textarea {
+        width: 80%;
+      }
+    }
   }
   
-  .numeric-offer {
-
-  }
 }

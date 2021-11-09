@@ -22,6 +22,7 @@
     ],
     "paths": {
       "~app/*": ["src/app/*"],
+      "~component/*": ["src/app/component/*"],
       "~environments": ["src/environments/environment"],
       "~service/*": ["src/service/*"],
       "~type/*": ["src/type/*"],
