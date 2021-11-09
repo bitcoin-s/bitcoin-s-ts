@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "preinstall": "cd ../common-ts && npm i",
     "prepublish": "npm run build",
     "build": "tsc",
     "tests": "npx ts-node tests.ts"
