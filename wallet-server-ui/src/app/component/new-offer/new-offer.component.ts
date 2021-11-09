@@ -45,9 +45,10 @@ export class NewOfferComponent implements OnInit {
         this.outcomeValues[label] = null
       }
     } else if (this.isNumeric()) {
+      // These seem not to be re-constructable from an Announcement itself - All we have is the NumericEventDescriptor
       // TODO : Bounds from base
-      this.points.push(this.getPoint(0, <number><unknown>null, 0, true))
-      this.points.push(this.getPoint(127, <number><unknown>null, 0, true))
+      // this.points.push(this.getPoint(0, <number><unknown>null, 0, true))
+      // this.points.push(this.getPoint(127, <number><unknown>null, 0, true))
     }
   }
 

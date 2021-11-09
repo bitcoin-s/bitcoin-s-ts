@@ -71,7 +71,7 @@
   </div>
   -->
 
-  <button mat-stroked-button color="warn" (click)="onCancelContract()">{{ 'contractDetail.cancelContract' | translate }}</button>
+  <button mat-stroked-button color="warn" (click)="onCancelContract()" hidden>{{ 'contractDetail.cancelContract' | translate }}</button>
 
   <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 
