@@ -12,6 +12,7 @@ import { AppComponent } from './app.component'
 import { AlertComponent } from './component/alert/alert.component'
 import { MoreInfoComponent } from './component/more-info/more-info.component'
 import { SplashComponent } from './component/splash/splash.component'
+import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component';
@@ -45,6 +46,7 @@ export function appInitializerFactory(translate: TranslateService) {
 
     AlertComponent,
     MoreInfoComponent,
+    ConfirmationDialogComponent,
     ErrorDialogComponent,
     ConfigurationComponent,
     WalletBalanceComponent,

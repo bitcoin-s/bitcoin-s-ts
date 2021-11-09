@@ -1,1 +1,28 @@
-<p>send-funds-dialog works!</p>
+<h2 mat-dialog-title>{{ 'dialog.sendFunds.title' | translate }}</h2>
+
+<mat-dialog-content>
+
+  <div class="field-group">
+    <label translate>dialog.sendFunds.address</label>
+    <!-- Could placeholder current network-->
+    <!-- TODO : inputsValid() is not re-runinng on address edit -->
+    <input type="text" [(ngModel)]="address">
+  </div>
+  <div class="field-group">
+    <label translate>dialog.sendFunds.amount</label>
+    <input type="number" placeholder="{{ 'unit.sats' | translate }}" [(ngModel)]="amount">
+  </div>
+  <div class="field-group">
+    <label translate>dialog.sendFunds.feeRate</label>
+    <input type="number" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-stroked-button mat-dialog-close>{{ 'action.cancel' | translate }}</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-stroked-button [mat-dialog-close]="true" [color]="actionColor"
+    [mat-dialog-close]="{ address, amount, feeRate }"
+    [disabled]="!inputsValid()">{{ action | translate }}</button>
+</mat-dialog-actions>

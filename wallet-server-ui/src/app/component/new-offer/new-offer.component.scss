@@ -8,11 +8,15 @@
       }
       input {
         display: inline-block;
-        width: 24rem;
+        width: 10rem;
       }
     }
     .outcome-group {
-      margin: 1rem;
+      margin: 1.5rem;
+
+      .outcome-label {
+        margin-right: 0.5rem;
+      }
 
       .field-group {
         &:first-of-type {
@@ -27,7 +31,7 @@
           width: 10rem;
         }
         label.payout-label {
-          width: 24rem;
+          width: 10rem;
         }
       }
       .numeric-payout-group {
@@ -55,11 +59,13 @@
         }
         input[type="checkbox"] {
           width: 3rem;
+          vertical-align: middle;
         }
       }
     }
     .points-group {
       width: 18rem;
+      margin-top: 0.5rem;
     }
   }
 

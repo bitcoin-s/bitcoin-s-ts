@@ -25,8 +25,8 @@
           <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
         </div>
         <div *ngFor="let label of enumEventDescriptor.outcomes" class="field-group">
-          <label>{{ label }}</label>
-          <input type="number" [(ngModel)]="outcomeValues[label]">
+          <label class="outcome-label text-right">{{ label }}</label>
+          <input type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="outcomeValues[label]">
         </div>
       </div>
     </div>
@@ -45,8 +45,9 @@
           <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
         </div>
 
+        <!-- TODO : Allow removing points -->
         <div *ngFor="let point of points" class="numeric-payout-group">
-          <input class="text-right" type="text" [(ngModel)]="point.outcome" disabled>
+          <input class="text-right" type="text" [(ngModel)]="point.outcome">
           <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
           <input type="checkbox" [(ngModel)]="point.isEndpoint">
         </div>
@@ -57,12 +58,12 @@
     <div class="both">
       <div class="field-group">
         <label translate>newOffer.yourCollateral</label>
-        <input type="nummber" [(ngModel)]="yourCollateral">
+        <input type="nummber" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="yourCollateral">
         <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral"></app-more-info>
       </div>
       <div class="field-group">
         <label translate>newOffer.feeRate</label>
-        <input type="nummber" [(ngModel)]="feeRate">
+        <input type="nummber" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
         <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
       </div>
       <div class="field-group">

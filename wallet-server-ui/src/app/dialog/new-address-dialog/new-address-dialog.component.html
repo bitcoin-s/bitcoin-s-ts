@@ -1,7 +1,12 @@
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 
 <!-- <div class="qr-code">TODO : QR Code</div> -->
-<mat-dialog-content [translate]="data.content" [translateParams]="data.params"></mat-dialog-content>
+<mat-dialog-content>
+  <span class="address" [translate]="data.content" [translateParams]="data.params"></span>
+  <button mat-icon-button (click)="copyToClipboard()"
+    matTooltip="{{ 'action.copyToClipboard' | translate }}"><mat-icon>content_copy</mat-icon></button>
+</mat-dialog-content>
+
 <mat-dialog-actions>
   <!-- <button mat-stroked-button mat-dialog-close>{{ 'action.cancel' | translate }}</button> -->
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->

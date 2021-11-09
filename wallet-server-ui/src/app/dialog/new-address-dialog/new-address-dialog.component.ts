@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { copyToClipboard } from '~util/utils';
 
 
 export interface NewAddressDialogContent {
@@ -18,4 +19,10 @@ export interface NewAddressDialogContent {
 export class NewAddressDialogComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: NewAddressDialogContent) { }
+
+  copyToClipboard() {
+    console.debug('copyToClipboard()', this.data.params.address)
+
+    copyToClipboard(this.data.params.address)
+  }
 }

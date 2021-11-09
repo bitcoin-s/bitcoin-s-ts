@@ -43,10 +43,12 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
+      <input [value]="" disabled>
       <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.closingTransactionId</label>
+      <input [value]="" disabled>
       <button mat-stroked-button (click)="onRebroadcastClosingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
     </div>
     <div class="field-group">
@@ -56,7 +58,7 @@
   </div>
 
   <div>
-    TODO : Graph
+    <!-- TODO : Graph -->
   </div>
 
   <!--

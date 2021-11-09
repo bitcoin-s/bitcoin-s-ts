@@ -42,7 +42,8 @@
     "satoshis": "satoshis",
     "sat": "sat",
     "sats": "sats",
-    "percent": "%"
+    "percent": "%",
+    "satsPerVbyte": "sats/vbyte"
   },
 
   "configuration": {
@@ -161,6 +162,19 @@
     "newAddress": {
       "title": "New Address",
       "content": "{{address}}"
+    },
+    "sendFunds": {
+      "title": "Send Funds",
+      "address": "Address",
+      "amount": "Amount",
+      "feeRate": "Fee Rate"
+    },
+    "sendFundsSuccess": {
+      "title": "Funds Sent",
+      "content": "Funds Successfully Sent"
+    },
+    "sendMessageError": {
+      "title": "Error sending message to appServer"
     }
   }
 
