@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Announcement, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
+import { Announcement, CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -45,10 +45,13 @@ export class NewOfferComponent implements OnInit {
         this.outcomeValues[label] = null
       }
     } else if (this.isNumeric()) {
-      // These seem not to be re-constructable from an Announcement itself - All we have is the NumericEventDescriptor
-      // TODO : Bounds from base
-      // this.points.push(this.getPoint(0, <number><unknown>null, 0, true))
-      // this.points.push(this.getPoint(127, <number><unknown>null, 0, true))
+      const ed = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+      const nounceCount = this.announcement.announcement.event.nonces.length // numDigits
+      const maxValue = Math.pow(ed.base, nounceCount) -1
+      const minValue = (<NumericEventDescriptor>this.announcement.announcement.event.descriptor).isSigned ? -maxValue : 0
+
+      this.points.push(this.getPoint(<number><unknown>minValue, <number><unknown>null, 0, true))
+      this.points.push(this.getPoint(<number><unknown>maxValue, <number><unknown>null, 0, true))
     }
   }
 

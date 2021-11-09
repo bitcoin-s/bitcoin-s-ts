@@ -243,7 +243,7 @@ export interface EnumEventDescriptor {
   maturity: string // "2021-09-25T06:00:00Z"
 }
 
-export interface NumericEventDescriptor {
+export interface NumericEventDescriptor { // DigitDecompositionEventDescriptorV0TLV / UnsignedDigitDecompositionEventDescriptor / SignedDigitDecompositionEventDescriptor
   base: number
   isSigned: boolean
   unit: string

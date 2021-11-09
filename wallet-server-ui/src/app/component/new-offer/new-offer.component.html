@@ -47,7 +47,7 @@
 
         <!-- TODO : Allow removing points -->
         <div *ngFor="let point of points" class="numeric-payout-group">
-          <input class="text-right" type="text" [(ngModel)]="point.outcome">
+          <input class="text-right" type="number" [(ngModel)]="point.outcome">
           <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
           <input type="checkbox" [(ngModel)]="point.isEndpoint">
         </div>
