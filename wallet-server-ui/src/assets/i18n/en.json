@@ -1,6 +1,8 @@
 {
   "title": "Bitcoin-S Wallet",
 
+  "result": "Result",
+
   "splashScreen": {
     "heading": "Welcome to Bitcoin-S Wallet",
     "betaSoftware": "This application is beta software.",
@@ -81,14 +83,14 @@
     "roundingIntervals": "Rounding Intervals",
     "roundingLevel": "Rounding Level",
     "yourCollateral": "Your Collateral",
-    "feeRate": "Fee Rate (sats/vbyte)",
+    "feeRate": "Fee Rate",
     "refundDate": "Refund Date"
   },
 
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the given outcome",
-    "yourCollateral": "Your collateral at stake",
-    "feeRate": "Fee Rate built into contract",
+    "yourCollateral": "Your collateral at stake (sats)",
+    "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "Refund Date"
   },
 
@@ -108,6 +110,7 @@
     "oraclePublicKey": "Oracle Public Key",
     "yourCollateral": "Your Collateral",
     "counterpartyCollateral": "Counterparty Collateral",
+    "totalCollateral": "Total Collateral",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
     "feeRate": "Fee Rate",
@@ -115,7 +118,7 @@
   },
 
   "acceptOfferDescription": {
-    "peerAddress": "Tor address of the person you'd like to complete the contract with"
+    "peerAddress": "Tor address of the person you'd like to complete the contract with.\nPutting an address in here will attempt to complete the remaining contract steps online."
   },
 
   "contracts": {
@@ -176,7 +179,8 @@
     "sendMessageError": {
       "title": "Error sending message to appServer"
     }
-  }
+  },
 
+  "torDLCHostAddress": "Tor DLC Host Address"
 
 }

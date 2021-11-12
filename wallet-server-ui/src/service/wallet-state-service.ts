@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
 import { BuildConfig } from "~type/proxy-server-types"
 
-import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
+import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
 import { getMessageBody } from "~util/wallet-server-util"
 
 import { MessageService } from "./message.service"
@@ -19,6 +19,8 @@ export class WalletStateService {
   fundedAddresses: FundedAddress[]
   dlcWalletAccounting: DLCWalletAccounting
   feeEstimate: string
+  torDLCHostAddress: string
+
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
@@ -56,7 +58,14 @@ export class WalletStateService {
     })
     this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).subscribe(r => {
       if (r.result) {
+        // TODO : to number
         this.feeEstimate = r.result
+      }
+    })
+    this.messageService.sendMessage(getMessageBody(DLCMessageType.getdlchostaddress)).subscribe(r => {
+      if (r.result) {
+        this.torDLCHostAddress = r.result
+        console.warn('torDLCHostAddress:', this.torDLCHostAddress)
       }
     })
     this.refreshDLCStates()

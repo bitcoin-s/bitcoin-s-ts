@@ -85,4 +85,30 @@ fieldset {
   .pane {
 
   }
+  .left-pane {
+    margin-right: 1rem;
+  }
+  .right-pane {
+    margin-left: 1rem;
+  }
+}
+
+.mat-icon-button {
+  .mat-icon-sm {
+    line-height: 16px;
+  }
+}
+.mat-icon.mat-icon-sm {
+// .mat-mini-fab.mat-icon-sm
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
+  // line-height: 16px;
+}
+
+.mat-mini-fab.mat-fab-sm {
+  // line-height: 24px;
+  // height: 24px;
+  // width: 24px;
+  transform: scale(0.7);
 }

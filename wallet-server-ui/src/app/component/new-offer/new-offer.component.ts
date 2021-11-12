@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Announcement, CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
+import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -32,9 +32,8 @@ export class NewOfferComponent implements OnInit {
   getEventDescriptor() {
     if (this.isEnum())
       return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
-    else if (this.isNumeric())
+    else // if (this.isNumeric())
       return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
-    return undefined
   }
 
   private reset() {
@@ -64,7 +63,13 @@ export class NewOfferComponent implements OnInit {
     return { outcome, payout, extraPrecision, isEndpoint }
   }
 
-  yourCollateral: number = 100000
+  roundingIntervals: any[] = []
+
+  getRoundingInterval(outcome: number, roundingInterval: number) {
+    return { outcome, roundingInterval }
+  }
+
+  yourCollateral: number // wallet users funds in contract
   feeRate: number = 1
 
   newOfferResult: string = ''
@@ -106,6 +111,12 @@ export class NewOfferComponent implements OnInit {
   
           if (r.result) {
             const contractInfoTLV = <string>r.result
+
+            // TESTING
+            // this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [contractInfoTLV])).subscribe(r => {
+            //   console.warn('new contract info:', r)
+            // })
+
             const collateral = this.yourCollateral
             const feeRate = this.feeRate
             const now = new Date()
@@ -127,15 +138,27 @@ export class NewOfferComponent implements OnInit {
       const numericPayoutVals = this.points
       const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
 
+      console.warn('numericPayoutVals:', numericPayoutVals, 'maxCollateral:', maxCollateral, 'yourCollateral:', this.yourCollateral)
+      
       // console.debug('numericAnnouncementHex:', numericAnnouncementHex, 'totalCollateral:', totalCollateral, 'numericPayoutVals:', numericPayoutVals)
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
         [this.announcement.hex, maxCollateral, numericPayoutVals])).subscribe(r => {
         console.warn('createcontractinfo', r)
 
+        // Testing
+        // if (r.result) {
+        //   this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, 
+        //     [r.result])).subscribe(r => {
+        //     console.warn('decodecontractinfo', r)
+        //   })
+        // }
+        // return
+
         if (r.result) {
           const contractInfoTLV = <string>r.result
-          const collateral = 100000
+          const collateral = this.yourCollateral
           const feeRate = 1
+          // TODO : Date input
           const now = new Date()
           const secondsSinceEpoch = Math.round(now.getTime() / 1000) // TODO : dateToSecondsSinceEpoch(new Date())
           const locktime = secondsSinceEpoch
@@ -223,7 +246,23 @@ export class NewOfferComponent implements OnInit {
 
   addNewPoint() {
     console.debug('addNewPoint()')
-    this.points.push(this.getPoint(<number><unknown>null, <number><unknown>null, 0, true))
+    const newPoint = this.getPoint(<number><unknown>null, <number><unknown>null, 0, true)
+    const where = this.points.length>0 ? this.points.length-1 : 0
+    this.points.splice(where, 0, newPoint)
+  }
+
+  onRemovePointClicked(point: PayoutFunctionPoint) {
+    console.debug('onRemovePointClicked()')
+    const i = this.points.findIndex(i => i === point)
+    if (i !== -1) {
+      this.points.splice(i, 1)
+    }
+  }
+
+  addNewRoundingInterval() {
+    console.debug('addNewRoundingInterval()')
+
+    
   }
 
 }

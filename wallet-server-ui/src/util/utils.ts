@@ -37,3 +37,10 @@ export function validateBitcoinAddress(network: string, address: string) {
   }
   return false
 }
+
+export function formatPercent(num: number, fractionalDigits = 2): string {
+  if (num !== undefined) {
+    return num.toFixed(fractionalDigits)
+  }
+  return ''
+}

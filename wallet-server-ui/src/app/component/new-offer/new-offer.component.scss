@@ -12,10 +12,10 @@
       }
     }
     .outcome-group {
-      margin: 1.5rem;
+      margin: 1rem;
 
       .outcome-label {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
       }
 
       .field-group {
@@ -34,7 +34,20 @@
           width: 10rem;
         }
       }
+      .enum-payout-group {
+        display: flex;
+        flex-direction: row;
+
+        align-items: center;
+        min-height: 40px; // Matching numeric-payout-group for now
+      }
       .numeric-payout-group {
+        display: flex;
+        flex-direction: row;
+
+        align-items: center;
+        min-height: 40px; // Matches remove buttons on inner rows
+
         &:first-of-type {
           margin-bottom: 0.5rem;
         }
@@ -51,11 +64,9 @@
         .endpoint-label {
           width: 3rem;
         }
-        input[type="text"] {
-          width: 6rem;
-        }
         input[type="number"] {
           width: 6rem;
+          margin-right: 0.25rem;
         }
         input[type="checkbox"] {
           width: 3rem;
@@ -63,9 +74,24 @@
         }
       }
     }
-    .points-group {
-      width: 18rem;
-      margin-top: 0.5rem;
+    .rounding-info {
+      margin-bottom: 1rem;
+
+      .rounding-interval-group {
+        display: flex;
+        flex-direction: row;
+  
+        align-items: center;
+  
+  
+      }
+      .points-group {
+        width: 18rem;
+  
+        > label {
+          margin-right: 0.5rem;
+        }
+      }
     }
   }
 
@@ -81,15 +107,21 @@
   .footer {
     // display: flex;
     // flex-direction: row;
-    width: 36rem;
+    // width: 36rem;
     .button-group {
       text-align: right;
     }
     .result-group {
-      // flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
 
+      label {
+        margin-right: 1rem;
+      }
       .result-textarea {
-        width: 80%;
+        // width: 80%;
+        flex: 1;
       }
     }
   }

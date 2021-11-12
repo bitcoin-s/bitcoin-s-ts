@@ -19,8 +19,8 @@ export class AcceptOfferComponent implements OnInit {
 
   private _offer: OfferWithHex
   @Input() set offer (offer: OfferWithHex) {
-    this.reset()
     this._offer = offer
+    this.reset()
   }
   get offer() { return this._offer }
 
@@ -40,11 +40,14 @@ export class AcceptOfferComponent implements OnInit {
 
   peerAddress = ''
 
+  refundDate: string
+
   newOfferResult: string = ''
 
   private reset() {
     // this.isEnum = (<EnumContractDescriptor>this.offer.contractInfo.contractDescriptor).outcomes !== undefined
     // this.isNumeric = (<NumericContractDescriptor>this.offer.contractInfo.contractDescriptor).numDigits !== undefined
+    this.refundDate = new Date(this.offer.offer.refundLocktime * 1000).toLocaleDateString()
   }
 
   constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }

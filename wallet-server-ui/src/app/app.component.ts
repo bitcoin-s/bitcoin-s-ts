@@ -9,10 +9,12 @@ import { TranslateService } from '@ngx-translate/core'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { BuildConfig } from '~type/proxy-server-types'
-import { Announcement, ContractInfo, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
+import { Announcement, ContractInfo, DLCContract, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
+import { copyToClipboard } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component'
+import { ContractsComponent, DLCContractInfo } from './component/contracts/contracts.component'
 import { NewOfferComponent } from './component/new-offer/new-offer.component'
 
 
@@ -31,9 +33,16 @@ export class AppComponent implements OnInit {
 
   @ViewChild('buildOffer') buildOffer: NewOfferComponent
   @ViewChild('acceptOffer') acceptOffer: AcceptOfferComponent
+  @ViewChild('contracts') contracts: ContractsComponent
 
   // Root styling class to support darkMode
   @HostBinding('class') className = ''
+
+  selectedAnnouncement: AnnouncementWithHex|null
+  selectedOffer: OfferWithHex|null
+
+  selectedDLC: DLCContract|null
+  selectedContractInfo: ContractInfo|null
 
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar, private overlay: OverlayContainer,
     public walletStateService: WalletStateService) {
@@ -109,25 +118,63 @@ export class AppComponent implements OnInit {
   onAnnouncement(announcement: AnnouncementWithHex) {
     console.debug('onAnnouncement()', announcement)
 
-    this.buildOffer.announcement = announcement;
+    this.hideOffers()
+
+    this.selectedAnnouncement = announcement
+    // this.buildOffer.announcement = announcement
+
+    this.hideSelectedDLC()
   }
 
   onContractInfo(contractInfo: ContractInfoWithHex) {
     console.debug('onContractInfo()', contractInfo)
 
-    console.warn('onContractInfo() NOT HANDLED YET')
+    console.error('onContractInfo() NOT HANDLED YET')
   }
 
   onOffer(offer: OfferWithHex) {
     console.debug('onOffer()', offer)
 
-    console.warn('onOffer() NOT HANDLED YET')
+    console.error('onOffer() NOT HANDLED YET')
   }
 
   onAcceptOffer(offer: OfferWithHex) {
     console.debug('onAcceptOffer()', offer)
+
+    this.hideOffers()
     
-    this.acceptOffer.offer = offer
+    this.selectedOffer = offer
+    // this.acceptOffer.offer = offer
+    this.hideSelectedDLC()
   }
 
+  onSelectedDLC(dlcContractInfo: DLCContractInfo) {
+    console.debug('onSelectedDLC()')
+
+    this.selectedDLC = dlcContractInfo.dlc
+    this.selectedContractInfo = dlcContractInfo.contractInfo
+
+    this.hideOffers()    
+  }
+
+  private hideSelectedDLC() {
+    this.contracts.clearSelection()
+    this.selectedDLC = null
+    this.selectedContractInfo = null
+  }
+
+  private hideOffers() {
+    this.selectedAnnouncement = null
+    this.selectedOffer = null
+    
+    // this.buildOffer.announcement = <AnnouncementWithHex><unknown>null
+    // this.acceptOffer.offer = <OfferWithHex><unknown>null
+  }
+
+  onCopyTorDLCHostAddress() {
+    console.debug('onCopyTorDLCHostAddress()', this.walletStateService.torDLCHostAddress)
+    copyToClipboard(this.walletStateService.torDLCHostAddress)
+  }
+
+  
 }

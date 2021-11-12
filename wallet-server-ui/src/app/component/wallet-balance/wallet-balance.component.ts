@@ -8,6 +8,7 @@ import { MessageService } from '~service/message.service'
 
 import { WalletStateService } from '~service/wallet-state-service'
 import { WalletMessageType } from '~type/wallet-server-types'
+import { formatPercent } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -18,6 +19,8 @@ import { getMessageBody } from '~util/wallet-server-util'
 })
 export class WalletBalanceComponent implements OnInit {
 
+  public formatPercent = formatPercent
+
   constructor(private dialog: MatDialog, public walletStateService: WalletStateService, private messageService: MessageService) { }
 
   ngOnInit(): void {
@@ -26,9 +29,12 @@ export class WalletBalanceComponent implements OnInit {
   getNewAddress() {
     console.debug('getNewAddress()')
 
-    const label = '' // required. probably should not be?
+    // Using labels seems to mess up the backend at this point, but they are required on the JSON RPC interface
+    // No one gets to flex this codepath until the backend is fixed
+    // return
+    // const label = '' // required. probably should not be?
 
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getnewaddress, [label])).subscribe(r => {
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getnewaddress)).subscribe(r => {
       console.debug(' address:', r)
       if (r.result) {
         const dialog = this.dialog.open(NewAddressDialogComponent, {
@@ -42,8 +48,6 @@ export class WalletBalanceComponent implements OnInit {
         })
       }
     })
-
-    
   }
 
   sendFunds() {
@@ -51,29 +55,30 @@ export class WalletBalanceComponent implements OnInit {
 
     const dialog = this.dialog.open(SendFundsDialogComponent).afterClosed().subscribe(
       (sendObj: { address: string, amount: number, feeRate: number }) => {
-
         console.debug(' sendFunds()', sendObj)
 
-        // TODO : sendObj.amount on the server side is in bitcoins
-        sendObj.amount = sendObj.amount * 1e-8
-        const noBroadcast = false
+        if (sendObj) { // else the user was canceling
+          // TODO : sendObj.amount on the server side is in bitcoins
+          sendObj.amount = sendObj.amount * 1e-8
+          const noBroadcast = false
 
-        // Sending to self have seen
-        // "Request failed: [SQLITE_CONSTRAINT_PRIMARYKEY]  A PRIMARY KEY constraint failed (UNIQUE constraint failed: wallet_address_tags.address, wallet_address_tags.tag_type)"
+          // Sending to self have seen
+          // "Request failed: [SQLITE_CONSTRAINT_PRIMARYKEY]  A PRIMARY KEY constraint failed (UNIQUE constraint failed: wallet_address_tags.address, wallet_address_tags.tag_type)"
 
-        this.messageService.sendMessage(getMessageBody(WalletMessageType.sendtoaddress,
-          [sendObj.address, sendObj.amount, sendObj.feeRate, noBroadcast])).subscribe(r => {
-            if (r.result) {
-              const dialog = this.dialog.open(ConfirmationDialogComponent, {
-                data: {
-                  title: 'dialog.sendFundsSuccess.title',
-                  content: 'dialog.sendFundsSuccess.content',
-                  action: 'action.ok',
-                  // actionColor: 'primary',
-                }
-              })
-            }
-          })
+          this.messageService.sendMessage(getMessageBody(WalletMessageType.sendtoaddress,
+            [sendObj.address, sendObj.amount, sendObj.feeRate, noBroadcast])).subscribe(r => {
+              if (r.result) {
+                const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                  data: {
+                    title: 'dialog.sendFundsSuccess.title',
+                    content: 'dialog.sendFundsSuccess.content',
+                    action: 'action.ok',
+                    // actionColor: 'primary',
+                  }
+                })
+              }
+            })
+        }
       })
   }
 

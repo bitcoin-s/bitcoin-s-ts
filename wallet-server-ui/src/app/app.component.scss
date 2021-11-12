@@ -7,10 +7,21 @@
     height: 100%;
   }
 
+  .tor-dlc-host-address {
+    label {
+      margin-right: 1rem;
+    }
+    input {
+      display: inline-block;
+      width: 28rem;
+    }
+  }
+
   .state-info {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 
     .network {
 
@@ -26,6 +37,8 @@
   .footer {
     display: flex;
     justify-content: center;
+    align-items: center;
+
     font-size: smaller;
     color: #8c959f;
     

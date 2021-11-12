@@ -47,18 +47,18 @@
       </ng-container>
       <ng-container matColumnDef="lastUpdated">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.lastUpdated' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.lastUpdated }}</td>
+        <td mat-cell *matCellDef="let contract">{{ formatDate(contract.lastUpdated) }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let contract; columns: displayedColumns"
           (click)="onRowClick(contract)"
-          [class.focus-row]="selectedDLC === contract"></tr>
+          [class.focus-row]="selectedDLCContract === contract"></tr>
     </table>
   </div>
 
-  <app-contract-detail *ngIf="selectedDLC" 
+  <!-- <app-contract-detail *ngIf="selectedDLC" 
     [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"
-    (close)="onCloseContractDetail()"></app-contract-detail>
+    (close)="onCloseContractDetail()"></app-contract-detail> -->
 
 </section>

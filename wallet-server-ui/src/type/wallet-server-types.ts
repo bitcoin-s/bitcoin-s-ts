@@ -185,6 +185,8 @@ export interface DLCContract {
   state: string // DLCState //  "Offered"
   tempContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
   totalCollateral: number // 200001
+
+  fundingTxId?: string // not present initially
 }
 
 export enum DLCState {
@@ -231,7 +233,7 @@ export interface Announcement {
 export interface Event {
   eventId: string
   descriptor: EnumEventDescriptor|NumericEventDescriptor
-  nonces: string[]
+  nonces: string[] // nounces.length === descriptor.numDigits
   maturity: string // ISODate like '2030-01-01T00:00:00Z'
 }
 

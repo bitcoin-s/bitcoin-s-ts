@@ -7,22 +7,30 @@
 
       <!-- Main -->
 
-      <button mat-stroked-button (click)="showConfiguration()">Config</button>
+      <div class="horizontal-pane">
+        <div class="left-pane">
+          <app-build-accept-offer
+          (announcement)="onAnnouncement($event)" 
+          (contractInfo)="onContractInfo($event)"
+          (offer)="onOffer($event)"
+          (acceptOffer)="onAcceptOffer($event)"></app-build-accept-offer>
+  
+          <app-wallet-balance></app-wallet-balance>
+  
+          <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
+        </div>
+        <div class="right-pane">
+          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" [announcement]="selectedAnnouncement"></app-new-offer>
 
-      <app-build-accept-offer
-        (announcement)="onAnnouncement($event)" 
-        (contractInfo)="onContractInfo($event)"
-        (offer)="onOffer($event)"
-        (acceptOffer)="onAcceptOffer($event)"></app-build-accept-offer>
+          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"></app-accept-offer>
 
-      <app-wallet-balance></app-wallet-balance>
-
-      <app-contracts></app-contracts>
-
-      <app-new-offer #buildOffer></app-new-offer>
-
-      <app-accept-offer #acceptOffer></app-accept-offer>
-
+          <!-- (close)="onCloseContractDetail()" -->
+          <app-contract-detail *ngIf="selectedDLC && selectedContractInfo" 
+            [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"
+          ></app-contract-detail>
+        </div>
+      </div>
+      
       <!--
       <button mat-stroked-button color="primary">Primary</button>
       <button mat-stroked-button color="accent">Accent</button>
@@ -41,10 +49,20 @@
         <!-- <button mat-stroked-button (click)="makeNewOffer()">Make New Offer</button> -->
       </div>
 
+      <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
+        <label translate>torDLCHostAddress</label>
+        <input [value]="walletStateService.torDLCHostAddress" disabled>
+        <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+          (click)="onCopyTorDLCHostAddress()"><mat-icon>content_copy</mat-icon></button>
+      </div>
+
       <div *ngIf="walletStateService.info" class="state-info">
         <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.info.network }"></div>
         <div class="block-height" translate="status.blockHeightLabel" [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
         <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
+        <div class="config">
+          <button mat-stroked-button (click)="showConfiguration()">Config</button>
+        </div>
       </div>
 
       <div class="footer">

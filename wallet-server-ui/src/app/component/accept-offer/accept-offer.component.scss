@@ -8,7 +8,13 @@
       }
       input {
         display: inline-block;
-        width: 24rem;
+        width: 10rem;
+      }
+      .wide-input {
+        width: 16rem;
+      }
+      span {
+        margin-left: 0.4rem;
       }
     }
     .outcome-group {
@@ -31,7 +37,9 @@
         }
       }
     }
-
+    .spacer {
+      height: 1rem;
+    }
     .payout-curve {
       margin: 2rem;
     }

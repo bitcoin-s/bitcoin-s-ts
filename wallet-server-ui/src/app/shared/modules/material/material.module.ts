@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common'
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatExpansionModule } from '@angular/material/expansion'
 import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
@@ -25,6 +26,7 @@ const materialModules = [
   MatBottomSheetModule,
   MatButtonModule,
   MatCheckboxModule,
+  MatExpansionModule,
   MatDatepickerModule,
   MatDialogModule, // For focus
   MatFormFieldModule,

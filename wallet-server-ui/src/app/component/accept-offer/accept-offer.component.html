@@ -1,37 +1,38 @@
-<section class="accept-offer">
+<section class="accept-offer" *ngIf="offer">
   <div class="section-header">
     <h2 translate>acceptOffer.heading</h2>
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
   </div>
 
-  <div *ngIf="offer">
-
+  <div>
     <div class="both">
       <div class="field-group">
-        <label translate>acceptOffer.dlcOffer</label>
-        <input [value]="offer.hex" disabled>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.peerAddress</label>
-        <input type="text" placeholder="{{ 'acceptOffer.optional' | translate }}" [(ngModel)]="peerAddress">
-        <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
-      </div>
-      <div class="field-group">
         <label translate>acceptOffer.eventId</label>
-        <input [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+      </div>
+      <div class="field-group">
+        <label translate>acceptOffer.dlcOffer</label>
+        <input class="wide-input" [value]="offer.hex" disabled>
       </div>
       <div class="field-group">
         <label translate>acceptOffer.oraclePublicKey</label>
-        <input [value]="contractInfo.oracleInfo.announcement.publicKey" disabled>
+        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.publicKey" disabled>
       </div>
-
+      <div class="spacer"></div>
       <div class="field-group">
         <label translate>acceptOffer.yourCollateral</label>
-        <input [value]="offer.offer.offerCollateralSatoshis - contractInfo.totalCollateral" disabled>
+        <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis" disabled>
+        <span translate>unit.sats</span>
       </div>
       <div class="field-group">
         <label translate>acceptOffer.counterpartyCollateral</label>
         <input [value]="offer.offer.offerCollateralSatoshis" disabled>
+        <span translate>unit.sats</span>
+      </div>
+      <div class="field-group">
+        <label translate>acceptOffer.totalCollateral</label>
+        <input [value]="contractInfo.totalCollateral" disabled>
+        <span translate>unit.sats</span>
       </div>
     </div>
 
@@ -44,7 +45,7 @@
         </div>
         <div *ngFor="let label of Object.keys(enumContractDescriptor.outcomes)" class="field-group">
           <label>{{ label }}</label>
-          <input type="number" [(ngModel)]="enumContractDescriptor.outcomes[label]" disabled>
+          <input type="number" [value]="contractInfo.totalCollateral - enumContractDescriptor.outcomes[label]" disabled>
         </div>
       </div>
     </div>
@@ -59,7 +60,7 @@
         <input [value]="offer.offer.offerCollateralSatoshis">
       </div> -->
       <div class="payout-curve">
-        TODO : Payout curve preview
+        TODO : Payout curve
       </div>
       
     </div>
@@ -68,10 +69,17 @@
       <div class="field-group">
         <label translate>acceptOffer.feeRate</label>
         <input [value]="offer.offer.feeRatePerVb" disabled>
+        <span translate>unit.satsPerVbyte</span>
       </div>
       <div class="field-group">
         <label translate>acceptOffer.refundDate</label>
-        <input [value]="offer.offer.refundLocktime" disabled>
+        <input [value]="refundDate" disabled>
+      </div>
+      <div class="spacer"></div>
+      <div class="field-group">
+        <label translate>acceptOffer.peerAddress</label>
+        <input type="text" placeholder="{{ 'acceptOffer.optional' | translate }}" [(ngModel)]="peerAddress">
+        <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
       </div>
     </div>
 

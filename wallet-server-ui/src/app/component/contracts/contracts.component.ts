@@ -1,10 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { BehaviorSubject } from 'rxjs'
 
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 
+
+export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 
 @Component({
   selector: 'app-contracts',
@@ -16,13 +19,19 @@ export class ContractsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<DLCContract>
   @ViewChild(MatSort) sort: MatSort
 
+  @Input() clearSelection() {
+    console.debug('clearSelection()')
+    this.selectedDLCContract = <DLCContract><unknown>null
+  }
+  @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
+
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
   displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
 
-  selectedDLC: DLCContract
-  selectedContractInfo: ContractInfo
+  selectedDLCContract: DLCContract
+  // selectedContractInfo: ContractInfo
 
   getContractInfo(dlcId: string) {
     return this.walletStateService.contractInfos.value[dlcId]
@@ -45,21 +54,31 @@ export class ContractsComponent implements OnInit, AfterViewInit {
   onRowClick(dlcContract: DLCContract) {
     console.debug('onRowClick()', dlcContract)
 
-    this.selectedDLC = dlcContract
-    this.showContractDetail(dlcContract)
+    this.selectedDLCContract = dlcContract
+
+    this.selectedDLC.emit(<DLCContractInfo>{
+      dlc: dlcContract,
+      contractInfo: this.walletStateService.contractInfos.value[dlcContract.dlcId],
+    })
+
+    // this.showContractDetail(dlcContract)
   }
 
-  showContractDetail(dlcContract: DLCContract) {
-    console.debug('showContractDetail()', dlcContract)
-
-    this.selectedContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
-    console.debug('selectedContractInfo:', this.selectedContractInfo)
+  formatDate(isoDate: string) {
+    return new Date(isoDate).toLocaleDateString()
   }
 
-  onCloseContractDetail() {
-    console.debug('onCloseContractDetail()')
-    this.selectedDLC = <DLCContract><unknown>undefined
-    this.selectedContractInfo = <ContractInfo><unknown>undefined
-  }
+  // showContractDetail(dlcContract: DLCContract) {
+  //   console.debug('showContractDetail()', dlcContract)
+
+  //   this.selectedContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
+  //   console.debug('selectedContractInfo:', this.selectedContractInfo)
+  // }
+
+  // onCloseContractDetail() {
+  //   console.debug('onCloseContractDetail()')
+  //   this.selectedDLC = <DLCContract><unknown>undefined
+  //   this.selectedContractInfo = <ContractInfo><unknown>undefined
+  // }
 
 }

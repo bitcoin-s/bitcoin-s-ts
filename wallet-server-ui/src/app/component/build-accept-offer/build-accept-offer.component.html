@@ -7,10 +7,11 @@
     <label translate>buildAcceptOffer.buildOffer</label>
     <input #buildOfferInput type="text" placeholder="{{ 'buildAcceptOffer.pasteHex' | translate }}"
       (paste)="onBuildOfferPaste($event)" (input)="onBuildOfferInput($event)">
-    <div hidden>
-      <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">New Enum</button>
-      <button mat-stroked-button (click)="onBuildOffer(numericAnnouncementHex)">New Numeric</button>
-    </div>
+  </div>
+
+  <div>
+    <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">New Enum</button>
+    <button mat-stroked-button (click)="onBuildOffer(numericAnnouncementHex)">New Numeric</button>
   </div>
 
   <div class="paste-input">

@@ -43,7 +43,7 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
-      <input [value]="" disabled>
+      <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
       <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
     </div>
     <div class="field-group">
@@ -71,7 +71,7 @@
   </div>
   -->
 
-  <button mat-stroked-button color="warn" (click)="onCancelContract()" hidden>{{ 'contractDetail.cancelContract' | translate }}</button>
+  <button mat-stroked-button color="warn" (click)="onCancelContract()">{{ 'contractDetail.cancelContract' | translate }}</button>
 
   <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 
