@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
@@ -50,7 +52,7 @@ export class AcceptOfferComponent implements OnInit {
     this.refundDate = new Date(this.offer.offer.refundLocktime * 1000).toLocaleDateString()
   }
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -80,8 +82,6 @@ export class AcceptOfferComponent implements OnInit {
     }
 
     if (pa) {
-      console.warn('not using Tor for acceptdlc is untested')
-      // DLCOfferTLV, torAddress
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
         [this.offer.hex, pa])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
@@ -91,6 +91,17 @@ export class AcceptOfferComponent implements OnInit {
           }
         })
     } else {
+      console.warn('not using Tor for acceptdlc is untested')
+
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.mempoolError.title',
+          content: 'Accepting DLCs without using Tor is not currently enabled',
+        }
+      })
+
+      return
+
       this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
         [this.offer.hex])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
