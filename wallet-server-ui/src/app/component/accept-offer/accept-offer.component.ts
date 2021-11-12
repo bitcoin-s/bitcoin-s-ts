@@ -79,29 +79,26 @@ export class AcceptOfferComponent implements OnInit {
       pa = this.peerAddress
     }
 
-    if (this.isEnum()) {
-      if (pa) {
-        // DLCOfferTLV, torAddress
-        this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
-          [this.offer.hex, pa])).subscribe(r => {
-            console.warn('acceptdlcoffer', r)
-            if (r.result) {
-              this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
-            }
-          })
-      } else {
-        this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
-          [this.offer.hex])).subscribe(r => {
-            console.warn('acceptdlcoffer', r)
-            if (r.result) {
-              this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
-            }
-          })
-      }
-    } else if (this.isNumeric()) {
-
+    if (pa) {
+      console.warn('not using Tor for acceptdlc is untested')
+      // DLCOfferTLV, torAddress
+      this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
+        [this.offer.hex, pa])).subscribe(r => {
+          console.warn('acceptdlcoffer', r)
+          if (r.result) {
+            this.newOfferResult = r.result
+            this.walletStateService.refreshDLCStates()
+          }
+        })
+    } else {
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
+        [this.offer.hex])).subscribe(r => {
+          console.warn('acceptdlcoffer', r)
+          if (r.result) {
+            this.newOfferResult = r.result
+            this.walletStateService.refreshDLCStates()
+          }
+        })
     }
   }
 
