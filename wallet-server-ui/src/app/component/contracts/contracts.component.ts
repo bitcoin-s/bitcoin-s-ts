@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs'
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 
-import { formatPercent, formatShortHex } from '~util/utils'
+import { formatISODate, formatPercent, formatShortHex } from '~util/utils'
 
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
@@ -18,6 +18,7 @@ export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 })
 export class ContractsComponent implements OnInit, AfterViewInit {
 
+  public formatISODate = formatISODate
   public formatPercent = formatPercent
   public formatShortHex = formatShortHex
 
@@ -80,10 +81,6 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     })
 
     // this.showContractDetail(dlcContract)
-  }
-
-  formatDate(isoDate: string) {
-    return new Date(isoDate).toLocaleDateString()
   }
 
   // showContractDetail(dlcContract: DLCContract) {

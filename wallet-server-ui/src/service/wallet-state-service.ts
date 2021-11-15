@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
+import { first, tap } from "rxjs/operators"
 import { BuildConfig } from "~type/proxy-server-types"
 
 import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
@@ -73,7 +74,7 @@ export class WalletStateService {
 
   refreshDLCState(dlc: DLCContract) {
     console.debug('refreshDLCState()', dlc)
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlc.dlcId])).subscribe(r => {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlc.dlcId])).pipe(tap(r => {
       console.debug('getdlc', r)
 
       if (r.result) {
@@ -85,9 +86,16 @@ export class WalletStateService {
           const removed = this.dlcs.value.splice(i, 1, dlc)
           // console.debug('removed:', removed)
           this.dlcs.next(this.dlcs.value)
+        } else {
+          console.warn('refreshDLCState()', 'did not find dlcId', dlc.dlcId, 'in existing dlcs')
+          // The DLC didn't exist yet, this shouldn't happen...
+          this.dlcs.value.push(dlc)
+          this.dlcs.next(this.dlcs.value)
         }
+        return dlc
       }
-    })
+      return null
+    }))
   }
 
   refreshDLCStates() {

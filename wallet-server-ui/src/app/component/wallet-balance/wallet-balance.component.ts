@@ -74,6 +74,7 @@ export class WalletBalanceComponent implements OnInit {
                     content: 'dialog.sendFundsSuccess.content',
                     action: 'action.ok',
                     // actionColor: 'primary',
+                    showCancelButton: false,
                   }
                 })
               }

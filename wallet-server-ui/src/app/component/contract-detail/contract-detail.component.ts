@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
 
@@ -6,7 +6,7 @@ import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, WalletMessageType } from '~type/wallet-server-types'
-import { isCancelable, isRefundable, validateHexString } from '~util/utils'
+import { formatDateTime, formatISODate, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 @Component({
@@ -21,10 +21,12 @@ export class ContractDetailComponent implements OnInit {
 
   public isCancelable = isCancelable
   public isRefundable = isRefundable
+  public isExecutable = isExecutable
+  public isFundingTxRebroadcastable = isFundingTxRebroadcastable
 
   _dlc!: DLCContract
   get dlc(): DLCContract { return this._dlc }
-  @Input() set dlc(e: DLCContract) { this.reset(); this._dlc = e }
+  @Input() set dlc(e: DLCContract) { this._dlc = e; this.reset() }
 
   _contractInfo!: ContractInfo
   get contractInfo(): ContractInfo { return this._contractInfo }
@@ -35,15 +37,23 @@ export class ContractDetailComponent implements OnInit {
   // showDeleteSuccess = false
 
   oracleSignature: string = ''
+  contractTimeout: string = ''
 
   private reset() {
-
+    if (this.dlc) {
+      this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
+      this.oracleSignature = this.dlc.oracleSigs?.toString() || ''
+    } else {
+      this.oracleSignature = ''
+      this.contractTimeout = ''
+    }
   }
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
     private messsageService: MessageService, private walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
+    
   }
 
   onCancelContract() {
@@ -109,7 +119,7 @@ export class ContractDetailComponent implements OnInit {
               // this.walletStateService.refreshDLCStates()
     
               // Update just this item?
-              this.walletStateService.refreshDLCState(this.dlc)
+              this.refreshDLCState()
             }
           })
         }
@@ -117,9 +127,21 @@ export class ContractDetailComponent implements OnInit {
     } // eo if (this.oracleSignature)
   }
 
+  // Refresh the state of the visible DLC in the wallet and refresh object bound in this view
+  private refreshDLCState() {
+    this.walletStateService.refreshDLCState(this.dlc).subscribe(r => {
+      console.debug('dlc:', r)
+      if (r.result) {
+        const dlc = <DLCContract>r.result
+        this.dlc = dlc
+      }
+    })
+  }
+
   onReloadContract() {
     console.debug('onReloadContract()')
-    this.walletStateService.refreshDLCState(this.dlc)
+
+    this.refreshDLCState()
   }
 
   onRefund() {
@@ -132,7 +154,7 @@ export class ContractDetailComponent implements OnInit {
       console.debug('executedlcrefund', r)
 
       if (r.result) {
-        this.walletStateService.refreshDLCState(this.dlc)
+        this.refreshDLCState()
       }
     })
   }
@@ -147,7 +169,7 @@ export class ContractDetailComponent implements OnInit {
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
       console.debug('broadcastdlcfundingtx', r)
 
-      if (r.result) {
+      if (r.result) { // funding tx id
         // Show success
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),

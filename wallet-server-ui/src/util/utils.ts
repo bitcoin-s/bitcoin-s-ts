@@ -39,9 +39,17 @@ export function validateBitcoinAddress(network: string, address: string) {
   return false
 }
 
+export function formatISODate(isoDate: string) {
+  return new Date(isoDate).toLocaleDateString()
+}
+
+export function formatDateTime(dateTime: number) {
+  return new Date(dateTime * 1000).toLocaleDateString()
+}
+
 export function formatPercent(num: number, fractionalDigits = 2): string {
   if (num !== undefined) {
-    return num.toFixed(fractionalDigits)
+    return (num * 100).toFixed(fractionalDigits)
   }
   return ''
 }
@@ -71,4 +79,10 @@ export function isRefundable(state: DLCState) {
   return [DLCState.broadcast, DLCState.confirmed].includes(state)
 }
 
+export function isExecutable(state: DLCState) {
+  return [DLCState.broadcast].includes(state)
+}
 
+export function isFundingTxRebroadcastable(state: DLCState) {
+  return [DLCState.broadcast].includes(state)
+}

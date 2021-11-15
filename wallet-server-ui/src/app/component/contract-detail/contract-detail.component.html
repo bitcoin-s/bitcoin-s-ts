@@ -35,7 +35,7 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractTimeout</label>
-      <input [value]="dlc.contractTimeout" disabled>
+      <input [(ngModel)]="contractTimeout" disabled>
     </div>
     <div class="field-group">
       <label translate>contractDetail.totalCollateral</label>
@@ -44,7 +44,7 @@
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" [disabled]="dlc.state !== DLCState.broadcast">
+      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" [disabled]="!isFundingTxRebroadcastable(dlc.state)">
         {{ 'contractDetail.rebroadcast' | translate }}
       </button>
     </div>
@@ -57,22 +57,22 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.oracleSignatures</label>
-      <input [(ngModel)]="oracleSignature" [disabled]="!dlc.contractId || dlc.state !== DLCState.broadcast">
-      <button mat-stroked-button (click)="onOracleSignatures()" [disabled]="!dlc.contractId || !oracleSignature">
+      <input [(ngModel)]="oracleSignature" [disabled]="!isExecutable(dlc.state)">
+      <button mat-stroked-button (click)="onOracleSignatures()" [disabled]="!isExecutable(dlc.state) || !oracleSignature">
         {{ 'action.execute' | translate }}
       </button>
     </div>
   </div>
 
   <div class="button-group">
-    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
-      <mat-icon>refresh</mat-icon>
-    </button>
     <button mat-stroked-button color="warn" (click)="onCancelContract()" [disabled]="!isCancelable(dlc.state)">
       {{ 'contractDetail.cancelContract' | translate }}
     </button>
     <button mat-stroked-button color="warn" (click)="onRefund()" [disabled]="!isRefundable(dlc.state)">
       {{ 'contractDetail.refundContract' | translate }}
+    </button>
+    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
+      <mat-icon>refresh</mat-icon>
     </button>
   </div>
 
