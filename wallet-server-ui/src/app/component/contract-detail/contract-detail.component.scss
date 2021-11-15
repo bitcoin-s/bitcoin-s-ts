@@ -11,6 +11,25 @@
     }
   }
 
+  .enum-outcomes {
+    .enum-group {
+      margin-left: 1rem;
+
+      label {
+        display: inline-block;
+        width: 12rem;
+      }
+      input {
+        display: inline-block;
+        width: 6rem;
+      }
+    }
+  }
+
+  .spacer {
+    height: 1rem;
+  }
+
   .contract-detail-grid {
     
   }

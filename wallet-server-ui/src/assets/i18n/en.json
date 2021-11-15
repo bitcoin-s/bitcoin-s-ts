@@ -147,6 +147,7 @@
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
     "contractTimeout": "Contract Timeout",
+    "outcomePayouts": "Outcome Payouts",
     "totalCollateral": "Total Collateral",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",

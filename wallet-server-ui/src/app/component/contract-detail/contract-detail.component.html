@@ -13,6 +13,7 @@
       <label translate>contractDetail.eventId</label>
       <input [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
     </div>
+    <div class="spacer"></div>
     <div class="field-group">
       <label translate>contractDetail.initiator</label>
       <input [value]="dlc.isInitiator" disabled>
@@ -41,6 +42,21 @@
       <label translate>contractDetail.totalCollateral</label>
       <input [value]="dlc.totalCollateral" disabled>
     </div>
+
+    <div class="spacer"></div>
+
+    <div *ngIf="isEnum()" class="enum-outcomes">
+      <label translate>{{ 'contractDetail.outcomePayouts' | translate }}</label>
+      <div *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)" class="enum-group">
+        <label>{{ l }}</label>
+        <input [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
+      </div>
+    </div>
+
+    <!-- TODO : Payout curve -->
+
+    <div class="spacer"></div>
+
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>

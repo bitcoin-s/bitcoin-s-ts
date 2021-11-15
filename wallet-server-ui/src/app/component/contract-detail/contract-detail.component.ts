@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, WalletMessageType } from '~type/wallet-server-types'
+import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { formatDateTime, formatISODate, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -15,6 +15,8 @@ import { getMessageBody } from '~util/wallet-server-util'
   styleUrls: ['./contract-detail.component.scss']
 })
 export class ContractDetailComponent implements OnInit {
+
+  public Object = Object
 
   public AlertType = AlertType
   public DLCState = DLCState
@@ -31,6 +33,17 @@ export class ContractDetailComponent implements OnInit {
   _contractInfo!: ContractInfo
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) { this._contractInfo = e }
+
+  getEnumContractDescriptor() {
+    return <EnumContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
+  getContractDescriptor() {
+    if (this.isEnum())
+      return <EnumContractDescriptor>this.contractInfo.contractDescriptor
+    else // if (this.isNumeric())
+      return <NumericContractDescriptor>this.contractInfo.contractDescriptor
+  }
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
@@ -54,6 +67,16 @@ export class ContractDetailComponent implements OnInit {
 
   ngOnInit(): void {
     
+  }
+
+  isEnum() {
+    const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    return cd.outcomes !== undefined
+  }
+
+  isNumeric() {
+    const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    return cd.numDigits !== undefined
   }
 
   onCancelContract() {
@@ -216,6 +239,14 @@ export class ContractDetailComponent implements OnInit {
     // val url =
     //   GUIUtil.getAnnouncementUrl(GlobalData.network, primaryOracle)
     // GUIUtil.openUrl(url)
+  }
+
+  getOutcomeValue(outcomeValue: number) {
+    if (this.dlc.isInitiator) {
+      return outcomeValue
+    } else {
+      return this.dlc.totalCollateral - outcomeValue
+    }
   }
 
 }

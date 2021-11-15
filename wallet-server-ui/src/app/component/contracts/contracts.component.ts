@@ -71,7 +71,7 @@ export class ContractsComponent implements OnInit, AfterViewInit {
   }
 
   onRowClick(dlcContract: DLCContract) {
-    console.debug('onRowClick()', dlcContract)
+    console.debug('onRowClick()', dlcContract, this.walletStateService.contractInfos.value[dlcContract.dlcId])
 
     this.selectedDLCContract = dlcContract
 
