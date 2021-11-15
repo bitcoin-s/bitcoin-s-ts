@@ -6,14 +6,16 @@
 
   <div *ngIf="dlc && contractInfo">
     <div class="field-group">
-      <label translate>contractDetail.dlcId</label>
-      <input [value]="dlc.dlcId" disabled>
-    </div>
-    <div class="field-group">
       <label translate>contractDetail.eventId</label>
       <input [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
     </div>
+    <div class="field-group">
+      <label translate>contractDetail.dlcId</label>
+      <input [value]="dlc.dlcId" disabled>
+    </div>
+    
     <div class="spacer"></div>
+    
     <div class="field-group">
       <label translate>contractDetail.initiator</label>
       <input [value]="dlc.isInitiator" disabled>
@@ -33,6 +35,7 @@
     <div class="field-group">
       <label translate>contractDetail.feeRate</label>
       <input [value]="dlc.feeRate" disabled>
+      <span translate>unit.satsPerVbyte</span>
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractTimeout</label>
@@ -41,6 +44,7 @@
     <div class="field-group">
       <label translate>contractDetail.totalCollateral</label>
       <input [value]="dlc.totalCollateral" disabled>
+      <span translate>unit.sats</span>
     </div>
 
     <div class="spacer"></div>
@@ -50,6 +54,7 @@
       <div *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)" class="enum-group">
         <label>{{ l }}</label>
         <input [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
+        <span translate>unit.sats</span>
       </div>
     </div>
 

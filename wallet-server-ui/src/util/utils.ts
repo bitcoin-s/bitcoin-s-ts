@@ -76,11 +76,11 @@ export function isCancelable(state: DLCState) {
 }
 
 export function isRefundable(state: DLCState) {
-  return [DLCState.broadcast, DLCState.confirmed].includes(state)
+  return [DLCState.confirmed, DLCState.broadcast, DLCState.confirmed].includes(state)
 }
 
 export function isExecutable(state: DLCState) {
-  return [DLCState.broadcast].includes(state)
+  return [DLCState.confirmed, DLCState.broadcast].includes(state)
 }
 
 export function isFundingTxRebroadcastable(state: DLCState) {

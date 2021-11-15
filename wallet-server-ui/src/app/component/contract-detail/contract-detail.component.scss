@@ -9,6 +9,9 @@
       display: inline-block;
       width: 12rem;
     }
+    span {
+      margin-left: 0.25rem;
+    }
   }
 
   .enum-outcomes {
@@ -22,6 +25,9 @@
       input {
         display: inline-block;
         width: 6rem;
+      }
+      span {
+        margin-left: 0.25rem;
       }
     }
   }
