@@ -70,7 +70,7 @@ export class NewOfferComponent implements OnInit {
   }
 
   yourCollateral: number // wallet users funds in contract
-  feeRate: number = 1
+  feeRate: number = 1 // TODO : From estimated fee rate
 
   newOfferResult: string = ''
 
@@ -262,7 +262,9 @@ export class NewOfferComponent implements OnInit {
   addNewRoundingInterval() {
     console.debug('addNewRoundingInterval()')
 
-    
+    // https://github.com/bitcoin-s/bitcoin-s/blob/aa748c012fc03e6bde6435092505e3c17a70437a/app-commons/src/main/scala/org/bitcoins/commons/serializers/Picklers.scala#L287
+    // Structure like
+    // { "intervals" : [{"beginInterval": 123 , "roundingMod" :456 }, ...]}
   }
 
 }

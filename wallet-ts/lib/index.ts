@@ -11,7 +11,7 @@ import { BlockchainMessageType, BlockHeaderResponse, GetInfoResponse } from './t
 import { Announcement, Attestment, CoreMessageType, Offer } from './type/core-types'
 import { DLCMessageType } from './type/dlc-types'
 import { NetworkMessageType } from './type/network-types'
-import { AddressInfo, Balances, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
+import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
 
 // Expose all 'common' endpoints
 export * from '../../common-ts/lib/index';
@@ -173,14 +173,22 @@ export function GetBalances(inSats: boolean) {
 }
 
 // Should it be possible to create a new address without a label?
-export function GetNewAddress(label: string) {
+export function GetNewAddress(label?: string) {
   console.debug('GetNewAddress()', label)
-  validateString(label, 'GetNewAddress()', 'label')
 
-  const m = getMessageBody(WalletMessageType.getnewaddress, [label])
-  return SendServerMessage(m).then(response => {
-    return <ServerResponse<string>>response
-  })
+  if (label !== undefined) {
+    validateString(label, 'GetNewAddress()', 'label')
+
+    const m = getMessageBody(WalletMessageType.getnewaddress, [label])
+    return SendServerMessage(m).then(response => {
+      return <ServerResponse<string>>response
+    })
+  } else {
+    const m = getMessageBody(WalletMessageType.getnewaddress)
+    return SendServerMessage(m).then(response => {
+      return <ServerResponse<string>>response
+    })
+  }
 }
 
 export function GetTransaction(sha256hash: string) {
@@ -200,6 +208,7 @@ export function LockUnspent(unlock: boolean, outPoints: any[]) {
 
   const m = getMessageBody(WalletMessageType.lockunspent, [unlock, outPoints])
   return SendServerMessage(m).then(response => {
+    // boolean value === ?
     return <ServerResponse<boolean>>response
   })
 }
@@ -276,7 +285,7 @@ export function GetDLCs() {
 
   const m = getMessageBody(WalletMessageType.getdlcs)
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown[]>>response
+    return <ServerResponse<DLCContract[]>>response
   })
 }
 
@@ -285,7 +294,7 @@ export function GetDLC(sha256hash: string) {
 
   const m = getMessageBody(WalletMessageType.getdlc, [sha256hash])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    return <ServerResponse<DLCContract>>response
   })
 }
 
@@ -679,7 +688,8 @@ export function SendRawTransaction(hex: string) {
 
   const m = getMessageBody(WalletMessageType.sendrawtransaction, [hex])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // Returns txId
+    return <ServerResponse<string>>response
   })
 }
 

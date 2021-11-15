@@ -2,6 +2,7 @@
   <div class="section-header">
     <h2 translate>contracts.heading</h2>
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+    <button mat-icon-button class="refresh-button" matTooltip="{{ 'action.reload' | translate }}" (click)="onRefresh()"><mat-icon>refresh</mat-icon></button>
   </div>
 
   <div *ngIf="walletStateService.dlcs" class="contract-container">
@@ -9,16 +10,14 @@
       <ng-container matColumnDef="eventId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.eventId' | translate }}</th>
         <!-- Compiler Not happy with the following type of notation -->
-        <!-- let contractInfo = walletStateService.contractInfos.value[contract.dlcId]" -->
         <td mat-cell *matCellDef="let contract">
           {{ getContractInfo(contract.dlcId)?.oracleInfo?.announcement?.event?.eventId }}
-          <!-- {{ contractInfo.oracleInfo.announcement.event.eventId }} -->
         </td>
       </ng-container>
       <ng-container matColumnDef="contractId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.contractId' | translate }}</th>
         <td mat-cell *matCellDef="let contract">
-          <!-- Not sure yet -->
+          {{ formatShortHex( getContractId(contract.dlcId) ) }}
         </td>
       </ng-container>
       <ng-container matColumnDef="state">
@@ -27,23 +26,23 @@
       </ng-container>
       <ng-container matColumnDef="realizedPNL">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.realizedPNL' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.realizedPNL }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.pnl ? contract.pnl + ' ' + ('unit.sats' | translate) : ''}}</td>
       </ng-container>
       <ng-container matColumnDef="rateOfReturn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.rateOfReturn' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.rateOfReturn }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.rateOfReturn ? formatPercent(contract.rateOfReturn) + '%' : '' }}</td>
       </ng-container>
       <ng-container matColumnDef="collateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.collateral' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.localCollateral }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.localCollateral + ' ' + ('unit.sats' | translate) }}</td>
       </ng-container>
       <ng-container matColumnDef="counterpartyCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.counterpartyCollateral' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.remoteCollateral }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.remoteCollateral + ' ' + ('unit.sats' | translate) }}</td>
       </ng-container>
       <ng-container matColumnDef="totalCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.totalCollateral' | translate }}</th>
-        <td mat-cell *matCellDef="let contract">{{ contract.totalCollateral }}</td>
+        <td mat-cell *matCellDef="let contract">{{ contract.totalCollateral + ' ' + ('unit.sats' | translate) }}</td>
       </ng-container>
       <ng-container matColumnDef="lastUpdated">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.lastUpdated' | translate }}</th>
@@ -56,9 +55,5 @@
           [class.focus-row]="selectedDLCContract === contract"></tr>
     </table>
   </div>
-
-  <!-- <app-contract-detail *ngIf="selectedDLC" 
-    [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"
-    (close)="onCloseContractDetail()"></app-contract-detail> -->
 
 </section>

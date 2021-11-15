@@ -34,7 +34,9 @@
     "no": "No",
     "execute": "Execute",
     "saveToFile": "Save to File",
-    "copyToClipboard": "Copy to Clipboard"
+    "copyToClipboard": "Copy to Clipboard",
+    "reload": "Reload",
+    "refresh": "Refresh"
   },
 
   "unit": {
@@ -45,7 +47,8 @@
     "sat": "sat",
     "sats": "sats",
     "percent": "%",
-    "satsPerVbyte": "sats/vbyte"
+    "satsPerVbyte": "sats/vbyte",
+    "ellipsis": "..."
   },
 
   "configuration": {
@@ -150,7 +153,10 @@
     "oracleSignatures": "Oracle Signatures",
     "rebroadcast": "Rebroadcast",
     "cancelContract": "Cancel Contract",
-    "cancelContractSuccess": "Successfully canceled contract"
+    "cancelContractSuccess": "Successfully canceled contract",
+    "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
+    "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
+    "refundContract": "Refund Contract"
   },
 
   "events": {

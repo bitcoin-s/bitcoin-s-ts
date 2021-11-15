@@ -71,7 +71,27 @@ export class WalletStateService {
     this.refreshDLCStates()
   }
 
+  refreshDLCState(dlc: DLCContract) {
+    console.debug('refreshDLCState()', dlc)
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlc.dlcId])).subscribe(r => {
+      console.debug('getdlc', r)
+
+      if (r.result) {
+        const dlc = <DLCContract>r.result
+        // Inject in dlcs
+        const i = this.dlcs.value.findIndex(d => d.dlcId === dlc.dlcId)
+        // console.debug('i:', i)
+        if (i !== -1) {
+          const removed = this.dlcs.value.splice(i, 1, dlc)
+          // console.debug('removed:', removed)
+          this.dlcs.next(this.dlcs.value)
+        }
+      }
+    })
+  }
+
   refreshDLCStates() {
+    console.debug('refreshDLCStates()')
     this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
       if (r.result) {
         this.dlcs.next(r.result)
@@ -88,5 +108,6 @@ export class WalletStateService {
       }
     })
   }
+
 
 }

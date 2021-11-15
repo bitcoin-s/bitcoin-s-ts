@@ -182,11 +182,22 @@ export interface DLCContract {
   lastUpdated: string // "2021-11-02T18:31:14.789Z"
   localCollateral: number // 100000
   remoteCollateral: number // 100001
-  state: string // DLCState //  "Offered"
+  state: DLCState // string //  "Offered"
   tempContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
   totalCollateral: number // 200001
 
-  fundingTxId?: string // not present initially
+  // not present initially
+  contractId?: string
+  fundingTxId?: string
+
+  // Claimed
+  closingTxId?: string // After executing oracle signatures / Claimed state
+  myPayout?: number // sats
+  oracleSigs?: string[]
+  oracles?: string[]
+  outcomes?: number[][] // for numeric, [[1, 1, 0, 0, 1, 0, 0]]
+  pnl: number // sats
+  rateOfReturn: number // 0.5744851029794041
 }
 
 export enum DLCState {

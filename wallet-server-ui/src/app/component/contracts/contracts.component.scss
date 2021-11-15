@@ -3,6 +3,18 @@
 
   .contract-container {
     .contract-table {
+      // Column padding
+      .mat-header-cell, .mat-cell, .mat-footer-cell {
+        padding-left: 1rem;
+        padding-right: 1rem; //2rem;
+        &:first-of-type {
+          padding-left: 1rem;
+        }
+        &:last-of-type {
+          padding-right: 1rem;
+        }
+      }
+
       .focus-row {
         font-weight: bold;
       }

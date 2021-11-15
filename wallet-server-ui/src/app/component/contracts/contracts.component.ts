@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs'
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 
+import { formatPercent, formatShortHex } from '~util/utils'
+
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 
@@ -15,6 +17,9 @@ export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
   styleUrls: ['./contracts.component.scss']
 })
 export class ContractsComponent implements OnInit, AfterViewInit {
+
+  public formatPercent = formatPercent
+  public formatShortHex = formatShortHex
 
   @ViewChild(MatTable) table: MatTable<DLCContract>
   @ViewChild(MatSort) sort: MatSort
@@ -37,6 +42,12 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     return this.walletStateService.contractInfos.value[dlcId]
   }
 
+  getContractId(dlcId: string) {
+    const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === dlcId)
+    if (dlc) return dlc.contractId
+    return null
+  }
+
   constructor(public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
@@ -49,6 +60,13 @@ export class ContractsComponent implements OnInit, AfterViewInit {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
     })
+  }
+
+  // TODO : Reset focused item post-refresh
+  onRefresh() {
+    console.debug('onRefresh()')
+    // Force update DLC list
+    this.walletStateService.refreshDLCStates()
   }
 
   onRowClick(dlcContract: DLCContract) {

@@ -1,3 +1,4 @@
+import { DLCState } from "~type/wallet-server-types"
 
 export function copyToClipboard(s: string) {
   const hiddenta = document.createElement('textarea')
@@ -44,3 +45,30 @@ export function formatPercent(num: number, fractionalDigits = 2): string {
   }
   return ''
 }
+
+// Matches upper and lower case hex strings
+const UPPERLOWER_CASE_HEX = /[0-9A-Fa-f]{6}/g;
+
+export function validateHexString(s: string) {
+  return UPPERLOWER_CASE_HEX.test(s)
+}
+
+const SHORT_HEX_LENGTH = 8
+
+export function formatShortHex(s: string|null|undefined) {
+  if (s) {
+    if (s.length < SHORT_HEX_LENGTH) return s
+    return s.substring(0, SHORT_HEX_LENGTH) + '...' // this.translate('unit.ellipsis')
+  }
+  return ''
+}
+
+export function isCancelable(state: DLCState) {
+  return [DLCState.offered, DLCState.accepted, DLCState.signed].includes(state)
+}
+
+export function isRefundable(state: DLCState) {
+  return [DLCState.broadcast, DLCState.confirmed].includes(state)
+}
+
+

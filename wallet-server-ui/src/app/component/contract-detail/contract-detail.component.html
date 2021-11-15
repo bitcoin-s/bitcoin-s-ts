@@ -23,7 +23,7 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractId</label>
-      <input [value]="" disabled>
+      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractInfo</label>
@@ -44,34 +44,37 @@
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
+      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" [disabled]="dlc.state !== DLCState.broadcast">
+        {{ 'contractDetail.rebroadcast' | translate }}
+      </button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.closingTransactionId</label>
-      <input [value]="" disabled>
-      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()" disabled>{{ 'contractDetail.rebroadcast' | translate }}</button>
+      <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
+      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()" [disabled]="!dlc.closingTxId">
+        {{ 'contractDetail.rebroadcast' | translate }}
+      </button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.oracleSignatures</label>
-      <button mat-stroked-button (click)="onOracleSignatures()" disabled>{{ 'action.execute' | translate }}</button>
+      <input [(ngModel)]="oracleSignature" [disabled]="!dlc.contractId || dlc.state !== DLCState.broadcast">
+      <button mat-stroked-button (click)="onOracleSignatures()" [disabled]="!dlc.contractId || !oracleSignature">
+        {{ 'action.execute' | translate }}
+      </button>
     </div>
   </div>
 
-  <div>
-    <!-- TODO : Graph -->
+  <div class="button-group">
+    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button mat-stroked-button color="warn" (click)="onCancelContract()" [disabled]="!isCancelable(dlc.state)">
+      {{ 'contractDetail.cancelContract' | translate }}
+    </button>
+    <button mat-stroked-button color="warn" (click)="onRefund()" [disabled]="!isRefundable(dlc.state)">
+      {{ 'contractDetail.refundContract' | translate }}
+    </button>
   </div>
-
-  <!--
-  <div>
-    {{ dlc | json }}
-  </div>
-
-  <div>
-    {{ contractInfo | json }}
-  </div>
-  -->
-
-  <button mat-stroked-button color="warn" (click)="onCancelContract()">{{ 'contractDetail.cancelContract' | translate }}</button>
 
   <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 
