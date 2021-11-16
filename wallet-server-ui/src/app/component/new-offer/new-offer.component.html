@@ -1,4 +1,4 @@
-<section class="new-offer" *ngIf="announcement">
+<section class="new-offer" *ngIf="announcement || contractInfo">
   <div class="section-header">
     <h2 translate>newOffer.heading</h2>
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
@@ -8,12 +8,12 @@
 
     <div class="both">
       <div class="field-group">
-        <label translate>newOffer.oracleAnnouncementOrContractInfo</label>
-        <input [value]="announcement.hex" disabled>
+        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
+        <input [value]="hex" disabled>
       </div>
       <div class="field-group">
         <label translate>newOffer.eventId</label>
-        <input [value]="announcement.announcement.event.eventId" disabled>
+        <input [(ngModel)]="event.eventId" disabled>
       </div>
     </div>
 
@@ -32,10 +32,11 @@
     </div>
 
     <div *ngIf="isNumeric()" class="numeric-offer">
-
       <div class="points-group text-center">
         <label translate>newOffer.points</label>
-        <button mat-mini-fab class="mat-fab-sm" (click)="addNewPoint()"><mat-icon>add</mat-icon></button>
+        <button mat-mini-fab class="mat-fab-sm" (click)="addNewPoint()">
+          <mat-icon>add</mat-icon>
+        </button>
         <!-- <button mat-icon-button (click)="addNewPoint()"><mat-icon class="mat-icon-sm">add</mat-icon></button> -->
       </div>
 
@@ -45,27 +46,28 @@
           <label class="payout-label text-center" translate>newOffer.payout</label>
           <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
         </div>
-
-        <!-- TODO : Allow removing points -->
         <div *ngFor="let point of points; let i = index" class="numeric-payout-group">
           <input class="text-right" type="number" [(ngModel)]="point.outcome">
           <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
           <input type="checkbox" [(ngModel)]="point.isEndpoint">
           <button *ngIf="!(i === 0 || i === points.length-1)"
-            mat-mini-fab class="mat-fab-sm"  (click)="onRemovePointClicked(point)"><mat-icon>remove</mat-icon></button>
+            mat-mini-fab class="mat-fab-sm" (click)="onRemovePointClicked(point)">
+            <mat-icon>remove</mat-icon>
+          </button>
         </div>
       </div>
 
       <!-- These are not supported on the backend yet -->
-      <mat-accordion class="rounding-info" hidden>
+      <!--
+      <mat-accordion class="rounding-info">
         <mat-expansion-panel disabled>
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ 'newOffer.roundingInfo' | translate }}
             </mat-panel-title>
-            <!-- <mat-panel-description>
+            <mat-panel-description>
               Description
-            </mat-panel-description> -->
+            </mat-panel-description>
           </mat-expansion-panel-header>
           <div>
             <div class="points-group text-center">
@@ -85,7 +87,7 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-     
+      -->
     </div>
 
     <div class="both">
@@ -101,7 +103,7 @@
       </div>
       <div class="field-group">
         <label translate>newOffer.refundDate</label>
-        <input [value]="announcement.announcement.event.maturity">
+        <input [(ngModel)]="event.maturity">
         <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
       </div>
     </div>

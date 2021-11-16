@@ -33,15 +33,36 @@
           width: 10rem;
         }
         label.payout-label {
-          width: 24rem;
+          width: 10rem;
         }
+      }
+    }
+    .numeric-payout-group {
+      display: flex;
+      flex-direction: row;
+
+      align-items: center;
+
+      // Alignment here is currently ghetto
+      label.outcome-label {
+        display: inline-block;
+        width: 6.5rem;
+      }
+      label.payout-label {
+        display: inline-block;
+        width: 6.5rem;
+      }
+      input[type="number"] {
+        width: 6rem;
+        margin-right: 0.25rem;
+      }
+      input[type="checkbox"] {
+        width: 3rem;
+        vertical-align: middle;
       }
     }
     .spacer {
       height: 1rem;
-    }
-    .payout-curve {
-      margin: 2rem;
     }
   }
 

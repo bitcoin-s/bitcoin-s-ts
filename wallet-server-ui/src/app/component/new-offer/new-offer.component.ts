@@ -2,10 +2,13 @@ import { Component, Input, OnInit } from '@angular/core'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
-import { AnnouncementWithHex } from '~type/wallet-ui-types'
+import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
+import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+
+
+const DEFAULT_FEE_RATE = 1 // sats/vbyte
 
 @Component({
   selector: 'app-new-offer',
@@ -17,24 +20,55 @@ export class NewOfferComponent implements OnInit {
   private _announcement!: AnnouncementWithHex
   @Input() set announcement (announcement: AnnouncementWithHex) {
     this._announcement = announcement
+    this.event = announcement.announcement.event
     this.reset()
   }
   get announcement() { return this._announcement }
 
+  private _contractInfo!: ContractInfoWithHex
+  @Input() set contractInfo (contractInfo: ContractInfoWithHex) {
+    this._contractInfo = contractInfo
+    this.event = contractInfo.contractInfo.oracleInfo.announcement.event
+    this.reset()
+  }
+  get contractInfo() { return this._contractInfo }
+
+  private _event: Event
+  set event(event: Event) {
+    this._event = event
+  }
+  get event() { return this._event }
+
+  get hex() {
+    if (this.announcement) return this.announcement.hex
+    if (this.contractInfo) return this.contractInfo.hex
+    return ''
+  }
+
   get enumEventDescriptor() {
-    return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
+    return <EnumEventDescriptor>this.event.descriptor
   }
 
   get numericEventDescriptor() {
-    return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+    return <NumericEventDescriptor>this.event.descriptor
   }
 
-  getEventDescriptor() {
-    if (this.isEnum())
-      return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
-    else // if (this.isNumeric())
-      return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+  // ContractInfo
+
+  get enumContractDescriptor() {
+    return <EnumContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
   }
+
+  get numericContractDescriptor() {
+    return <NumericContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
+  }
+
+  // getEventDescriptor() {
+  //   if (this.isEnum())
+  //     return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
+  //   else // if (this.isNumeric())
+  //     return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+  // }
 
   private reset() {
     this.outcomeValues = {}
@@ -44,14 +78,22 @@ export class NewOfferComponent implements OnInit {
         this.outcomeValues[label] = null
       }
     } else if (this.isNumeric()) {
-      const ed = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
-      const nounceCount = this.announcement.announcement.event.nonces.length // numDigits
-      const maxValue = Math.pow(ed.base, nounceCount) -1
-      const minValue = (<NumericEventDescriptor>this.announcement.announcement.event.descriptor).isSigned ? -maxValue : 0
-
-      this.points.push(this.getPoint(<number><unknown>minValue, <number><unknown>null, 0, true))
-      this.points.push(this.getPoint(<number><unknown>maxValue, <number><unknown>null, 0, true))
+      if (this.announcement) {
+        const ed = <NumericEventDescriptor>this.numericEventDescriptor // this.announcement.announcement.event.descriptor
+        const nounceCount = this.event.nonces.length // numDigits
+        const maxValue = Math.pow(ed.base, nounceCount) -1
+        const minValue = ed.isSigned ? -maxValue : 0
+  
+        this.points.push(this.getPoint(<number><unknown>minValue, <number><unknown>null, 0, true))
+        this.points.push(this.getPoint(<number><unknown>maxValue, <number><unknown>null, 0, true))
+      } else if (this.contractInfo) {
+        this.points = this.numericContractDescriptor.payoutFunction.points
+      }
     }
+
+    this.yourCollateral = <number><unknown>null
+    this.feeRate = DEFAULT_FEE_RATE
+    this.newOfferResult = ''
   }
 
   // enum
@@ -70,7 +112,7 @@ export class NewOfferComponent implements OnInit {
   }
 
   yourCollateral: number // wallet users funds in contract
-  feeRate: number = 1 // TODO : From estimated fee rate
+  feeRate: number = DEFAULT_FEE_RATE // TODO : From estimated fee rate
 
   newOfferResult: string = ''
 
@@ -80,12 +122,22 @@ export class NewOfferComponent implements OnInit {
   }
 
   isEnum() {
-    const cd = <EnumEventDescriptor><unknown>this.announcement.announcement.event.descriptor
+    let cd: EnumEventDescriptor
+    if (this.announcement) {
+      cd = <EnumEventDescriptor>this.announcement.announcement.event.descriptor
+    } else { // contractInfo
+      cd = <EnumEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
+    }
     return cd.outcomes !== undefined
   }
 
   isNumeric() {
-    const cd = <NumericEventDescriptor><unknown>this.announcement.announcement.event.descriptor
+    let cd: NumericEventDescriptor
+    if (this.announcement) {
+      cd = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+    } else {
+      cd = <NumericEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
+    }
     return cd.base !== undefined
   }
 
@@ -157,7 +209,7 @@ export class NewOfferComponent implements OnInit {
         if (r.result) {
           const contractInfoTLV = <string>r.result
           const collateral = this.yourCollateral
-          const feeRate = 1
+          const feeRate = this.feeRate
           // TODO : Date input
           const now = new Date()
           const secondsSinceEpoch = Math.round(now.getTime() / 1000) // TODO : dateToSecondsSinceEpoch(new Date())
@@ -203,6 +255,14 @@ export class NewOfferComponent implements OnInit {
   inputsValid() {
     let validInputs = true
 
+    // Values must exist and be positive
+    if (!this.yourCollateral || this.yourCollateral <= 0) {
+      validInputs = false
+    }
+    if (!this.feeRate || this.feeRate <= 0) {
+      validInputs = false
+    }
+
     if (this.isEnum()) {
       // Values must exist and be non-negative
       for (const label of Object.keys(this.outcomeValues)) {
@@ -211,14 +271,6 @@ export class NewOfferComponent implements OnInit {
           break
         }
       }
-      // Values must exist and be positive
-      if (!this.yourCollateral || this.yourCollateral <= 0) {
-        validInputs = false
-      }
-      if (!this.feeRate || this.feeRate <= 0) {
-        validInputs = false
-      }
-
       const maxCollateral = this.computeMaxCollateral(this.buildPayoutVals())
       if (this.yourCollateral > maxCollateral) {
         validInputs = false
@@ -231,8 +283,13 @@ export class NewOfferComponent implements OnInit {
         }
         // TODO : Any Endpoint logic to check
       }
+
+      const maxCollateral = this.computeNumericMaxCollateral(this.points)
+      if (this.yourCollateral > maxCollateral) {
+        validInputs = false
+      }
     }
-    
+
     return validInputs
   }
 

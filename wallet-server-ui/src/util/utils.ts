@@ -16,9 +16,9 @@ export function copyToClipboard(s: string) {
 
 export enum BitcoinNetwork {
   // regtest = 'regtest', // NOT VALIDATED AGAINST BACKEND
-  // signet = 'signet',  // NOT VALIDATED AGAINST BACKEND
   test = 'test',
   main = 'main', // NOT VALIDATED AGAINST BACKEND
+  signet = 'signet', // NOT VALIDATED AGAINST BACKEND
 }
 
 // Network Regex Validators
@@ -70,6 +70,22 @@ export function formatShortHex(s: string|null|undefined) {
   }
   return ''
 }
+
+export function mempoolTransactionURL(txIdHex: string, network: BitcoinNetwork) {
+  switch (network) {
+    case BitcoinNetwork.main:
+      return `https://mempool.space/tx/${txIdHex}`
+    case BitcoinNetwork.test:
+      return `https://mempool.space/testnet/tx/${txIdHex}`
+    case BitcoinNetwork.signet:
+      return `https://mempool.space/signet/tx/${txIdHex}`
+    default:
+      console.error('mempoolTransactionURL() unknown BitcoinNetwork', network)
+      return ''
+  }
+}
+
+// DLCState of DLCContract allow operation functions
 
 export function isCancelable(state: DLCState) {
   return [DLCState.offered, DLCState.accepted, DLCState.signed].includes(state)

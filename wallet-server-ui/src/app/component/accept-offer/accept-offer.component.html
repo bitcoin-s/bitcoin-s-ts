@@ -51,18 +51,18 @@
     </div>
 
     <div *ngIf="isNumeric()" class="numeric-offer">
-      <!-- <div class="field-group">
-        <label translate>acceptOffer.yourCollateral</label>
-        <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis">
+      <div class="outcome-group">
+        <div class="numeric-payout-group">
+          <label class="outcome-label text-center" translate>newOffer.outcome</label>
+          <label class="payout-label text-center" translate>newOffer.payout</label>
+          <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
+        </div>
+        <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index" class="numeric-payout-group">
+          <input class="text-right" type="number" [(ngModel)]="point.outcome" disabled>
+          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout" disabled>
+          <input type="checkbox" [(ngModel)]="point.isEndpoint" disabled>
+        </div>
       </div>
-      <div class="field-group">
-        <label translate>acceptOffer.counterpartyCollateral</label>
-        <input [value]="offer.offer.offerCollateralSatoshis">
-      </div> -->
-      <div class="payout-curve">
-        TODO : Payout curve
-      </div>
-      
     </div>
 
     <div class="both">

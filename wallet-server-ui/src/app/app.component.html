@@ -10,23 +10,27 @@
       <div class="horizontal-pane">
         <div class="left-pane">
           <app-build-accept-offer
-          (announcement)="onAnnouncement($event)" 
-          (contractInfo)="onContractInfo($event)"
-          (offer)="onOffer($event)"
-          (acceptOffer)="onAcceptOffer($event)"></app-build-accept-offer>
+            (announcement)="onAnnouncement($event)" 
+            (contractInfo)="onContractInfo($event)"
+            (acceptOffer)="onAcceptOffer($event)">
+          </app-build-accept-offer>
   
           <app-wallet-balance></app-wallet-balance>
   
           <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
         </div>
         <div class="right-pane">
-          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" [announcement]="selectedAnnouncement"></app-new-offer>
+          <!-- Don't like having two instances, but avoids null handling logic -->
+          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
+            [announcement]="selectedAnnouncement"></app-new-offer>
+          <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
+            [contractInfo]="selectedContractInfo"></app-new-offer>
 
           <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"></app-accept-offer>
 
           <!-- (close)="onCloseContractDetail()" -->
-          <app-contract-detail *ngIf="selectedDLC && selectedContractInfo" 
-            [dlc]="selectedDLC" [contractInfo]="selectedContractInfo"
+          <app-contract-detail *ngIf="selectedDLC && selectedDLCContractInfo" 
+            [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
           ></app-contract-detail>
         </div>
       </div>

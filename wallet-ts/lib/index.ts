@@ -496,6 +496,7 @@ export function SweepWallet(address: string, satsPerVByte: number) {
 
   const m = getMessageBody(WalletMessageType.dropaddresslabels, [address])
   return SendServerMessage(m).then(response => {
+    // tx.txIdBE from WalletRoutes.scal ? Should this really be the return type?
     return <ServerResponse<unknown>>response
   })
 }

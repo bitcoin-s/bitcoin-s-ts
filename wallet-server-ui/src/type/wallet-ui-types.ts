@@ -2,6 +2,8 @@ import { Announcement, ContractInfo, Offer } from './wallet-server-types'
 
 // UI Side types
 
+// Make these into <T> with hex field?
+
 export interface AnnouncementWithHex {
   announcement: Announcement
   hex: string // raw hex of Announcement

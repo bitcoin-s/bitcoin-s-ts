@@ -77,6 +77,8 @@
   "newOffer": {
     "heading": "New Offer",
     "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",
+    "oracleAnnouncement": "Oracle Announcement",
+    "contractInfo": "Contract Info",
     "eventId": "Event Id",
     "points": "Points",
     "outcome": "Outcome",
@@ -134,7 +136,8 @@
     "collateral": "Collateral",
     "counterpartyCollateral": "Counterparty Collateral",
     "totalCollateral": "Total Collateral",
-    "lastUpdated": "Last Updated"
+    "lastUpdated": "Last Updated",
+    "noContracts": "No DLC Contracts Started"
   },
 
   "contractDetail": {
@@ -181,7 +184,7 @@
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",
-      "content": "Funds Successfully Sent"
+      "content": "{{ amount }} sats successfully sent to {{ address }}"
     },
     "sendMessageError": {
       "title": "Error sending message to appServer"

@@ -10,7 +10,8 @@
   </div>
   <div class="field-group">
     <label translate>dialog.sendFunds.amount</label>
-    <input type="number" placeholder="{{ 'unit.sats' | translate }}" [(ngModel)]="amount">
+    <input type="number" placeholder="{{ 'unit.sats' | translate }}" [(ngModel)]="amount" [disabled]="sendMax">
+    <mat-button-toggle [(ngModel)]="sendMax" (change)="onMax()">MAX</mat-button-toggle>
   </div>
   <div class="field-group">
     <label translate>dialog.sendFunds.feeRate</label>
@@ -23,6 +24,6 @@
   <button mat-stroked-button mat-dialog-close>{{ 'action.cancel' | translate }}</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
   <button mat-stroked-button [mat-dialog-close]="true" [color]="actionColor"
-    [mat-dialog-close]="{ address, amount, feeRate }"
+    [mat-dialog-close]="{ address, amount, feeRate, sendMax }"
     [disabled]="!inputsValid()">{{ action | translate }}</button>
 </mat-dialog-actions>

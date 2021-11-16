@@ -38,11 +38,14 @@ export class AppComponent implements OnInit {
   // Root styling class to support darkMode
   @HostBinding('class') className = ''
 
+  // Build
   selectedAnnouncement: AnnouncementWithHex|null
+  selectedContractInfo: ContractInfoWithHex|null
+  // Accept
   selectedOffer: OfferWithHex|null
 
   selectedDLC: DLCContract|null
-  selectedContractInfo: ContractInfo|null
+  selectedDLCContractInfo: ContractInfo|null
 
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar, private overlay: OverlayContainer,
     public walletStateService: WalletStateService) {
@@ -119,32 +122,23 @@ export class AppComponent implements OnInit {
     console.debug('onAnnouncement()', announcement)
 
     this.hideOffers()
-
     this.selectedAnnouncement = announcement
-    // this.buildOffer.announcement = announcement
-
     this.hideSelectedDLC()
   }
 
   onContractInfo(contractInfo: ContractInfoWithHex) {
     console.debug('onContractInfo()', contractInfo)
 
-    console.error('onContractInfo() NOT HANDLED YET')
-  }
-
-  onOffer(offer: OfferWithHex) {
-    console.debug('onOffer()', offer)
-
-    console.error('onOffer() NOT HANDLED YET')
+    this.hideOffers()
+    this.selectedContractInfo = contractInfo
+    this.hideSelectedDLC()
   }
 
   onAcceptOffer(offer: OfferWithHex) {
     console.debug('onAcceptOffer()', offer)
 
     this.hideOffers()
-    
     this.selectedOffer = offer
-    // this.acceptOffer.offer = offer
     this.hideSelectedDLC()
   }
 
@@ -152,7 +146,7 @@ export class AppComponent implements OnInit {
     console.debug('onSelectedDLC()')
 
     this.selectedDLC = dlcContractInfo.dlc
-    this.selectedContractInfo = dlcContractInfo.contractInfo
+    this.selectedDLCContractInfo = dlcContractInfo.contractInfo
 
     this.hideOffers()    
   }
@@ -160,11 +154,12 @@ export class AppComponent implements OnInit {
   private hideSelectedDLC() {
     this.contracts.clearSelection()
     this.selectedDLC = null
-    this.selectedContractInfo = null
+    this.selectedDLCContractInfo = null
   }
 
   private hideOffers() {
     this.selectedAnnouncement = null
+    this.selectedContractInfo = null
     this.selectedOffer = null
     
     // this.buildOffer.announcement = <AnnouncementWithHex><unknown>null

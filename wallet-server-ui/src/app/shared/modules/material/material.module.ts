@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common'
 
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatButtonModule } from '@angular/material/button'
+import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatExpansionModule } from '@angular/material/expansion'
 import { MatDatepickerModule } from '@angular/material/datepicker'
@@ -25,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip'
 const materialModules = [
   MatBottomSheetModule,
   MatButtonModule,
+  MatButtonToggleModule,
   MatCheckboxModule,
   MatExpansionModule,
   MatDatepickerModule,

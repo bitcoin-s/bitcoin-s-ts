@@ -235,7 +235,7 @@ if (USE_TOR_PROXY) {
 
 /** Oracle Server Proxy */
 
-// Proxy calls to this server to oracleServer/run instance
+// Proxy calls to this server to appServer/run or bundle/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 app.use(Config.apiRoot, createProxyMiddleware({
   target: walletServerUrl,
@@ -247,7 +247,7 @@ app.use(Config.apiRoot, createProxyMiddleware({
   onError: (err: Error, req: Request, res: Response) => {
     // Handle oracleServer is unavailable
     if (err && (<any>err).code === ECONNREFUSED) {
-      res.writeHead(500, 'oracleServer connection refused').end()
+      res.writeHead(500, 'appServer connection refused').end()
     } else {
       logger.error('onError', err, res.statusCode, res.statusMessage)
     }

@@ -6,7 +6,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 
 import { Offer, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard } from '~util/utils'
+import { copyToClipboard, formatDateTime } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -37,19 +37,20 @@ export class AcceptOfferComponent implements OnInit {
     return <EnumContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
   }
 
-  // isEnum = false
-  // isNumeric = false
-
-  peerAddress = ''
+  get numericContractDescriptor() {
+    return <NumericContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
+  }
 
   refundDate: string
 
-  newOfferResult: string = ''
+  peerAddress: string
+
+  newOfferResult: string
 
   private reset() {
-    // this.isEnum = (<EnumContractDescriptor>this.offer.contractInfo.contractDescriptor).outcomes !== undefined
-    // this.isNumeric = (<NumericContractDescriptor>this.offer.contractInfo.contractDescriptor).numDigits !== undefined
-    this.refundDate = new Date(this.offer.offer.refundLocktime * 1000).toLocaleDateString()
+    this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
+    this.peerAddress = ''
+    this.newOfferResult = ''
   }
 
   constructor(private messageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
@@ -58,21 +59,17 @@ export class AcceptOfferComponent implements OnInit {
   }
 
   isEnum() {
-    const cd = this.contractDescriptor
-    // if (cd instanceof EnumContractDescriptor) return true
-    // return <EnumContractDescriptor>cd !== undefined
-    return (<EnumContractDescriptor>cd).outcomes !== undefined
+    const cd = <EnumContractDescriptor>this.contractDescriptor
+    return cd.outcomes !== undefined
   }
 
   isNumeric() {
-    const cd = this.contractDescriptor
-    // return this.offer.contractInfo.contractDescriptor instanceof NumericContractDescriptor
-    return (<NumericContractDescriptor>cd).numDigits !== undefined
+    const cd = <NumericContractDescriptor>this.contractDescriptor
+    return cd.numDigits !== undefined
   }
 
   onExecute() {
     console.debug('onExecute()')
-
 
     let pa
     if (this.peerAddress) {
@@ -91,7 +88,7 @@ export class AcceptOfferComponent implements OnInit {
           }
         })
     } else {
-      console.warn('not using Tor for acceptdlc is untested')
+      console.error('not using Tor for acceptdlc is untested')
 
       const dialog = this.dialog.open(ErrorDialogComponent, {
         data: {

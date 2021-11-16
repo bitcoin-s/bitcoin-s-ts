@@ -10,8 +10,12 @@
   </div>
 
   <div hidden>
-    <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">New Enum</button>
-    <button mat-stroked-button (click)="onBuildOffer(numericAnnouncementHex)">New Numeric</button>
+    <label>Enum</label>
+    <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">A</button>
+    <button mat-stroked-button (click)="onBuildOffer(enumContractInfoHex)">CI</button>
+    <label>Numeric</label>
+    <button mat-stroked-button (click)="onBuildOffer(numericAnnouncementHex)">A</button>
+    <button mat-stroked-button (click)="onBuildOffer(numericContractInfoHex)">CI</button>
   </div>
 
   <div class="paste-input">

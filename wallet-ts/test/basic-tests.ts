@@ -63,10 +63,10 @@ export async function basicTests() {
     assert.ifError(r.error)
   })
 
-  await WalletServer.LockUnspent(true, []).then(r => {
-    console.debug('LockUnspent()', r)
-    assert.ifError(r.error)
-  })
+  // await WalletServer.LockUnspent(true, []).then(r => {
+  //   console.debug('LockUnspent()', r)
+  //   assert.ifError(r.error)
+  // })
 
   const TEST_LABEL = 'test'
   const TEST_LABEL_2 = 'test label'

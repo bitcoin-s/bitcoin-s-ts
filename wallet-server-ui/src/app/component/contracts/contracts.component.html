@@ -53,6 +53,11 @@
       <tr mat-row *matRowDef="let contract; columns: displayedColumns"
           (click)="onRowClick(contract)"
           [class.focus-row]="selectedDLCContract === contract"></tr>
+      <tr class="mat-row mat-no-data-row" *matNoDataRow>
+        <td class="mat-cell" colspan="9999">
+          {{ 'contracts.noContracts' | translate }}
+        </td>
+      </tr>
     </table>
   </div>
 
