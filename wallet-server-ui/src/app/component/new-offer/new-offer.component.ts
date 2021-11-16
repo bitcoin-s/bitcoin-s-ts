@@ -151,6 +151,15 @@ export class NewOfferComponent implements OnInit {
 
     // TODO : Serialize outcomes
     // TODO : Compute total collateral
+
+    if (this.contractInfo) {
+      console.error('ContractInfo hex not yet accessible, cannot execute')
+      return
+    }
+
+    // this.contractInfo.hex is no good, need announcement hex from this.contractInfo
+    const hex = this.announcement.hex // this.announcement ? this.announcement.hex : this.contractInfo.hex
+
     if (this.isEnum()) {
       const payoutVals = this.buildPayoutVals()
       const maxCollateral = this.computeMaxCollateral(payoutVals)
@@ -158,7 +167,7 @@ export class NewOfferComponent implements OnInit {
       console.debug('payoutVals:', payoutVals, 'maxCollateral:', maxCollateral)
   
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
-        [this.announcement.hex, maxCollateral, payoutVals])).subscribe(r => {
+        [hex, maxCollateral, payoutVals])).subscribe(r => {
           console.debug('createcontractinfo', r)
   
           if (r.result) {
@@ -194,7 +203,7 @@ export class NewOfferComponent implements OnInit {
       
       // console.debug('numericAnnouncementHex:', numericAnnouncementHex, 'totalCollateral:', totalCollateral, 'numericPayoutVals:', numericPayoutVals)
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
-        [this.announcement.hex, maxCollateral, numericPayoutVals])).subscribe(r => {
+        [hex, maxCollateral, numericPayoutVals])).subscribe(r => {
         console.warn('createcontractinfo', r)
 
         // Testing
