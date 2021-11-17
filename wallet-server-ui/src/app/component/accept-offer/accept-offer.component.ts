@@ -6,7 +6,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 
 import { Offer, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime } from '~util/utils'
+import { copyToClipboard, formatDateTime, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -71,16 +71,24 @@ export class AcceptOfferComponent implements OnInit {
   onExecute() {
     console.debug('onExecute()')
 
-    let pa
+    let peerAddress
     if (this.peerAddress) {
-      // validate using Tor
-      // validate IPV6 address
-      pa = this.peerAddress
+      peerAddress = this.peerAddress.trim()
+      const validAddress = validateTorAddress(peerAddress)
+      if (!validAddress) {
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.error',
+            content: 'The tor address entered is not valid, cannot complete the DLC process',
+          }
+        })
+        return
+      }
     }
 
-    if (pa) {
+    if (peerAddress) {
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
-        [this.offer.hex, pa])).subscribe(r => {
+        [this.offer.hex, peerAddress])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
           if (r.result) {
             this.newOfferResult = r.result
@@ -92,7 +100,7 @@ export class AcceptOfferComponent implements OnInit {
 
       const dialog = this.dialog.open(ErrorDialogComponent, {
         data: {
-          title: 'dialog.mempoolError.title',
+          title: 'dialog.error',
           content: 'Accepting DLCs without using Tor is not currently enabled',
         }
       })

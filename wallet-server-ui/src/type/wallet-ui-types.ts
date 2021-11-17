@@ -4,6 +4,7 @@ import { Announcement, ContractInfo, Offer } from './wallet-server-types'
 
 // Make these into <T> with hex field?
 
+// TODO : Remove - All Announcements come with hex field now
 export interface AnnouncementWithHex {
   announcement: Announcement
   hex: string // raw hex of Announcement

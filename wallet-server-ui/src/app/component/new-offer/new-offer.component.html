@@ -8,12 +8,12 @@
 
     <div class="both">
       <div class="field-group">
-        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
-        <input [value]="hex" disabled>
+        <label translate>newOffer.eventId</label>
+        <input class="event-id-input " [(ngModel)]="event.eventId" disabled>
       </div>
       <div class="field-group">
-        <label translate>newOffer.eventId</label>
-        <input [(ngModel)]="event.eventId" disabled>
+        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
+        <input [value]="hex" disabled>
       </div>
     </div>
 
@@ -97,14 +97,17 @@
         <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
       </div>
       <div class="field-group">
-        <label translate>newOffer.feeRate</label>
-        <input type="nummber" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
-        <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
-      </div>
-      <div class="field-group">
         <label translate>newOffer.refundDate</label>
         <input [(ngModel)]="event.maturity">
         <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="field-group">
+        <label translate>newOffer.feeRate</label>
+        <input type="nummber" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
+        <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
       </div>
     </div>
 

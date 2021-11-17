@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
-import { MatSort } from '@angular/material/sort'
+import { MatSort, MatSortable } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { BehaviorSubject } from 'rxjs'
 
@@ -52,9 +52,12 @@ export class ContractsComponent implements OnInit, AfterViewInit {
   constructor(public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
+    
   }
 
   ngAfterViewInit() {
+    // Set default sort
+    this.sort.sort(<MatSortable>{ id: 'lastUpdated', start: 'desc'})
     this.dataSource.sort = this.sort;
 
     this.walletStateService.dlcs.subscribe(_ => {

@@ -136,12 +136,13 @@ export interface DLCContract {
 
   // Claimed
   closingTxId?: string // After executing oracle signatures / Claimed state
+  counterPartyPayout?: number // sats
   myPayout?: number // sats
   oracleSigs?: string[]
   oracles?: string[]
   outcomes?: string|number[][] // for enum, "outcome", for numeric, [[1, 1, 0, 0, 1, 0, 0]]
-  pnl: number // sats
-  rateOfReturn: number // 0.5744851029794041
+  pnl?: number // sats
+  rateOfReturn?: number // 0.5744851029794041
 }
 
 export enum DLCState {

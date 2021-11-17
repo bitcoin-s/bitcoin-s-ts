@@ -11,6 +11,11 @@
         width: 10rem;
       }
     }
+
+    .event-id-input {
+      width: 20rem !important;
+    }
+
     .outcome-group {
       margin: 1rem;
 
@@ -93,6 +98,10 @@
         }
       }
     }
+  }
+
+  .spacer {
+    height: 1.5rem;
   }
 
   .numeric-offer {

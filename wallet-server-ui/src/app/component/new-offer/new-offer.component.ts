@@ -74,8 +74,15 @@ export class NewOfferComponent implements OnInit {
     this.outcomeValues = {}
     this.points = []
     if (this.isEnum()) {
-      for (const label of this.enumEventDescriptor.outcomes) {
-        this.outcomeValues[label] = null
+      // Announcement reveals outcome values only, ContractInfo comes with values
+      if (this.announcement) {
+        for (const label of this.enumEventDescriptor.outcomes) {
+          this.outcomeValues[label] = null
+        }
+      } else if (this.contractInfo) {
+        for (const label of Object.keys(this.enumContractDescriptor.outcomes)) {
+          this.outcomeValues[label] = this.enumContractDescriptor.outcomes[label]
+        }
       }
     } else if (this.isNumeric()) {
       if (this.announcement) {
@@ -144,21 +151,8 @@ export class NewOfferComponent implements OnInit {
   onExecute() {
     console.debug('onExecute()')
 
-    // Data : https://test.oracle.suredbits.com/announcement/63fa7885e3c6052e97956961698cde2b286dc1621544bbd8fcfbd78b2b1dbdcf
-    // const enumAnnouncementHex = 'fdd824a8823cf7a3e449260f46d3d9a5bb0ddf1a367e0d3c9ce8858e16cd783392560bd1c9671314d54b6cb258bc6d85ab8fe238a27feb5a27d75323524a54d712a80b70a305b66d790ea4afe15b3fb61cae4d77f050e57b41f10f530c48a23dddbe335afdd822440001c3b0ecdaeaa3bbbd53386dec623b3a884b0ca2e2777cc62f0b6f891d9226114d614ebae0fdd80611000205546f64617908546f6d6f72726f7708546f6d6f72726f77'
-    // const totalCollateral = 200003
-    // const payoutVals = { outcomes: { 'Today': 200003, 'Tomorrow': 0 } }
-
-    // TODO : Serialize outcomes
-    // TODO : Compute total collateral
-
-    if (this.contractInfo) {
-      console.error('ContractInfo hex not yet accessible, cannot execute')
-      return
-    }
-
     // this.contractInfo.hex is no good, need announcement hex from this.contractInfo
-    const hex = this.announcement.hex // this.announcement ? this.announcement.hex : this.contractInfo.hex
+    const hex = this.announcement ? this.announcement.hex : this.contractInfo.contractInfo.oracleInfo.announcement.hex
 
     if (this.isEnum()) {
       const payoutVals = this.buildPayoutVals()

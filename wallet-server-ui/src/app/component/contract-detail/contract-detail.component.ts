@@ -1,13 +1,16 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
-import { formatDateTime, formatISODate, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+
 
 @Component({
   selector: 'app-contract-detail',
@@ -21,6 +24,7 @@ export class ContractDetailComponent implements OnInit {
   public AlertType = AlertType
   public DLCState = DLCState
 
+  public formatPercent = formatPercent
   public isCancelable = isCancelable
   public isRefundable = isRefundable
   public isExecutable = isExecutable
@@ -63,7 +67,7 @@ export class ContractDetailComponent implements OnInit {
   }
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
-    private messsageService: MessageService, private walletStateService: WalletStateService) { }
+    private messsageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     
@@ -77,6 +81,12 @@ export class ContractDetailComponent implements OnInit {
   isNumeric() {
     const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
+  }
+
+  onCopyContractId() {
+    console.debug('onCopyContractId()', this.dlc.contractId)
+    if (this.dlc.contractId)
+      copyToClipboard(this.dlc.contractId)
   }
 
   onCancelContract() {
@@ -107,11 +117,16 @@ export class ContractDetailComponent implements OnInit {
 
       if (!isValidHex) {
         console.error('oracleSignature is not valid hex')
-        // TODO : Dialog and 
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.error',
+            content: 'The oracleSignatures entered are not valid hex',
+          }
+        })
         return
       }
 
-      console.debug('oracleSignature:', os, 'isValidHex:', isValidHex)
+      console.debug('oracleSignature:', os)
 
       // ExecuteDLCDialog.scala:22
       // OracleAttestmentTLV.fromHex(str.trim)
@@ -122,14 +137,11 @@ export class ContractDetailComponent implements OnInit {
           const attestment: Attestment = r.result
           console.debug('attestment:', attestment)
 
-          const sigs = [os] // attestment.signatures // 
-          // const contractInfoHex = this.dlc.contractInfo
+          const sigs = [os] // attestment.signatures
           const contractId = this.dlc.contractId
           const noBroadcast = false // Could allow changing
 
-          // error: "requirement failed: Length specified was BigSizeUInt(169) but not enough bytes in ByteVector(62 bytes, 0x2a821927337b40a30e152052482f894ff8ecfe3f5a1aa4aa3b6720bf7a2db1cb5a846c809f79d9e8d43164b992fe18dfdecc7092ce917d48b015fef7b759)"
-
-          // Assuming attestment.signatures issue...
+          console.warn('os:', os, 'attestment.signatures:', attestment.signatures)
 
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlc, 
             [contractId, sigs, noBroadcast])).subscribe(r => {
@@ -155,8 +167,7 @@ export class ContractDetailComponent implements OnInit {
     this.walletStateService.refreshDLCState(this.dlc).subscribe(r => {
       console.debug('dlc:', r)
       if (r.result) {
-        const dlc = <DLCContract>r.result
-        this.dlc = dlc
+        this.dlc = <DLCContract>r.result
       }
     })
   }
@@ -230,15 +241,26 @@ export class ContractDetailComponent implements OnInit {
     }
   }
 
-  viewOnOracleExplorer() {
-    console.debug('viewOnOracleExplorer()')
+  onViewOnOracleExplorer() {
+    console.debug('onViewOnOracleExplorer()')
 
+    // DLCTableViewScala:161
     // val dlc = selectionModel.value.getSelectedItem
     // val primaryOracle =
     //   dlc.oracleInfo.singleOracleInfos.head.announcement
     // val url =
     //   GUIUtil.getAnnouncementUrl(GlobalData.network, primaryOracle)
     // GUIUtil.openUrl(url)
+    
+    //   def getAnnouncementUrl(
+    //     network: BitcoinNetwork,
+    //     primaryOracle: OracleAnnouncementTLV): String = {
+    //   val baseUrl =
+    //     ExplorerEnv.fromBitcoinNetwork(network).siteUrl
+    //   s"${baseUrl}announcement/${primaryOracle.sha256.hex}"
+    // }
+
+    // dlc.oracleInfo.singleOracleInfos[0] does not exist, sha256.hex does not exist on what is there
   }
 
   getOutcomeValue(outcomeValue: number) {

@@ -151,7 +151,10 @@
     "feeRate": "Fee Rate",
     "contractTimeout": "Contract Timeout",
     "outcomePayouts": "Outcome Payouts",
-    "totalCollateral": "Total Collateral",
+    "collateral": "Collateral",
+    "totalCollateral": "Total",
+    "localCollateral": "Local",
+    "remoteCollateral": "Remote",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
     "oracleSignatures": "Oracle Signatures",
@@ -160,7 +163,14 @@
     "cancelContractSuccess": "Successfully canceled contract",
     "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
     "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
-    "refundContract": "Refund Contract"
+    "refundContract": "Refund Contract",
+    "viewOnOracleExplorer": "View on Oracle Explorer",
+
+    "contractOutcome": "Contract Outcome",
+    "myPayout": "My Payout",
+    "counterpartyPayout": "Counterparty Payout",
+    "pnl": "Profit or Loss",
+    "rateOfReturn": "Rate of Return"
   },
 
   "events": {
@@ -172,6 +182,7 @@
   },
 
   "dialog": {
+    "error": "Error",
     "newAddress": {
       "title": "New Address",
       "content": "{{address}}"

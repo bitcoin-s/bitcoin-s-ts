@@ -2,63 +2,114 @@
   <div class="section-header">
     <h2 translate>contractDetail.heading</h2>
     <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
 
   <div *ngIf="dlc && contractInfo">
     <div class="field-group">
       <label translate>contractDetail.eventId</label>
-      <input [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.dlcId</label>
-      <input [value]="dlc.dlcId" disabled>
-    </div>
-    
-    <div class="spacer"></div>
-    
-    <div class="field-group">
-      <label translate>contractDetail.initiator</label>
-      <input [value]="dlc.isInitiator" disabled>
+      <input class="event-id-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
     </div>
     <div class="field-group">
       <label translate>contractDetail.state</label>
       <input [value]="dlc.state" disabled>
     </div>
     <div class="field-group">
-      <label translate>contractDetail.contractId</label>
-      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
+      <label translate>contractDetail.initiator</label>
+      <input [value]="dlc.isInitiator" disabled>
     </div>
+    
+    <div class="spacer"></div>
+
     <div class="field-group">
-      <label translate>contractDetail.contractInfo</label>
-      <input [value]="dlc.contractInfo" disabled>
+      <label translate>contractDetail.contractTimeout</label>
+      <input [(ngModel)]="contractTimeout" disabled>
     </div>
     <div class="field-group">
       <label translate>contractDetail.feeRate</label>
       <input [value]="dlc.feeRate" disabled>
       <span translate>unit.satsPerVbyte</span>
     </div>
-    <div class="field-group">
-      <label translate>contractDetail.contractTimeout</label>
-      <input [(ngModel)]="contractTimeout" disabled>
-    </div>
+
+    <div class="spacer"></div>
+
+    <label class="group-label" translate>contractDetail.collateral</label>
     <div class="field-group">
       <label translate>contractDetail.totalCollateral</label>
       <input [value]="dlc.totalCollateral" disabled>
       <span translate>unit.sats</span>
     </div>
+    <div class="field-group">
+      <label translate>contractDetail.localCollateral</label>
+      <input [value]="dlc.localCollateral" disabled>
+      <span translate>unit.sats</span>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.remoteCollateral</label>
+      <input [value]="dlc.remoteCollateral" disabled>
+      <span translate>unit.sats</span>
+    </div>
 
     <div class="spacer"></div>
 
+    <div *ngIf="dlc.myPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined" class="payout-group">
+      <label class="group-label" translate>contractDetail.contractOutcome</label>
+      <div class="field-group">
+        <label translate>contractDetail.myPayout</label>
+        <input [value]="dlc.myPayout" disabled>
+        <span translate>unit.sats</span>
+      </div>
+      <div class="field-group">
+        <label translate>contractDetail.counterpartyPayout</label>
+        <input [value]="dlc.counterPartyPayout" disabled>
+        <span translate>unit.sats</span>
+      </div>
+      <div class="field-group">
+        <label translate>contractDetail.pnl</label>
+        <input [value]="dlc.pnl" disabled>
+        <span translate>unit.sats</span>
+      </div>
+      <div class="field-group">
+        <label translate>contractDetail.rateOfReturn</label>
+        <input [value]="formatPercent(dlc.rateOfReturn)" disabled>
+        <span translate>unit.percent</span>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+
     <div *ngIf="isEnum()" class="enum-outcomes">
-      <label translate>{{ 'contractDetail.outcomePayouts' | translate }}</label>
+      <label class="group-label" translate>contractDetail.outcomePayouts</label>
       <div *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)" class="enum-group">
         <label>{{ l }}</label>
         <input [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
         <span translate>unit.sats</span>
       </div>
+
+      <div class="spacer"></div>
     </div>
 
+    <!-- TODO : Enum Outcome -->
+
     <!-- TODO : Payout curve -->
+
+    <div class="field-group">
+      <label translate>contractDetail.dlcId</label>
+      <input [value]="dlc.dlcId" disabled>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.contractId</label>
+      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
+      <button mat-icon-button class="copy-button" [disabled]= "!dlc.contractId"
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="onCopyContractId()"><mat-icon>content_copy</mat-icon></button>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.contractInfo</label>
+      <input [value]="dlc.contractInfo" disabled>
+    </div>
 
     <div class="spacer"></div>
 
@@ -85,6 +136,8 @@
     </div>
   </div>
 
+  <div class="spacer"></div>
+
   <div class="button-group">
     <button mat-stroked-button color="warn" (click)="onCancelContract()" [disabled]="!isCancelable(dlc.state)">
       {{ 'contractDetail.cancelContract' | translate }}
@@ -92,8 +145,8 @@
     <button mat-stroked-button color="warn" (click)="onRefund()" [disabled]="!isRefundable(dlc.state)">
       {{ 'contractDetail.refundContract' | translate }}
     </button>
-    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
-      <mat-icon>refresh</mat-icon>
+    <button mat-stroked-button (click)="onViewOnOracleExplorer()" disabled>
+      {{ 'contractDetail.viewOnOracleExplorer' | translate }}
     </button>
   </div>
 

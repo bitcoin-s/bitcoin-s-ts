@@ -85,6 +85,12 @@ export function mempoolTransactionURL(txIdHex: string, network: BitcoinNetwork) 
   }
 }
 
+const TOR_V3_ADDRESS = /^[a-z2-7]{56}.onion\:\d{4,5}$/;
+
+export function validateTorAddress(address: string) {
+  return TOR_V3_ADDRESS.test(address)
+}
+
 // DLCState of DLCContract allow operation functions
 
 export function isCancelable(state: DLCState) {

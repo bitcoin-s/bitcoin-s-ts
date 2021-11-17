@@ -192,12 +192,13 @@ export interface DLCContract {
 
   // Claimed
   closingTxId?: string // After executing oracle signatures / Claimed state
+  counterPartyPayout?: number // sats
   myPayout?: number // sats
   oracleSigs?: string[]
   oracles?: string[]
   outcomes?: string|number[][] // for enum, "outcome", for numeric, [[1, 1, 0, 0, 1, 0, 0]]
-  pnl: number // sats
-  rateOfReturn: number // 0.5744851029794041
+  pnl?: number // sats
+  rateOfReturn?: number // 0.5744851029794041
 }
 
 export enum DLCState {
@@ -239,6 +240,7 @@ export interface Announcement {
   announcementSignature: string
   publicKey: string
   event: Event // Announcement
+  hex: string // hex encoding of Announcement
 }
 
 export interface Event {
@@ -301,11 +303,16 @@ export interface FundingInput {
   redeemScript: string|null // null
 }
 
-export interface EnumContractDescriptor { // enum
+export interface ContractDescriptor {
+  // Is this present on all encodings?
+  hex: string // hex encoding of ContractDescriptor
+}
+
+export interface EnumContractDescriptor extends ContractDescriptor { // enum
   outcomes: { [key: string]: number } // outcomes: { YES: 1, NO: 0 }
 }
 
-export interface NumericContractDescriptor {
+export interface NumericContractDescriptor extends ContractDescriptor {
   numDigits: number
   payoutFunction: PayoutFunction
   roundingIntervals: { intervals: unknown[] }

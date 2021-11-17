@@ -79,14 +79,19 @@ export interface FundingInput {
   redeemScript: string|null // null
 }
 
-export interface EnumContractDescriptor { // enum
+export interface ContractDescriptor {
+  // Is this present on all encodings?
+  hex: string // hex encoding of ContractDescriptor
+}
+
+export interface EnumContractDescriptor extends ContractDescriptor { // enum
   outcomes: { [key: string]: number } // outcomes: { YES: 1, NO: 0 }
 }
 
-export interface NumericContractDescriptor {
+export interface NumericContractDescriptor extends ContractDescriptor {
   numDigits: number
   payoutFunction: PayoutFunction
-  roundingIntervals: { intervals: unknown[] }
+  roundingIntervals: { intervals: unknown[] } // TODO : Type me
 }
 
 export interface PayoutFunction {
