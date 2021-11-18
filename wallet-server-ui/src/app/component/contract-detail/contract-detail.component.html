@@ -1,10 +1,14 @@
 <section class="contract-detail">
   <div class="section-header">
     <h2 translate>contractDetail.heading</h2>
-    <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
-    <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
-      <mat-icon>refresh</mat-icon>
-    </button>
+    <div class="section-header-button-group">
+      <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="dlc && contractInfo">

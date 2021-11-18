@@ -43,6 +43,7 @@ export function formatISODate(isoDate: string) {
   return new Date(isoDate).toLocaleDateString()
 }
 
+// units epochSeconds?
 export function formatDateTime(dateTime: number) {
   return new Date(dateTime * 1000).toLocaleDateString()
 }

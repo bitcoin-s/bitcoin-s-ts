@@ -73,6 +73,10 @@ export class ContractDetailComponent implements OnInit {
     
   }
 
+  onClose() {
+    this.close.next()
+  }
+
   isEnum() {
     const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
     return cd.outcomes !== undefined

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
@@ -6,7 +6,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 
 import { Offer, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -41,13 +41,23 @@ export class AcceptOfferComponent implements OnInit {
     return <NumericContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
   }
 
+  get announcement() {
+    return this.offer.offer.contractInfo.oracleInfo.announcement
+  }
+
+  get event() {
+    return this.offer.offer.contractInfo.oracleInfo.announcement.event
+  }
+
+  @Output() close: EventEmitter<void> = new EventEmitter()
+
+  maturityDate: string
   refundDate: string
-
   peerAddress: string
-
   newOfferResult: string
 
   private reset() {
+    this.maturityDate = formatISODate(this.event.maturity)
     this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
     this.peerAddress = ''
     this.newOfferResult = ''
@@ -56,6 +66,10 @@ export class AcceptOfferComponent implements OnInit {
   constructor(private messageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
+  }
+
+  onClose() {
+    this.close.next()
   }
 
   isEnum() {

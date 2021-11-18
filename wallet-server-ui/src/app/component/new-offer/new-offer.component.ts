@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, dateToSecondsSinceEpoch } from '~util/utils'
+import { copyToClipboard, dateToSecondsSinceEpoch, formatDateTime } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -63,12 +63,16 @@ export class NewOfferComponent implements OnInit {
     return <NumericContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
   }
 
+  @Output() close: EventEmitter<void> = new EventEmitter()
+
   // getEventDescriptor() {
   //   if (this.isEnum())
   //     return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
   //   else // if (this.isNumeric())
   //     return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
   // }
+
+  maturityDate: string
 
   // enum
   outcomeValues: { [label: string]: number|null } = {}
@@ -83,6 +87,7 @@ export class NewOfferComponent implements OnInit {
   newOfferResult: string = ''
 
   private reset() {
+    this.maturityDate = formatDateTime(dateToSecondsSinceEpoch(new Date(this.event.maturity)))
     this.outcomeValues = {}
     this.points = []
 
@@ -116,6 +121,7 @@ export class NewOfferComponent implements OnInit {
     // May want to should maturity date on form
     this.refundDate = new Date(this.event.maturity).toISOString()
     this.feeRate = DEFAULT_FEE_RATE
+
     this.newOfferResult = ''
   }
 
@@ -130,6 +136,10 @@ export class NewOfferComponent implements OnInit {
   constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
+  }
+
+  onClose() {
+    this.close.next()
   }
 
   isEnum() {

@@ -1,7 +1,9 @@
 <section class="accept-offer" *ngIf="offer">
   <div class="section-header">
     <h2 translate>acceptOffer.heading</h2>
-    <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+    <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
   <div>
@@ -9,6 +11,10 @@
       <div class="field-group">
         <label translate>acceptOffer.eventId</label>
         <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+      </div>
+      <div class="field-group">
+        <label translate>acceptOffer.maturityDate</label>
+        <input [value]="maturityDate" disabled>
       </div>
 
       <div class="spacer"></div>
@@ -86,7 +92,8 @@
 
       <div class="field-group">
         <label translate>acceptOffer.peerAddress</label>
-        <input type="text" placeholder="{{ 'acceptOffer.optional' | translate }}" [(ngModel)]="peerAddress">
+        <!-- 'acceptOffer.optional' -->
+        <input type="text" placeholder="{{ 'acceptOffer.required' | translate }}" [(ngModel)]="peerAddress">
         <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
       </div>
     </div>

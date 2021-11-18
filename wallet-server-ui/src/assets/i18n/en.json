@@ -36,7 +36,8 @@
     "saveToFile": "Save to File",
     "copyToClipboard": "Copy to Clipboard",
     "reload": "Reload",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "close": "Close"
   },
 
   "unit": {
@@ -112,7 +113,9 @@
     "dlcOffer": "DLC Offer",
     "peerAddress": "Peer Address",
     "optional": "optional",
+    "required": "required",
     "eventId": "Event Id",
+    "maturityDate": "Maturity Date",
     "oraclePublicKey": "Oracle Public Key",
     "yourCollateral": "Your Collateral",
     "counterpartyCollateral": "Counterparty Collateral",

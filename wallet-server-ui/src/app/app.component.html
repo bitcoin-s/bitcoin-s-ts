@@ -22,11 +22,14 @@
         <div class="right-pane">
           <!-- Don't like having two instances, but avoids null handling logic -->
           <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
-            [announcement]="selectedAnnouncement"></app-new-offer>
+            [announcement]="selectedAnnouncement"
+            (close)="onNewOfferClose()"></app-new-offer>
           <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
-            [contractInfo]="selectedContractInfo"></app-new-offer>
+            [contractInfo]="selectedContractInfo"
+            (close)="onNewOfferClose()"></app-new-offer>
 
-          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"></app-accept-offer>
+          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
+            (close)="onAcceptOfferClose()"></app-accept-offer>
 
           <!-- (close)="onCloseContractDetail()" -->
           <app-contract-detail *ngIf="selectedDLC && selectedDLCContractInfo" 

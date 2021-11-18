@@ -1,7 +1,9 @@
 <section class="new-offer" *ngIf="announcement || contractInfo">
   <div class="section-header">
     <h2 translate>newOffer.heading</h2>
-    <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+    <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
   <div>
@@ -18,7 +20,7 @@
       <div class="field-group">
         <label translate>newOffer.maturityDate</label>
         <!-- TODO : Locale Format -->
-        <input [(ngModel)]="event.maturity" disabled>
+        <input [value]="maturityDate" disabled>
       </div>
     </div>
 
