@@ -80,6 +80,7 @@
     "oracleAnnouncement": "Oracle Announcement",
     "contractInfo": "Contract Info",
     "eventId": "Event Id",
+    "maturityDate": "Maturity Date",
     "points": "Points",
     "outcome": "Outcome",
     "payout": "Payout",

@@ -10,15 +10,9 @@
         <label translate>acceptOffer.eventId</label>
         <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
       </div>
-      <div class="field-group">
-        <label translate>acceptOffer.dlcOffer</label>
-        <input class="wide-input" [value]="offer.hex" disabled>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.oraclePublicKey</label>
-        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.publicKey" disabled>
-      </div>
+
       <div class="spacer"></div>
+
       <div class="field-group">
         <label translate>acceptOffer.yourCollateral</label>
         <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis" disabled>
@@ -59,7 +53,8 @@
         </div>
         <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index" class="numeric-payout-group">
           <input class="text-right" type="number" [(ngModel)]="point.outcome" disabled>
-          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout" disabled>
+          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
+            [(ngModel)]="contractInfo.totalCollateral - point.payout" disabled>
           <input type="checkbox" [(ngModel)]="point.isEndpoint" disabled>
         </div>
       </div>
@@ -67,15 +62,28 @@
 
     <div class="both">
       <div class="field-group">
+        <label translate>acceptOffer.refundDate</label>
+        <input [value]="refundDate" disabled>
+      </div>
+      <div class="field-group">
         <label translate>acceptOffer.feeRate</label>
         <input [value]="offer.offer.feeRatePerVb" disabled>
         <span translate>unit.satsPerVbyte</span>
       </div>
-      <div class="field-group">
-        <label translate>acceptOffer.refundDate</label>
-        <input [value]="refundDate" disabled>
-      </div>
+
       <div class="spacer"></div>
+
+      <div class="field-group">
+        <label translate>acceptOffer.dlcOffer</label>
+        <input class="wide-input" [value]="offer.hex" disabled>
+      </div>
+      <div class="field-group">
+        <label translate>acceptOffer.oraclePublicKey</label>
+        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.publicKey" disabled>
+      </div>
+
+      <div class="spacer"></div>
+
       <div class="field-group">
         <label translate>acceptOffer.peerAddress</label>
         <input type="text" placeholder="{{ 'acceptOffer.optional' | translate }}" [(ngModel)]="peerAddress">
@@ -85,7 +93,7 @@
 
     <div class="footer">
       <div class="button-group">
-        <button mat-stroked-button color="primary" (click)="onExecute()">{{ 'action.execute' | translate }}</button>
+        <button mat-stroked-button color="primary" (click)="onExecute()" [disabled]="!peerAddress">{{ 'action.execute' | translate }}</button>
       </div>
       <fieldset class="result-group" [disabled]="!newOfferResult">
         <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>

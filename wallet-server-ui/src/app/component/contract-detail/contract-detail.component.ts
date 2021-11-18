@@ -182,7 +182,7 @@ export class ContractDetailComponent implements OnInit {
     console.debug('onRefund()')
 
     const contractId = this.dlc.contractId
-    const noBroadcast = false;
+    const noBroadcast = false
 
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast])).subscribe(r => {
       console.debug('executedlcrefund', r)

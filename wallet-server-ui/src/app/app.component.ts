@@ -171,5 +171,11 @@ export class AppComponent implements OnInit {
     copyToClipboard(this.walletStateService.torDLCHostAddress)
   }
 
+  onContractDetailClose() {
+    console.debug('onContractDetailClose()')
+
+    this.hideSelectedDLC()
+  }
+
   
 }

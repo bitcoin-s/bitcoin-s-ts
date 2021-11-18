@@ -15,6 +15,11 @@
         <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
         <input [value]="hex" disabled>
       </div>
+      <div class="field-group">
+        <label translate>newOffer.maturityDate</label>
+        <!-- TODO : Locale Format -->
+        <input [(ngModel)]="event.maturity" disabled>
+      </div>
     </div>
 
     <div *ngIf="isEnum()" class="enum-offer">
@@ -26,7 +31,7 @@
         </div>
         <div *ngFor="let label of enumEventDescriptor.outcomes" class="field-group enum-payout-group">
           <label class="outcome-label text-right">{{ label }}</label>
-          <input type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="outcomeValues[label]">
+          <input type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="outcomeValues[label]" min="0">
         </div>
       </div>
     </div>
@@ -48,7 +53,7 @@
         </div>
         <div *ngFor="let point of points; let i = index" class="numeric-payout-group">
           <input class="text-right" type="number" [(ngModel)]="point.outcome">
-          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
+          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout" min="0">
           <input type="checkbox" [(ngModel)]="point.isEndpoint">
           <button *ngIf="!(i === 0 || i === points.length-1)"
             mat-mini-fab class="mat-fab-sm" (click)="onRemovePointClicked(point)">
@@ -98,7 +103,8 @@
       </div>
       <div class="field-group">
         <label translate>newOffer.refundDate</label>
-        <input [(ngModel)]="event.maturity">
+        <!-- TODO : Should not be set to anything, come from datepicker -->
+        <input [(ngModel)]="refundDate">
         <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
       </div>
 

@@ -4,7 +4,7 @@ import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard } from '~util/utils'
+import { copyToClipboard, dateToSecondsSinceEpoch } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -70,9 +70,22 @@ export class NewOfferComponent implements OnInit {
   //     return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
   // }
 
+  // enum
+  outcomeValues: { [label: string]: number|null } = {}
+  // numeric
+  points: PayoutFunctionPoint[] = []
+  roundingIntervals: any[] = []
+
+  yourCollateral: number // wallet users funds in contract
+  refundDate: string // Date
+  feeRate: number = DEFAULT_FEE_RATE // TODO : From estimated fee rate
+
+  newOfferResult: string = ''
+
   private reset() {
     this.outcomeValues = {}
     this.points = []
+
     if (this.isEnum()) {
       // Announcement reveals outcome values only, ContractInfo comes with values
       if (this.announcement) {
@@ -99,29 +112,20 @@ export class NewOfferComponent implements OnInit {
     }
 
     this.yourCollateral = <number><unknown>null
+    // This should not get auto-set, should be required for user to enter.
+    // May want to should maturity date on form
+    this.refundDate = new Date(this.event.maturity).toISOString()
     this.feeRate = DEFAULT_FEE_RATE
     this.newOfferResult = ''
   }
-
-  // enum
-  outcomeValues: { [label: string]: number|null } = {}
-  // numeric
-  points: PayoutFunctionPoint[] = []
 
   getPoint(outcome: number, payout: number, extraPrecision: number, isEndpoint: boolean) {
     return { outcome, payout, extraPrecision, isEndpoint }
   }
 
-  roundingIntervals: any[] = []
-
   getRoundingInterval(outcome: number, roundingInterval: number) {
     return { outcome, roundingInterval }
   }
-
-  yourCollateral: number // wallet users funds in contract
-  feeRate: number = DEFAULT_FEE_RATE // TODO : From estimated fee rate
-
-  newOfferResult: string = ''
 
   constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
 
@@ -174,11 +178,9 @@ export class NewOfferComponent implements OnInit {
 
             const collateral = this.yourCollateral
             const feeRate = this.feeRate
-            const now = new Date()
-            const secondsSinceEpoch = Math.round(now.getTime() / 1000) // TODO : Use common-ts fn
-            // TODO : What should these values be?
-            const locktime = secondsSinceEpoch
-            const refundLT = secondsSinceEpoch + 1000000
+            // TODO : Date input
+            const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
+            const refundLT = dateToSecondsSinceEpoch(new Date(this.refundDate))
             this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
               [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
               console.warn('CreateDLCOffer()', r)
@@ -214,10 +216,8 @@ export class NewOfferComponent implements OnInit {
           const collateral = this.yourCollateral
           const feeRate = this.feeRate
           // TODO : Date input
-          const now = new Date()
-          const secondsSinceEpoch = Math.round(now.getTime() / 1000) // TODO : dateToSecondsSinceEpoch(new Date())
-          const locktime = secondsSinceEpoch
-          const refundLT = secondsSinceEpoch + 1000000
+          const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
+          const refundLT = dateToSecondsSinceEpoch(new Date(this.refundDate))
           this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
             [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
             console.warn('CreateDLCOffer()', r)

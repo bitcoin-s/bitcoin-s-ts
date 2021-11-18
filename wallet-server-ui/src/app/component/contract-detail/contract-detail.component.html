@@ -37,11 +37,6 @@
 
     <label class="group-label" translate>contractDetail.collateral</label>
     <div class="field-group">
-      <label translate>contractDetail.totalCollateral</label>
-      <input [value]="dlc.totalCollateral" disabled>
-      <span translate>unit.sats</span>
-    </div>
-    <div class="field-group">
       <label translate>contractDetail.localCollateral</label>
       <input [value]="dlc.localCollateral" disabled>
       <span translate>unit.sats</span>
@@ -49,6 +44,11 @@
     <div class="field-group">
       <label translate>contractDetail.remoteCollateral</label>
       <input [value]="dlc.remoteCollateral" disabled>
+      <span translate>unit.sats</span>
+    </div>
+    <div class="field-group">
+      <label translate>contractDetail.totalCollateral</label>
+      <input [value]="dlc.totalCollateral" disabled>
       <span translate>unit.sats</span>
     </div>
 

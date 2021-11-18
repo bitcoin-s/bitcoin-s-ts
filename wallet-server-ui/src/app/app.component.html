@@ -31,6 +31,7 @@
           <!-- (close)="onCloseContractDetail()" -->
           <app-contract-detail *ngIf="selectedDLC && selectedDLCContractInfo" 
             [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
+            (close)="onContractDetailClose()"
           ></app-contract-detail>
         </div>
       </div>

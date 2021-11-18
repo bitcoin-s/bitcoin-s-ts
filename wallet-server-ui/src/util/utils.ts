@@ -47,6 +47,13 @@ export function formatDateTime(dateTime: number) {
   return new Date(dateTime * 1000).toLocaleDateString()
 }
 
+// From common-ts
+export function dateToSecondsSinceEpoch(date: Date) {
+  const secondsSinceEpoch = Math.round(date.getTime() / 1000)
+  return secondsSinceEpoch
+}
+
+
 export function formatPercent(num: number, fractionalDigits = 2): string {
   if (num !== undefined) {
     return (num * 100).toFixed(fractionalDigits)

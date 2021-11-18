@@ -21,6 +21,7 @@ export interface Announcement {
   announcementSignature: string
   publicKey: string
   event: Event // Announcement
+  hex: string // hex encoding of Announcement
 }
 
 export interface Event {
