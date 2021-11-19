@@ -1,19 +1,31 @@
-<section class="new-offer">
+<section class="new-offer" *ngIf="announcement || contractInfo">
   <div class="section-header">
     <h2 translate>newOffer.heading</h2>
-    <!-- <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button> -->
+    <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
-  <div *ngIf="announcement">
+  <div>
 
     <div class="both">
       <div class="field-group">
-        <label translate>newOffer.oracleAnnouncementOrContractInfo</label>
-        <input [value]="announcement.hex" disabled>
+        <label translate>newOffer.eventId</label>
+        <input class="event-id-input " [(ngModel)]="event.eventId" disabled>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="field-group">
+        <label translate>newOffer.maturityDate</label>
+        <!-- TODO : Locale Format -->
+        <input [value]="maturityDate" disabled>
       </div>
       <div class="field-group">
-        <label translate>newOffer.eventId</label>
-        <input [value]="announcement.announcement.event.eventId" disabled>
+        <label translate>newOffer.refundDate</label>
+        <!-- TODO : Should not be set to anything, come from datepicker -->
+        <input [(ngModel)]="refundDate">
+        <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
       </div>
     </div>
 
@@ -24,18 +36,20 @@
           <label class="payout-label text-center" translate>newOffer.payout</label>
           <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
         </div>
-        <div *ngFor="let label of enumEventDescriptor.outcomes" class="field-group">
+        <div *ngFor="let label of enumEventDescriptor.outcomes" class="field-group enum-payout-group">
           <label class="outcome-label text-right">{{ label }}</label>
-          <input type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="outcomeValues[label]">
+          <input type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="outcomeValues[label]" min="0">
         </div>
       </div>
     </div>
 
     <div *ngIf="isNumeric()" class="numeric-offer">
-      
       <div class="points-group text-center">
         <label translate>newOffer.points</label>
-        <button mat-icon-button (click)="addNewPoint()">+</button>
+        <button mat-mini-fab class="mat-fab-sm" (click)="addNewPoint()">
+          <mat-icon>add</mat-icon>
+        </button>
+        <!-- <button mat-icon-button (click)="addNewPoint()"><mat-icon class="mat-icon-sm">add</mat-icon></button> -->
       </div>
 
       <div class="outcome-group">
@@ -44,32 +58,70 @@
           <label class="payout-label text-center" translate>newOffer.payout</label>
           <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
         </div>
-
-        <!-- TODO : Allow removing points -->
-        <div *ngFor="let point of points" class="numeric-payout-group">
+        <div *ngFor="let point of points; let i = index" class="numeric-payout-group">
           <input class="text-right" type="number" [(ngModel)]="point.outcome">
-          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout">
+          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="point.payout" min="0">
           <input type="checkbox" [(ngModel)]="point.isEndpoint">
+          <button *ngIf="!(i === 0 || i === points.length-1)"
+            mat-mini-fab class="mat-fab-sm" (click)="onRemovePointClicked(point)">
+            <mat-icon>remove</mat-icon>
+          </button>
         </div>
       </div>
 
+      <!-- These are not supported on the backend yet -->
+      <!--
+      <mat-accordion class="rounding-info">
+        <mat-expansion-panel disabled>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'newOffer.roundingInfo' | translate }}
+            </mat-panel-title>
+            <mat-panel-description>
+              Description
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div>
+            <div class="points-group text-center">
+              <label translate>newOffer.roundingIntervals</label>
+              <button mat-mini-fab class="mat-fab-sm" (click)="addNewRoundingInterval()">+</button>
+            </div>
+
+            <div class="rounding-interval-group">
+              <label class="outcome-label text-center" translate>newOffer.outcome</label>
+              <label class="rounding-level-label text-center" translate>newOffer.roundingLevel</label>
+            </div>
+
+            <div *ngFor="let ri of roundingIntervals; let i = index" class="rounding-interval-group">
+              <input class="text-right" type="number" [(ngModel)]="ri.outcome">
+              <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="ri.roundingLevel">
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      -->
     </div>
 
     <div class="both">
       <div class="field-group">
         <label translate>newOffer.yourCollateral</label>
         <input type="nummber" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="yourCollateral">
-        <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral"></app-more-info>
+        <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
       </div>
+
+      <div class="spacer"></div>
+
+      <div class="field-group">
+        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
+        <input [value]="hex" disabled>
+      </div>
+
+      <div class="spacer"></div>
+
       <div class="field-group">
         <label translate>newOffer.feeRate</label>
         <input type="nummber" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
         <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
-      </div>
-      <div class="field-group">
-        <label translate>newOffer.refundDate</label>
-        <input [value]="announcement.announcement.event.maturity">
-        <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
       </div>
     </div>
 
@@ -78,7 +130,9 @@
         <button mat-stroked-button color="primary" (click)="onExecute()"
           [disabled]="!inputsValid()">{{ 'action.execute' | translate }}</button>
       </div>
+      
       <fieldset class="result-group" [disabled]="!newOfferResult">
+        <label translate>result</label>
         <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>
         <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
           (click)="onCopyResult()"><mat-icon>content_copy</mat-icon></button>

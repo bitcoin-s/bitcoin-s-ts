@@ -7,8 +7,46 @@
     }
     input {
       display: inline-block;
-      width: 24rem;
+      width: 12rem;
     }
+    span {
+      margin-left: 0.25rem;
+    }
+  }
+
+  .event-id-input {
+    width: 20rem !important;
+  }
+
+  .enum-outcomes {
+    .enum-group {
+      margin-left: 1rem;
+
+      label {
+        display: inline-block;
+        width: 12rem;
+      }
+      input {
+        display: inline-block;
+        width: 6rem;
+      }
+      span {
+        margin-left: 0.25rem;
+      }
+    }
+  }
+
+  .payout-group {
+    
+  }
+
+  .group-label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .spacer {
+    height: 1.5rem;
   }
 
   .contract-detail-grid {

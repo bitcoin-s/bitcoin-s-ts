@@ -25,6 +25,14 @@ export class MoreInfoComponent {
     this._tooltip = this.translate.instant(value)
   }
 
+  // _params: any = null
+  // @Input()
+  // set params(value: any) {
+  //   this._params = this.translate.instant(value)
+  //   // Best way to handle?
+  //   this._tooltip = this.translate.instant(this._tooltip, this._tooltip)
+  // }
+
   constructor(private translate: TranslateService) { }
 
 }

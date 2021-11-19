@@ -182,9 +182,23 @@ export interface DLCContract {
   lastUpdated: string // "2021-11-02T18:31:14.789Z"
   localCollateral: number // 100000
   remoteCollateral: number // 100001
-  state: string // DLCState //  "Offered"
+  state: DLCState // string //  "Offered"
   tempContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
   totalCollateral: number // 200001
+
+  // not present initially
+  contractId?: string
+  fundingTxId?: string
+
+  // Claimed
+  closingTxId?: string // After executing oracle signatures / Claimed state
+  counterPartyPayout?: number // sats
+  myPayout?: number // sats
+  oracleSigs?: string[]
+  oracles?: string[]
+  outcomes?: string|number[][] // for enum, "outcome", for numeric, [[1, 1, 0, 0, 1, 0, 0]]
+  pnl?: number // sats
+  rateOfReturn?: number // 0.5744851029794041
 }
 
 export enum DLCState {
@@ -226,12 +240,13 @@ export interface Announcement {
   announcementSignature: string
   publicKey: string
   event: Event // Announcement
+  hex: string // hex encoding of Announcement
 }
 
 export interface Event {
   eventId: string
   descriptor: EnumEventDescriptor|NumericEventDescriptor
-  nonces: string[]
+  nonces: string[] // nounces.length === descriptor.numDigits
   maturity: string // ISODate like '2030-01-01T00:00:00Z'
 }
 
@@ -288,11 +303,16 @@ export interface FundingInput {
   redeemScript: string|null // null
 }
 
-export interface EnumContractDescriptor { // enum
+export interface ContractDescriptor {
+  // Is this present on all encodings?
+  hex: string // hex encoding of ContractDescriptor
+}
+
+export interface EnumContractDescriptor extends ContractDescriptor { // enum
   outcomes: { [key: string]: number } // outcomes: { YES: 1, NO: 0 }
 }
 
-export interface NumericContractDescriptor {
+export interface NumericContractDescriptor extends ContractDescriptor {
   numDigits: number
   payoutFunction: PayoutFunction
   roundingIntervals: { intervals: unknown[] }

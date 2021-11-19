@@ -1,10 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { Offer, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -19,8 +21,8 @@ export class AcceptOfferComponent implements OnInit {
 
   private _offer: OfferWithHex
   @Input() set offer (offer: OfferWithHex) {
-    this.reset()
     this._offer = offer
+    this.reset()
   }
   get offer() { return this._offer }
 
@@ -35,70 +37,98 @@ export class AcceptOfferComponent implements OnInit {
     return <EnumContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
   }
 
-  // isEnum = false
-  // isNumeric = false
-
-  peerAddress = ''
-
-  newOfferResult: string = ''
-
-  private reset() {
-    // this.isEnum = (<EnumContractDescriptor>this.offer.contractInfo.contractDescriptor).outcomes !== undefined
-    // this.isNumeric = (<NumericContractDescriptor>this.offer.contractInfo.contractDescriptor).numDigits !== undefined
+  get numericContractDescriptor() {
+    return <NumericContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
   }
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
+  get announcement() {
+    return this.offer.offer.contractInfo.oracleInfo.announcement
+  }
+
+  get event() {
+    return this.offer.offer.contractInfo.oracleInfo.announcement.event
+  }
+
+  @Output() close: EventEmitter<void> = new EventEmitter()
+
+  maturityDate: string
+  refundDate: string
+  peerAddress: string
+  newOfferResult: string
+
+  private reset() {
+    this.maturityDate = formatISODate(this.event.maturity)
+    this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
+    this.peerAddress = ''
+    this.newOfferResult = ''
+  }
+
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
+  onClose() {
+    this.close.next()
+  }
+
   isEnum() {
-    const cd = this.contractDescriptor
-    // if (cd instanceof EnumContractDescriptor) return true
-    // return <EnumContractDescriptor>cd !== undefined
-    return (<EnumContractDescriptor>cd).outcomes !== undefined
+    const cd = <EnumContractDescriptor>this.contractDescriptor
+    return cd.outcomes !== undefined
   }
 
   isNumeric() {
-    const cd = this.contractDescriptor
-    // return this.offer.contractInfo.contractDescriptor instanceof NumericContractDescriptor
-    return (<NumericContractDescriptor>cd).numDigits !== undefined
+    const cd = <NumericContractDescriptor>this.contractDescriptor
+    return cd.numDigits !== undefined
   }
 
   onExecute() {
     console.debug('onExecute()')
 
-
-    let pa
+    let peerAddress
     if (this.peerAddress) {
-      // validate using Tor
-      // validate IPV6 address
-      pa = this.peerAddress
+      peerAddress = this.peerAddress.trim()
+      const validAddress = validateTorAddress(peerAddress)
+      if (!validAddress) {
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.error',
+            content: 'The tor address entered is not valid, cannot complete the DLC process',
+          }
+        })
+        return
+      }
     }
 
-    if (this.isEnum()) {
-      if (pa) {
-        // DLCOfferTLV, torAddress
-        this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
-          [this.offer.hex, pa])).subscribe(r => {
-            console.warn('acceptdlcoffer', r)
-            if (r.result) {
-              this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
-            }
-          })
-      } else {
-        this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
-          [this.offer.hex])).subscribe(r => {
-            console.warn('acceptdlcoffer', r)
-            if (r.result) {
-              this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
-            }
-          })
-      }
-    } else if (this.isNumeric()) {
+    if (peerAddress) {
+      this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
+        [this.offer.hex, peerAddress])).subscribe(r => {
+          console.warn('acceptdlcoffer', r)
+          if (r.result) {
+            this.newOfferResult = r.result
+            this.walletStateService.refreshDLCStates()
+          }
+        })
+    } else {
+      console.error('not using Tor for acceptdlc is untested')
 
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.error',
+          content: 'Accepting DLCs without using Tor is not currently enabled',
+        }
+      })
+
+      return
+
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
+        [this.offer.hex])).subscribe(r => {
+          console.warn('acceptdlcoffer', r)
+          if (r.result) {
+            this.newOfferResult = r.result
+            this.walletStateService.refreshDLCStates()
+          }
+        })
     }
   }
 

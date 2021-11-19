@@ -13,6 +13,7 @@ export class SendFundsDialogComponent implements OnInit {
 
   address = ''
   amount: number
+  sendMax: boolean = false
   feeRate: number
 
   action = 'action.ok'
@@ -44,6 +45,12 @@ export class SendFundsDialogComponent implements OnInit {
     }
 
     return validInputs
+  }
+
+  onMax() {
+    console.debug('onMax()', this.sendMax)
+    this.sendMax = !this.sendMax
+    if (this.sendMax) this.amount = <number><unknown>null
   }
 
 }

@@ -61,6 +61,11 @@ fieldset {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+
+  .section-header-button-group {
+
+  }
 }
 
 .close-button {
@@ -84,5 +89,49 @@ fieldset {
 
   .pane {
 
+  }
+  .left-pane {
+    margin-right: 1rem;
+  }
+  .right-pane {
+    margin-left: 1rem;
+  }
+}
+
+.mat-icon-button {
+  .mat-icon-sm {
+    line-height: 16px;
+  }
+}
+.mat-icon.mat-icon-sm {
+// .mat-mini-fab.mat-icon-sm
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
+  // line-height: 16px;
+}
+
+.mat-mini-fab.mat-fab-sm {
+  // line-height: 24px;
+  // height: 24px;
+  // width: 24px;
+  transform: scale(0.7);
+}
+
+.result-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // Cancel default fieldset styling
+  margin: 2rem 0 0 0;
+  padding: 0;
+
+  label {
+    margin-right: 1rem;
+  }
+  .result-textarea {
+    flex: 1;
+
+    // max-width: 20rem;
   }
 }

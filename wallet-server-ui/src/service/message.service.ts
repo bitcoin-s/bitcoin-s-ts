@@ -27,8 +27,8 @@ export class MessageService {
   constructor(private http: HttpClient, private translate: TranslateService, private dialog: MatDialog) { }
 
   /** Serializes a OracleServerMessage for sending to oracleServer */
-  sendMessage(m: WalletServerMessage) {
-    let obs = this.sendServerMessage(m).pipe(tap(result => {
+  sendMessage(m: WalletServerMessage, errorHandling = true) {
+    let obs = this.sendServerMessage(m, errorHandling).pipe(tap(result => {
       this.lastMessageType = m.method
       if (result.result) {
         if (typeof result.result === 'object') {
@@ -46,20 +46,26 @@ export class MessageService {
     return obs
   }
 
-  private sendServerMessage(message: WalletServerMessage) {
+  private sendServerMessage(message: WalletServerMessage, errorHandling: boolean) {
     const url = environment.walletServerApi
-    return this.http.post<ServerResponse<any>>(url, message).pipe(catchError((error: any, caught: Observable<unknown>) => {
-      console.error('sendMessage error', error)
-      let message = error?.error?.error
-      const dialog = this.dialog.open(ErrorDialogComponent, {
-        data: {
-          title: 'dialog.sendMessageError.title',
-          content: message,
-        }
-      })
-      throw(Error('sendMessage error' + error))
-      return new Observable<any>() // required for type checking...
-    }))
+    let obs = this.http.post<ServerResponse<any>>(url, message)
+
+    if (errorHandling) {
+      return obs.pipe(catchError((error: any, caught: Observable<unknown>) => {
+        console.error('sendMessage error', error)
+        let message = error?.error?.error
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.sendMessageError.title',
+            content: message,
+          }
+        })
+        throw(Error('sendMessage error' + error))
+        return new Observable<any>() // required for type checking...
+      }))
+    } else {
+      return obs
+    }
   }
 
   // Proxy server calls

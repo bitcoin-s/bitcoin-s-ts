@@ -9,10 +9,12 @@ import { TranslateService } from '@ngx-translate/core'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { BuildConfig } from '~type/proxy-server-types'
-import { Announcement, ContractInfo, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
+import { Announcement, ContractInfo, DLCContract, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
+import { copyToClipboard } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component'
+import { ContractsComponent, DLCContractInfo } from './component/contracts/contracts.component'
 import { NewOfferComponent } from './component/new-offer/new-offer.component'
 
 
@@ -31,10 +33,24 @@ export class AppComponent implements OnInit {
 
   @ViewChild('buildOffer') buildOffer: NewOfferComponent
   @ViewChild('acceptOffer') acceptOffer: AcceptOfferComponent
+  @ViewChild('contracts') contracts: ContractsComponent
 
   // Root styling class to support darkMode
   @HostBinding('class') className = ''
 
+  // Build
+  selectedAnnouncement: AnnouncementWithHex|null
+  selectedContractInfo: ContractInfoWithHex|null
+  // Accept
+  selectedOffer: OfferWithHex|null
+
+  selectedDLC: DLCContract|null
+  selectedDLCContractInfo: ContractInfo|null
+
+  configurationVisible = false
+  offerVisible = false
+  contractDetailsVisible = false
+  
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar, private overlay: OverlayContainer,
     public walletStateService: WalletStateService) {
     
@@ -58,11 +74,19 @@ export class AppComponent implements OnInit {
 
   showConfiguration() {
     console.debug('showConfiguration()')
-    this.rightDrawer.toggle()
+
+    this.configurationVisible = true
+    this.offerVisible = false
+    this.contractDetailsVisible = false
+
+    this.rightDrawer.open()
   }
 
   onConfigurationClose() {
     console.debug('onConfigurationClose()')
+
+    this.configurationVisible = false
+
     this.rightDrawer.close()
   }
 
@@ -109,25 +133,88 @@ export class AppComponent implements OnInit {
   onAnnouncement(announcement: AnnouncementWithHex) {
     console.debug('onAnnouncement()', announcement)
 
-    this.buildOffer.announcement = announcement;
+    this.hideOffers()
+    this.selectedAnnouncement = announcement
+    this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
   onContractInfo(contractInfo: ContractInfoWithHex) {
     console.debug('onContractInfo()', contractInfo)
 
-    console.warn('onContractInfo() NOT HANDLED YET')
-  }
-
-  onOffer(offer: OfferWithHex) {
-    console.debug('onOffer()', offer)
-
-    console.warn('onOffer() NOT HANDLED YET')
+    this.hideOffers()
+    this.selectedContractInfo = contractInfo
+    this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
   onAcceptOffer(offer: OfferWithHex) {
     console.debug('onAcceptOffer()', offer)
-    
-    this.acceptOffer.offer = offer
+
+    this.hideOffers()
+    this.selectedOffer = offer
+    this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
+  onSelectedDLC(dlcContractInfo: DLCContractInfo) {
+    console.debug('onSelectedDLC()')
+
+    this.selectedDLC = dlcContractInfo.dlc
+    this.selectedDLCContractInfo = dlcContractInfo.contractInfo
+
+    this.hideOffers()
+    this.contractDetailsVisible = true
+    this.rightDrawer.open()
+  }
+
+  private hideSelectedDLC() {
+    this.contractDetailsVisible = false
+
+    this.contracts.clearSelection()
+    this.selectedDLC = null
+    this.selectedDLCContractInfo = null
+  }
+
+  private hideOffers() {
+    this.offerVisible = false
+
+    this.selectedAnnouncement = null
+    this.selectedContractInfo = null
+    this.selectedOffer = null
+    
+    // this.buildOffer.announcement = <AnnouncementWithHex><unknown>null
+    // this.acceptOffer.offer = <OfferWithHex><unknown>null
+  }
+
+  onCopyTorDLCHostAddress() {
+    console.debug('onCopyTorDLCHostAddress()', this.walletStateService.torDLCHostAddress)
+    copyToClipboard(this.walletStateService.torDLCHostAddress)
+  }
+
+  onNewOfferClose() {
+    console.debug('onNewOfferClose()')
+
+    this.rightDrawer.close()
+    this.hideOffers()
+  }
+
+  onAcceptOfferClose() {
+    console.debug('onAcceptOfferClose()')
+
+    this.rightDrawer.close()
+    this.hideOffers()
+  }
+
+  onContractDetailClose() {
+    console.debug('onContractDetailClose()')
+
+    this.rightDrawer.close()
+    this.hideSelectedDLC()
+  }
+
+  
 }

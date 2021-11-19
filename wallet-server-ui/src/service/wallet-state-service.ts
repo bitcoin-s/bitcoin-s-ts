@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
+import { first, tap } from "rxjs/operators"
 import { BuildConfig } from "~type/proxy-server-types"
 
-import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
+import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
 import { getMessageBody } from "~util/wallet-server-util"
 
 import { MessageService } from "./message.service"
@@ -19,6 +20,8 @@ export class WalletStateService {
   fundedAddresses: FundedAddress[]
   dlcWalletAccounting: DLCWalletAccounting
   feeEstimate: string
+  torDLCHostAddress: string
+
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
@@ -56,13 +59,47 @@ export class WalletStateService {
     })
     this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).subscribe(r => {
       if (r.result) {
+        // TODO : to number
         this.feeEstimate = r.result
+      }
+    })
+    this.messageService.sendMessage(getMessageBody(DLCMessageType.getdlchostaddress)).subscribe(r => {
+      if (r.result) {
+        this.torDLCHostAddress = r.result
+        console.warn('torDLCHostAddress:', this.torDLCHostAddress)
       }
     })
     this.refreshDLCStates()
   }
 
+  refreshDLCState(dlc: DLCContract) {
+    console.debug('refreshDLCState()', dlc)
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlc.dlcId])).pipe(tap(r => {
+      console.debug('getdlc', r)
+
+      if (r.result) {
+        const dlc = <DLCContract>r.result
+        // Inject in dlcs
+        const i = this.dlcs.value.findIndex(d => d.dlcId === dlc.dlcId)
+        // console.debug('i:', i)
+        if (i !== -1) {
+          const removed = this.dlcs.value.splice(i, 1, dlc)
+          // console.debug('removed:', removed)
+          this.dlcs.next(this.dlcs.value)
+        } else {
+          console.warn('refreshDLCState()', 'did not find dlcId', dlc.dlcId, 'in existing dlcs')
+          // The DLC didn't exist yet, this shouldn't happen...
+          this.dlcs.value.push(dlc)
+          this.dlcs.next(this.dlcs.value)
+        }
+        return dlc
+      }
+      return null
+    }))
+  }
+
   refreshDLCStates() {
+    console.debug('refreshDLCStates()')
     this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
       if (r.result) {
         this.dlcs.next(r.result)
@@ -79,5 +116,6 @@ export class WalletStateService {
       }
     })
   }
+
 
 }

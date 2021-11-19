@@ -1,6 +1,8 @@
 {
   "title": "Bitcoin-S Wallet",
 
+  "result": "Result",
+
   "splashScreen": {
     "heading": "Welcome to Bitcoin-S Wallet",
     "betaSoftware": "This application is beta software.",
@@ -32,7 +34,10 @@
     "no": "No",
     "execute": "Execute",
     "saveToFile": "Save to File",
-    "copyToClipboard": "Copy to Clipboard"
+    "copyToClipboard": "Copy to Clipboard",
+    "reload": "Reload",
+    "refresh": "Refresh",
+    "close": "Close"
   },
 
   "unit": {
@@ -43,7 +48,8 @@
     "sat": "sat",
     "sats": "sats",
     "percent": "%",
-    "satsPerVbyte": "sats/vbyte"
+    "satsPerVbyte": "sats/vbyte",
+    "ellipsis": "..."
   },
 
   "configuration": {
@@ -72,7 +78,10 @@
   "newOffer": {
     "heading": "New Offer",
     "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",
+    "oracleAnnouncement": "Oracle Announcement",
+    "contractInfo": "Contract Info",
     "eventId": "Event Id",
+    "maturityDate": "Maturity Date",
     "points": "Points",
     "outcome": "Outcome",
     "payout": "Payout",
@@ -81,14 +90,14 @@
     "roundingIntervals": "Rounding Intervals",
     "roundingLevel": "Rounding Level",
     "yourCollateral": "Your Collateral",
-    "feeRate": "Fee Rate (sats/vbyte)",
+    "feeRate": "Fee Rate",
     "refundDate": "Refund Date"
   },
 
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the given outcome",
-    "yourCollateral": "Your collateral at stake",
-    "feeRate": "Fee Rate built into contract",
+    "yourCollateral": "Your collateral at stake (sats)",
+    "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "Refund Date"
   },
 
@@ -104,10 +113,13 @@
     "dlcOffer": "DLC Offer",
     "peerAddress": "Peer Address",
     "optional": "optional",
+    "required": "required",
     "eventId": "Event Id",
+    "maturityDate": "Maturity Date",
     "oraclePublicKey": "Oracle Public Key",
     "yourCollateral": "Your Collateral",
     "counterpartyCollateral": "Counterparty Collateral",
+    "totalCollateral": "Total Collateral",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
     "feeRate": "Fee Rate",
@@ -115,7 +127,7 @@
   },
 
   "acceptOfferDescription": {
-    "peerAddress": "Tor address of the person you'd like to complete the contract with"
+    "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online."
   },
 
   "contracts": {
@@ -128,7 +140,8 @@
     "collateral": "Collateral",
     "counterpartyCollateral": "Counterparty Collateral",
     "totalCollateral": "Total Collateral",
-    "lastUpdated": "Last Updated"
+    "lastUpdated": "Last Updated",
+    "noContracts": "No DLC Contracts Started"
   },
 
   "contractDetail": {
@@ -140,14 +153,29 @@
     "contractId": "Contract Id",
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
+    "contractMaturity": "Contract Maturity",
     "contractTimeout": "Contract Timeout",
-    "totalCollateral": "Total Collateral",
+    "outcomePayouts": "Outcome Payouts",
+    "collateral": "Collateral",
+    "totalCollateral": "Total",
+    "localCollateral": "Your's",
+    "remoteCollateral": "Counterparty's",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
     "oracleSignatures": "Oracle Signatures",
     "rebroadcast": "Rebroadcast",
     "cancelContract": "Cancel Contract",
-    "cancelContractSuccess": "Successfully canceled contract"
+    "cancelContractSuccess": "Successfully canceled contract",
+    "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
+    "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
+    "refundContract": "Refund Contract",
+    "viewOnOracleExplorer": "View on Oracle Explorer",
+
+    "contractOutcome": "Contract Outcome",
+    "myPayout": "My Payout",
+    "counterpartyPayout": "Counterparty Payout",
+    "pnl": "Profit or Loss",
+    "rateOfReturn": "Rate of Return"
   },
 
   "events": {
@@ -159,6 +187,7 @@
   },
 
   "dialog": {
+    "error": "Error",
     "newAddress": {
       "title": "New Address",
       "content": "{{address}}"
@@ -171,12 +200,13 @@
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",
-      "content": "Funds Successfully Sent"
+      "content": "{{ amount }} sats successfully sent to {{ address }}"
     },
     "sendMessageError": {
       "title": "Error sending message to appServer"
     }
-  }
+  },
 
+  "torDLCHostAddress": "Tor DLC Host Address"
 
 }

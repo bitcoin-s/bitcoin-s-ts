@@ -1,16 +1,34 @@
 .content-root {
   height: 100%;
 
-  padding: 1rem;
+  .main-content {
+    padding: 1rem;
+  }
 
   .mat-sidenav-container {
     height: 100%;
+  }
+
+  .drawer-container {
+    padding: 0 1rem;
+    min-width: 300px;
+  }
+
+  .tor-dlc-host-address {
+    label {
+      margin-right: 1rem;
+    }
+    input {
+      display: inline-block;
+      width: 28rem;
+    }
   }
 
   .state-info {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 
     .network {
 
@@ -26,6 +44,8 @@
   .footer {
     display: flex;
     justify-content: center;
+    align-items: center;
+
     font-size: smaller;
     color: #8c959f;
     
