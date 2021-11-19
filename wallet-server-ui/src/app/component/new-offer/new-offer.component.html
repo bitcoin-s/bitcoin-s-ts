@@ -13,14 +13,19 @@
         <label translate>newOffer.eventId</label>
         <input class="event-id-input " [(ngModel)]="event.eventId" disabled>
       </div>
-      <div class="field-group">
-        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
-        <input [value]="hex" disabled>
-      </div>
+
+      <div class="spacer"></div>
+
       <div class="field-group">
         <label translate>newOffer.maturityDate</label>
         <!-- TODO : Locale Format -->
         <input [value]="maturityDate" disabled>
+      </div>
+      <div class="field-group">
+        <label translate>newOffer.refundDate</label>
+        <!-- TODO : Should not be set to anything, come from datepicker -->
+        <input [(ngModel)]="refundDate">
+        <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
       </div>
     </div>
 
@@ -103,11 +108,12 @@
         <input type="nummber" placeholder="{{ 'unit.satoshis' | translate }}" [(ngModel)]="yourCollateral">
         <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
       </div>
+
+      <div class="spacer"></div>
+
       <div class="field-group">
-        <label translate>newOffer.refundDate</label>
-        <!-- TODO : Should not be set to anything, come from datepicker -->
-        <input [(ngModel)]="refundDate">
-        <app-more-info matSuffix tooltip="newOfferDescription.refundDate"></app-more-info>
+        <label>{{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}</label>
+        <input [value]="hex" disabled>
       </div>
 
       <div class="spacer"></div>
@@ -124,6 +130,7 @@
         <button mat-stroked-button color="primary" (click)="onExecute()"
           [disabled]="!inputsValid()">{{ 'action.execute' | translate }}</button>
       </div>
+      
       <fieldset class="result-group" [disabled]="!newOfferResult">
         <label translate>result</label>
         <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>

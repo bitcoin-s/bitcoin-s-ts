@@ -8,7 +8,7 @@
       }
       input {
         display: inline-block;
-        width: 10rem;
+        width: 12rem;
       }
     }
 
@@ -87,8 +87,6 @@
         flex-direction: row;
   
         align-items: center;
-  
-  
       }
       .points-group {
         width: 18rem;
@@ -100,38 +98,27 @@
     }
   }
 
-  .spacer {
-    height: 1.5rem;
+  .enum-offer {
+    margin: 1.5rem;
   }
 
   .numeric-offer {
     display: flex;
     flex-direction: column;
-
-    width: 36rem;
-
     align-items: center;
+
+    margin: 1.5rem;
+  }
+
+  .spacer {
+    height: 1.5rem;
   }
 
   .footer {
-    // display: flex;
-    // flex-direction: row;
-    // width: 36rem;
+    margin-top: 1rem;
+    
     .button-group {
       text-align: right;
-    }
-    .result-group {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-
-      label {
-        margin-right: 1rem;
-      }
-      .result-textarea {
-        // width: 80%;
-        flex: 1;
-      }
     }
   }
   

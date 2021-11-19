@@ -47,6 +47,10 @@ export class AppComponent implements OnInit {
   selectedDLC: DLCContract|null
   selectedDLCContractInfo: ContractInfo|null
 
+  configurationVisible = false
+  offerVisible = false
+  contractDetailsVisible = false
+  
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar, private overlay: OverlayContainer,
     public walletStateService: WalletStateService) {
     
@@ -70,11 +74,19 @@ export class AppComponent implements OnInit {
 
   showConfiguration() {
     console.debug('showConfiguration()')
-    this.rightDrawer.toggle()
+
+    this.configurationVisible = true
+    this.offerVisible = false
+    this.contractDetailsVisible = false
+
+    this.rightDrawer.open()
   }
 
   onConfigurationClose() {
     console.debug('onConfigurationClose()')
+
+    this.configurationVisible = false
+
     this.rightDrawer.close()
   }
 
@@ -124,6 +136,8 @@ export class AppComponent implements OnInit {
     this.hideOffers()
     this.selectedAnnouncement = announcement
     this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
   onContractInfo(contractInfo: ContractInfoWithHex) {
@@ -132,6 +146,8 @@ export class AppComponent implements OnInit {
     this.hideOffers()
     this.selectedContractInfo = contractInfo
     this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
   onAcceptOffer(offer: OfferWithHex) {
@@ -140,6 +156,8 @@ export class AppComponent implements OnInit {
     this.hideOffers()
     this.selectedOffer = offer
     this.hideSelectedDLC()
+    this.offerVisible = true
+    this.rightDrawer.open()
   }
 
   onSelectedDLC(dlcContractInfo: DLCContractInfo) {
@@ -148,16 +166,22 @@ export class AppComponent implements OnInit {
     this.selectedDLC = dlcContractInfo.dlc
     this.selectedDLCContractInfo = dlcContractInfo.contractInfo
 
-    this.hideOffers()    
+    this.hideOffers()
+    this.contractDetailsVisible = true
+    this.rightDrawer.open()
   }
 
   private hideSelectedDLC() {
+    this.contractDetailsVisible = false
+
     this.contracts.clearSelection()
     this.selectedDLC = null
     this.selectedDLCContractInfo = null
   }
 
   private hideOffers() {
+    this.offerVisible = false
+
     this.selectedAnnouncement = null
     this.selectedContractInfo = null
     this.selectedOffer = null
@@ -174,18 +198,21 @@ export class AppComponent implements OnInit {
   onNewOfferClose() {
     console.debug('onNewOfferClose()')
 
+    this.rightDrawer.close()
     this.hideOffers()
   }
 
   onAcceptOfferClose() {
     console.debug('onAcceptOfferClose()')
 
+    this.rightDrawer.close()
     this.hideOffers()
   }
 
   onContractDetailClose() {
     console.debug('onContractDetailClose()')
 
+    this.rightDrawer.close()
     this.hideSelectedDLC()
   }
 

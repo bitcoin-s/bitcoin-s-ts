@@ -127,7 +127,7 @@
   },
 
   "acceptOfferDescription": {
-    "peerAddress": "Tor address of the person you'd like to complete the contract with.\nPutting an address in here will attempt to complete the remaining contract steps online."
+    "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online."
   },
 
   "contracts": {
@@ -153,12 +153,13 @@
     "contractId": "Contract Id",
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
+    "contractMaturity": "Contract Maturity",
     "contractTimeout": "Contract Timeout",
     "outcomePayouts": "Outcome Payouts",
     "collateral": "Collateral",
     "totalCollateral": "Total",
-    "localCollateral": "Local",
-    "remoteCollateral": "Remote",
+    "localCollateral": "Your's",
+    "remoteCollateral": "Counterparty's",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
     "oracleSignatures": "Oracle Signatures",

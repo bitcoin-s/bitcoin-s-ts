@@ -53,11 +53,13 @@ export class ContractDetailComponent implements OnInit {
 
   // showDeleteSuccess = false
 
-  oracleSignature: string = ''
-  contractTimeout: string = ''
+  oracleSignature: string
+  contractMaturity: string
+  contractTimeout: string
 
   private reset() {
     if (this.dlc) {
+      this.contractMaturity = formatDateTime(this.dlc.contractMaturity)
       this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
       this.oracleSignature = this.dlc.oracleSigs?.toString() || ''
     } else {

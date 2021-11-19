@@ -12,27 +12,16 @@
         <label translate>acceptOffer.eventId</label>
         <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
       </div>
+
+      <div class="spacer"></div>
+      
       <div class="field-group">
         <label translate>acceptOffer.maturityDate</label>
         <input [value]="maturityDate" disabled>
       </div>
-
-      <div class="spacer"></div>
-
       <div class="field-group">
-        <label translate>acceptOffer.yourCollateral</label>
-        <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis" disabled>
-        <span translate>unit.sats</span>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.counterpartyCollateral</label>
-        <input [value]="offer.offer.offerCollateralSatoshis" disabled>
-        <span translate>unit.sats</span>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.totalCollateral</label>
-        <input [value]="contractInfo.totalCollateral" disabled>
-        <span translate>unit.sats</span>
+        <label translate>acceptOffer.refundDate</label>
+        <input [value]="refundDate" disabled>
       </div>
     </div>
 
@@ -68,13 +57,19 @@
 
     <div class="both">
       <div class="field-group">
-        <label translate>acceptOffer.refundDate</label>
-        <input [value]="refundDate" disabled>
+        <label translate>acceptOffer.yourCollateral</label>
+        <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis" disabled>
+        <span translate>unit.sats</span>
       </div>
       <div class="field-group">
-        <label translate>acceptOffer.feeRate</label>
-        <input [value]="offer.offer.feeRatePerVb" disabled>
-        <span translate>unit.satsPerVbyte</span>
+        <label translate>acceptOffer.counterpartyCollateral</label>
+        <input [value]="offer.offer.offerCollateralSatoshis" disabled>
+        <span translate>unit.sats</span>
+      </div>
+      <div class="field-group">
+        <label translate>acceptOffer.totalCollateral</label>
+        <input [value]="contractInfo.totalCollateral" disabled>
+        <span translate>unit.sats</span>
       </div>
 
       <div class="spacer"></div>
@@ -91,6 +86,14 @@
       <div class="spacer"></div>
 
       <div class="field-group">
+        <label translate>acceptOffer.feeRate</label>
+        <input [value]="offer.offer.feeRatePerVb" disabled>
+        <span translate>unit.satsPerVbyte</span>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="field-group">
         <label translate>acceptOffer.peerAddress</label>
         <!-- 'acceptOffer.optional' -->
         <input type="text" placeholder="{{ 'acceptOffer.required' | translate }}" [(ngModel)]="peerAddress">
@@ -102,7 +105,9 @@
       <div class="button-group">
         <button mat-stroked-button color="primary" (click)="onExecute()" [disabled]="!peerAddress">{{ 'action.execute' | translate }}</button>
       </div>
+
       <fieldset class="result-group" [disabled]="!newOfferResult">
+        <label translate>result</label>
         <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>
         <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
           (click)="onCopyResult()"><mat-icon>content_copy</mat-icon></button>

@@ -4,9 +4,49 @@
 
   <mat-sidenav-container>
     <mat-sidenav-content>
-
       <!-- Main -->
 
+      <div class="main-content">
+        <app-build-accept-offer
+          (announcement)="onAnnouncement($event)" 
+          (contractInfo)="onContractInfo($event)"
+          (acceptOffer)="onAcceptOffer($event)">
+        </app-build-accept-offer>
+
+        <app-wallet-balance></app-wallet-balance>
+
+        <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
+
+        <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
+          <label translate>torDLCHostAddress</label>
+          <input [value]="walletStateService.torDLCHostAddress" disabled>
+          <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+            (click)="onCopyTorDLCHostAddress()"><mat-icon>content_copy</mat-icon></button>
+        </div>
+
+        <div *ngIf="walletStateService.info" class="state-info">
+          <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.info.network }"></div>
+          <div class="block-height" translate="status.blockHeightLabel" [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
+          <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
+          <div class="config">
+            <button mat-stroked-button (click)="showConfiguration()">Config</button>
+          </div>
+        </div>
+  
+        <div class="footer">
+          <div class="footer-section">
+            <span class="label" translate>server</span>
+            <span class="server-version">{{ walletStateService.serverVersion }}</span>
+          </div>
+          <div *ngIf="walletStateService.buildConfig" class="footer-section">
+            <span class="label" translate>ui</span>
+            <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
+            <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!--
       <div class="horizontal-pane">
         <div class="left-pane">
           <app-build-accept-offer
@@ -20,7 +60,6 @@
           <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
         </div>
         <div class="right-pane">
-          <!-- Don't like having two instances, but avoids null handling logic -->
           <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
             [announcement]="selectedAnnouncement"
             (close)="onNewOfferClose()"></app-new-offer>
@@ -31,63 +70,39 @@
           <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
             (close)="onAcceptOfferClose()"></app-accept-offer>
 
-          <!-- (close)="onCloseContractDetail()" -->
           <app-contract-detail *ngIf="selectedDLC && selectedDLCContractInfo" 
             [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
             (close)="onContractDetailClose()"
           ></app-contract-detail>
         </div>
       </div>
-      
-      <!--
-      <button mat-stroked-button color="primary">Primary</button>
-      <button mat-stroked-button color="accent">Accent</button>
-      <button mat-stroked-button color="warn">Warn</button>
-      -->
-      
-      <!-- <div class="fundedAddresses">
-        {{ walletStateService.fundedAddresses | json }}
-      </div> -->
-
-      <div>
-        <!-- <button mat-stroked-button (click)="createContractInfo()">Create Contract Info</button> -->
-      </div>
-
-      <div>
-        <!-- <button mat-stroked-button (click)="makeNewOffer()">Make New Offer</button> -->
-      </div>
-
-      <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
-        <label translate>torDLCHostAddress</label>
-        <input [value]="walletStateService.torDLCHostAddress" disabled>
-        <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-          (click)="onCopyTorDLCHostAddress()"><mat-icon>content_copy</mat-icon></button>
-      </div>
-
-      <div *ngIf="walletStateService.info" class="state-info">
-        <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.info.network }"></div>
-        <div class="block-height" translate="status.blockHeightLabel" [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
-        <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
-        <div class="config">
-          <button mat-stroked-button (click)="showConfiguration()">Config</button>
-        </div>
-      </div>
-
-      <div class="footer">
-        <div class="footer-section">
-          <span class="label" translate>server</span>
-          <span class="server-version">{{ walletStateService.serverVersion }}</span>
-        </div>
-        <div *ngIf="walletStateService.buildConfig" class="footer-section">
-          <span class="label" translate>ui</span>
-          <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
-          <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
-        </div>
-      </div>
+    -->
     </mat-sidenav-content>
 
     <mat-sidenav #rightDrawer position="end" mode="over">
-      <app-configuration (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+      <div class="drawer-container">
+        <app-configuration *ngIf="configurationVisible"
+          (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+
+        <app-contract-detail *ngIf="contractDetailsVisible && selectedDLC && selectedDLCContractInfo" 
+          [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
+          (close)="onContractDetailClose()"
+        ></app-contract-detail>
+
+        <ng-container *ngIf="offerVisible">
+          <!-- Don't like having two instances, but avoids null handling logic -->
+          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
+            [announcement]="selectedAnnouncement"
+            (close)="onNewOfferClose()"></app-new-offer>
+          <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
+            [contractInfo]="selectedContractInfo"
+            (close)="onNewOfferClose()"></app-new-offer>
+
+          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
+            (close)="onAcceptOfferClose()"></app-accept-offer>
+        </ng-container>
+
+      </div>
     </mat-sidenav>
 
   </mat-sidenav-container>

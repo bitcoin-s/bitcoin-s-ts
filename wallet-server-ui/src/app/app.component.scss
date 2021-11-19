@@ -1,10 +1,17 @@
 .content-root {
   height: 100%;
 
-  padding: 1rem;
+  .main-content {
+    padding: 1rem;
+  }
 
   .mat-sidenav-container {
     height: 100%;
+  }
+
+  .drawer-container {
+    padding: 0 1rem;
+    min-width: 300px;
   }
 
   .tor-dlc-host-address {

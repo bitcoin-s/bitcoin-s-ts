@@ -43,6 +43,10 @@
 
       align-items: center;
 
+      &:first-of-type {
+        margin-bottom: 0.5rem;
+      }
+
       // Alignment here is currently ghetto
       label.outcome-label {
         display: inline-block;
@@ -67,18 +71,8 @@
   }
 
   .footer {
-    // display: flex;
-    // flex-direction: row;
-    width: 36rem;
     .button-group {
       text-align: right;
-    }
-    .result-group {
-      // flex: 1;
-
-      .result-textarea {
-        width: 80%;
-      }
     }
   }
 
