@@ -24,7 +24,9 @@ import { NewOfferComponent } from './component/new-offer/new-offer.component';
 import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component';
 import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component';
 import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component';
-import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
+import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component';
+import { DlcFileComponent } from './component/dlc-file/dlc-file.component';
+import { DebugComponent } from './component/debug/debug.component'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -59,6 +61,8 @@ export function appInitializerFactory(translate: TranslateService) {
     AcceptOfferComponent,
     NewAddressDialogComponent,
     SendFundsDialogComponent,
+    DlcFileComponent,
+    DebugComponent,
   ],
   imports: [
     BrowserModule,

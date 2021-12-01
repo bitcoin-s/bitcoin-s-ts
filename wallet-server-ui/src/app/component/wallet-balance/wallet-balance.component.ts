@@ -71,7 +71,7 @@ export class WalletBalanceComponent implements OnInit {
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sweepwallet,
               [sendObj.address, sendObj.feeRate])).subscribe(r => {
                 console.debug('sweepwallet', r)
-                if (r.result) { // tx.txIdBE from WalletRoutes.scal ? Should this really be the return type?
+                if (r.result) { // tx.txIdBE from WalletRoutes.scala ? Should this really be the return type?
                   // TODO : Success dialog
                 }
               })

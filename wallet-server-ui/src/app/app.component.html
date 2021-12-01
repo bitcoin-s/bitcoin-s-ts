@@ -13,8 +13,12 @@
           (acceptOffer)="onAcceptOffer($event)">
         </app-build-accept-offer>
 
-        <app-wallet-balance></app-wallet-balance>
+        <div class="wallet-container">
+          <app-wallet-balance></app-wallet-balance>
 
+          <app-dlc-file hidden></app-dlc-file>
+        </div>
+        
         <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
 
         <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
@@ -30,6 +34,9 @@
           <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
           <div class="config">
             <button mat-stroked-button (click)="showConfiguration()">Config</button>
+          </div>
+          <div class="debug">
+            <button mat-stroked-button (click)="showDebug()">Debug</button>
           </div>
         </div>
   
@@ -83,6 +90,9 @@
       <div class="drawer-container">
         <app-configuration *ngIf="configurationVisible"
           (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+
+        <app-debug *ngIf="debugVisible"
+          (close)="onDebugClose()"></app-debug>
 
         <app-contract-detail *ngIf="contractDetailsVisible && selectedDLC && selectedDLCContractInfo" 
           [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"

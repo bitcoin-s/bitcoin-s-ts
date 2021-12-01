@@ -233,10 +233,10 @@ if (USE_TOR_PROXY) {
   createProxies(agent)
 }
 
-/** Oracle Server Proxy */
+/** Server Proxy */
 
 // Proxy calls to this server to appServer/run or bundle/run instance
-const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
+const PROXY_TIMEOUT = 45 * 1000; // 45 seconds, upped for AcceptDLC. 3 point numeric contract takes around 23 seconds on MBP
 app.use(Config.apiRoot, createProxyMiddleware({
   target: walletServerUrl,
   changeOrigin: true,

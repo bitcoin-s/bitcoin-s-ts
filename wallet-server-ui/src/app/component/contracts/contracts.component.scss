@@ -15,6 +15,13 @@
         }
       }
 
+      .numeric-cell {
+        text-align: right;
+      }
+      .percent-cell {
+        text-align: center;
+      }
+
       .focus-row {
         font-weight: bold;
       }

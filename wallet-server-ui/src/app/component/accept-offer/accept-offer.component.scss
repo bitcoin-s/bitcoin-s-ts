@@ -1,79 +1,101 @@
+// total magic. Need to max-width the pane and have it trickle down. Currently w-100 is pushing panel width, but not clear on what's maxing it out
+$maxWidth: 400px;
+
 .accept-offer {
 
-  .both, .enum-offer, .numeric-offer {
-    .field-group {
-      label {
-        display: inline-block;
-        width: 12rem;
-      }
-      input {
-        display: inline-block;
-        width: 10rem;
-      }
-      .wide-input {
-        width: 16rem;
-      }
-      span {
-        margin-left: 0.4rem;
-      }
-    }
+  .enum-offer, .numeric-offer {
     .outcome-group {
-      margin: 2rem;
+      margin-bottom: 1rem;
 
-      .field-group {
+      .enum-payout-group, .numeric-payout-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        width: 100%;
+
         &:first-of-type {
           margin-bottom: 0.5rem;
         }
+      }
+
+      .enum-payout-group {
+        .icon-spacer {
+          width: 24px;
+        }
         
         label {
-          width: 10rem;
+          display: inline-block;
+          width: 8rem;
         }
 
-        label.outcome-label {
-          width: 10rem;
+        .outcome-heading {
+          width: 8rem;
+          margin-right: 1rem;
         }
-        label.payout-label {
-          width: 10rem;
+        .payout-heading {
+          width: 8rem;
+          margin-right: 0.25rem;
+        }
+
+        .outcome-label {
+          margin-right: 1rem;
+        }
+        .outcome-value {
+          width: 8rem;
         }
       }
-    }
-    .numeric-payout-group {
-      display: flex;
-      flex-direction: row;
 
-      align-items: center;
+      .numeric-payout-group {
+        label {
+          display: inline-block;
+          width: 6.5rem;
+          margin-right: 0.25rem;
+        }
+        .outcome-heading {
 
-      &:first-of-type {
-        margin-bottom: 0.5rem;
-      }
+        }
+        .payout-heading {
 
-      // Alignment here is currently ghetto
-      label.outcome-label {
-        display: inline-block;
-        width: 6.5rem;
+        }
+        .endpoint-heading {
+          width: 4rem;
+        }
+        input[type="number"] {
+          width: 6rem;
+          margin-right: 0.25rem;
+        }
+        input[type="checkbox"] { // .endpoint-checkbox
+          width: 4rem;
+          vertical-align: middle;
+        }
       }
-      label.payout-label {
-        display: inline-block;
-        width: 6.5rem;
-      }
-      input[type="number"] {
-        width: 6rem;
-        margin-right: 0.25rem;
-      }
-      input[type="checkbox"] {
-        width: 3rem;
-        vertical-align: middle;
-      }
-    }
-    .spacer {
-      height: 1rem;
     }
   }
 
-  .footer {
-    .button-group {
-      text-align: right;
+  .form-container {
+    margin-top: 1rem;
+    fieldset {
+      margin: 0;
+      padding: 0;
+      // > *:not(mat-radio-group) {
+      //   width: 100%;
+      // }
     }
+    .accept-offer-type {
+      mat-radio-button {
+        margin-right: 0.5rem;
+      }
+    }
+    .description {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      max-width: $maxWidth;
+    }
+  }
+
+  .spacer {
+    height: 1rem;
   }
 
 }

@@ -2,10 +2,12 @@
   <div class="section-header">
     <h2 translate>contractDetail.heading</h2>
     <div class="section-header-button-group">
-      <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}" (click)="onReloadContract()">
+      <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}"
+        (click)="onReloadContract()">
         <mat-icon>refresh</mat-icon>
       </button>
-      <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+      <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}"
+        (click)="onClose()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -14,7 +16,8 @@
   <div *ngIf="dlc && contractInfo">
     <div class="field-group">
       <label translate>contractDetail.eventId</label>
-      <input class="event-id-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+      <input class="event-id-input"
+        [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
     </div>
     <div class="field-group">
       <label translate>contractDetail.state</label>
@@ -81,7 +84,7 @@
       </div>
       <div class="field-group">
         <label translate>contractDetail.rateOfReturn</label>
-        <input [value]="formatPercent(dlc.rateOfReturn)" disabled>
+        <input [value]="formatPercent(dlc.rateOfReturn, 2, false)" disabled>
         <span translate>unit.percent</span>
       </div>
 
@@ -90,7 +93,7 @@
 
     <div *ngIf="isEnum()" class="enum-outcomes">
       <label class="group-label" translate>contractDetail.outcomePayouts</label>
-      <div *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)" class="enum-group">
+      <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
         <label>{{ l }}</label>
         <input [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
         <span translate>unit.sats</span>
@@ -110,9 +113,11 @@
     <div class="field-group">
       <label translate>contractDetail.contractId</label>
       <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
-      <button mat-icon-button class="copy-button" [disabled]= "!dlc.contractId"
+      <button mat-icon-button class="copy-button" 
         matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="onCopyContractId()"><mat-icon>content_copy</mat-icon></button>
+        (click)="onCopyContractId()" [disabled]= "!dlc.contractId">
+        <mat-icon>content_copy</mat-icon>
+      </button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractInfo</label>
@@ -124,21 +129,26 @@
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()" [disabled]="!isFundingTxRebroadcastable(dlc.state)">
+      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()"
+        [disabled]="!isFundingTxRebroadcastable(dlc.state)">
         {{ 'contractDetail.rebroadcast' | translate }}
       </button>
+      <!-- TODO : Link -->
     </div>
     <div class="field-group">
       <label translate>contractDetail.closingTransactionId</label>
       <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()" [disabled]="!dlc.closingTxId">
+      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()"
+        [disabled]="!dlc.closingTxId">
         {{ 'contractDetail.rebroadcast' | translate }}
       </button>
+      <!-- TODO : Link -->
     </div>
     <div class="field-group">
       <label translate>contractDetail.oracleSignatures</label>
       <input [(ngModel)]="oracleSignature" [disabled]="!isExecutable(dlc.state)">
-      <button mat-stroked-button (click)="onOracleSignatures()" [disabled]="!isExecutable(dlc.state) || !oracleSignature">
+      <button mat-stroked-button (click)="onOracleSignatures()"
+        [disabled]="!isExecutable(dlc.state) || !oracleSignature">
         {{ 'action.execute' | translate }}
       </button>
     </div>
@@ -147,13 +157,17 @@
   <div class="spacer"></div>
 
   <div class="button-group">
-    <button mat-stroked-button color="warn" (click)="onCancelContract()" [disabled]="!isCancelable(dlc.state)">
+    <button mat-stroked-button color="warn" (click)="onCancelContract()"
+      [disabled]="!isCancelable(dlc.state)">
       {{ 'contractDetail.cancelContract' | translate }}
     </button>
-    <button mat-stroked-button color="warn" (click)="onRefund()" [disabled]="!isRefundable(dlc.state)">
+    <button mat-stroked-button color="warn" (click)="onRefund()"
+      [disabled]="!isRefundable(dlc.state)">
       {{ 'contractDetail.refundContract' | translate }}
     </button>
-    <button mat-stroked-button (click)="onViewOnOracleExplorer()" disabled>
+    <!-- Don't have sha256 id to do this operation yet. -->
+    <button mat-stroked-button (click)="onViewOnOracleExplorer()"
+      disabled>
       {{ 'contractDetail.viewOnOracleExplorer' | translate }}
     </button>
   </div>

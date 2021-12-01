@@ -9,7 +9,7 @@
       display: inline-block;
       width: 12rem;
     }
-    span {
+    button, span {
       margin-left: 0.25rem;
     }
   }
@@ -47,6 +47,12 @@
 
   .spacer {
     height: 1.5rem;
+  }
+
+  .button-group {
+    button {
+      margin-right: 0.25rem;
+    }
   }
 
   .contract-detail-grid {

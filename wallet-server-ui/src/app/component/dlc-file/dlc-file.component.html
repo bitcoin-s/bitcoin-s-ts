@@ -1,0 +1,44 @@
+<section class="dlc-file">
+  <div class="section-header">
+    <h2 translate>dlcFile.heading</h2>
+  </div>
+
+  <div class="operations">
+    <div class="field-group">
+      <!-- Opens dialog and picks file reference fine -->
+      <input #signInput hidden="true" type="file" onclick="this.value=null" (change)="signInputChange($event)"/>
+      <button mat-flat-button color="primary" (click)="signInput.click()">Choose Accepted DLC File to Sign</button>
+  
+      <!-- <input type="text" [(ngModel)]="acceptedDLCInputDisplay">
+      <button mat-button (click)="onSignDLC()" [disabled]="!acceptedDLCInputDisplay">{{ 'dlcFile.sign' | translate }}</button> -->
+      <app-more-info matSuffix tooltip="dlcFileDescription.sign"></app-more-info>
+    </div>
+  
+    <!-- <div class="field-group">
+      <button mat-button (click)="onSignAcceptFromFile()">{{ 'dlcFile.signFile' | translate }}</button>
+      <app-more-info matSuffix tooltip="dlcFileDescription.signFile"></app-more-info>
+    </div> -->
+  
+    <div class="field-group">
+      <input #broadcastInput hidden="true" type="file" onclick="this.value=null" (change)="broadcastInputChange($event)"/>
+      <button mat-flat-button color="primary" (click)="signInput.click()">Choose Signed DLC File to Broadcast</button>
+  
+      <!-- <input [(ngModel)]="signedDLCInput">
+      <button mat-button (click)="onBroadcastSignedDLC()" [disabled]="!signedDLCInput">{{ 'dlcFile.broadcast' | translate }}</button> -->
+      <app-more-info matSuffix tooltip="dlcFileDescription.broadcast"></app-more-info>
+    </div>
+  
+    <!-- <div class="field-group">
+      <button mat-button (click)="onBroadcastSignedDLCFromFile()">{{ 'dlcFile.broadcast' | translate }}</button>
+      <app-more-info matSuffix tooltip="dlcFileDescription.broadcast"></app-more-info>
+    </div> -->
+  
+    <fieldset class="result-group" [disabled]="!result">
+      <label translate>result</label>
+      <textarea class="result-textarea" [(ngModel)]="result"></textarea>
+      <!-- <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="onCopyResult()"><mat-icon>content_copy</mat-icon></button> -->
+    </fieldset>
+  </div>
+
+</section>

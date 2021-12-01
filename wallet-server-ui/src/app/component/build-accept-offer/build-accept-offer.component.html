@@ -9,7 +9,7 @@
       (paste)="onBuildOfferPaste($event)" (input)="onBuildOfferInput($event)">
   </div>
 
-  <div hidden>
+  <div [hidden]="!DEBUG">
     <label>Enum</label>
     <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">A</button>
     <button mat-stroked-button (click)="onBuildOffer(enumContractInfoHex)">CI</button>
@@ -24,9 +24,9 @@
       (paste)="onAcceptOfferPaste($event)" (input)="onAcceptOfferInput($event)">
   </div>
 
-  <!-- <div hidden>
-    <button mat-stroked-button (click)="onNewEnum()">New Enum Contract</button>
-    <button mat-stroked-button (click)="onNewNumeric()">New Numeric Contract</button>
-  </div> -->
+  <div [hidden]="!DEBUG">
+    <button mat-stroked-button (click)="onAcceptOffer(enumOfferHex)">Enum</button>
+    <button mat-stroked-button (click)="onAcceptOffer(numericOfferHex)">Numeric</button>
+  </div>
 
 </section>

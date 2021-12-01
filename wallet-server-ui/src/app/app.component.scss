@@ -14,6 +14,15 @@
     min-width: 300px;
   }
 
+  .wallet-container {
+    display: flex;
+    flex-direction: row;
+
+    > * {
+      flex-grow: 1;
+    }
+  }
+
   .tor-dlc-host-address {
     label {
       margin-right: 1rem;

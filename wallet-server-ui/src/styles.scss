@@ -48,6 +48,7 @@ $angular-dark-theme: mat.define-dark-theme(
 
 // @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; // indigo-pink.css";
 
+/** General HTML */
 
 html, body { height: 100%; }
 body { font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -56,6 +57,32 @@ body { margin: 0; }
 fieldset {
   border: 0;
 }
+
+/** Utility Classes */
+
+/** Relative Width */
+@for $i from 1 through 10 {
+  $size: $i * 10;
+  .w-#{$size} {
+    width: percentage($size * .01);
+  }
+}
+
+/** Text Align */
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+.text-justify {
+  text-align: justify;
+}
+
+/** App sections */
 
 .section-header {
   display: flex;
@@ -67,21 +94,11 @@ fieldset {
 
   }
 }
-
 .close-button {
   align-self: center;
 }
 
-.text-center {
-  text-align: center;
-}
-.text-right {
-  text-align: right;
-}
-.text-left {
-  text-align: left;
-}
-
+/** Layout */
 
 .horizontal-pane {
   display: flex;
@@ -97,6 +114,8 @@ fieldset {
     margin-left: 1rem;
   }
 }
+
+/** Material Design */
 
 .mat-icon-button {
   .mat-icon-sm {
@@ -118,20 +137,106 @@ fieldset {
   transform: scale(0.7);
 }
 
+/** Material Design Forms */
+
+// Center checkbox in pseudo-mat-form-field
+.mat-form-field--checkbox {
+  display: flex;
+  flex-direction: row;
+
+  mat-checkbox {
+    margin: auto;
+  }
+}
+
+mat-form-field {
+  &.ellipsis {
+    .mat-input-element {
+      text-overflow: ellipsis;
+    }
+  }
+  &.medium {
+    .mat-form-field-infix {
+      width: 140px;
+    }
+  }
+  &.narrow {
+    .mat-form-field-infix {
+      width: 100px;
+    }
+  }
+  &.narrower {
+    .mat-form-field-infix {
+      width: 60px;
+    }
+  }
+}
+
+.mat-stroked-button {
+  span + mat-icon {
+    margin-left: 0.6rem;
+  }
+  mat-icon + span {
+    margin-left: 0.6rem;
+  }
+}
+
+.mat-form-field-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  // width: 100%;
+  // mat-form-field {
+  //   flex: 1;
+  // }
+
+  mat-form-field:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+}
+
+.mat-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/** Execute button container */
+
+.execute-container {
+  margin-top: 2rem;
+  
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+
+    button:not(:last-of-type) {
+      margin-right: 1rem;
+    }
+    .spinner {
+      margin-left: 1rem;
+    }
+  }
+}
+
+/** Call Results Area */
+
 .result-group {
   display: flex;
   flex-direction: row;
   align-items: center;
   // Cancel default fieldset styling
   margin: 2rem 0 0 0;
-  padding: 0;
+  padding: 0 0 0.5rem 0;
 
   label {
     margin-right: 1rem;
   }
   .result-textarea {
     flex: 1;
-
+    margin-right: 0.5rem;
     // max-width: 20rem;
   }
 }

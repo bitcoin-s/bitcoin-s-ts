@@ -1,80 +1,64 @@
 .new-offer {
 
-  .both, .enum-offer, .numeric-offer {
+  .enum-offer, .numeric-offer {
     .field-group {
       label {
         display: inline-block;
-        width: 12rem;
+        width: 8rem;
       }
       input {
         display: inline-block;
-        width: 12rem;
+        width: 8rem;
       }
-    }
-
-    .event-id-input {
-      width: 20rem !important;
     }
 
     .outcome-group {
-      margin: 1rem;
-
-      .outcome-label {
-        margin-right: 1rem;
-      }
+      margin-bottom: 1rem;
 
       .field-group {
         &:first-of-type {
           margin-bottom: 0.5rem;
         }
         
-        label {
-          width: 10rem;
+        .outcome-heading {
+          margin-left: 0.25rem;
+          margin-right: 1rem;
         }
-
-        label.outcome-label {
-          width: 10rem;
+        .payout-heading {
+          margin-right: 0.25rem; // padding for info icon
         }
-        label.payout-label {
-          width: 10rem;
+        .outcome-label {
+          margin-right: 1rem;
+        }
+        .payout-label {
+          
         }
       }
-      .enum-payout-group {
+      .enum-payout-group, .numeric-payout-group {
         display: flex;
         flex-direction: row;
-
         align-items: center;
-        min-height: 40px; // Matching numeric-payout-group for now
+        min-height: 40px; // Matches remove buttons on inner rows for numeric
       }
       .numeric-payout-group {
-        display: flex;
-        flex-direction: row;
-
-        align-items: center;
-        min-height: 40px; // Matches remove buttons on inner rows
-
         &:first-of-type {
           margin-bottom: 0.5rem;
         }
 
-        label {
+        .outcome-heading, .payout-heading {
           display: inline-block;
-        }
-        .outcome-label {
-          width: 6rem;
-        }
-        .payout-label {
-          width: 6rem;
-        }
-        .endpoint-label {
-          width: 3rem;
-        }
-        input[type="number"] {
-          width: 6rem;
+          width: 8.5rem; // Accounting for input chrome
           margin-right: 0.25rem;
         }
-        input[type="checkbox"] {
-          width: 3rem;
+        .endpoint-heading {
+          width: 4rem;
+        }
+
+        input {
+          margin-right: 0.25rem;
+        }
+        .endpoint-checkbox {
+          width: 4rem;
           vertical-align: middle;
         }
       }
@@ -99,7 +83,9 @@
   }
 
   .enum-offer {
-    margin: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 
   .numeric-offer {
@@ -107,19 +93,11 @@
     flex-direction: column;
     align-items: center;
 
-    margin: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .spacer {
     height: 1.5rem;
   }
 
-  .footer {
-    margin-top: 1rem;
-    
-    .button-group {
-      text-align: right;
-    }
-  }
-  
 }

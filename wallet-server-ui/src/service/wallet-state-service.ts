@@ -42,16 +42,7 @@ export class WalletStateService {
         this.info = r.result
       }
     })
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).subscribe(r => {
-      if (r.result) {
-        this.balances = r.result
-      }
-    })
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getfundedaddresses)).subscribe(r => {
-      if (r.result) {
-        this.fundedAddresses = r.result
-      }
-    })
+    this.refreshBalances()
     this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).subscribe(r => {
       if (r.result) {
         this.dlcWalletAccounting = r.result
@@ -70,6 +61,16 @@ export class WalletStateService {
       }
     })
     this.refreshDLCStates()
+  }
+
+  refreshBalances() {
+    console.debug('refreshBalances()')
+
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).subscribe(r => {
+      if (r.result) {
+        this.balances = r.result
+      }
+    })
   }
 
   refreshDLCState(dlc: DLCContract) {

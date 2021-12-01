@@ -39,6 +39,12 @@ export function validateBitcoinAddress(network: string, address: string) {
   return false
 }
 
+export function formatDatePlusDays(date: string, days: number) {
+  const result = new Date(date)
+  result.setDate(result.getDate() + days)
+  return result.toLocaleDateString()
+}
+
 export function formatISODate(isoDate: string) {
   return new Date(isoDate).toLocaleDateString()
 }
@@ -54,12 +60,18 @@ export function dateToSecondsSinceEpoch(date: Date) {
   return secondsSinceEpoch
 }
 
+export function datePlusDays(date: Date, days: number) {
+  date.setDate(date.getDate() + days)
+  return date
+}
 
-export function formatPercent(num: number, fractionalDigits = 2): string {
+export function formatPercent(num: number, fractionalDigits = 2, addPercentSign = true): string {
+  let value = ''
   if (num !== undefined) {
-    return (num * 100).toFixed(fractionalDigits)
+    value = (num * 100).toFixed(fractionalDigits)
+    if (addPercentSign) value += '%'
   }
-  return ''
+  return value
 }
 
 // Matches upper and lower case hex strings
@@ -93,7 +105,9 @@ export function mempoolTransactionURL(txIdHex: string, network: BitcoinNetwork) 
   }
 }
 
-const TOR_V3_ADDRESS = /^[a-z2-7]{56}.onion\:\d{4,5}$/;
+const IPV6_ADDRESS = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/
+
+export const TOR_V3_ADDRESS = /^[a-z2-7]{56}.onion\:\d{4,5}$/
 
 export function validateTorAddress(address: string) {
   return TOR_V3_ADDRESS.test(address)
