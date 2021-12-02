@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { WalletStateService } from '~service/wallet-state-service';
-import { copyToClipboard, validateBitcoinAddress } from '~util/utils';
+import { Component, Inject, OnInit } from '@angular/core'
+
+import { WalletStateService } from '~service/wallet-state-service'
+import { validateBitcoinAddress } from '~util/utils'
 
 
 @Component({
@@ -22,8 +22,7 @@ export class SendFundsDialogComponent implements OnInit {
   constructor(private walletStateService: WalletStateService) { }
 
   ngOnInit() {
-    // Can't do this yet - don't have raw feeEstimate value
-    // this.feeRate = this.walletStateService.feeEstimate
+    this.feeRate = this.walletStateService.feeEstimate
   }
 
   inputsValid() {

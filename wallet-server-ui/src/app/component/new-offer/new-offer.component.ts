@@ -13,7 +13,6 @@ import { getMessageBody } from '~util/wallet-server-util'
 import { AlertType } from '../alert/alert.component'
 
 
-const DEFAULT_FEE_RATE = 1 // sats/vbyte // TODO : From estimated fee rate
 const DEFAULT_DAYS_UNTIL_REFUND = 7
 
 @Component({
@@ -114,7 +113,7 @@ export class NewOfferComponent implements OnInit {
   // TODO : Should be able to disappear these into form state
   yourCollateral: number // wallet users funds in contract
   refundDate: string // Date
-  feeRate: number = DEFAULT_FEE_RATE
+  feeRate: number
 
   minDate: Date
 
@@ -156,7 +155,7 @@ export class NewOfferComponent implements OnInit {
     this.yourCollateral = <number><unknown>null
     // This should not get auto-set, should be required for user to enter, default to day after maturity
     this.refundDate = formatDatePlusDays(this.event.maturity, DEFAULT_DAYS_UNTIL_REFUND) // new Date(this.event.maturity).toISOString()
-    this.feeRate = DEFAULT_FEE_RATE
+    this.feeRate = this.walletStateService.feeEstimate
 
     this.minDate = new Date(this.event.maturity)
 

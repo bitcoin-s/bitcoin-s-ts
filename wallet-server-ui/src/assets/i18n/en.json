@@ -17,7 +17,7 @@
     "disconnected": "Disconnected",
     "networkLabel": "Network: {{ network }}",
     "blockHeightLabel": "Block Height: {{ height }}",
-    "feeEstimateLabel": "Fee Estimate: {{ fee }}"
+    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte"
   },
 
   "serverEvent": {
@@ -49,7 +49,8 @@
     "sats": "sats",
     "percent": "%",
     "satsPerVbyte": "sats/vbyte",
-    "ellipsis": "..."
+    "ellipsis": "...",
+    "max": "MAX"
   },
 
   "configuration": {

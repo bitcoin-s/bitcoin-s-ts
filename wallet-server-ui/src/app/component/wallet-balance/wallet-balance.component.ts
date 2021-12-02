@@ -87,7 +87,7 @@ export class WalletBalanceComponent implements OnInit {
                     data: {
                       title: 'dialog.sendFundsSuccess.title',
                       content: 'dialog.sendFundsSuccess.content',
-                      params: { amount: sats, address: sendObj.address },
+                      params: { amount: formatNumber(sats), address: sendObj.address },
                       action: 'action.ok',
                       // actionColor: 'primary',
                       showCancelButton: false,

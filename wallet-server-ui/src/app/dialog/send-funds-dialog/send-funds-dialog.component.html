@@ -10,8 +10,11 @@
   </div>
   <div class="field-group">
     <label translate>dialog.sendFunds.amount</label>
-    <input type="number" placeholder="{{ 'unit.sats' | translate }}" [(ngModel)]="amount" [disabled]="sendMax">
-    <mat-button-toggle [(ngModel)]="sendMax" (change)="onMax()">MAX</mat-button-toggle>
+    <input type="number" placeholder="{{ (sendMax? 'unit.max' : 'unit.sats') | translate }}"
+      [(ngModel)]="amount" [disabled]="sendMax">
+    <mat-button-toggle [(ngModel)]="sendMax" (change)="onMax()">
+      {{ 'unit.max' | translate }}
+    </mat-button-toggle>
   </div>
   <div class="field-group">
     <label translate>dialog.sendFunds.feeRate</label>
