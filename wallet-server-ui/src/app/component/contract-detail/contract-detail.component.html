@@ -49,32 +49,32 @@
     <label class="group-label" translate>contractDetail.collateral</label>
     <div class="field-group">
       <label translate>contractDetail.localCollateral</label>
-      <input [value]="dlc.localCollateral" disabled>
+      <input [value]="formatNumber(dlc.localCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
     <div class="field-group">
       <label translate>contractDetail.remoteCollateral</label>
-      <input [value]="dlc.remoteCollateral" disabled>
+      <input [value]="formatNumber(dlc.remoteCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
     <div class="field-group">
       <label translate>contractDetail.totalCollateral</label>
-      <input [value]="dlc.totalCollateral" disabled>
+      <input [value]="formatNumber(dlc.totalCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
 
     <div class="spacer"></div>
 
-    <div *ngIf="dlc.myPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined" class="payout-group">
+    <div *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined" class="payout-group">
       <label class="group-label" translate>contractDetail.contractOutcome</label>
       <div class="field-group">
         <label translate>contractDetail.myPayout</label>
-        <input [value]="dlc.myPayout" disabled>
+        <input [value]="formatNumber(dlc.myPayout)" disabled>
         <span translate>unit.sats</span>
       </div>
       <div class="field-group">
         <label translate>contractDetail.counterpartyPayout</label>
-        <input [value]="dlc.counterPartyPayout" disabled>
+        <input [value]="formatNumber(dlc.counterPartyPayout)" disabled>
         <span translate>unit.sats</span>
       </div>
       <div class="field-group">

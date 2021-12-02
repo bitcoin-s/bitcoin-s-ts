@@ -110,7 +110,7 @@
     "yourCollateral": "Your collateral at stake (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
-    "createOffer": "Create this DLC Offer in your wallet and reserve funds"
+    "createOffer": "Create this DLC Offer in your wallet and reserve funds. You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
   },
 
   "newOfferValidation": {
@@ -161,7 +161,7 @@
   },
 
   "acceptOfferDescription": {
-    "acceptOffer": "If everything in the offer appears correct, you can complete the DLC contract by exchanging signatures with your counterparty. This can be done over Tor or by exchanging saved files over some other channel.",
+    "acceptOffer": "If everything in the offer appears correct, you can complete the DLC contract by exchanging signatures with your counterparty. This can be done over Tor or by exchanging saved files.",
     "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online.",
     "filename": "Filename to save Accepted DLC Offer to",
     "acceptOfferType": {

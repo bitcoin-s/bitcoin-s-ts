@@ -8,9 +8,9 @@ import * as FileSaver from 'file-saver'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Offer, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
+import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -40,6 +40,7 @@ export class AcceptOfferComponent implements OnInit {
   public Object = Object
   public AcceptOfferType = AcceptOfferType
   public copyToClipboard = copyToClipboard
+  public formatNumber = formatNumber
 
   private _offer: OfferWithHex
   @Input() set offer (offer: OfferWithHex) {
@@ -111,8 +112,7 @@ export class AcceptOfferComponent implements OnInit {
         peerAddress: null,
         filename: this.defaultFilename
       })
-      this.f['filename'].setErrors(null)
-      this.f['peerAddress'].setErrors(null)
+      this.form.markAsUntouched()
     }
   }
 

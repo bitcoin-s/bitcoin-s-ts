@@ -8,22 +8,22 @@
     <div *ngIf="walletStateService.balances" class="pane balances">
       <div class="balance-group">
         <label translate>walletBalance.confirmedBalance</label>
-        <span class="value">{{ walletStateService.balances.confirmed }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.confirmed) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.unconfirmedBalance</label>
-        <span class="value">{{ walletStateService.balances.unconfirmed }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.unconfirmed) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.reserveBalance</label>
-        <span class="value">{{ walletStateService.balances.reserved }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.reserved) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.totalBalance</label>
-        <span class="value">{{ walletStateService.balances.total }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.total) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
     </div>
@@ -31,7 +31,7 @@
     <div *ngIf="walletStateService.dlcWalletAccounting" class="pane pnl">
       <div class="pnl-group">
         <label translate>walletBalance.profitAndLoss</label>
-        <span class="value">{{ walletStateService.dlcWalletAccounting.pnl }}</span>
+        <span class="value">{{ formatNumber(walletStateService.dlcWalletAccounting.pnl) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="pnl-group">

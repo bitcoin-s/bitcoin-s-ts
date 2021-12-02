@@ -8,7 +8,7 @@ import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -20,10 +20,9 @@ import { getMessageBody } from '~util/wallet-server-util'
 export class ContractDetailComponent implements OnInit {
 
   public Object = Object
-
   public AlertType = AlertType
   public DLCState = DLCState
-
+  public formatNumber = formatNumber
   public formatPercent = formatPercent
   public isCancelable = isCancelable
   public isRefundable = isRefundable

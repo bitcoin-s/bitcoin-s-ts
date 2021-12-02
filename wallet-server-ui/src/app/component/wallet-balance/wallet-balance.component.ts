@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
-import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
-import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
 import { MessageService } from '~service/message.service'
-
 import { WalletStateService } from '~service/wallet-state-service'
 import { WalletMessageType } from '~type/wallet-server-types'
-import { formatPercent } from '~util/utils'
+import { formatNumber, formatPercent } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
+import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
 
 
 @Component({
@@ -19,6 +19,7 @@ import { getMessageBody } from '~util/wallet-server-util'
 })
 export class WalletBalanceComponent implements OnInit {
 
+  public formatNumber = formatNumber
   public formatPercent = formatPercent
 
   constructor(private dialog: MatDialog, public walletStateService: WalletStateService, private messageService: MessageService) { }

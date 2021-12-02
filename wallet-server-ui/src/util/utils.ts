@@ -65,6 +65,11 @@ export function datePlusDays(date: Date, days: number) {
   return date
 }
 
+export function formatNumber(n: number): string {
+  if (n === undefined || n === null) return ''
+  return n.toLocaleString()
+}
+
 export function formatPercent(num: number, fractionalDigits = 2, addPercentSign = true): string {
   let value = ''
   if (num !== undefined) {

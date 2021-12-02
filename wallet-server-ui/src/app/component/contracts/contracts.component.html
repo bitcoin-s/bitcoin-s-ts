@@ -26,7 +26,7 @@
       </ng-container>
       <ng-container matColumnDef="realizedPNL">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.realizedPNL' | translate }}</th>
-        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ contract.pnl }}</td>
+        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.pnl) }}</td>
       </ng-container>
       <ng-container matColumnDef="rateOfReturn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.rateOfReturn' | translate }}</th>
@@ -34,15 +34,15 @@
       </ng-container>
       <ng-container matColumnDef="collateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.collateral' | translate }}</th>
-        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ contract.localCollateral }}</td>
+        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.localCollateral) }}</td>
       </ng-container>
       <ng-container matColumnDef="counterpartyCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.counterpartyCollateral' | translate }}</th>
-        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ contract.remoteCollateral }}</td>
+        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.remoteCollateral) }}</td>
       </ng-container>
       <ng-container matColumnDef="totalCollateral">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.totalCollateral' | translate }}</th>
-        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ contract.totalCollateral }}</td>
+        <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.totalCollateral) }}</td>
       </ng-container>
       <ng-container matColumnDef="lastUpdated">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.lastUpdated' | translate }}</th>

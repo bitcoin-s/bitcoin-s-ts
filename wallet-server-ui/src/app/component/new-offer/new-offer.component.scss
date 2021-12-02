@@ -1,3 +1,6 @@
+// total magic. Need to max-width the pane and have it trickle down. Currently w-100 is pushing panel width, but not clear on what's maxing it out
+$maxWidth: 400px;
+
 .new-offer {
 
   .enum-offer, .numeric-offer {
@@ -98,6 +101,12 @@
 
   .spacer {
     height: 1.5rem;
+  }
+
+  .description {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    max-width: $maxWidth;
   }
 
 }

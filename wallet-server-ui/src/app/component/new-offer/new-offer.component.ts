@@ -14,6 +14,7 @@ import { AlertType } from '../alert/alert.component'
 
 
 const DEFAULT_FEE_RATE = 1 // sats/vbyte // TODO : From estimated fee rate
+const DEFAULT_DAYS_UNTIL_REFUND = 7
 
 @Component({
   selector: 'app-new-offer',
@@ -154,7 +155,7 @@ export class NewOfferComponent implements OnInit {
 
     this.yourCollateral = <number><unknown>null
     // This should not get auto-set, should be required for user to enter, default to day after maturity
-    this.refundDate = formatDatePlusDays(this.event.maturity, 1) // new Date(this.event.maturity).toISOString()
+    this.refundDate = formatDatePlusDays(this.event.maturity, DEFAULT_DAYS_UNTIL_REFUND) // new Date(this.event.maturity).toISOString()
     this.feeRate = DEFAULT_FEE_RATE
 
     this.minDate = new Date(this.event.maturity)
@@ -163,7 +164,7 @@ export class NewOfferComponent implements OnInit {
 
     if (this.form) {
       this.form.patchValue({
-        refundDate: datePlusDays(new Date(this.event.maturity), 1),
+        refundDate: datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND),
         yourCollateral: this.yourCollateral,
         feeRate: this.feeRate,
       })

@@ -5,7 +5,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 
-import { formatISODate, formatPercent, formatShortHex } from '~util/utils'
+import { formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
 
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
@@ -17,6 +17,7 @@ export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 })
 export class ContractsComponent implements OnInit, AfterViewInit {
 
+  public formatNumber = formatNumber
   public formatISODate = formatISODate
   public formatPercent = formatPercent
   public formatShortHex = formatShortHex
