@@ -51,7 +51,8 @@
     "satsPerVbyte": "sats/vbyte",
     "ellipsis": "...",
     "max": "MAX",
-    "allFunds": "All Funds"
+    "allFunds": "All Funds",
+    "allAvailable": "All available"
   },
 
   "configuration": {
@@ -261,7 +262,17 @@
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",
-      "content": "{{ amount }} sats successfully sent to {{ address }}. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "content": "{{ amount }} sats sent to {{ address }}. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
+    "cancelContractSuccess": {
+      "title": "Contract Canceled",
+      "content": "Contract with id {{ contractId }} has been canceled. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
+    "rebroadcastSuccess": {
+      "title": "Rebroadcast Successful",
+      "content": "The transaction with id {{ txId }} was rebroadcast.",
       "linksContent": "View the transaction on Mempool.space at"
     },
     "sendMessageError": {

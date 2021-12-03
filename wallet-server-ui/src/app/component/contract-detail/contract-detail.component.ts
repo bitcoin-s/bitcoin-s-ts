@@ -2,13 +2,14 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -192,8 +193,17 @@ export class ContractDetailComponent implements OnInit {
       if (r.result) {
         const txId = r.result
         this.refreshDLCState()
-
-        // TODO : Dialog with txId and link to mempool or link on page
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.cancelContractSuccess.title',
+            content: 'dialog.cancelContractSuccess.content',
+            params: { contractId, txId },
+            linksContent: 'dialog.cancelContractSuccess.linksContent',
+            links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+            action: 'action.ok',
+            showCancelButton: false,
+          }
+        })
       }
     })
   }
@@ -202,15 +212,27 @@ export class ContractDetailComponent implements OnInit {
     console.debug('onRebroadcastFundingTransaction()')
 
     const contractId = this.dlc.contractId
+    const txId = <string>this.dlc.fundingTxId
 
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
       // console.debug('broadcastdlcfundingtx', r)
 
-      if (r.result) { // funding tx id
-        // Show success
-        const config: any = { verticalPosition: 'top', duration: 3000 }
-        this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),
-          this.translate.instant('action.dismiss'), config)
+      if (r.result) {
+        // const config: any = { verticalPosition: 'top', duration: 3000 }
+        // this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),
+        //   this.translate.instant('action.dismiss'), config)
+
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.rebroadcastSuccess.title',
+            content: 'dialog.rebroadcastSuccess.content',
+            params: { txId },
+            linksContent: "dialog.rebroadcastSuccess.linksContent",
+            links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+            action: 'action.ok',
+            showCancelButton: false,
+          }
+        })
 
         // Let polling take care of changing future state?
       }
@@ -232,11 +254,22 @@ export class ContractDetailComponent implements OnInit {
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.sendrawtransaction, [rawTransactionHex])).subscribe(r => {
             // console.debug('sendrawtransaction', r)
 
-            if (r.result) { // closing tx id
-              // Show success
-              const config: any = { verticalPosition: 'top', duration: 3000 }
-              this.snackBar.open(this.translate.instant('contractDetail.closingRebroadcastSuccess'),
-                this.translate.instant('action.dismiss'), config)
+            if (r.result) {
+              // const config: any = { verticalPosition: 'top', duration: 3000 }
+              // this.snackBar.open(this.translate.instant('contractDetail.closingRebroadcastSuccess'),
+              //   this.translate.instant('action.dismiss'), config)
+
+              const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'dialog.rebroadcastSuccess.title',
+                  content: 'dialog.rebroadcastSuccess.content',
+                  params: { txId },
+                  linksContent: "dialog.rebroadcastSuccess.linksContent",
+                  links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+                  action: 'action.ok',
+                  showCancelButton: false,
+                }
+              })
             }
           })
         }

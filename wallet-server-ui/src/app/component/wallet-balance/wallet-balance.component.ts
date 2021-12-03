@@ -10,6 +10,7 @@ import { getMessageBody } from '~util/wallet-server-util'
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
 import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
+import { TranslateService } from '@ngx-translate/core'
 
 
 @Component({
@@ -22,7 +23,8 @@ export class WalletBalanceComponent implements OnInit {
   public formatNumber = formatNumber
   public formatPercent = formatPercent
 
-  constructor(private dialog: MatDialog, public walletStateService: WalletStateService, private messageService: MessageService) { }
+  constructor(private dialog: MatDialog, public walletStateService: WalletStateService, 
+    private messageService: MessageService, private translate: TranslateService) { }
 
   ngOnInit(): void {
   }
@@ -59,25 +61,18 @@ export class WalletBalanceComponent implements OnInit {
         console.debug(' sendFunds()', sendObj)
 
         if (sendObj) { // else the user was canceling
-          // TODO : sendObj.amount on the server side is in bitcoins
-          const sats = sendObj.amount
-          const bitcoin = sendObj.amount = sats * 1e-8
-          const noBroadcast = false
-
           if (sendObj.sendMax) {
-            console.error('sweep wallet is untested')
-
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sweepwallet,
               [sendObj.address, sendObj.feeRate])).subscribe(r => {
                 console.debug('sweepwallet', r)
-                if (r.result) { // tx.txIdBE from WalletRoutes.scala ? Should this really be the return type?
+                if (r.result) {
                   const txId = r.result
 
                   const dialog = this.dialog.open(ConfirmationDialogComponent, {
                     data: {
                       title: 'dialog.sendFundsSuccess.title',
                       content: 'dialog.sendFundsSuccess.content',
-                      params: { amount: formatNumber(sats), address: sendObj.address, txId },
+                      params: { amount: this.translate.instant('unit.allAvailable'), address: sendObj.address, txId },
                       linksContent: 'dialog.sendFundsSuccess.linksContent',
                       links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
                       action: 'action.ok',
@@ -87,6 +82,11 @@ export class WalletBalanceComponent implements OnInit {
                 }
               })
           } else {
+            const sats = sendObj.amount
+            // amount on the server side is expected in bitcoin units
+            const bitcoin = sats * 1e-8
+            const noBroadcast = false
+
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sendtoaddress,
               [sendObj.address, bitcoin, sendObj.feeRate, noBroadcast])).subscribe(r => {
                 if (r.result) {
