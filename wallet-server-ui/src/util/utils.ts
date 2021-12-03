@@ -1,6 +1,7 @@
 import { DLCState } from "~type/wallet-server-types"
 
-export function copyToClipboard(s: string) {
+export function copyToClipboard(s: string|undefined|null) {
+  if (s === undefined || s === null) return
   const hiddenta = document.createElement('textarea')
   hiddenta.style.position = 'fixed'
   hiddenta.style.opacity = '0'
@@ -86,7 +87,7 @@ export function validateHexString(s: string) {
   return UPPERLOWER_CASE_HEX.test(s)
 }
 
-const SHORT_HEX_LENGTH = 8
+const SHORT_HEX_LENGTH = 6
 
 export function formatShortHex(s: string|null|undefined) {
   if (s) {

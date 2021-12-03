@@ -4,19 +4,24 @@
     margin-bottom: 1rem;
     
     .balances, .pnl {
+      border: 1px solid rgba(0,0,0,.2);
+      margin-right: 2rem;
+      padding: 1rem;
+
+      > label {
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        font-size: large;
+      }
       .balance-group {
         margin-bottom: 0.25rem;
         label {
           display: inline-block;
-          width: 10rem;
+          width: 6rem;
         }
         .value {
           width: 6rem;
         }
-        // span {
-        //   display: inline-block;
-        //   width: 6rem;
-        // }
       }
     }
     .pnl-group {
@@ -26,7 +31,7 @@
         width: 8rem;
       }
       .value {
-        // width: 3rem; // autosizing for now
+        // autosizing for now
       }
     }
 
@@ -37,8 +42,8 @@
         text-align: right;
       }
       .unit {
-        display: inline-block;
-        width: 3rem;
+        // display: inline-block;
+        // width: 3rem;
       }
     }
   }

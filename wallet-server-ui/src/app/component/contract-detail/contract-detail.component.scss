@@ -9,7 +9,10 @@
       display: inline-block;
       width: 12rem;
     }
-    button, span {
+    .numeric {
+      text-align: right;
+    }
+    button.mat-stroked-button, span {
       margin-left: 0.25rem;
     }
   }

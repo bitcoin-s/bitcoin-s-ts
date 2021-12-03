@@ -1,17 +1,25 @@
+@import '../../../scss/breakpoints';
+
+$padding: 0.5rem;
+
 .contracts {
   margin-bottom: 2rem;
 
   .contract-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
     .contract-table {
       // Column padding
       .mat-header-cell, .mat-cell, .mat-footer-cell {
-        padding-left: 1rem;
-        padding-right: 1rem; //2rem;
+        padding-left: $padding;
+        padding-right: $padding;
         &:first-of-type {
-          padding-left: 1rem;
+          padding-left: $padding;
         }
         &:last-of-type {
-          padding-right: 1rem;
+          padding-right: $padding;
         }
       }
 
@@ -27,6 +35,27 @@
       }
       .mat-no-data-row {
         text-align: center;
+      }
+
+      // Hide Outcomes and Attestations on narrow screens
+      @include lt-lg {
+        .mat-column-realizedPNL {
+          display: none;
+        }
+        .mat-column-rateOfReturn {
+          display: none;
+        }
+      }
+      @include lt-xl {
+        .mat-column-collateral {
+          display: none;
+        }
+        .mat-column-counterpartyCollateral {
+          display: none;
+        }
+        .mat-column-totalCollateral {
+          display: none;
+        }
       }
     }
   }

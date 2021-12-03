@@ -6,6 +6,7 @@
 
   <div class="wallet-state horizontal-pane">
     <div *ngIf="walletStateService.balances" class="pane balances">
+      <label translate>walletBalance.balance</label>
       <div class="balance-group">
         <label translate>walletBalance.confirmedBalance</label>
         <span class="value">{{ formatNumber(walletStateService.balances.confirmed) }}</span>
@@ -29,6 +30,7 @@
     </div>
   
     <div *ngIf="walletStateService.dlcWalletAccounting" class="pane pnl">
+      <label translate>walletBalance.dlcReturns</label>
       <div class="pnl-group">
         <label translate>walletBalance.profitAndLoss</label>
         <span class="value">{{ formatNumber(walletStateService.dlcWalletAccounting.pnl) }}</span>
@@ -43,8 +45,14 @@
   </div>
 
   <div class="button-group">
-    <button mat-stroked-button (click)="getNewAddress()">{{ 'walletBalance.getNewAddress' | translate }}</button>
-    <button mat-stroked-button (click)="sendFunds()">{{ 'walletBalance.sendFunds' | translate }}</button>
+    <button mat-stroked-button (click)="getNewAddress()">
+      <mat-icon>add_circle</mat-icon>
+      <span translate>walletBalance.getNewAddress</span>
+    </button>
+    <button mat-stroked-button (click)="sendFunds()">
+      <mat-icon>send</mat-icon>
+      <span translate>walletBalance.sendFunds</span>
+    </button>
   </div>
 
 </section>

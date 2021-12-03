@@ -117,9 +117,25 @@ fieldset {
 
 /** Material Design */
 
+/** Buttons */
+
+.mat-stroked-button.mat-stroked-button-sm {
+  padding: 0 8px;
+  line-height: 24px;
+  font-size: 12px;
+  min-width: 40px;
+}
+
+.mat-icon-button.mat-icon-button-sm {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
 .mat-icon-button {
-  .mat-icon-sm {
+  .mat-icon.mat-icon-sm {
     line-height: 16px;
+    vertical-align: sub;
   }
 }
 .mat-icon.mat-icon-sm {
@@ -128,6 +144,7 @@ fieldset {
   width: 16px;
   font-size: 16px;
   // line-height: 16px;
+  // vertical-align: sub;
 }
 
 .mat-mini-fab.mat-fab-sm {

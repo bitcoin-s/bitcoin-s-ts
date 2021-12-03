@@ -149,12 +149,15 @@
   </form>
 
   <h2 translate>newOffer.createOffer</h2>
-  <div class="description text-justify">
-    {{ 'newOfferDescription.createOffer' | translate }}
-  </div>
+  <div class="description text-justify" translate>newOfferDescription.createOffer</div>
+  <div class="description text-justify" translate>newOfferDescription.createOffer2</div>
 
   <div class="execute-container">
     <div class="button-group">
+      <button mat-stroked-button matTooltip="{{ 'action.copyToClipboard' | translate }}">
+        <mat-icon>content_copy</mat-icon>
+        <span translate>torDLCHostAddress</span>
+      </button>
       <button mat-stroked-button color="primary" (click)="onExecute()"
         [disabled]="form.invalid || payoutInputsInvalid || offerCreated">
         {{ 'action.execute' | translate }}
@@ -163,11 +166,19 @@
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </div>
+  </div>
 
-    <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
-    
-    <!-- Could have button to open new contract or auto-open new contract detail -->
+  <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
+  
+  <!-- Could have button to open new contract or auto-open new contract detail -->
 
+  <div class="result-footer">
+    <!-- <div class="button-group">
+      <button mat-stroked-button matTooltip="{{ 'action.copyToClipboard' | translate }}">
+        <mat-icon>content_copy</mat-icon>
+        <span>Tor DLC Host Address</span>
+      </button>
+    </div> -->
     <fieldset class="result-group" [disabled]="!newOfferResult">
       <label translate>result</label>
       <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>
@@ -178,4 +189,5 @@
       </button>
     </fieldset>
   </div>
+  
 </section>

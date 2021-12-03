@@ -22,6 +22,7 @@ export class ContractDetailComponent implements OnInit {
   public Object = Object
   public AlertType = AlertType
   public DLCState = DLCState
+  public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
   public formatPercent = formatPercent
   public isCancelable = isCancelable
@@ -86,12 +87,6 @@ export class ContractDetailComponent implements OnInit {
   isNumeric() {
     const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
-  }
-
-  onCopyContractId() {
-    console.debug('onCopyContractId()', this.dlc.contractId)
-    if (this.dlc.contractId)
-      copyToClipboard(this.dlc.contractId)
   }
 
   onCancelContract() {

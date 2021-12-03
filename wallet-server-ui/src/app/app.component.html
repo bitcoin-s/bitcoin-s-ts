@@ -24,8 +24,10 @@
         <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
           <label translate>torDLCHostAddress</label>
           <input [value]="walletStateService.torDLCHostAddress" disabled>
-          <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-            (click)="onCopyTorDLCHostAddress()"><mat-icon>content_copy</mat-icon></button>
+          <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+            (click)="onCopyTorDLCHostAddress()">
+            <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+          </button>
         </div>
 
         <div *ngIf="walletStateService.info" class="state-info">

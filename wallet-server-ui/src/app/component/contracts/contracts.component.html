@@ -17,7 +17,12 @@
       <ng-container matColumnDef="contractId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.contractId' | translate }}</th>
         <td mat-cell *matCellDef="let contract">
-          {{ formatShortHex( getContractId(contract.dlcId) ) }}
+          <span>{{ formatShortHex( getContractId(contract.dlcId) ) }}</span>
+          <button mat-icon-button class="mat-icon-button-sm"
+            matTooltip="{{ 'contracts.copyContractId' | translate }}"
+            (click)="copyToClipboard(getContractId(contract.dlcId)); $event.stopPropagation()">
+            <mat-icon class="mat-icon-sm material-icons-outlined">content_copy</mat-icon>
+          </button>
         </td>
       </ng-container>
       <ng-container matColumnDef="state">

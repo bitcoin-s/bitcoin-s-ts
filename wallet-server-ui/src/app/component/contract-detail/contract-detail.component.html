@@ -40,7 +40,7 @@
     </div>
     <div class="field-group">
       <label translate>contractDetail.feeRate</label>
-      <input [value]="dlc.feeRate" disabled>
+      <input class="numeric" [value]="dlc.feeRate" disabled>
       <span translate>unit.satsPerVbyte</span>
     </div>
 
@@ -49,17 +49,17 @@
     <label class="group-label" translate>contractDetail.collateral</label>
     <div class="field-group">
       <label translate>contractDetail.localCollateral</label>
-      <input [value]="formatNumber(dlc.localCollateral)" disabled>
+      <input class="numeric" [value]="formatNumber(dlc.localCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
     <div class="field-group">
       <label translate>contractDetail.remoteCollateral</label>
-      <input [value]="formatNumber(dlc.remoteCollateral)" disabled>
+      <input class="numeric" [value]="formatNumber(dlc.remoteCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
     <div class="field-group">
       <label translate>contractDetail.totalCollateral</label>
-      <input [value]="formatNumber(dlc.totalCollateral)" disabled>
+      <input class="numeric" [value]="formatNumber(dlc.totalCollateral)" disabled>
       <span translate>unit.sats</span>
     </div>
 
@@ -68,23 +68,23 @@
     <div *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined" class="payout-group">
       <label class="group-label" translate>contractDetail.contractOutcome</label>
       <div class="field-group">
-        <label translate>contractDetail.myPayout</label>
-        <input [value]="formatNumber(dlc.myPayout)" disabled>
+        <label translate>contractDetail.yourPayout</label>
+        <input class="numeric" [value]="formatNumber(dlc.myPayout)" disabled>
         <span translate>unit.sats</span>
       </div>
       <div class="field-group">
         <label translate>contractDetail.counterpartyPayout</label>
-        <input [value]="formatNumber(dlc.counterPartyPayout)" disabled>
+        <input class="numeric" [value]="formatNumber(dlc.counterPartyPayout)" disabled>
         <span translate>unit.sats</span>
       </div>
       <div class="field-group">
         <label translate>contractDetail.pnl</label>
-        <input [value]="dlc.pnl" disabled>
+        <input class="numeric" [value]="dlc.pnl" disabled>
         <span translate>unit.sats</span>
       </div>
       <div class="field-group">
         <label translate>contractDetail.rateOfReturn</label>
-        <input [value]="formatPercent(dlc.rateOfReturn, 2, false)" disabled>
+        <input class="numeric" [value]="formatPercent(dlc.rateOfReturn, 2, false)" disabled>
         <span translate>unit.percent</span>
       </div>
 
@@ -109,19 +109,29 @@
     <div class="field-group">
       <label translate>contractDetail.dlcId</label>
       <input [value]="dlc.dlcId" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" 
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(dlc.dlcId)" [disabled]= "!dlc.dlcId">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+      </button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractId</label>
       <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
-      <button mat-icon-button class="copy-button" 
+      <button mat-icon-button class="copy-button mat-icon-button-sm" 
         matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="onCopyContractId()" [disabled]= "!dlc.contractId">
-        <mat-icon>content_copy</mat-icon>
+        (click)="copyToClipboard(dlc.contractId)" [disabled]= "!dlc.contractId">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
     </div>
     <div class="field-group">
       <label translate>contractDetail.contractInfo</label>
       <input [value]="dlc.contractInfo" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" 
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(dlc.contractInfo)" [disabled]= "!dlc.contractInfo">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+      </button>
     </div>
 
     <div class="spacer"></div>
@@ -129,7 +139,8 @@
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastFundingTransaction()"
+      <button mat-stroked-button class="mat-stroked-button-sm"
+        (click)="onRebroadcastFundingTransaction()"
         [disabled]="!isFundingTxRebroadcastable(dlc.state)">
         {{ 'contractDetail.rebroadcast' | translate }}
       </button>
@@ -138,7 +149,8 @@
     <div class="field-group">
       <label translate>contractDetail.closingTransactionId</label>
       <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
-      <button mat-stroked-button (click)="onRebroadcastClosingTransaction()"
+      <button mat-stroked-button class="mat-stroked-button-sm"
+        (click)="onRebroadcastClosingTransaction()"
         [disabled]="!dlc.closingTxId">
         {{ 'contractDetail.rebroadcast' | translate }}
       </button>
@@ -147,7 +159,8 @@
     <div class="field-group">
       <label translate>contractDetail.oracleSignatures</label>
       <input [(ngModel)]="oracleSignature" [disabled]="!isExecutable(dlc.state)">
-      <button mat-stroked-button (click)="onOracleSignatures()"
+      <button mat-stroked-button class="mat-stroked-button-sm"
+        (click)="onOracleSignatures()"
         [disabled]="!isExecutable(dlc.state) || !oracleSignature">
         {{ 'action.execute' | translate }}
       </button>

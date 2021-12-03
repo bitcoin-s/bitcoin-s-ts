@@ -4,13 +4,17 @@
 
   <div class="field-group">
     <label translate>dialog.sendFunds.address</label>
-    <!-- Could placeholder current network-->
-    <!-- TODO : inputsValid() is not re-runinng on address edit -->
+    <!-- (blur)="inputsValid()" (input)="inputsValid()" -->
     <input type="text" [(ngModel)]="address">
+    <!-- Validation is just on length, not on ultimate validity, probably not safe to show -->
+    <!--
+    <span *ngIf="address && validAddress"><mat-icon class="material-icons-outlined">check_circle</mat-icon></span>
+    <span *ngIf="address && !validAddress"><mat-icon class="material-icons-outlined">cancel</mat-icon></span>
+    -->
   </div>
   <div class="field-group">
     <label translate>dialog.sendFunds.amount</label>
-    <input type="number" placeholder="{{ (sendMax? 'unit.max' : 'unit.sats') | translate }}"
+    <input type="number" placeholder="{{ (sendMax? 'unit.allFunds' : 'unit.sats') | translate }}"
       [(ngModel)]="amount" [disabled]="sendMax">
     <mat-button-toggle [(ngModel)]="sendMax" (change)="onMax()">
       {{ 'unit.max' | translate }}

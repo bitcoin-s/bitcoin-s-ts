@@ -12,8 +12,9 @@ import { validateBitcoinAddress } from '~util/utils'
 export class SendFundsDialogComponent implements OnInit {
 
   address = ''
+  validAddress = false
   amount: number
-  sendMax: boolean = false
+  sendMax = false
   feeRate: number
 
   action = 'action.ok'
@@ -41,9 +42,24 @@ export class SendFundsDialogComponent implements OnInit {
     // Validate address is a valid bitcoin address
     if (!validateBitcoinAddress(this.walletStateService.info.network, this.address)) {
       validInputs = false
+      this.validAddress = false
+    } else {
+      this.validAddress = true
     }
 
     return validInputs
+  }
+
+  onAddressPaste(event: ClipboardEvent) {
+    console.debug('onAddressPaste()', event)
+
+    // Validating clipboard data since blur() event hasn't happened on <input> yet
+    const clipboardData = event.clipboardData
+    if (clipboardData) {
+      const trimmedPastedText = clipboardData.getData('text').trim()
+      this.validAddress = validateBitcoinAddress(this.walletStateService.info.network, trimmedPastedText)
+      // this.address = trimmedPastedText
+    }
   }
 
   onMax() {

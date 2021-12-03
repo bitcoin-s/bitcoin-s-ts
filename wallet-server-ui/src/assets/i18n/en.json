@@ -50,7 +50,8 @@
     "percent": "%",
     "satsPerVbyte": "sats/vbyte",
     "ellipsis": "...",
-    "max": "MAX"
+    "max": "MAX",
+    "allFunds": "All Funds"
   },
 
   "configuration": {
@@ -75,11 +76,13 @@
 
   "walletBalance": {
     "heading": "Wallet",
-    "confirmedBalance": "Confirmed Balance",
-    "unconfirmedBalance": "Unconfirmed Balance",
-    "reserveBalance": "Reserve Balance",
-    "totalBalance": "Total Balance",
-    "profitAndLoss": "Profit and Loss",
+    "balance": "Balance",
+    "dlcReturns": "DLC Returns",
+    "confirmedBalance": "Confirmed",
+    "unconfirmedBalance": "Unconfirmed",
+    "reserveBalance": "Reserve",
+    "totalBalance": "Total",
+    "profitAndLoss": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
     "getNewAddress": "Get New Address",
     "sendFunds": "Send Funds"
@@ -111,7 +114,8 @@
     "yourCollateral": "Your collateral at stake (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
-    "createOffer": "Create this DLC Offer in your wallet and reserve funds. You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
+    "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
+    "createOffer2": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
   },
 
   "newOfferValidation": {
@@ -136,8 +140,8 @@
     "maturityDate": "Maturity Date",
     "oraclePublicKey": "Oracle Public Key",
     "collateral": "Collateral",
-    "yourCollateral": "Your",
-    "counterpartyCollateral": "Counterparty",
+    "yourCollateral": "Your's",
+    "counterpartyCollateral": "Counterparty's",
     "totalCollateral": "Total",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
@@ -162,7 +166,7 @@
   },
 
   "acceptOfferDescription": {
-    "acceptOffer": "If everything in the offer appears correct, you can complete the DLC contract by exchanging signatures with your counterparty. This can be done over Tor or by exchanging saved files.",
+    "acceptOffer": "If everything in the offer appears correct, you can complete the DLC contract by exchanging signatures with your counterparty. The exchange can be done over Tor or with saved files.",
     "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online.",
     "filename": "Filename to save Accepted DLC Offer to",
     "acceptOfferType": {
@@ -176,13 +180,14 @@
     "eventId": "Event Id",
     "contractId": "Contract Id",
     "state": "State",
-    "realizedPNL": "Realized PNL (sats)",
+    "realizedPNL": "Realized PNL",
     "rateOfReturn": "Rate of Return",
-    "collateral": "Collateral (sats)",
-    "counterpartyCollateral": "Counterparty Collateral (sats)",
-    "totalCollateral": "Total Collateral (sats)",
+    "collateral": "Collateral",
+    "counterpartyCollateral": "Counterparty Collateral",
+    "totalCollateral": "Total Collateral",
     "lastUpdated": "Last Updated",
-    "noContracts": "No DLC Contracts Started"
+    "noContracts": "No DLC Contracts Started",
+    "copyContractId": "Copy Contract Id to Clipboard"
   },
 
   "contractDetail": {
@@ -213,7 +218,7 @@
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
     "contractOutcome": "Contract Outcome",
-    "myPayout": "My Payout",
+    "yourPayout": "Your Payout",
     "counterpartyPayout": "Counterparty Payout",
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return"
