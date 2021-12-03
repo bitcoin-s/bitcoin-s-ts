@@ -80,7 +80,7 @@
     "dlcReturns": "DLC Returns",
     "confirmedBalance": "Confirmed",
     "unconfirmedBalance": "Unconfirmed",
-    "reserveBalance": "Reserve",
+    "reservedBalance": "Reserved",
     "totalBalance": "Total",
     "profitAndLoss": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
@@ -261,7 +261,8 @@
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",
-      "content": "{{ amount }} sats successfully sent to {{ address }}"
+      "content": "{{ amount }} sats successfully sent to {{ address }}. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "linksContent": "View the transaction on Mempool.space at"
     },
     "sendMessageError": {
       "title": "Error sending message to appServer"

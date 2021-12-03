@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { WalletMessageType } from '~type/wallet-server-types'
-import { formatNumber, formatPercent } from '~util/utils'
+import { formatNumber, formatPercent, mempoolTransactionURL } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
@@ -67,29 +67,39 @@ export class WalletBalanceComponent implements OnInit {
           if (sendObj.sendMax) {
             console.error('sweep wallet is untested')
 
-            return
-
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sweepwallet,
               [sendObj.address, sendObj.feeRate])).subscribe(r => {
                 console.debug('sweepwallet', r)
                 if (r.result) { // tx.txIdBE from WalletRoutes.scala ? Should this really be the return type?
-                  // TODO : Success dialog
+                  const txId = r.result
+
+                  const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                    data: {
+                      title: 'dialog.sendFundsSuccess.title',
+                      content: 'dialog.sendFundsSuccess.content',
+                      params: { amount: formatNumber(sats), address: sendObj.address, txId },
+                      linksContent: 'dialog.sendFundsSuccess.linksContent',
+                      links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+                      action: 'action.ok',
+                      showCancelButton: false,
+                    }
+                  })
                 }
               })
           } else {
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sendtoaddress,
               [sendObj.address, bitcoin, sendObj.feeRate, noBroadcast])).subscribe(r => {
                 if (r.result) {
-  
-                  // TODO : Inject link
-  
+                  const txId = r.result
+
                   const dialog = this.dialog.open(ConfirmationDialogComponent, {
                     data: {
                       title: 'dialog.sendFundsSuccess.title',
                       content: 'dialog.sendFundsSuccess.content',
-                      params: { amount: formatNumber(sats), address: sendObj.address },
+                      params: { amount: formatNumber(sats), address: sendObj.address, txId },
+                      linksContent: 'dialog.sendFundsSuccess.linksContent',
+                      links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
                       action: 'action.ok',
-                      // actionColor: 'primary',
                       showCancelButton: false,
                     }
                   })

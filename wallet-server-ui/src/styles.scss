@@ -154,6 +154,14 @@ fieldset {
   transform: scale(0.7);
 }
 
+.mat-button-toggle.mat-button-toggle-sm {
+  .mat-button-toggle-button {
+    .mat-button-toggle-label-content {
+      line-height: 30px;
+    }
+  }
+}
+
 /** Material Design Forms */
 
 // Center checkbox in pseudo-mat-form-field

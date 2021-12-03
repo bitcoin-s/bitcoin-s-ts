@@ -466,7 +466,8 @@ export function ExecuteDLCRefund(contractIdHex: string, noBroadcast: boolean) {
 
   const m = getMessageBody(WalletMessageType.executedlcrefund, [contractIdHex, noBroadcast])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // Return is txId
+    return <ServerResponse<string>>response
   })
 }
 
@@ -479,6 +480,7 @@ export function SendToAddress(address: string, bitcoins: number, satsPerVByte: n
 
   const m = getMessageBody(WalletMessageType.sendtoaddress, [address, bitcoins, satsPerVByte, noBroadcast])
   return SendServerMessage(m).then(response => {
+    // Return is txId
     return <ServerResponse<string>>response
   })
 }

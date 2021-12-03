@@ -70,7 +70,6 @@ export class NewOfferComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter()
 
   form: FormGroup
-  // convenience getter for easy access to form fields
   get f() { return this.form.controls }
 
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>

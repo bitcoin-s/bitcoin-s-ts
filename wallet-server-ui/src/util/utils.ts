@@ -40,6 +40,18 @@ export function validateBitcoinAddress(network: string, address: string) {
   return false
 }
 
+export function getValidationRegexForNetwork(network: string) {
+  switch (network) {
+    case BitcoinNetwork.test:
+      return TESTNET_REGEX
+    case BitcoinNetwork.main:
+      return MAINNET_REGEX
+    default:
+      console.error('unknown network', network)
+      return TESTNET_REGEX
+  }
+}
+
 export function formatDatePlusDays(date: string, days: number) {
   const result = new Date(date)
   result.setDate(result.getDate() + days)
@@ -97,7 +109,7 @@ export function formatShortHex(s: string|null|undefined) {
   return ''
 }
 
-export function mempoolTransactionURL(txIdHex: string, network: BitcoinNetwork) {
+export function mempoolTransactionURL(txIdHex: string, network: string) {
   switch (network) {
     case BitcoinNetwork.main:
       return `https://mempool.space/tx/${txIdHex}`
