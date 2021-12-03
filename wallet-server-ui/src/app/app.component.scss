@@ -17,6 +17,8 @@
   .wallet-container {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
 
     > * {
       flex-grow: 1;

@@ -3,9 +3,17 @@
   .operations {
     display: flex;
     flex-direction: column;
+
+    border: 1px solid rgba(0,0,0,.2);
+    padding: 1rem;
     
     .field-group {
       margin-bottom: 0.5rem;
+    }
+
+    .result-group {
+      margin-top: 0.25rem;
+      padding-bottom: 0;
     }
   }
 }

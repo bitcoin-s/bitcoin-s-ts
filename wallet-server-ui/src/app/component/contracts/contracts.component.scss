@@ -11,6 +11,18 @@ $padding: 0.5rem;
     justify-content: center;
 
     .contract-table {
+
+      .header-row-group {
+        height: 24px; // original 56px
+      }
+      .header-row-columns {
+        height: 40px; // original 56px
+      }
+
+      .mat-column-header-row-spacer-group {
+        border: 0;
+      }
+
       // Column padding
       .mat-header-cell, .mat-cell, .mat-footer-cell {
         padding-left: $padding;
@@ -43,6 +55,15 @@ $padding: 0.5rem;
 
       // Hide Outcomes and Attestations on narrow screens
       @include lt-lg {
+        .header-row-group {
+          display: none;
+        }
+        .mat-column-header-row-spacer-group {
+          display: none;
+        }
+        .mat-column-header-row-return-group {
+          display: none;
+        }
         .mat-column-realizedPNL {
           display: none;
         }
@@ -51,6 +72,9 @@ $padding: 0.5rem;
         }
       }
       @include lt-xl {
+        .mat-column-header-row-collateral-group {
+          display: none;
+        }
         .mat-column-collateral {
           display: none;
         }
