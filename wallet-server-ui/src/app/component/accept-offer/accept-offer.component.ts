@@ -89,8 +89,6 @@ export class AcceptOfferComponent implements OnInit {
     this.wipeInvalidFormStates()
   }
 
-  peerAddress: string
-
   executing = false
   offerAccepted = false
 
@@ -102,7 +100,6 @@ export class AcceptOfferComponent implements OnInit {
     this.maturityDate = formatISODate(this.event.maturity)
     this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
     this.acceptOfferType = AcceptOfferType.TOR
-    this.peerAddress = ''
     this.result = ''
     this.executing = false
     this.offerAccepted = false
@@ -161,9 +158,10 @@ export class AcceptOfferComponent implements OnInit {
   onExecute() {
     console.debug('onExecute()')
 
+    const v = this.form.value
     let peerAddress
-    if (this.peerAddress) {
-      peerAddress = this.peerAddress.trim()
+    if (v.peerAddress) {
+      peerAddress = v.peerAddress.trim()
       const validAddress = validateTorAddress(peerAddress)
       if (!validAddress) {
         const dialog = this.dialog.open(ErrorDialogComponent, {
@@ -183,13 +181,13 @@ export class AcceptOfferComponent implements OnInit {
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
         [this.offer.hex, peerAddress])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
-          if (r.result) {// Empty response right now
+          // if (r.result) { // Empty response right now
             // TODO : This should probably be an Alert instead
             this.result = this.translate.instant('acceptOffer.tor.success')
             this.walletStateService.refreshDLCStates()
             this.executing = false
             this.offerAccepted = true
-          }
+          // }
         })
     } else {
       console.debug('acceptdlcoffer to hex')

@@ -187,10 +187,13 @@ export class ContractDetailComponent implements OnInit {
     const noBroadcast = false
 
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast])).subscribe(r => {
-      console.debug('executedlcrefund', r)
+      // console.debug('executedlcrefund', r)
 
       if (r.result) {
+        const txId = r.result
         this.refreshDLCState()
+
+        // TODO : Dialog with txId and link to mempool or link on page
       }
     })
   }
