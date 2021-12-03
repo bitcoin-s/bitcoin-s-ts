@@ -13,15 +13,21 @@
           (acceptOffer)="onAcceptOffer($event)">
         </app-build-accept-offer>
 
-        <app-wallet-balance></app-wallet-balance>
+        <div class="wallet-container">
+          <app-wallet-balance></app-wallet-balance>
 
+          <app-dlc-file hidden></app-dlc-file>
+        </div>
+        
         <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
 
         <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
           <label translate>torDLCHostAddress</label>
           <input [value]="walletStateService.torDLCHostAddress" disabled>
-          <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-            (click)="onCopyTorDLCHostAddress()"><mat-icon>content_copy</mat-icon></button>
+          <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+            (click)="onCopyTorDLCHostAddress()">
+            <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+          </button>
         </div>
 
         <div *ngIf="walletStateService.info" class="state-info">
@@ -30,6 +36,9 @@
           <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
           <div class="config">
             <button mat-stroked-button (click)="showConfiguration()">Config</button>
+          </div>
+          <div class="debug">
+            <button mat-stroked-button (click)="showDebug()">Debug</button>
           </div>
         </div>
   
@@ -83,6 +92,9 @@
       <div class="drawer-container">
         <app-configuration *ngIf="configurationVisible"
           (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+
+        <app-debug *ngIf="debugVisible"
+          (close)="onDebugClose()"></app-debug>
 
         <app-contract-detail *ngIf="contractDetailsVisible && selectedDLC && selectedDLCContractInfo" 
           [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"

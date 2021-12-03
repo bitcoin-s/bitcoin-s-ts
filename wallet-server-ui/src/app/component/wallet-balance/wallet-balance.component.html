@@ -6,45 +6,53 @@
 
   <div class="wallet-state horizontal-pane">
     <div *ngIf="walletStateService.balances" class="pane balances">
+      <label translate>walletBalance.balance</label>
       <div class="balance-group">
         <label translate>walletBalance.confirmedBalance</label>
-        <span class="value">{{ walletStateService.balances.confirmed }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.confirmed) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.unconfirmedBalance</label>
-        <span class="value">{{ walletStateService.balances.unconfirmed }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.unconfirmed) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.reserveBalance</label>
-        <span class="value">{{ walletStateService.balances.reserved }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.reserved) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
         <label translate>walletBalance.totalBalance</label>
-        <span class="value">{{ walletStateService.balances.total }}</span>
+        <span class="value">{{ formatNumber(walletStateService.balances.total) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
     </div>
   
     <div *ngIf="walletStateService.dlcWalletAccounting" class="pane pnl">
+      <label translate>walletBalance.dlcReturns</label>
       <div class="pnl-group">
         <label translate>walletBalance.profitAndLoss</label>
-        <span class="value">{{ walletStateService.dlcWalletAccounting.pnl }}</span>
+        <span class="value">{{ formatNumber(walletStateService.dlcWalletAccounting.pnl) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="pnl-group">
         <label translate>walletBalance.rateOfReturn</label>
-        <span class="value">{{ formatPercent(walletStateService.dlcWalletAccounting.rateOfReturn) }}</span>
+        <span class="value">{{ formatPercent(walletStateService.dlcWalletAccounting.rateOfReturn, 2, false) }}</span>
         <span class="unit" translate>unit.percent</span>
       </div>
     </div>
   </div>
 
   <div class="button-group">
-    <button mat-stroked-button (click)="getNewAddress()">{{ 'walletBalance.getNewAddress' | translate }}</button>
-    <button mat-stroked-button (click)="sendFunds()">{{ 'walletBalance.sendFunds' | translate }}</button>
+    <button mat-stroked-button (click)="getNewAddress()">
+      <mat-icon>add_circle</mat-icon>
+      <span translate>walletBalance.getNewAddress</span>
+    </button>
+    <button mat-stroked-button (click)="sendFunds()">
+      <mat-icon>send</mat-icon>
+      <span translate>walletBalance.sendFunds</span>
+    </button>
   </div>
 
 </section>

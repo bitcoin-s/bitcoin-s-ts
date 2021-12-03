@@ -48,6 +48,7 @@ export class AppComponent implements OnInit {
   selectedDLCContractInfo: ContractInfo|null
 
   configurationVisible = false
+  debugVisible = false
   offerVisible = false
   contractDetailsVisible = false
   
@@ -76,6 +77,7 @@ export class AppComponent implements OnInit {
     console.debug('showConfiguration()')
 
     this.configurationVisible = true
+    this.debugVisible = false
     this.offerVisible = false
     this.contractDetailsVisible = false
 
@@ -88,6 +90,31 @@ export class AppComponent implements OnInit {
     this.configurationVisible = false
 
     this.rightDrawer.close()
+  }
+
+  showDebug() {
+    console.debug('showDebug()')
+
+    this.configurationVisible = false
+    this.debugVisible = true
+    this.offerVisible = false
+    this.contractDetailsVisible = false
+
+    this.rightDrawer.open()
+  }
+
+  onDebugClose() {
+    console.debug('onDebugClose()')
+
+    this.debugVisible = false
+
+    this.rightDrawer.close()
+  }
+
+  // Clicking off of drawer doesn't call close() so this cleans up state
+  hideConfigDebug() {
+    this.configurationVisible = false
+    this.debugVisible = false
   }
 
   // Empty string for none
@@ -133,6 +160,7 @@ export class AppComponent implements OnInit {
   onAnnouncement(announcement: AnnouncementWithHex) {
     console.debug('onAnnouncement()', announcement)
 
+    this.hideConfigDebug()
     this.hideOffers()
     this.selectedAnnouncement = announcement
     this.hideSelectedDLC()
@@ -143,6 +171,7 @@ export class AppComponent implements OnInit {
   onContractInfo(contractInfo: ContractInfoWithHex) {
     console.debug('onContractInfo()', contractInfo)
 
+    this.hideConfigDebug()
     this.hideOffers()
     this.selectedContractInfo = contractInfo
     this.hideSelectedDLC()
@@ -153,6 +182,7 @@ export class AppComponent implements OnInit {
   onAcceptOffer(offer: OfferWithHex) {
     console.debug('onAcceptOffer()', offer)
 
+    this.hideConfigDebug()
     this.hideOffers()
     this.selectedOffer = offer
     this.hideSelectedDLC()
@@ -166,6 +196,7 @@ export class AppComponent implements OnInit {
     this.selectedDLC = dlcContractInfo.dlc
     this.selectedDLCContractInfo = dlcContractInfo.contractInfo
 
+    this.hideConfigDebug()
     this.hideOffers()
     this.contractDetailsVisible = true
     this.rightDrawer.open()

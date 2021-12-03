@@ -1,14 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MatDatepickerInput } from '@angular/material/datepicker'
+import { TranslateService } from '@ngx-translate/core'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { CoreMessageType, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
+import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, dateToSecondsSinceEpoch, formatDateTime } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDatePlusDays, formatDateTime } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
+import { AlertType } from '../alert/alert.component'
 
-const DEFAULT_FEE_RATE = 1 // sats/vbyte
+
+const DEFAULT_DAYS_UNTIL_REFUND = 7
 
 @Component({
   selector: 'app-new-offer',
@@ -16,6 +21,9 @@ const DEFAULT_FEE_RATE = 1 // sats/vbyte
   styleUrls: ['./new-offer.component.scss']
 })
 export class NewOfferComponent implements OnInit {
+
+  public AlertType = AlertType
+  public copyToClipboard = copyToClipboard
 
   private _announcement!: AnnouncementWithHex
   @Input() set announcement (announcement: AnnouncementWithHex) {
@@ -33,11 +41,12 @@ export class NewOfferComponent implements OnInit {
   }
   get contractInfo() { return this._contractInfo }
 
-  private _event: Event
-  set event(event: Event) {
-    this._event = event
+  get enumContractDescriptor() {
+    return <EnumContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
   }
-  get event() { return this._event }
+  get numericContractDescriptor() {
+    return <NumericContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
+  }
 
   get hex() {
     if (this.announcement) return this.announcement.hex
@@ -45,44 +54,71 @@ export class NewOfferComponent implements OnInit {
     return ''
   }
 
+  private _event: Event
+  set event(event: Event) {
+    this._event = event
+  }
+  get event() { return this._event }
+
   get enumEventDescriptor() {
     return <EnumEventDescriptor>this.event.descriptor
   }
-
   get numericEventDescriptor() {
     return <NumericEventDescriptor>this.event.descriptor
   }
 
-  // ContractInfo
-
-  get enumContractDescriptor() {
-    return <EnumContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
-  }
-
-  get numericContractDescriptor() {
-    return <NumericContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
-  }
-
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  // getEventDescriptor() {
-  //   if (this.isEnum())
-  //     return <EnumEventDescriptor>this.announcement.announcement.event.descriptor
-  //   else // if (this.isNumeric())
-  //     return <NumericEventDescriptor>this.announcement.announcement.event.descriptor
-  // }
+  form: FormGroup
+  // convenience getter for easy access to form fields
+  get f() { return this.form.controls }
+
+  @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 
   maturityDate: string
 
   // enum
   outcomeValues: { [label: string]: number|null } = {}
+  updateOutcomeValue(label: string, event: any) {
+    console.debug('updateOutcomeValue()', label, event)
+    let v = event.target.valueAsNumber
+    // isNaN is blank case and v < 0 is invalid, handling here
+    if (isNaN(v) || v < 0) v = null
+    this.outcomeValues[label] = v
+    this.validatePayoutInputs()
+  }
   // numeric
   points: PayoutFunctionPoint[] = []
+  updatePointOutcome(p: PayoutFunctionPoint, event: any) {
+    console.debug('updatePointOutcome()', p, event)
+    let v = event.target.valueAsNumber
+    // isNaN is blank case and v < 0 is invalid, handling here
+    if (isNaN(v) || v < 0) v = null
+    p.outcome = v
+    this.validatePayoutInputs()
+  }
+  updatePointPayout(p: PayoutFunctionPoint, event: any) {
+    console.debug('updatePointPayout()', p, event)
+    let v = event.target.valueAsNumber
+    // isNaN is blank case and v < 0 is invalid, handling here
+    if (isNaN(v) || v < 0) v = null
+    p.payout = v
+    this.validatePayoutInputs()
+  }
   roundingIntervals: any[] = []
 
+  payoutInputsInvalid = false
+  payoutValidationError: string = ''
+
+  // TODO : Should be able to disappear these into form state
   yourCollateral: number // wallet users funds in contract
   refundDate: string // Date
-  feeRate: number = DEFAULT_FEE_RATE // TODO : From estimated fee rate
+  feeRate: number
+
+  minDate: Date
+
+  executing = false
+  offerCreated = false
 
   newOfferResult: string = ''
 
@@ -117,12 +153,21 @@ export class NewOfferComponent implements OnInit {
     }
 
     this.yourCollateral = <number><unknown>null
-    // This should not get auto-set, should be required for user to enter.
-    // May want to should maturity date on form
-    this.refundDate = new Date(this.event.maturity).toISOString()
-    this.feeRate = DEFAULT_FEE_RATE
+    // This should not get auto-set, should be required for user to enter, default to day after maturity
+    this.refundDate = formatDatePlusDays(this.event.maturity, DEFAULT_DAYS_UNTIL_REFUND) // new Date(this.event.maturity).toISOString()
+    this.feeRate = this.walletStateService.feeEstimate
+
+    this.minDate = new Date(this.event.maturity)
 
     this.newOfferResult = ''
+
+    if (this.form) {
+      this.form.patchValue({
+        refundDate: datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND),
+        yourCollateral: this.yourCollateral,
+        feeRate: this.feeRate,
+      })
+    }
   }
 
   getPoint(outcome: number, payout: number, extraPrecision: number, isEndpoint: boolean) {
@@ -133,9 +178,16 @@ export class NewOfferComponent implements OnInit {
     return { outcome, roundingInterval }
   }
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
+    private formBuilder: FormBuilder, private translate: TranslateService) { }
 
   ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      refundDate: [datePlusDays(new Date(this.event.maturity), 1), Validators.required],
+      yourCollateral: [this.yourCollateral, Validators.required],
+      feeRate: [this.feeRate, Validators.required],
+      // outcomes?
+    })
   }
 
   onClose() {
@@ -156,10 +208,18 @@ export class NewOfferComponent implements OnInit {
     let cd: NumericEventDescriptor
     if (this.announcement) {
       cd = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
-    } else {
+    } else { // contractInfo
       cd = <NumericEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
     }
     return cd.base !== undefined
+  }
+
+  onRefundDateAutofill(event: any) {
+    console.debug('onRefundDateAutofill()', event);
+    if (event.isAutofilled && event.target) {
+      const date = event.target.value
+      this.datePicker.value = new Date(date)
+    }
   }
 
   onExecute() {
@@ -167,6 +227,10 @@ export class NewOfferComponent implements OnInit {
 
     // this.contractInfo.hex is no good, need announcement hex from this.contractInfo
     const hex = this.announcement ? this.announcement.hex : this.contractInfo.contractInfo.oracleInfo.announcement.hex
+    const v = this.form.value
+
+    this.executing = true
+    // TODO : Error handlers to unset executing in failure cases
 
     if (this.isEnum()) {
       const payoutVals = this.buildPayoutVals()
@@ -180,23 +244,21 @@ export class NewOfferComponent implements OnInit {
   
           if (r.result) {
             const contractInfoTLV = <string>r.result
-
-            // TESTING
-            // this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [contractInfoTLV])).subscribe(r => {
-            //   console.warn('new contract info:', r)
-            // })
-
-            const collateral = this.yourCollateral
-            const feeRate = this.feeRate
-            // TODO : Date input
+            const collateral = v.yourCollateral
+            const feeRate = v.feeRate
             const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
-            const refundLT = dateToSecondsSinceEpoch(new Date(this.refundDate))
+            const refundLT = dateToSecondsSinceEpoch(v.refundDate)
+
+            // console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
+
             this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
               [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
               console.warn('CreateDLCOffer()', r)
               if (r.result) {
                 this.newOfferResult = r.result
                 this.walletStateService.refreshDLCStates()
+                this.executing = false
+                this.offerCreated = true
               }
             })
           }
@@ -212,28 +274,23 @@ export class NewOfferComponent implements OnInit {
         [hex, maxCollateral, numericPayoutVals])).subscribe(r => {
         console.warn('createcontractinfo', r)
 
-        // Testing
-        // if (r.result) {
-        //   this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, 
-        //     [r.result])).subscribe(r => {
-        //     console.warn('decodecontractinfo', r)
-        //   })
-        // }
-        // return
-
         if (r.result) {
           const contractInfoTLV = <string>r.result
-          const collateral = this.yourCollateral
-          const feeRate = this.feeRate
-          // TODO : Date input
+          const collateral = v.yourCollateral
+          const feeRate = v.feeRate
           const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
-          const refundLT = dateToSecondsSinceEpoch(new Date(this.refundDate))
+          const refundLT = dateToSecondsSinceEpoch(v.refundDate)
+
+          console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
+
           this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
             [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
             console.warn('CreateDLCOffer()', r)
             if (r.result) {
               this.newOfferResult = r.result
               this.walletStateService.refreshDLCStates()
+              this.executing = false
+              this.offerCreated = true
             }
           })
         }
@@ -265,51 +322,77 @@ export class NewOfferComponent implements OnInit {
     return maxCollateral
   }
 
-  inputsValid() {
+  // Validate enum/numeric payouts
+  validatePayoutInputs() {
+    const v = this.form.value
     let validInputs = true
 
-    // Values must exist and be positive
-    if (!this.yourCollateral || this.yourCollateral <= 0) {
-      validInputs = false
-    }
-    if (!this.feeRate || this.feeRate <= 0) {
-      validInputs = false
-    }
+    // console.debug('outcomeValues:', this.outcomeValues)
+    // console.debug('points:', this.points)
+
+    // TODO : May want to produce compound error messages, currently stop at first
+    let errorString = ''
 
     if (this.isEnum()) {
       // Values must exist and be non-negative
       for (const label of Object.keys(this.outcomeValues)) {
-        if (this.outcomeValues[label] === null || <number>this.outcomeValues[label] < 0) {
+        if (this.outcomeValues[label] === null) {
           validInputs = false
+          errorString = this.translate.instant('newOfferValidation.payoutRequired') // 'payout values must be populated'
+          break
+        }
+        if (<number>this.outcomeValues[label] < 0) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.payoutNonNegative')
           break
         }
       }
-      const maxCollateral = this.computeMaxCollateral(this.buildPayoutVals())
-      if (this.yourCollateral > maxCollateral) {
-        validInputs = false
+      if (validInputs) {
+        const maxCollateral = this.computeMaxCollateral(this.buildPayoutVals())
+        if (v.yourCollateral > maxCollateral) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral }) // `yourCollateral (${v.yourCollateral}) must be equal to maxCollateral (${maxCollateral}) or less`
+        }
       }
     } else if (this.isNumeric()) {
       for (const p of this.points) {
-        if (p.payout === null || p.payout < 0) {
+        if (p.outcome === null) {
           validInputs = false
+          errorString = this.translate.instant('newOfferValidation.outcomeRequired')
+          break
+        }
+        if (p.outcome < 0) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.outcomeNonNegative')
+          break
+        }
+        if (p.payout === null) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.payoutRequired')
+          break
+        }
+        if (p.payout < 0) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.payoutNonNegative')
           break
         }
         // TODO : Any Endpoint logic to check
       }
 
-      const maxCollateral = this.computeNumericMaxCollateral(this.points)
-      if (this.yourCollateral > maxCollateral) {
-        validInputs = false
+      if (validInputs) {
+        const maxCollateral = this.computeNumericMaxCollateral(this.points)
+        if (v.yourCollateral > maxCollateral) {
+          validInputs = false
+          errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral }) // `yourCollateral (${v.yourCollateral}) must be equal to maxCollateral (${maxCollateral}) or less`
+        }
       }
     }
 
-    return validInputs
-  }
+    // This is causing binding issues
+    if (errorString) this.payoutValidationError = errorString
+    else this.payoutValidationError = ''
 
-  onCopyResult() {
-    console.debug('onCopyResult()')
-
-    copyToClipboard(this.newOfferResult)
+    this.payoutInputsInvalid = !validInputs
   }
 
   // Numeric
@@ -319,14 +402,16 @@ export class NewOfferComponent implements OnInit {
     const newPoint = this.getPoint(<number><unknown>null, <number><unknown>null, 0, true)
     const where = this.points.length>0 ? this.points.length-1 : 0
     this.points.splice(where, 0, newPoint)
+    this.validatePayoutInputs()
   }
 
-  onRemovePointClicked(point: PayoutFunctionPoint) {
-    console.debug('onRemovePointClicked()')
+  removePoint(point: PayoutFunctionPoint) {
+    console.debug('removePoint()', point)
     const i = this.points.findIndex(i => i === point)
     if (i !== -1) {
       this.points.splice(i, 1)
     }
+    this.validatePayoutInputs()
   }
 
   addNewRoundingInterval() {

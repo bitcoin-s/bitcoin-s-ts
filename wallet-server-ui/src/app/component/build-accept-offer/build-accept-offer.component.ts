@@ -1,13 +1,16 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog'
+import { Observable, of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 
 import { MessageService } from '~service/message.service'
-import { WalletStateService } from '~service/wallet-state-service';
+import { WalletStateService } from '~service/wallet-state-service'
 import { Announcement, ContractInfo, CoreMessageType, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
-import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types';
+import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
+import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 @Component({
   selector: 'app-build-accept-offer',
@@ -24,6 +27,8 @@ export class BuildAcceptOfferComponent implements OnInit {
 
   @Output() acceptOffer: EventEmitter<OfferWithHex> = new EventEmitter<OfferWithHex>()
 
+  DEBUG = false
+
   // Testing Data
   // https://test.oracle.suredbits.com/announcement/63fa7885e3c6052e97956961698cde2b286dc1621544bbd8fcfbd78b2b1dbdcf
   enumAnnouncementHex = 'fdd824a8823cf7a3e449260f46d3d9a5bb0ddf1a367e0d3c9ce8858e16cd783392560bd1c9671314d54b6cb258bc6d85ab8fe238a27feb5a27d75323524a54d712a80b70a305b66d790ea4afe15b3fb61cae4d77f050e57b41f10f530c48a23dddbe335afdd822440001c3b0ecdaeaa3bbbd53386dec623b3a884b0ca2e2777cc62f0b6f891d9226114d614ebae0fdd80611000205546f64617908546f6d6f72726f7708546f6d6f72726f77'
@@ -33,8 +38,12 @@ export class BuildAcceptOfferComponent implements OnInit {
   enumContractInfoHex = 'fdd82ef400000000000186a0fda71018020359455300000000000186a0024e4f0000000000000000fda712ccfdd824c81d9f316ca49f7dba3544eb8aa4db9d7d3d2f5590352cd0eb2bf8bac70877d2e35862a9cb8112dab3234665c80bb99002fa87ea027cc7cd4d96cbd082ad23569e5d1bcfab252c6dd9edd7aea4c5eeeef138f7ff7346061ea40143a9f5ae80baa9fdd8226400011ba97f848d290edf97a4bdeedbb9df2b963c2690ed0099c00bceb4c2ceb7ca6760835170fdd80609000203594553024e4f30436f696e62617365204254432f555344203e3d202435312c30303020323032312d30342d32335432333a30303a30305a'
   // https://test.oracle.suredbits.com/contract/numeric/fd77c10613f25566c9aa9da72e4f02d1271a4cd0d9287ac461a21f50464232e6
   numericContractInfoHex = 'fdd82efd034100000000000186a0fda720540012fda72648000501000000000000000000000001fd753000000000000061a8000001fd88b8000000000000c350000001fd9c4000000000000186a0000001fe0003ffff00000000000186a00000fda724020000fda712fd02dbfdd824fd02d527bd1f768121a074176a1986e2cacd46e6cd992a7b3d5ac3827a3f90b5f12d0753ec47c521966aae316c65a4350e22207ae47286d343de866f19f5eeb7de13815d1bcfab252c6dd9edd7aea4c5eeeef138f7ff7346061ea40143a9f5ae80baa9fdd822fd026f001296d22911c0abd9f2736a45ce0fac39ccd7ded8cbd7a88d160c86e66c37d698a5934f30404cf929aa1f3fe40a04c3c952ca8c6b239c01c9b61676fb7590876b015811222090ee7015017617f468ed05d567e511d9d76d5d115dee863e5f43f8654509a3f2643971573e74f5c5bf5b9d482768a50726383c784af741ae4f59b61ab80d24f5b25dc4c826fd4275715b047dc55b23814d2b81539fcbcd536bd858b0cab6b1a6e7050943a0ee3e01ea005abf62abbd28f8c07362c53d6c187d8eb88dd9b4fd15aad3c3b2271c62bfa8eef0504912164a0f16ca931d59e3dc63d3d92eae714f2abe0f9a0d215357845b3137bf8c96fac0726c82735a23a3baa656229fdcca56ca502cb1623a985e1f6be919c7cfe11155ebf802d4544d4dfc7b354f644e3fb99088aef2c0d71916178c9f3695089e85edfe27044a9cf1a7b821a2a239a196682a0a35ad1a2f60f0f888aa51e4a0a44523592996de3f7f93af6c587f6252b850c562e1bfb97e0a8ee1406ae0c129d34b42a2d8a44597a0147c5cc0dc192beb614664e9b1949f1d95b4ae92ec85617e93b1fb6991b994df3b26ca21aacc908ed102de9988c55cf3a3a70c87e4067ae7648efd6763cd6655ce2c98b5b298ca7eb94fefaf53f58fdd3cbd486da3d79e651dfd392dccf2bd60dfbc708ca171587cda472646709ee6d51650eb2a808796ffd709b041c00afe0e028530f7bb888d90dff6ec6902108e1ec5a1bd1ba33515fdfe1bdb49bd3dfa576de14f83e51ac53a2f72fe6556576ee76cbbfc1e5f09c7ad076fd7ca847962c87dce96dd496d6062da80fdd80a11000200074254432d55534400000000001213446572696269742d4254432d33304d41523231'
+  // Unpublished
+  enumOfferHex = '' // this.EnumOfferHex
+  numericOfferHex = '' // this.NumericOfferHex
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService, 
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -60,31 +69,38 @@ export class BuildAcceptOfferComponent implements OnInit {
     this.onBuildOffer(text)
   }
 
+  // TODO : May want to pass in input reference and mark invalid/valid
+  validateHex(hex: string) {
+    let valid = validateHexString(hex)
+    if (!valid) {
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.error',
+          content: 'buildAcceptOffer.invalidHex',
+        }
+      })
+    }
+    return valid
+  }
+
   onBuildOffer(hex: string) {
     console.debug('onBuildOffer()', hex)
     if (hex) {
+      if (!this.validateHex(hex)) return
+
       // Suppressing error handling so any of these calls can fail gracefully
       this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeannouncement, [hex]), false).pipe(catchError((error: any) => {
         console.debug('failed to decode announcement')
         // Try another
         this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [hex]), false).pipe(catchError((error: any) => {
           console.debug('failed to decode contract info')
-          // TODO : Tell user nothing was matched
-          // Try another
-          // this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeoffer, [hex]), false).pipe(catchError((error: any) => {
-          //   console.debug('failed to decode offer')
-          //   // TODO : Tell user nothing was matched
-          //   return new Observable<any>()
-          // })).subscribe(r => {
-          //   console.debug('decodeoffer', r)
-          //   if (r.result) {
-          //     const offer = <OfferWithHex>{ offer: r.result, hex }
-          //     this.offer.next(offer)
-          //     this.clearBuildOfferInput()
-          //   } else {
-          //     // No more to try
-          //   }
-          // })
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.error',
+              content: 'buildAcceptOffer.invalidAnnouncementContractInfoHex',
+            }
+          })
+          this.clearBuildOfferInput()
           return new Observable<any>()
         })).subscribe(r => {
           console.debug('decodecontractinfo', r)
@@ -123,7 +139,10 @@ export class BuildAcceptOfferComponent implements OnInit {
   onAcceptOffer(hex: string) {
     console.debug('onAcceptOffer()', hex)
     if (hex) {
-      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeoffer, [hex])).subscribe(r => {
+      if (!this.validateHex(hex)) return
+
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeoffer, [hex]), false)
+      .pipe(catchError(error => of({ result: null }))).subscribe(r => {
         console.debug('decodeoffer', r)
 
         if (r.result) {
@@ -131,13 +150,20 @@ export class BuildAcceptOfferComponent implements OnInit {
           this.acceptOffer.next(offer)
           this.clearAcceptOfferInput()
         } else {
-          // No more to try
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.error',
+              content: 'buildAcceptOffer.invalidOfferHex',
+            }
+          })
+          this.clearAcceptOfferInput()
         }
       })
     }
   }
 
   onAcceptOfferInput(event: Event) {
+    return
     console.debug('onAcceptOfferInput()', event)
     const text = this.buildOfferInput.nativeElement.value
     this.onAcceptOffer(text)

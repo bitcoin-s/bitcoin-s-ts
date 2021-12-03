@@ -8,7 +8,7 @@ import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -20,10 +20,10 @@ import { getMessageBody } from '~util/wallet-server-util'
 export class ContractDetailComponent implements OnInit {
 
   public Object = Object
-
   public AlertType = AlertType
   public DLCState = DLCState
-
+  public copyToClipboard = copyToClipboard
+  public formatNumber = formatNumber
   public formatPercent = formatPercent
   public isCancelable = isCancelable
   public isRefundable = isRefundable
@@ -89,14 +89,11 @@ export class ContractDetailComponent implements OnInit {
     return cd.numDigits !== undefined
   }
 
-  onCopyContractId() {
-    console.debug('onCopyContractId()', this.dlc.contractId)
-    if (this.dlc.contractId)
-      copyToClipboard(this.dlc.contractId)
-  }
-
   onCancelContract() {
     console.debug('onCancelContract()', this.dlc.dlcId)
+
+    // TODO : Confirmation dialog?
+
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.canceldlc, [this.dlc.dlcId])).subscribe(r => {
       // console.debug(' onCancelContract()', r)
       if (r.result) { // "Success"
@@ -104,7 +101,6 @@ export class ContractDetailComponent implements OnInit {
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.cancelContractSuccess'),
           this.translate.instant('action.dismiss'), config)
-
 
         // Force update DLC list
         this.walletStateService.refreshDLCStates()
@@ -191,10 +187,13 @@ export class ContractDetailComponent implements OnInit {
     const noBroadcast = false
 
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast])).subscribe(r => {
-      console.debug('executedlcrefund', r)
+      // console.debug('executedlcrefund', r)
 
       if (r.result) {
+        const txId = r.result
         this.refreshDLCState()
+
+        // TODO : Dialog with txId and link to mempool or link on page
       }
     })
   }
@@ -204,10 +203,8 @@ export class ContractDetailComponent implements OnInit {
 
     const contractId = this.dlc.contractId
 
-    // Request failed: Cannot broadcast the dlc when it is in the state=Confirmed contractId=Some(ByteVector(32 bytes, 0x0b528a26f38475faa95ce3738612213cf70fe35a2be0d3d67df9e8234a40f72c))
-
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
-      console.debug('broadcastdlcfundingtx', r)
+      // console.debug('broadcastdlcfundingtx', r)
 
       if (r.result) { // funding tx id
         // Show success

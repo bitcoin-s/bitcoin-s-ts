@@ -9,6 +9,8 @@ import { getMessageBody } from "~util/wallet-server-util"
 import { MessageService } from "./message.service"
 
 
+const MATCH_LEADING_DIGITS = /^([0-9]+) /
+
 @Injectable({ providedIn: 'root' })
 export class WalletStateService {
 
@@ -19,7 +21,7 @@ export class WalletStateService {
   balances: Balances
   fundedAddresses: FundedAddress[]
   dlcWalletAccounting: DLCWalletAccounting
-  feeEstimate: string
+  feeEstimate: number
   torDLCHostAddress: string
 
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
@@ -42,25 +44,21 @@ export class WalletStateService {
         this.info = r.result
       }
     })
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).subscribe(r => {
-      if (r.result) {
-        this.balances = r.result
-      }
-    })
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getfundedaddresses)).subscribe(r => {
-      if (r.result) {
-        this.fundedAddresses = r.result
-      }
-    })
+    this.refreshBalances()
     this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).subscribe(r => {
       if (r.result) {
         this.dlcWalletAccounting = r.result
       }
     })
     this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).subscribe(r => {
-      if (r.result) {
-        // TODO : to number
-        this.feeEstimate = r.result
+      if (r.result) { // like '1234 sats/vbyte'
+        // Rip string to number
+        const matches = MATCH_LEADING_DIGITS.exec(r.result)
+        if (matches && matches[0]) {
+          this.feeEstimate = parseInt(matches[0])
+        } else {
+          console.error('failed to process fee estimate string')
+        }
       }
     })
     this.messageService.sendMessage(getMessageBody(DLCMessageType.getdlchostaddress)).subscribe(r => {
@@ -70,6 +68,16 @@ export class WalletStateService {
       }
     })
     this.refreshDLCStates()
+  }
+
+  refreshBalances() {
+    console.debug('refreshBalances()')
+
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).subscribe(r => {
+      if (r.result) {
+        this.balances = r.result
+      }
+    })
   }
 
   refreshDLCState(dlc: DLCContract) {

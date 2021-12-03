@@ -329,9 +329,15 @@ export function AcceptDLCOffer(offerHex: string) {
   console.debug('AcceptDLCOffer()', offerHex)
   validateString(offerHex, 'AcceptDLCOffer()', 'offerHex')
 
+  // Flexing via UI...
+  //       2021-11-22T19:09:37.173Z error: onError socket hang up
+  // [HPM] Error occurred while proxying request localhost:4200 to http://localhost:9999/ [ECONNRESET] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+
   const m = getMessageBody(WalletMessageType.acceptdlcoffer, [offerHex])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // response is DLC accept message in hex
+    // example numeric amount size is 86k
+    return <ServerResponse<string>>response
   })
 }
 
@@ -558,17 +564,18 @@ export function BumpFeeCPFP(sha256hash: string, satsPerVByte: number) {
   })
 }
 
-export function Rescan(batchSize: number, start: number, end: number, force: boolean, ignoreCreationTime: boolean) {
+export function Rescan(batchSize: number|null, start: number|null, end: number|null, force: boolean, ignoreCreationTime: boolean) {
   console.debug('Rescan()', batchSize, start, end, force, ignoreCreationTime)
-  validateNumber(batchSize, 'Rescan()', 'batchSize')
-  validateNumber(start, 'Rescan()', 'start')
-  validateNumber(end, 'Rescan()', 'end')
+  if (batchSize !== null) validateNumber(batchSize, 'Rescan()', 'batchSize')
+  if (start !== null) validateNumber(start, 'Rescan()', 'start')
+  if (end !== null) validateNumber(end, 'Rescan()', 'end')
   validateBoolean(force, 'Rescan()', 'force')
   validateBoolean(ignoreCreationTime, 'Rescan()', 'ignoreCreationTime')
 
   const m = getMessageBody(WalletMessageType.rescan, [batchSize, start, end, force, ignoreCreationTime])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // result like "Rescan started."
+    return <ServerResponse<string>>response
   })
 }
 

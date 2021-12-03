@@ -1,12 +1,11 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { MatSort, MatSortable } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
-import { BehaviorSubject } from 'rxjs'
 
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 
-import { formatISODate, formatPercent, formatShortHex } from '~util/utils'
+import { copyToClipboard, formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
 
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
@@ -18,6 +17,8 @@ export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 })
 export class ContractsComponent implements OnInit, AfterViewInit {
 
+  public copyToClipboard = copyToClipboard
+  public formatNumber = formatNumber
   public formatISODate = formatISODate
   public formatPercent = formatPercent
   public formatShortHex = formatShortHex

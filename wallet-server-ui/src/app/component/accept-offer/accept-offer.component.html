@@ -6,113 +6,151 @@
     </button>
   </div>
 
-  <div>
-    <div class="both">
-      <div class="field-group">
-        <label translate>acceptOffer.eventId</label>
-        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
+  <form class="form-container" [formGroup]="form" autocomplete="off">
+    <fieldset>
+      <mat-form-field class="w-100">
+        <mat-label translate>acceptOffer.eventId</mat-label>
+        <input matInput [value]="contractInfo.oracleInfo.announcement.event.eventId" readonly>
+      </mat-form-field>
+
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.maturityDate</mat-label>
+          <input matInput [value]="maturityDate" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.refundDate</mat-label>
+          <input matInput [value]="refundDate" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrower">
+          <mat-label translate>acceptOffer.feeRate</mat-label>
+          <input matInput [value]="offer.offer.feeRatePerVb" readonly>
+          <span matSuffix translate>unit.satsPerVbyte</span>
+        </mat-form-field>
       </div>
 
       <div class="spacer"></div>
-      
-      <div class="field-group">
-        <label translate>acceptOffer.maturityDate</label>
-        <input [value]="maturityDate" disabled>
+
+      <label class="mat-form-label" translate>Payouts</label>
+      <div *ngIf="isEnum()" class="enum-offer">
+        <div class="outcome-group">
+          <div class="enum-payout-group">
+            <div class="icon-spacer"></div>
+            <label class="outcome-heading text-center" translate>newOffer.outcome</label>
+            <label class="payout-heading text-center" translate>newOffer.payout</label>
+            <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
+          </div>
+          <div *ngFor="let label of Object.keys(enumContractDescriptor.outcomes)" class="enum-payout-group">
+            <label class="outcome-label text-right">{{ label }}</label>
+            <input class="outcome-value text-right" type="number" [value]="contractInfo.totalCollateral - enumContractDescriptor.outcomes[label]" readonly>
+          </div>
+        </div>
       </div>
-      <div class="field-group">
-        <label translate>acceptOffer.refundDate</label>
-        <input [value]="refundDate" disabled>
+      <div *ngIf="isNumeric()" class="numeric-offer">
+        <div class="outcome-group">
+          <div class="numeric-payout-group">
+            <label class="outcome-heading text-center" translate>newOffer.outcome</label>
+            <label class="payout-heading text-center" translate>newOffer.payout</label>
+            <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+          </div>
+          <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index" class="numeric-payout-group">
+            <input class="text-right" type="number" [value]="point.outcome" readonly>
+            <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
+              [value]="contractInfo.totalCollateral - point.payout" readonly>
+            <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint" disabled>
+          </div>
+        </div>
       </div>
+
+      <div class="spacer"></div>
+
+      <label class="mat-form-label" translate>acceptOffer.collateral</label>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.yourCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
+          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="mat-form-field-row">
+        <mat-form-field class="ellipsis">
+          <mat-label translate>acceptOffer.dlcOffer</mat-label>
+          <input matInput [value]="offer.hex" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(offer.hex)"><mat-icon>content_copy</mat-icon></button>
+        </mat-form-field>
+        <mat-form-field class="ellipsis">
+          <mat-label translate>acceptOffer.oraclePublicKey</mat-label>
+          <input matInput [value]="contractInfo.oracleInfo.announcement.publicKey" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(contractInfo.oracleInfo.announcement.publicKey)"><mat-icon>content_copy</mat-icon></button>
+        </mat-form-field>
+      </div>
+
+    </fieldset>
+
+    <h2 translate>acceptOffer.acceptOffer</h2>
+    <div class="description text-justify">
+      {{ 'acceptOfferDescription.acceptOffer' | translate }}
     </div>
 
-    <div *ngIf="isEnum()" class="enum-offer">
-      <div class="outcome-group">
-        <div class="field-group">
-          <label class="outcome-label text-center" translate>newOffer.outcome</label>
-          <label class="payout-label text-center" translate>newOffer.payout</label>
-          <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
-        </div>
-        <div *ngFor="let label of Object.keys(enumContractDescriptor.outcomes)" class="field-group">
-          <label>{{ label }}</label>
-          <input type="number" [value]="contractInfo.totalCollateral - enumContractDescriptor.outcomes[label]" disabled>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="isNumeric()" class="numeric-offer">
-      <div class="outcome-group">
-        <div class="numeric-payout-group">
-          <label class="outcome-label text-center" translate>newOffer.outcome</label>
-          <label class="payout-label text-center" translate>newOffer.payout</label>
-          <label class="endpoint-label text-center" translate>newOffer.endpoint</label>
-        </div>
-        <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index" class="numeric-payout-group">
-          <input class="text-right" type="number" [(ngModel)]="point.outcome" disabled>
-          <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
-            [(ngModel)]="contractInfo.totalCollateral - point.payout" disabled>
-          <input type="checkbox" [(ngModel)]="point.isEndpoint" disabled>
-        </div>
-      </div>
-    </div>
-
-    <div class="both">
-      <div class="field-group">
-        <label translate>acceptOffer.yourCollateral</label>
-        <input [value]="contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis" disabled>
-        <span translate>unit.sats</span>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.counterpartyCollateral</label>
-        <input [value]="offer.offer.offerCollateralSatoshis" disabled>
-        <span translate>unit.sats</span>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.totalCollateral</label>
-        <input [value]="contractInfo.totalCollateral" disabled>
-        <span translate>unit.sats</span>
+    <fieldset [disabled]="executing || offerAccepted">
+      <mat-radio-group class="accept-offer-type"
+        [value]="acceptOfferType" (change)="updateAcceptOfferType($event)">
+        <mat-radio-button *ngFor="let e of acceptOfferTypes"
+          [value]="e">{{ 'acceptOffer.acceptOfferType.' + e | translate }}</mat-radio-button>
+      </mat-radio-group>
+  
+      <div class="description">
+        {{ 'acceptOfferDescription.acceptOfferType.' + acceptOfferType | translate }}
       </div>
 
-      <div class="spacer"></div>
-
-      <div class="field-group">
-        <label translate>acceptOffer.dlcOffer</label>
-        <input class="wide-input" [value]="offer.hex" disabled>
-      </div>
-      <div class="field-group">
-        <label translate>acceptOffer.oraclePublicKey</label>
-        <input class="wide-input" [value]="contractInfo.oracleInfo.announcement.publicKey" disabled>
-      </div>
-
-      <div class="spacer"></div>
-
-      <div class="field-group">
-        <label translate>acceptOffer.feeRate</label>
-        <input [value]="offer.offer.feeRatePerVb" disabled>
-        <span translate>unit.satsPerVbyte</span>
-      </div>
-
-      <div class="spacer"></div>
-
-      <div class="field-group">
-        <label translate>acceptOffer.peerAddress</label>
-        <!-- 'acceptOffer.optional' -->
-        <input type="text" placeholder="{{ 'acceptOffer.required' | translate }}" [(ngModel)]="peerAddress">
+      <mat-form-field *ngIf="acceptOfferType === AcceptOfferType.TOR" class="w-100">
+        <mat-label translate>acceptOffer.peerAddress</mat-label>
+        <input matInput formControlName="peerAddress" type="text"
+          placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}">
         <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="acceptOfferType === AcceptOfferType.FILES" class="w-100">
+        <mat-label translate>acceptOffer.filename</mat-label>
+        <input matInput formControlName="filename" type="text"
+          placeholder="{{ 'acceptOffer.defaultFilename' | translate }}">
+        <app-more-info matSuffix tooltip="acceptOfferDescription.filename"></app-more-info>
+      </mat-form-field>
+    </fieldset>
+  </form>
+
+  <div class="execute-container">
+    <div class="button-group">
+      <button mat-stroked-button color="primary" (click)="onExecute()"
+        [disabled]="form.invalid || executing || offerAccepted">
+        <mat-icon *ngIf="acceptOfferType === AcceptOfferType.TOR" class="material-icons-outlined">cloud_sync</mat-icon>
+        <mat-icon *ngIf="acceptOfferType === AcceptOfferType.FILES" class="material-icons-outlined">file_download</mat-icon>
+        <span translate>action.execute</span>
+      </button>
+      <div class="spinner" [hidden]="!executing">
+        <mat-spinner diameter="20"></mat-spinner>
       </div>
     </div>
 
-    <div class="footer">
-      <div class="button-group">
-        <button mat-stroked-button color="primary" (click)="onExecute()" [disabled]="!peerAddress">{{ 'action.execute' | translate }}</button>
-      </div>
+    <!-- TODO : app-alert instead of using result group? -->
 
-      <fieldset class="result-group" [disabled]="!newOfferResult">
-        <label translate>result</label>
-        <textarea class="result-textarea" [(ngModel)]="newOfferResult"></textarea>
-        <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-          (click)="onCopyResult()"><mat-icon>content_copy</mat-icon></button>
-      </fieldset>
-    </div>
+    <fieldset class="result-group" [disabled]="!result">
+      <label translate>result</label>
+      <textarea class="result-textarea" [(ngModel)]="result"></textarea>
+      <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(result)" [disabled]="!result"><mat-icon>content_copy</mat-icon></button>
+    </fieldset>
   </div>
   
 </section>

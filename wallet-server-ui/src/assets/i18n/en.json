@@ -1,10 +1,10 @@
 {
-  "title": "Bitcoin-S Wallet",
+  "title": "Suredbits Wallet",
 
   "result": "Result",
 
   "splashScreen": {
-    "heading": "Welcome to Bitcoin-S Wallet",
+    "heading": "Welcome to the Suredbits Wallet",
     "betaSoftware": "This application is beta software.",
     "significantValue": "Please do not use it with significant amounts of value at this time.",
     "caveatEmptor": "caveat emptor",
@@ -17,7 +17,7 @@
     "disconnected": "Disconnected",
     "networkLabel": "Network: {{ network }}",
     "blockHeightLabel": "Block Height: {{ height }}",
-    "feeEstimateLabel": "Fee Estimate: {{ fee }}"
+    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte"
   },
 
   "serverEvent": {
@@ -49,7 +49,9 @@
     "sats": "sats",
     "percent": "%",
     "satsPerVbyte": "sats/vbyte",
-    "ellipsis": "..."
+    "ellipsis": "...",
+    "max": "MAX",
+    "allFunds": "All Funds"
   },
 
   "configuration": {
@@ -57,19 +59,30 @@
     "darkMode": "Dark Mode"
   },
 
+  "debug": {
+    "heading": "Debug",
+    "rescan": "Rescan",
+    "unreserveAllUTXOs": "Unreserve All UTXOs"
+  },
+
   "buildAcceptOffer": {
     "buildOffer": "Build Offer",
     "acceptOffer": "Accept Offer",
-    "pasteHex": "Paste Hex"
+    "pasteHex": "Paste Hex",
+    "invalidHex": "The hex string entered is not valid hex",
+    "invalidAnnouncementContractInfoHex": "The entered hex string is not an Announcement or ContractInfo",
+    "invalidOfferHex": "The entered hex string is not an Offer"
   },
 
   "walletBalance": {
     "heading": "Wallet",
-    "confirmedBalance": "Confirmed Balance",
-    "unconfirmedBalance": "Unconfirmed Balance",
-    "reserveBalance": "Reserve Balance",
-    "totalBalance": "Total Balance",
-    "profitAndLoss": "Profit and Loss",
+    "balance": "Balance",
+    "dlcReturns": "DLC Returns",
+    "confirmedBalance": "Confirmed",
+    "unconfirmedBalance": "Unconfirmed",
+    "reserveBalance": "Reserve",
+    "totalBalance": "Total",
+    "profitAndLoss": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
     "getNewAddress": "Get New Address",
     "sendFunds": "Send Funds"
@@ -82,7 +95,7 @@
     "contractInfo": "Contract Info",
     "eventId": "Event Id",
     "maturityDate": "Maturity Date",
-    "points": "Points",
+    "point": "Point",
     "outcome": "Outcome",
     "payout": "Payout",
     "endpoint": "Endpoint",
@@ -91,17 +104,26 @@
     "roundingLevel": "Rounding Level",
     "yourCollateral": "Your Collateral",
     "feeRate": "Fee Rate",
-    "refundDate": "Refund Date"
+    "refundDate": "Refund Date",
+    "createOffer": "Create Offer",
+    "offerCreated": "Offer Created"
   },
 
   "newOfferDescription": {
-    "outcomes": "Payout values are to you, in sats, for the given outcome",
+    "outcomes": "Payout values are to you, in sats, for the outcome",
     "yourCollateral": "Your collateral at stake (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
-    "refundDate": "Refund Date"
+    "refundDate": "When the contract can be refunded",
+    "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
+    "createOffer2": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
   },
 
   "newOfferValidation": {
+    "outcomeRequired": "Outcome values must be populated",
+    "outcomeNonNegative": "Outcome values must be non-negative",
+    "payoutRequired": "Payout values must be populated",
+    "payoutNonNegative": "Payout values must be non-negative",
+    "yourCollateralMustBeLessThanMax": "Your Collateral ({{yourCollateral}} sats) must be equal to the maximum payout ({{maxCollateral}} sats) or less",
     "outcomeValues": "Outcome values must be positive",
     "yourCollateral": "Your Collateral must be positive",
     "feeRate": "Fee Rate must be positive",
@@ -109,7 +131,7 @@
   },
 
   "acceptOffer": {
-    "heading": "Accept Offer",
+    "heading": "Offer Details",
     "dlcOffer": "DLC Offer",
     "peerAddress": "Peer Address",
     "optional": "optional",
@@ -117,17 +139,40 @@
     "eventId": "Event Id",
     "maturityDate": "Maturity Date",
     "oraclePublicKey": "Oracle Public Key",
-    "yourCollateral": "Your Collateral",
-    "counterpartyCollateral": "Counterparty Collateral",
-    "totalCollateral": "Total Collateral",
+    "collateral": "Collateral",
+    "yourCollateral": "Your's",
+    "counterpartyCollateral": "Counterparty's",
+    "totalCollateral": "Total",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
     "feeRate": "Fee Rate",
-    "refundDate": "Refund Date"
+    "refundDate": "Refund Date",
+    "refundDatePlaceholder": "MM/DD/YYYY",
+    "acceptOffer": "Accept Offer",
+    "acceptOfferType": {
+      "tor": "Tor",
+      "files": "Files"
+    },
+    "filename": "Filename",
+    "defaultFilename": "Accepted DLC Offer.txt",
+    "peerAddressPlaceholder": "abcxyz.onion:2862",
+    "peerAddressInvalid": "The tor address entered is not valid, cannot complete the DLC process",
+    "tor": {
+      "success": "Tor DLC exchange initiated"
+    },
+    "files": {
+      "success": "Success, file saved"
+    }
   },
 
   "acceptOfferDescription": {
-    "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online."
+    "acceptOffer": "If everything in the offer appears correct, you can complete the DLC contract by exchanging signatures with your counterparty. The exchange can be done over Tor or with saved files.",
+    "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online.",
+    "filename": "Filename to save Accepted DLC Offer to",
+    "acceptOfferType": {
+      "tor": "Use Tor to pass messages. Your counterparty needs to be online and have a Tor DLC Host Address they will share with you.",
+      "files": "Exchange files to pass messages. You will send the saved file to your counterparty."
+    }
   },
 
   "contracts": {
@@ -141,7 +186,8 @@
     "counterpartyCollateral": "Counterparty Collateral",
     "totalCollateral": "Total Collateral",
     "lastUpdated": "Last Updated",
-    "noContracts": "No DLC Contracts Started"
+    "noContracts": "No DLC Contracts Started",
+    "copyContractId": "Copy Contract Id to Clipboard"
   },
 
   "contractDetail": {
@@ -172,7 +218,7 @@
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
     "contractOutcome": "Contract Outcome",
-    "myPayout": "My Payout",
+    "yourPayout": "Your Payout",
     "counterpartyPayout": "Counterparty Payout",
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return"
@@ -184,6 +230,21 @@
 
   "eventDetail": {
     "heading": "Event Detail"
+  },
+
+  "dlcFile": {
+    "heading": "DLC File Operations",
+    "sign": "Sign from hex",
+    "broadcast": "Broadcast from hex",
+    "signFile": "Sign Accept from file",
+    "broadcastFile": "Broadcast Signed DLC from file"
+  },
+
+  "dlcFileDescription": {
+    "sign": "Select file to open and sign. This file should be in Accepted state.",
+    "broadcast": "Select file to open and broadcast. This file should be in Signed state.",
+    "signFile": "",
+    "broadcastFile": ""
   },
 
   "dialog": {

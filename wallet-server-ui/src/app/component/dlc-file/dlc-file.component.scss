@@ -1,0 +1,11 @@
+.dlc-file {
+  
+  .operations {
+    display: flex;
+    flex-direction: column;
+    
+    .field-group {
+      margin-bottom: 0.5rem;
+    }
+  }
+}

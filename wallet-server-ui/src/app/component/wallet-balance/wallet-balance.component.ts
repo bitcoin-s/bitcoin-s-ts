@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
-import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
-import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
 import { MessageService } from '~service/message.service'
-
 import { WalletStateService } from '~service/wallet-state-service'
 import { WalletMessageType } from '~type/wallet-server-types'
-import { formatPercent } from '~util/utils'
+import { formatNumber, formatPercent } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
+import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
 
 
 @Component({
@@ -19,6 +19,7 @@ import { getMessageBody } from '~util/wallet-server-util'
 })
 export class WalletBalanceComponent implements OnInit {
 
+  public formatNumber = formatNumber
   public formatPercent = formatPercent
 
   constructor(private dialog: MatDialog, public walletStateService: WalletStateService, private messageService: MessageService) { }
@@ -71,7 +72,7 @@ export class WalletBalanceComponent implements OnInit {
             this.messageService.sendMessage(getMessageBody(WalletMessageType.sweepwallet,
               [sendObj.address, sendObj.feeRate])).subscribe(r => {
                 console.debug('sweepwallet', r)
-                if (r.result) { // tx.txIdBE from WalletRoutes.scal ? Should this really be the return type?
+                if (r.result) { // tx.txIdBE from WalletRoutes.scala ? Should this really be the return type?
                   // TODO : Success dialog
                 }
               })
@@ -86,7 +87,7 @@ export class WalletBalanceComponent implements OnInit {
                     data: {
                       title: 'dialog.sendFundsSuccess.title',
                       content: 'dialog.sendFundsSuccess.content',
-                      params: { amount: sats, address: sendObj.address },
+                      params: { amount: formatNumber(sats), address: sendObj.address },
                       action: 'action.ok',
                       // actionColor: 'primary',
                       showCancelButton: false,
