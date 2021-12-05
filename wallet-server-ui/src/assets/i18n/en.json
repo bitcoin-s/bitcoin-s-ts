@@ -37,7 +37,8 @@
     "copyToClipboard": "Copy to Clipboard",
     "reload": "Reload",
     "refresh": "Refresh",
-    "close": "Close"
+    "close": "Close",
+    "send": "Send"
   },
 
   "unit": {

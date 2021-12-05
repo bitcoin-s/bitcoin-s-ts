@@ -16,10 +16,10 @@ export function copyToClipboard(s: string|undefined|null) {
 }
 
 export enum BitcoinNetwork {
-  // regtest = 'regtest', // NOT VALIDATED AGAINST BACKEND
-  test = 'test',
   main = 'main', // NOT VALIDATED AGAINST BACKEND
+  test = 'test',
   signet = 'signet', // NOT VALIDATED AGAINST BACKEND
+  regnet = 'regnet', // NOT VALIDATED AGAINST BACKEND
 }
 
 // Network Regex Validators

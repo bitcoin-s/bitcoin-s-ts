@@ -30,8 +30,10 @@
           </button>
         </div>
 
+        <div class="spacer"></div>
+
         <div *ngIf="walletStateService.info" class="state-info">
-          <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.info.network }"></div>
+          <div class="network" translate="status.networkLabel" [translateParams]="{ network : walletStateService.getNetwork() }"></div>
           <div class="block-height" translate="status.blockHeightLabel" [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
           <div class="fee-estimate" translate="status.feeEstimateLabel" [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
           <div class="config">

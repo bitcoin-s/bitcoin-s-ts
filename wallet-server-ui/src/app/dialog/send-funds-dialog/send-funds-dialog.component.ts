@@ -18,7 +18,7 @@ export class SendFundsDialogComponent implements OnInit {
 
   sendMax = false
 
-  action = 'action.ok'
+  action = 'action.send'
   actionColor = 'primary'
 
   constructor(private walletStateService: WalletStateService, private formBuilder: FormBuilder) { }
@@ -26,7 +26,9 @@ export class SendFundsDialogComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       address: [null, Validators.compose([
-        regexValidator(getValidationRegexForNetwork(this.walletStateService.info.network)), 
+        regexValidator(getValidationRegexForNetwork(this.walletStateService.getNetwork())),
+        // I think this is failing because it requires Buffer
+        // bitcoinAddressValidator(getValidationNetworkName(this.walletStateService.getNetwork())),
         Validators.required])],
       amount: [null, conditionalValidator(() => !this.sendMax, 
         Validators.compose([nonNegativeNumberValidator(), Validators.required]))],

@@ -1,14 +1,19 @@
 // Setup material theme
-
 @use '~@angular/material' as mat;
-
+@include mat.core();
 @import "~@angular/material/theming";
 
-@include mat.core();
+// Include Material Icons
+// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
 
-$angular-primary: mat.define-palette(mat.$teal-palette, 500, 100, 900);
-$angular-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+// Previous Palette
+// $angular-primary: mat.define-palette(mat.$teal-palette, 500, 100, 900);
+// $angular-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
+// $angular-primary: mat.define-palette(mat.$light-blue-palette, A200, A100, A404);
+$angular-primary: mat.define-palette(mat.$deep-purple-palette, 400);
+$angular-accent: mat.define-palette(mat.$deep-orange-palette, 400);
 $angular-warn: mat.define-palette(mat.$red-palette);
 
 $angular-default-theme: mat.define-light-theme(
@@ -20,15 +25,33 @@ $angular-default-theme: mat.define-light-theme(
     ),
   )
 );
-
 @include mat.all-component-themes($angular-default-theme);
 
-// Setup Dark Mode
+// Color toggle
+@mixin mix-app-theme($app-theme) {
+  $primary: map-get($app-theme, primary);
+  $accent: map-get($app-theme, accent);
 
+  .mat-button-toggle {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+
+  .mat-button-toggle-checked {
+    background-color: mat-color($accent);
+    color: mat-color($accent, default-contrast);
+  }
+}
+// Include the mixin
+@include mix-app-theme($angular-default-theme);
+
+// Setup Dark Mode
+// $angular-primary-dark: $angular-primary;
+$angular-primary-dark: mat.define-palette(mat.$deep-purple-palette, 400, 100, 600, 200);
 $angular-dark-theme: mat.define-dark-theme(
   (
     color: (
-      primary: $angular-primary,
+      primary: $angular-primary-dark,
       accent: $angular-accent,
       warn: $angular-warn,
     ),
@@ -37,15 +60,10 @@ $angular-dark-theme: mat.define-dark-theme(
 
 .darkMode {
   @include mat.all-component-colors($angular-dark-theme);
+  @include mix-app-theme($angular-dark-theme);
 }
 
-
-// Include Material Icons
-// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
-
 // Set a theme
-
 // @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; // indigo-pink.css";
 
 /** General HTML */

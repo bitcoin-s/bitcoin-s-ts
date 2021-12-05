@@ -1,5 +1,5 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms"
+// import { validate } from 'bitcoin-address-validation'
 
 export function regexValidator(regex: RegExp): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -21,6 +21,24 @@ export function nonNegativeNumberValidator(): ValidatorFn {
     return isNotOk ? { negative: { value: control.value } } : null
   }
 }
+
+
+// Get network name to use with bitcoin-address-validation
+// export function getValidationNetworkName(network: BitcoinNetwork) {
+//   switch (network) {
+//     case BitcoinNetwork.main: return 'mainnet'
+//     case BitcoinNetwork.test: return 'testnet'
+//     case BitcoinNetwork.signet: return 'testnet'
+//     case BitcoinNetwork.regnet: return 'regnet'
+//   }
+// }
+// export function bitcoinAddressValidator(network: string): ValidatorFn {
+//   return (control: AbstractControl): ValidationErrors | null => {
+//     // const allowed = regex.test(control.value)
+//     const valid = validate(control.value, <any>network)
+//     return valid ? null : { addressInvalid: { value: control.value }}
+//   }
+// }
 
 export function conditionalValidator(predicate: any, validator: any): ValidatorFn {
   return (formControl: AbstractControl) => {
