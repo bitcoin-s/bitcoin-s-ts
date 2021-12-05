@@ -74,7 +74,7 @@ export class WalletBalanceComponent implements OnInit {
                       content: 'dialog.sendFundsSuccess.content',
                       params: { amount: this.translate.instant('unit.allAvailable'), address: sendObj.address, txId },
                       linksContent: 'dialog.sendFundsSuccess.linksContent',
-                      links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+                      links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                       action: 'action.ok',
                       showCancelButton: false,
                     }
@@ -98,7 +98,7 @@ export class WalletBalanceComponent implements OnInit {
                       content: 'dialog.sendFundsSuccess.content',
                       params: { amount: formatNumber(sats), address: sendObj.address, txId },
                       linksContent: 'dialog.sendFundsSuccess.linksContent',
-                      links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+                      links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                       action: 'action.ok',
                       showCancelButton: false,
                     }

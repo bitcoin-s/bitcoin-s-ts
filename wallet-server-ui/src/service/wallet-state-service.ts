@@ -4,6 +4,7 @@ import { first, tap } from "rxjs/operators"
 import { BuildConfig } from "~type/proxy-server-types"
 
 import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
+import { BitcoinNetwork } from "~util/utils"
 import { getMessageBody } from "~util/wallet-server-util"
 
 import { MessageService } from "./message.service"
@@ -18,6 +19,9 @@ export class WalletStateService {
   buildConfig: BuildConfig
 
   info: GetInfoResponse
+  getNetwork() {
+    return <BitcoinNetwork>this.info.network
+  }
   balances: Balances
   fundedAddresses: FundedAddress[]
   dlcWalletAccounting: DLCWalletAccounting

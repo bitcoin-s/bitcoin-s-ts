@@ -199,7 +199,7 @@ export class ContractDetailComponent implements OnInit {
             content: 'dialog.cancelContractSuccess.content',
             params: { contractId, txId },
             linksContent: 'dialog.cancelContractSuccess.linksContent',
-            links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
             action: 'action.ok',
             showCancelButton: false,
           }
@@ -228,7 +228,7 @@ export class ContractDetailComponent implements OnInit {
             content: 'dialog.rebroadcastSuccess.content',
             params: { txId },
             linksContent: "dialog.rebroadcastSuccess.linksContent",
-            links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
             action: 'action.ok',
             showCancelButton: false,
           }
@@ -265,7 +265,7 @@ export class ContractDetailComponent implements OnInit {
                   content: 'dialog.rebroadcastSuccess.content',
                   params: { txId },
                   linksContent: "dialog.rebroadcastSuccess.linksContent",
-                  links: [mempoolTransactionURL(txId, this.walletStateService.info.network)],
+                  links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                   action: 'action.ok',
                   showCancelButton: false,
                 }

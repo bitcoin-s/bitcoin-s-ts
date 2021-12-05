@@ -6,12 +6,16 @@
       <mat-form-field>
         <mat-label translate>dialog.sendFunds.address</mat-label>
         <input formControlName="address" matInput type="text">
+        <!-- <span matSuffix class="validation">
+          <mat-icon class="material-icons-outlined">check_circle</mat-icon>
+          <mat-icon class="material-icons-outlined">cancel</mat-icon>
+        </span> -->
       </mat-form-field>
       <mat-form-field>
         <mat-label [translate]="sendMax ? 'unit.allFunds' : 'dialog.sendFunds.amount'"></mat-label>
         <input formControlName="amount" matInput type="number">
         <span matSuffix translate>unit.sats</span>
-        <mat-button-toggle class="mat-button-toggle-sm" matSuffix 
+        <mat-button-toggle class="mat-button-toggle-sm" matSuffix color="primary"
           [checked]="sendMax" (change)="onMax()">
           {{ 'unit.max' | translate }}
         </mat-button-toggle>

@@ -215,7 +215,6 @@ export class AcceptOfferComponent implements OnInit {
             const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
             FileSaver.saveAs(blob, filename)
 
-            // Crashing sometime after this, not sure why...
             this.walletStateService.refreshDLCStates()
             this.executing = false
             this.offerAccepted = true
