@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import * as FileSaver from 'file-saver'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { WalletMessageType } from '~type/wallet-server-types'
+import { CoreMessageType, WalletMessageType } from '~type/wallet-server-types'
+import { OfferWithHex } from '~type/wallet-ui-types'
 import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -16,6 +19,11 @@ import { getMessageBody } from '~util/wallet-server-util'
 })
 export class DlcFileComponent implements OnInit {
 
+  @Output() onOffer: EventEmitter<string> = new EventEmitter()
+  @Output() onAccept: EventEmitter<string> = new EventEmitter()
+  @Output() onSign: EventEmitter<string> = new EventEmitter()
+
+  offerDLCInput: string = ''
   acceptedDLCInput: string = ''
   // acceptedDLCInputDisplay: string = ''
 
@@ -44,6 +52,27 @@ export class DlcFileComponent implements OnInit {
     reader.readAsText(f)
   }
 
+  acceptInputChange(fileInputEvent: any) {
+    console.debug('acceptInputChange()', fileInputEvent, fileInputEvent.target.files[0])
+
+    if (fileInputEvent.target.files && fileInputEvent.target.files[0]) {
+      this.handleFileLoad(fileInputEvent.target.files[0], 'offerDLCInput', this.onAcceptDLC.bind(this))
+    }
+  }
+
+  onAcceptDLC() {
+    console.debug('onAcceptDLC()')
+
+    if (this.offerDLCInput) {
+      const offerDLC = this.offerDLCInput.trim()
+      if (!offerDLC || !validateHexString(offerDLC)) {
+        // TODO
+        return
+      }
+      this.onOffer.emit(offerDLC)
+    }
+  }
+
   signInputChange(fileInputEvent: any) {
     console.debug('signInputChange()', fileInputEvent, fileInputEvent.target.files[0])
 
@@ -62,6 +91,19 @@ export class DlcFileComponent implements OnInit {
         // TODO
         return
       }
+
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeaccept, [acceptedDLC]), false)
+      .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+        console.debug('decodeaccept', r)
+
+        if (r.result) {
+          // const offer = <OfferWithHex>{ offer: r.result, hex: acceptedDLC }
+
+        }
+      })
+
+      return
 
       const filename = 'Signed Accept.txt'
 

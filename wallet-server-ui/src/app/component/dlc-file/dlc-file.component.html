@@ -6,6 +6,16 @@
   <div class="operations">
     <div class="field-group">
       <!-- Opens dialog and picks file reference fine -->
+      <input #acceptInput hidden="true" type="file" onclick="this.value=null" (change)="acceptInputChange($event)"/>
+      <button mat-flat-button color="primary" (click)="acceptInput.click()">Choose Offer DLC File to Accept</button>
+  
+      <!-- <input type="text" [(ngModel)]="acceptedDLCInputDisplay">
+      <button mat-button (click)="onSignDLC()" [disabled]="!acceptedDLCInputDisplay">{{ 'dlcFile.sign' | translate }}</button> -->
+      <app-more-info matSuffix tooltip="dlcFileDescription.sign"></app-more-info>
+    </div>
+
+    <div class="field-group">
+      <!-- Opens dialog and picks file reference fine -->
       <input #signInput hidden="true" type="file" onclick="this.value=null" (change)="signInputChange($event)"/>
       <button mat-flat-button color="primary" (click)="signInput.click()">Choose Accepted DLC File to Sign</button>
   

@@ -7,7 +7,7 @@
       <!-- Main -->
 
       <div class="main-content">
-        <app-build-accept-offer
+        <app-build-accept-offer #buildAcceptOffer
           (announcement)="onAnnouncement($event)" 
           (contractInfo)="onContractInfo($event)"
           (acceptOffer)="onAcceptOffer($event)">
@@ -16,7 +16,7 @@
         <div class="wallet-container">
           <app-wallet-balance></app-wallet-balance>
 
-          <app-dlc-file hidden></app-dlc-file>
+          <app-dlc-file hidden (onOffer)="buildAcceptOffer.onAcceptOffer($event)"></app-dlc-file>
         </div>
         
         <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>

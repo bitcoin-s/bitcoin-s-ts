@@ -132,7 +132,7 @@
 
   <div class="execute-container">
     <div class="button-group">
-      <button mat-stroked-button color="primary" (click)="onExecute()"
+      <button mat-flat-button color="primary" (click)="onExecute()"
         [disabled]="form.invalid || executing || offerAccepted">
         <mat-icon *ngIf="acceptOfferType === AcceptOfferType.TOR" class="material-icons-outlined">cloud_sync</mat-icon>
         <mat-icon *ngIf="acceptOfferType === AcceptOfferType.FILES" class="material-icons-outlined">file_download</mat-icon>

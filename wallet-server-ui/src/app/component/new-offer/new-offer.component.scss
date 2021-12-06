@@ -99,6 +99,15 @@ $maxWidth: 400px;
     margin-bottom: 1rem;
   }
 
+  // Not working...
+  .form-container {
+    .mat-form-field .mat-form-field-suffix {
+      span {
+        margin-left: 0.25rem;
+      }
+    }
+  }
+
   .spacer {
     height: 1rem;
   }

@@ -806,6 +806,26 @@ export function AnalyzePSBT() {
   })
 }
 
+export function DecodeSign(signedHex: string) {
+  console.debug('DecodeSign()', signedHex)
+  validateString(signedHex, 'DecodeOffer()', 'signedHex')
+
+  const m = getMessageBody(CoreMessageType.decodesign, [signedHex])
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<unknown>>response
+  })
+}
+
+export function DecodeAccept(acceptHex: string) {
+  console.debug('DecodeAccept()', acceptHex)
+  validateString(acceptHex, 'DecodeOffer()', 'acceptHex')
+
+  const m = getMessageBody(CoreMessageType.decodeaccept, [acceptHex])
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<unknown>>response
+  })
+}
+
 export function DecodeOffer(offerHex: string) {
   console.debug('DecodeOffer()', offerHex)
   validateString(offerHex, 'DecodeOffer()', 'offerHex')

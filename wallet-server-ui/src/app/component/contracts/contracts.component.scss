@@ -28,10 +28,10 @@ $padding: 0.5rem;
         padding-left: $padding;
         padding-right: $padding;
         &:first-of-type {
-          padding-left: $padding;
+          padding-left: $padding * 2;
         }
         &:last-of-type {
-          padding-right: $padding;
+          padding-right: $padding * 2;
         }
       }
 

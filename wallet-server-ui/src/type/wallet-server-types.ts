@@ -228,6 +228,8 @@ export const enum CoreMessageType {
   decodepsbt = 'decodepsbt',
   decoderawtransaction = 'decoderawtransaction',
   analyzepsbt = 'analyzepsbt',
+  decodesign = 'decodesign',
+  decodeaccept = 'decodeaccept',
   decodeoffer = 'decodeoffer',
   decodecontractinfo = 'decodecontractinfo',
   decodeannouncement = 'decodeannouncement',
