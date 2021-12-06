@@ -65,10 +65,7 @@ export class DlcFileComponent implements OnInit {
 
     if (this.offerDLCInput) {
       const offerDLC = this.offerDLCInput.trim()
-      if (!offerDLC || !validateHexString(offerDLC)) {
-        // TODO
-        return
-      }
+      // hex will be validated elsewhere
       this.onOffer.emit(offerDLC)
     }
   }

@@ -3,30 +3,46 @@
     <h2 translate>buildAcceptOffer.heading</h2>
   </div> -->
 
-  <div class="paste-input">
-    <label translate>buildAcceptOffer.buildOffer</label>
-    <input #buildOfferInput type="text" placeholder="{{ 'buildAcceptOffer.pasteHex' | translate }}"
-      (paste)="onBuildOfferPaste($event)" (input)="onBuildOfferInput($event)">
+  <div class="build-offer">
+    <h2 translate>buildAcceptOffer.buildOffer</h2>
+    <div class="content">
+      <div class="description">
+        {{ 'buildAcceptOfferDescription.buildOffer' | translate }}
+      </div>
+      <mat-form-field class="w-100">
+        <input matInput type="text"
+          placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
+          (paste)="onBuildOfferPaste($event)">
+      </mat-form-field>
+
+      <div [hidden]="!DEBUG">
+        <label>Enum</label>
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumAnnouncementHex)">A</button>
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumContractInfoHex)">CI</button>
+        <label>Numeric</label>
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericAnnouncementHex)">A</button>
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericContractInfoHex)">CI</button>
+      </div>
+    </div>
   </div>
 
-  <div [hidden]="!DEBUG">
-    <label>Enum</label>
-    <button mat-stroked-button (click)="onBuildOffer(enumAnnouncementHex)">A</button>
-    <button mat-stroked-button (click)="onBuildOffer(enumContractInfoHex)">CI</button>
-    <label>Numeric</label>
-    <button mat-stroked-button (click)="onBuildOffer(numericAnnouncementHex)">A</button>
-    <button mat-stroked-button (click)="onBuildOffer(numericContractInfoHex)">CI</button>
-  </div>
+  <div class="accept-offer">
+    <h2 translate>buildAcceptOffer.acceptOffer</h2>
+    <div class="content">
+      <div class="description">
+        {{ 'buildAcceptOfferDescription.acceptOffer' | translate }}
+      </div>
+      <mat-form-field class="w-100">
+        <input matInput type="text"
+          placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
+          (paste)="onAcceptOfferInput($event)">
+      </mat-form-field>
 
-  <div class="paste-input">
-    <label translate>buildAcceptOffer.acceptOffer</label>
-    <input #acceptOfferInput type="text" placeholder="{{ 'buildAcceptOffer.pasteHex' | translate }}"
-      (paste)="onAcceptOfferPaste($event)" (input)="onAcceptOfferInput($event)">
-  </div>
-
-  <div [hidden]="!DEBUG">
-    <button mat-stroked-button (click)="onAcceptOffer(enumOfferHex)">Enum</button>
-    <button mat-stroked-button (click)="onAcceptOffer(numericOfferHex)">Numeric</button>
+      <div [hidden]="!DEBUG">
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onAcceptOffer(enumOfferHex)">Enum</button>
+        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onAcceptOffer(numericOfferHex)">Numeric</button>
+      </div>
+    </div>
   </div>
 
 </section>

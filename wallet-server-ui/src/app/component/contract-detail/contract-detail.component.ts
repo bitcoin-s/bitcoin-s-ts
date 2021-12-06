@@ -54,7 +54,7 @@ export class ContractDetailComponent implements OnInit {
 
   // showDeleteSuccess = false
 
-  oracleSignature: string
+  oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
 
@@ -62,9 +62,9 @@ export class ContractDetailComponent implements OnInit {
     if (this.dlc) {
       this.contractMaturity = formatDateTime(this.dlc.contractMaturity)
       this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
-      this.oracleSignature = this.dlc.oracleSigs?.toString() || ''
+      this.oracleAttestations = this.dlc.oracleSigs?.toString() || ''
     } else {
-      this.oracleSignature = ''
+      this.oracleAttestations = ''
       this.contractTimeout = ''
     }
   }
@@ -110,41 +110,39 @@ export class ContractDetailComponent implements OnInit {
     })
   }
 
-  onOracleSignatures() {
-    console.debug('onOracleSignatures', this.oracleSignature)
-    if (this.oracleSignature) {
+  onOracleAttestations() {
+    console.debug('onOracleAttestations()', this.oracleAttestations)
+    if (this.oracleAttestations) {
       // Keep extra whitespace out of the system
-      const os = this.oracleSignature.trim()
-      // Validate oracleSignature as hex
-      const isValidHex = validateHexString(os)
+      const attestations = this.oracleAttestations.trim()
 
+      // Validate oracleSignature as hex
+      const isValidHex = validateHexString(attestations)
       if (!isValidHex) {
-        console.error('oracleSignature is not valid hex')
+        console.error('oracleAttestations is not valid hex')
         const dialog = this.dialog.open(ErrorDialogComponent, {
           data: {
             title: 'dialog.error',
-            content: 'The oracleSignatures entered are not valid hex',
+            content: 'The oracleAttestations entered are not valid hex',
           }
         })
         return
       }
 
-      console.debug('oracleSignature:', os)
+      console.debug('oracleAttestations:', attestations)
 
-      // ExecuteDLCDialog.scala:22
-      // OracleAttestmentTLV.fromHex(str.trim)
-      this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [os])).subscribe(r => {
+      this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
         console.debug('decodeattestments', r)
 
         if (r.result) {
           const attestment: Attestment = r.result
           console.debug('attestment:', attestment)
 
-          const sigs = [os] // attestment.signatures
+          const sigs = [attestations] // attestment.signatures
           const contractId = this.dlc.contractId
           const noBroadcast = false // Could allow changing
 
-          console.warn('os:', os, 'attestment.signatures:', attestment.signatures)
+          // console.warn('attestations:', attestations, 'attestment.signatures:', attestment.signatures)
 
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlc, 
             [contractId, sigs, noBroadcast])).subscribe(r => {

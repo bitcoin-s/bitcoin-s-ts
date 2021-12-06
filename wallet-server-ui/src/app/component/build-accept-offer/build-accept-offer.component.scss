@@ -1,12 +1,18 @@
+
 .build-accept-offer {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 
-  .paste-input {
-    margin-right: 2rem;
-    label {
-      margin-right: 1rem;
+  .build-offer, .accept-offer {
+    .content {
+      padding: 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .description {
+      line-height: 1.5;
     }
   }
+
 }

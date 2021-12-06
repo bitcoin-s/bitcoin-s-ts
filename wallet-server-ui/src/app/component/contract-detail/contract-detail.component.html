@@ -139,7 +139,7 @@
     <div class="field-group">
       <label translate>contractDetail.fundingTransactionId</label>
       <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button class="mat-stroked-button-sm"
+      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
         (click)="onRebroadcastFundingTransaction()"
         [disabled]="!isFundingTxRebroadcastable(dlc.state)">
         {{ 'contractDetail.rebroadcast' | translate }}
@@ -149,7 +149,7 @@
     <div class="field-group">
       <label translate>contractDetail.closingTransactionId</label>
       <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
-      <button mat-stroked-button class="mat-stroked-button-sm"
+      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
         (click)="onRebroadcastClosingTransaction()"
         [disabled]="!dlc.closingTxId">
         {{ 'contractDetail.rebroadcast' | translate }}
@@ -157,11 +157,11 @@
       <!-- TODO : Link -->
     </div>
     <div class="field-group">
-      <label translate>contractDetail.oracleSignatures</label>
-      <input [(ngModel)]="oracleSignature" [disabled]="!isExecutable(dlc.state)">
-      <button mat-stroked-button class="mat-stroked-button-sm"
-        (click)="onOracleSignatures()"
-        [disabled]="!isExecutable(dlc.state) || !oracleSignature">
+      <label translate>contractDetail.oracleAttestations</label>
+      <input [(ngModel)]="oracleAttestations" [disabled]="!isExecutable(dlc.state)">
+      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
+        (click)="onOracleAttestations()"
+        [disabled]="!isExecutable(dlc.state) || !oracleAttestations">
         {{ 'action.execute' | translate }}
       </button>
     </div>

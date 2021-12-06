@@ -73,7 +73,13 @@
     "pasteHex": "Paste Hex",
     "invalidHex": "The hex string entered is not valid hex",
     "invalidAnnouncementContractInfoHex": "The entered hex string is not an Announcement or ContractInfo",
-    "invalidOfferHex": "The entered hex string is not an Offer"
+    "invalidOfferHex": "The entered hex string is not an Offer",
+    "pasteHexStringHere": "Paste Hex String Here"
+  },
+
+  "buildAcceptOfferDescription": {
+    "buildOffer": "Start a new Offer from an Announcement or Contract Info",
+    "acceptOffer": "View an Offer you've received"
   },
 
   "walletBalance": {
@@ -210,7 +216,7 @@
     "remoteCollateral": "Theirs",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
-    "oracleSignatures": "Oracle Signatures",
+    "oracleAttestations": "Oracle Attestations",
     "rebroadcast": "Rebroadcast",
     "cancelContract": "Cancel Contract",
     "cancelContractSuccess": "Successfully canceled contract",
