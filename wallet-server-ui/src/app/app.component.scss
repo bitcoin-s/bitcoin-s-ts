@@ -18,11 +18,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 2rem;
-
-    > * {
-      flex-grow: 1;
-    }
+    column-gap: 2rem;
   }
 
   .tor-dlc-host-address {
@@ -62,7 +58,7 @@
     align-items: center;
 
     font-size: smaller;
-    color: #8c959f;
+    color: #8c959f; // TODO : From palette
     
     margin-bottom: 0.25rem;
 

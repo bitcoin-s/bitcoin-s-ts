@@ -50,6 +50,27 @@ export interface Attestment {
   values: string[] // ['num', 'num2', ...] for numeric, ['outcome'] for enum
 }
 
+export interface Sign {
+  cetAdaptorSignatures: {ecdsaAdaptorSignatures:{signature: string}[]}[]
+  contractId: string
+  fundingSignatures: {fundingSignatures:{witness:string}[]}
+  refundSignature: string
+}
+
+export interface Accept {
+  acceptCollateral: number
+  cetAdaptorSignatures: {ecdsaAdaptorSignatures:{signature: string}[]}[]
+  changeSerialId: string
+  changeSpk: string
+  fundingInputs: FundingInput[]
+  fundingPubkey: string 
+  negotiationFields: any // TODO : Type me
+  payoutSerialId: string
+  payoutSpk: string
+  refundSignature: string
+  temporaryContractId: string
+}
+
 export interface Offer {
   contractFlags: string // '0'
   chainHash: string // '43497fd7f826957108f4a30fd9cec3aeba79972084e90ead01ea330900000000',

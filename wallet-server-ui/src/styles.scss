@@ -71,6 +71,7 @@ fieldset {
 
 /** Buttons */
 
+.mat-flat-button.mat-flat-button-sm,
 .mat-stroked-button.mat-stroked-button-sm {
   padding: 0 8px;
   line-height: 24px;
@@ -79,9 +80,9 @@ fieldset {
 }
 
 .mat-icon-button.mat-icon-button-sm {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
 }
 
 .mat-icon-button {

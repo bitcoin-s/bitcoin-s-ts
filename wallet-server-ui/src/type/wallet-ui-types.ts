@@ -1,4 +1,4 @@
-import { Announcement, ContractInfo, Offer } from './wallet-server-types'
+import { Accept, Announcement, ContractInfo, Offer, Sign } from './wallet-server-types'
 
 // UI Side types
 
@@ -18,4 +18,14 @@ export interface ContractInfoWithHex {
 export interface OfferWithHex {
   offer: Offer
   hex: string // raw hex of Offer
+}
+
+export interface AcceptWithHex {
+  accept: Accept
+  hex: string // raw hex of Accept
+}
+
+export interface SignWithHex {
+  sign: Sign
+  hex: string // raw hex of Accept
 }

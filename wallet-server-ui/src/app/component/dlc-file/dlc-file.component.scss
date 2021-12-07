@@ -8,6 +8,11 @@
     padding: 1rem;
     
     .field-group {
+      app-more-info {
+        vertical-align: middle;
+      }
+    }
+    .field-group:not(:last-of-type) {
       margin-bottom: 0.5rem;
     }
 

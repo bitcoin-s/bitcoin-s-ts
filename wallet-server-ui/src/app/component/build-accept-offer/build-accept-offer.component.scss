@@ -15,4 +15,13 @@
     }
   }
 
+  .button-group {
+    label {
+      margin-right: 0.5rem;
+    }
+    label:not(:first-child) {
+      margin-left: 1rem;
+    }
+  }
+
 }

@@ -1,7 +1,10 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
+import * as FileSaver from 'file-saver'
+
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
@@ -9,6 +12,7 @@ import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
+import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -38,6 +42,16 @@ export class ContractDetailComponent implements OnInit {
   _contractInfo!: ContractInfo
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) { this._contractInfo = e }
+
+  // Optional
+  _accept: AcceptWithHex|null = null
+  get accept(): AcceptWithHex|null { return this._accept }
+  @Input() set accept(a: AcceptWithHex|null) { this._accept = a }
+
+  // Optional
+  _sign: SignWithHex|null = null
+  get sign(): SignWithHex|null { return this._sign }
+  @Input() set sign(s: SignWithHex|null) { this._sign = s }
 
   getEnumContractDescriptor() {
     return <EnumContractDescriptor>this.contractInfo.contractDescriptor
@@ -69,11 +83,26 @@ export class ContractDetailComponent implements OnInit {
     }
   }
 
+  // For Completing DLC Contracts
+
+  form: FormGroup
+  get f() { return this.form.controls }
+
+  private defaultFilename: string
+
+  executing = false
+  acceptSigned = false
+  signBroadcast = false
+
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
-    private messsageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
+    private messsageService: MessageService, private walletStateService: WalletStateService, 
+    private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService) { }
 
   ngOnInit(): void {
-    
+    this.defaultFilename = this.translate.instant('contractDetail.defaultSignFilename')
+    this.form = this.formBuilder.group({
+      filename: [this.defaultFilename, Validators.required],
+    })
   }
 
   onClose() {
@@ -88,6 +117,10 @@ export class ContractDetailComponent implements OnInit {
   isNumeric() {
     const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
+  }
+
+  showTransactionIds() {
+    return !([DLCState.offered].includes(this.dlc.state))
   }
 
   onCancelContract() {
@@ -305,4 +338,67 @@ export class ContractDetailComponent implements OnInit {
     }
   }
 
+  // Sign Accepted
+
+  onSign() {
+    console.debug('onSign()')
+
+    if (this.accept) {
+      const v = this.form.value
+      const acceptedDLC = this.accept.hex
+      const filename = v.filename
+
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.signdlc, [acceptedDLC])).subscribe(r => {
+        console.debug('signdlc', r)
+
+        if (r.result) {
+          // Save to file
+          const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
+          FileSaver.saveAs(blob, filename)
+          
+          this.executing = false
+          this.acceptSigned = true
+
+          this.refreshDLCState()
+        }
+      })
+    }
+  }
+
+  // Countersign Signed and broadcast
+
+  onBroadcast() {
+    console.debug('onBroadcast()')
+
+    if (this.sign) {
+      // const v = this.form.value
+      const signedDLC = this.sign.hex
+      // const filename = v.filename
+
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.adddlcsigsandbroadcast, [signedDLC])).subscribe(r => {
+        console.debug('adddlcsigsandbroadcast', r)
+
+        if (r.result) {
+          // Nothing to save here?
+
+          // Save to file
+          // const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
+          // FileSaver.saveAs(blob, filename)
+          // works fine, but I'm not sure if this is decodable on the other side...
+
+          // See https://github.com/AtomicFinance/node-dlc/blob/master/packages/messaging/lib/messages/DlcSign.ts
+          // Should be able to decode at Node and map contractId to show local key data
+
+          // Bitcoin-S equivalent functionality issue https://github.com/bitcoin-s/bitcoin-s/issues/3847
+
+          this.executing = false
+          this.signBroadcast = true
+
+          this.refreshDLCState()
+        }
+      })
+    }
+  }
 }

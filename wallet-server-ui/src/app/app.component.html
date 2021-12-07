@@ -7,18 +7,21 @@
       <!-- Main -->
 
       <div class="main-content">
+        <div class="wallet-container">
+          <app-wallet-balance></app-wallet-balance>
+
+          <app-dlc-file hidden
+            (offer)="buildAcceptOffer.onAcceptOffer($event)"
+            (accept)="onAcceptWithHex($event)"
+            (sign)="onSignWithHex($event)"></app-dlc-file>
+        </div>
+
         <app-build-accept-offer #buildAcceptOffer
           (announcement)="onAnnouncement($event)" 
           (contractInfo)="onContractInfo($event)"
           (acceptOffer)="onAcceptOffer($event)">
         </app-build-accept-offer>
 
-        <div class="wallet-container">
-          <app-wallet-balance></app-wallet-balance>
-
-          <app-dlc-file hidden (onOffer)="buildAcceptOffer.onAcceptOffer($event)"></app-dlc-file>
-        </div>
-        
         <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
 
         <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
@@ -56,41 +59,9 @@
           </div>
         </div>
       </div>
-
-      <!--
-      <div class="horizontal-pane">
-        <div class="left-pane">
-          <app-build-accept-offer
-            (announcement)="onAnnouncement($event)" 
-            (contractInfo)="onContractInfo($event)"
-            (acceptOffer)="onAcceptOffer($event)">
-          </app-build-accept-offer>
-  
-          <app-wallet-balance></app-wallet-balance>
-  
-          <app-contracts #contracts (selectedDLC)="onSelectedDLC($event)"></app-contracts>
-        </div>
-        <div class="right-pane">
-          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
-            [announcement]="selectedAnnouncement"
-            (close)="onNewOfferClose()"></app-new-offer>
-          <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
-            [contractInfo]="selectedContractInfo"
-            (close)="onNewOfferClose()"></app-new-offer>
-
-          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
-            (close)="onAcceptOfferClose()"></app-accept-offer>
-
-          <app-contract-detail *ngIf="selectedDLC && selectedDLCContractInfo" 
-            [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
-            (close)="onContractDetailClose()"
-          ></app-contract-detail>
-        </div>
-      </div>
-    -->
     </mat-sidenav-content>
 
-    <mat-sidenav #rightDrawer position="end" mode="over">
+    <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
       <div class="drawer-container">
         <app-configuration *ngIf="configurationVisible"
           (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
@@ -100,20 +71,21 @@
 
         <app-contract-detail *ngIf="contractDetailsVisible && selectedDLC && selectedDLCContractInfo" 
           [dlc]="selectedDLC" [contractInfo]="selectedDLCContractInfo"
-          (close)="onContractDetailClose()"
+          [accept]="selectedAccept" [sign]="selectedSign"
+          (close)="rightDrawer.close()"
         ></app-contract-detail>
 
         <ng-container *ngIf="offerVisible">
           <!-- Don't like having two instances, but avoids null handling logic -->
           <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
             [announcement]="selectedAnnouncement"
-            (close)="onNewOfferClose()"></app-new-offer>
+            (close)="rightDrawer.close()"></app-new-offer>
           <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
             [contractInfo]="selectedContractInfo"
-            (close)="onNewOfferClose()"></app-new-offer>
+            (close)="rightDrawer.close()"></app-new-offer>
 
           <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
-            (close)="onAcceptOfferClose()"></app-accept-offer>
+            (close)="rightDrawer.close()"></app-accept-offer>
         </ng-container>
 
       </div>

@@ -94,8 +94,8 @@
     <div *ngIf="isEnum()" class="enum-outcomes">
       <label class="group-label" translate>contractDetail.outcomePayouts</label>
       <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
-        <label>{{ l }}</label>
-        <input [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
+        <label class="outcome-label">{{ l }}</label>
+        <input class="outcome-payout text-right" [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
         <span translate>unit.sats</span>
       </div>
 
@@ -116,15 +116,6 @@
       </button>
     </div>
     <div class="field-group">
-      <label translate>contractDetail.contractId</label>
-      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" 
-        matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(dlc.contractId)" [disabled]= "!dlc.contractId">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
-    <div class="field-group">
       <label translate>contractDetail.contractInfo</label>
       <input [value]="dlc.contractInfo" disabled>
       <button mat-icon-button class="copy-button mat-icon-button-sm" 
@@ -133,61 +124,144 @@
         <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
     </div>
-
-    <div class="spacer"></div>
-
     <div class="field-group">
-      <label translate>contractDetail.fundingTransactionId</label>
-      <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
-        (click)="onRebroadcastFundingTransaction()"
-        [disabled]="!isFundingTxRebroadcastable(dlc.state)">
-        {{ 'contractDetail.rebroadcast' | translate }}
-      </button>
-      <!-- TODO : Link -->
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.closingTransactionId</label>
-      <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
-      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
-        (click)="onRebroadcastClosingTransaction()"
-        [disabled]="!dlc.closingTxId">
-        {{ 'contractDetail.rebroadcast' | translate }}
-      </button>
-      <!-- TODO : Link -->
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.oracleAttestations</label>
-      <input [(ngModel)]="oracleAttestations" [disabled]="!isExecutable(dlc.state)">
-      <button mat-stroked-button color="primary" class="mat-stroked-button-sm"
-        (click)="onOracleAttestations()"
-        [disabled]="!isExecutable(dlc.state) || !oracleAttestations">
-        {{ 'action.execute' | translate }}
+      <label translate>contractDetail.contractId</label>
+      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" 
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(dlc.contractId)" [disabled]= "!dlc.contractId">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
     </div>
+    <!-- Only show tempContractId when there is not a final contractId -->
+    <div *ngIf="!dlc.contractId" class="field-group">
+      <label translate>contractDetail.tempContractId</label>
+      <input [value]="dlc.tempContractId" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" 
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(dlc.tempContractId)" [disabled]= "!dlc.tempContractId">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+      </button>
+    </div>
+    
+    <ng-container *ngIf="showTransactionIds()">
+      <div class="spacer"></div>
+      <div class="field-group">
+        <label translate>contractDetail.fundingTransactionId</label>
+        <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
+        <button mat-flat-button color="primary" class="mat-flat-button-sm"
+          (click)="onRebroadcastFundingTransaction()"
+          [disabled]="!isFundingTxRebroadcastable(dlc.state)">
+          <span translate>contractDetail.rebroadcast</span>
+        </button>
+        <!-- TODO : Link -->
+      </div>
+      <div class="field-group">
+        <label translate>contractDetail.closingTransactionId</label>
+        <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
+        <button mat-flat-button color="primary" class="mat-flat-button-sm"
+          (click)="onRebroadcastClosingTransaction()"
+          [disabled]="!dlc.closingTxId">
+          <span translate>contractDetail.rebroadcast</span>
+        </button>
+        <!-- TODO : Link -->
+      </div>
+      <div class="field-group">
+        <label translate>contractDetail.oracleAttestations</label>
+        <input [(ngModel)]="oracleAttestations" [disabled]="!isExecutable(dlc.state)">
+        <button mat-flat-button color="primary" class="mat-flat-button-sm"
+          (click)="onOracleAttestations()"
+          [disabled]="!isExecutable(dlc.state) || !oracleAttestations">
+          <span translate>action.execute</span>
+        </button>
+      </div>
+    </ng-container>
   </div>
 
   <div class="spacer"></div>
 
-  <div class="button-group">
+  <div *ngIf="!accept && !sign" class="button-group">
     <button mat-stroked-button color="warn" (click)="onCancelContract()"
       [disabled]="!isCancelable(dlc.state)">
-      {{ 'contractDetail.cancelContract' | translate }}
+      <span translate>contractDetail.cancelContract</span>
     </button>
     <button mat-stroked-button color="warn" (click)="onRefund()"
       [disabled]="!isRefundable(dlc.state)">
-      {{ 'contractDetail.refundContract' | translate }}
+      <span translate>contractDetail.refundContract</span>
     </button>
     <!-- Don't have sha256 id to do this operation yet. -->
     <button mat-stroked-button (click)="onViewOnOracleExplorer()"
       disabled>
-      {{ 'contractDetail.viewOnOracleExplorer' | translate }}
+      <span translate>contractDetail.viewOnOracleExplorer</span>
     </button>
   </div>
 
-  <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
+  <div *ngIf="accept" class="accept-group">
+    <h2 translate>contractDetail.signAcceptOffer</h2>
+    <div class="description text-justify">
+      {{ 'contractDetailDescription.signAcceptOffer' | translate }}
+    </div>
 
-  <div class="contract-detail-grid">
-    
+    <form class="form-container" [formGroup]="form" autocomplete="off">
+      <fieldset>
+        <mat-form-field class="w-100">
+          <mat-label translate>contractDetail.filename</mat-label>
+          <input matInput formControlName="filename" type="text"
+            placeholder="{{ 'contractDetail.defaultSignFilename' | translate }}">
+          <app-more-info matSuffix tooltip="contractDetailDescription.filename"></app-more-info>
+        </mat-form-field>
+      </fieldset>
+    </form>
+
+    <div class="execute-container">
+      <div class="button-group">
+        <button mat-flat-button color="primary" (click)="onSign()"
+          [disabled]="form.invalid || !dlc.isInitiator || executing || acceptSigned">
+          <mat-icon class="material-icons-outlined">file_download</mat-icon>
+          <span translate>action.execute</span>
+        </button>
+        <div class="spinner" [hidden]="!executing">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </div>
+    </div>
+    <app-alert *ngIf="!dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotBroadcastOwnSign" icon="check_circle"></app-alert>
+    <app-alert *ngIf="acceptSigned" [type]="AlertType.success" message="contractDetail.acceptSigned" icon="check_circle"></app-alert>
   </div>
+
+  <div *ngIf="sign" class="sign-group">
+    <h2 translate>contractDetail.broadcastSigned</h2>
+    <div class="description text-justify">
+      {{ 'contractDetailDescription.signAcceptOffer' | translate }}
+    </div>
+
+    <!-- <form class="form-container" [formGroup]="form" autocomplete="off">
+      <fieldset>
+        <mat-form-field class="w-100">
+          <mat-label translate>contractDetail.filename</mat-label>
+          <input matInput formControlName="filename" type="text"
+            placeholder="{{ 'contractDetail.defaultSignFilename' | translate }}">
+          <app-more-info matSuffix tooltip="contractDetailDescription.filename"></app-more-info>
+        </mat-form-field>
+      </fieldset>
+    </form> -->
+
+    <div class="execute-container">
+      <div class="button-group">
+        <button mat-flat-button color="primary" (click)="onBroadcast()"
+          [disabled]="dlc.isInitiator || executing || signBroadcast">
+          <!-- <mat-icon class="material-icons-outlined">file_download</mat-icon> -->
+          <span translate>action.execute</span>
+        </button>
+        <div class="spinner" [hidden]="!executing">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </div>
+    </div>
+
+    <app-alert *ngIf="dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotBroadcastOwnSign" icon="check_circle"></app-alert>
+    <app-alert *ngIf="signBroadcast" [type]="AlertType.success" message="contractDetail.signBroadcast" icon="check_circle"></app-alert>
+  </div>
+
+  <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 </section>

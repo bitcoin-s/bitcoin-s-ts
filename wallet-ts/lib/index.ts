@@ -8,7 +8,7 @@ import { getMessageBody } from '../../common-ts/lib/util/message-util'
 import { validateBoolean, validateNumber, validateString } from '../../common-ts/lib/util/validation-util'
 
 import { BlockchainMessageType, BlockHeaderResponse, GetInfoResponse } from './type/blockchain-types'
-import { Announcement, Attestment, CoreMessageType, Offer } from './type/core-types'
+import { Accept, Announcement, Attestment, CoreMessageType, Offer, Sign } from './type/core-types'
 import { DLCMessageType } from './type/dlc-types'
 import { NetworkMessageType } from './type/network-types'
 import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
@@ -808,21 +808,21 @@ export function AnalyzePSBT() {
 
 export function DecodeSign(signedHex: string) {
   console.debug('DecodeSign()', signedHex)
-  validateString(signedHex, 'DecodeOffer()', 'signedHex')
+  validateString(signedHex, 'DecodeSign()', 'signedHex')
 
   const m = getMessageBody(CoreMessageType.decodesign, [signedHex])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    return <ServerResponse<Sign>>response
   })
 }
 
 export function DecodeAccept(acceptHex: string) {
   console.debug('DecodeAccept()', acceptHex)
-  validateString(acceptHex, 'DecodeOffer()', 'acceptHex')
+  validateString(acceptHex, 'DecodeAccept()', 'acceptHex')
 
   const m = getMessageBody(CoreMessageType.decodeaccept, [acceptHex])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    return <ServerResponse<Accept>>response
   })
 }
 
