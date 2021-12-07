@@ -409,7 +409,8 @@ export function AddDLCSigsAndBroadcast(sigsHex: string) {
 
   const m = getMessageBody(WalletMessageType.adddlcsigsandbroadcast, [sigsHex])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // Return is txId
+    return <ServerResponse<string>>response
   })
 }
 

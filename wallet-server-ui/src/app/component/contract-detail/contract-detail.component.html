@@ -232,19 +232,8 @@
   <div *ngIf="sign" class="sign-group">
     <h2 translate>contractDetail.broadcastSigned</h2>
     <div class="description text-justify">
-      {{ 'contractDetailDescription.signAcceptOffer' | translate }}
+      {{ 'contractDetailDescription.broadcastSigned' | translate }}
     </div>
-
-    <!-- <form class="form-container" [formGroup]="form" autocomplete="off">
-      <fieldset>
-        <mat-form-field class="w-100">
-          <mat-label translate>contractDetail.filename</mat-label>
-          <input matInput formControlName="filename" type="text"
-            placeholder="{{ 'contractDetail.defaultSignFilename' | translate }}">
-          <app-more-info matSuffix tooltip="contractDetailDescription.filename"></app-more-info>
-        </mat-form-field>
-      </fieldset>
-    </form> -->
 
     <div class="execute-container">
       <div class="button-group">

@@ -5,13 +5,15 @@ import { MatRadioChange } from '@angular/material/radio'
 import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
 
-import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatDateTime, formatISODate, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+import { AlertType } from '../alert/alert.component'
 
 
 enum AcceptOfferType {
@@ -39,6 +41,7 @@ export class AcceptOfferComponent implements OnInit {
 
   public Object = Object
   public AcceptOfferType = AcceptOfferType
+  public AlertType = AlertType
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
 
@@ -90,7 +93,6 @@ export class AcceptOfferComponent implements OnInit {
 
   executing = false
   offerAccepted = false
-
   result: string
 
   private defaultFilename: string
@@ -181,8 +183,7 @@ export class AcceptOfferComponent implements OnInit {
         [this.offer.hex, peerAddress])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
           // if (r.result) { // Empty response right now
-            // TODO : This should probably be an Alert instead
-            this.result = this.translate.instant('acceptOffer.tor.success')
+            this.result = 'acceptOffer.tor.success'
             this.walletStateService.refreshDLCStates()
             this.executing = false
             this.offerAccepted = true
@@ -191,25 +192,16 @@ export class AcceptOfferComponent implements OnInit {
     } else {
       console.debug('acceptdlcoffer to hex')
 
-      // const dialog = this.dialog.open(ErrorDialogComponent, {
-      //   data: {
-      //     title: 'dialog.error',
-      //     content: 'Accepting DLCs without using Tor is not currently enabled',
-      //   }
-      // })
-      // return
-
       // Needed to increase the proxy layer timeout. Moved to 45 seconds, may need more
       // The return from this call is too large and crashes the browser if assigned into this.result
 
-      const filename = this.defaultFilename
+      const filename = v.filename
 
       this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
         [this.offer.hex])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
           if (r.result) { // result is very large
-            // TODO : This should probably be an Alert instead
-            this.result = this.translate.instant('acceptOffer.files.success')
+            this.result = 'acceptOffer.files.success'
 
             // Save to file
             const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});

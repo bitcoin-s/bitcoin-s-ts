@@ -294,6 +294,11 @@
       "content": "Contract with id {{ contractId }} has been canceled. The transactionId is {{ txId }} and should appear in the mempool shortly.",
       "linksContent": "View the transaction on Mempool.space at"
     },
+    "broadcastSuccess": {
+      "title": "Broadcast Successful",
+      "content": "The transaction with id {{ txId }} was broadcast.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
     "rebroadcastSuccess": {
       "title": "Rebroadcast Successful",
       "content": "The transaction with id {{ txId }} was rebroadcast.",

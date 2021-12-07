@@ -356,7 +356,7 @@ export class ContractDetailComponent implements OnInit {
           // Save to file
           const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
           FileSaver.saveAs(blob, filename)
-          
+
           this.executing = false
           this.acceptSigned = true
 
@@ -372,26 +372,25 @@ export class ContractDetailComponent implements OnInit {
     console.debug('onBroadcast()')
 
     if (this.sign) {
-      // const v = this.form.value
       const signedDLC = this.sign.hex
-      // const filename = v.filename
 
       this.executing = true
       this.messageService.sendMessage(getMessageBody(WalletMessageType.adddlcsigsandbroadcast, [signedDLC])).subscribe(r => {
         console.debug('adddlcsigsandbroadcast', r)
 
         if (r.result) {
-          // Nothing to save here?
-
-          // Save to file
-          // const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
-          // FileSaver.saveAs(blob, filename)
-          // works fine, but I'm not sure if this is decodable on the other side...
-
-          // See https://github.com/AtomicFinance/node-dlc/blob/master/packages/messaging/lib/messages/DlcSign.ts
-          // Should be able to decode at Node and map contractId to show local key data
-
-          // Bitcoin-S equivalent functionality issue https://github.com/bitcoin-s/bitcoin-s/issues/3847
+          const txId = r.result
+          const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            data: {
+              title: 'dialog.broadcastSuccess.title',
+              content: 'dialog.broadcastSuccess.content',
+              params: { txId },
+              linksContent: "dialog.broadcastSuccess.linksContent",
+              links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+              action: 'action.close',
+              showCancelButton: false,
+            }
+          })
 
           this.executing = false
           this.signBroadcast = true

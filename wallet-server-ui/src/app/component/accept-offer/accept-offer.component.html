@@ -143,14 +143,7 @@
       </div>
     </div>
 
-    <!-- TODO : app-alert instead of using result group? -->
-
-    <fieldset class="result-group" [disabled]="!result">
-      <label translate>result</label>
-      <textarea class="result-textarea" [(ngModel)]="result"></textarea>
-      <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(result)" [disabled]="!result"><mat-icon>content_copy</mat-icon></button>
-    </fieldset>
+    <app-alert *ngIf="result" [type]="AlertType.success" [message]="result" icon="check_circle"></app-alert>
   </div>
   
 </section>
