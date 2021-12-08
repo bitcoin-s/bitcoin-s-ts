@@ -1,52 +1,4 @@
-// Setup material theme
-
-@use '~@angular/material' as mat;
-
-@import "~@angular/material/theming";
-
-@include mat.core();
-
-$angular-primary: mat.define-palette(mat.$teal-palette, 500, 100, 900);
-$angular-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
-$angular-warn: mat.define-palette(mat.$red-palette);
-
-$angular-default-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $angular-primary,
-      accent: $angular-accent,
-      warn: $angular-warn,
-    ),
-  )
-);
-
-@include mat.all-component-themes($angular-default-theme);
-
-// Setup Dark Mode
-
-$angular-dark-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $angular-primary,
-      accent: $angular-accent,
-      warn: $angular-warn,
-    ),
-  )
-);
-
-.darkMode {
-  @include mat.all-component-colors($angular-dark-theme);
-}
-
-
-// Include Material Icons
-// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
-
-// Set a theme
-
-// @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; // indigo-pink.css";
+@import "./scss/material-theme";
 
 /** General HTML */
 
@@ -105,7 +57,7 @@ fieldset {
   flex-direction: row;
 
   .pane {
-
+    // background: $mat-light-theme-background;
   }
   .left-pane {
     margin-right: 1rem;
@@ -119,6 +71,7 @@ fieldset {
 
 /** Buttons */
 
+.mat-flat-button.mat-flat-button-sm,
 .mat-stroked-button.mat-stroked-button-sm {
   padding: 0 8px;
   line-height: 24px;
@@ -127,9 +80,9 @@ fieldset {
 }
 
 .mat-icon-button.mat-icon-button-sm {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
 }
 
 .mat-icon-button {
@@ -152,6 +105,14 @@ fieldset {
   // height: 24px;
   // width: 24px;
   transform: scale(0.7);
+}
+
+.mat-button-toggle.mat-button-toggle-sm {
+  .mat-button-toggle-button {
+    .mat-button-toggle-label-content {
+      line-height: 30px;
+    }
+  }
 }
 
 /** Material Design Forms */
@@ -189,7 +150,7 @@ mat-form-field {
   }
 }
 
-.mat-stroked-button {
+.mat-stroked-button, .mat-flat-button {
   span + mat-icon {
     margin-left: 0.6rem;
   }

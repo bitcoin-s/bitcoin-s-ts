@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import * as FileSaver from 'file-saver'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
+
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { WalletMessageType } from '~type/wallet-server-types'
+import { Accept, CoreMessageType, DLCState, WalletMessageType } from '~type/wallet-server-types'
+import { AcceptWithHex, OfferWithHex, SignWithHex } from '~type/wallet-ui-types'
 import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -16,9 +21,12 @@ import { getMessageBody } from '~util/wallet-server-util'
 })
 export class DlcFileComponent implements OnInit {
 
-  acceptedDLCInput: string = ''
-  // acceptedDLCInputDisplay: string = ''
+  @Output() offer: EventEmitter<string> = new EventEmitter()
+  @Output() accept: EventEmitter<AcceptWithHex> = new EventEmitter()
+  @Output() sign: EventEmitter<SignWithHex> = new EventEmitter()
 
+  offerDLCInput: string = ''
+  acceptedDLCInput: string = ''
   signedDLCInput: string = ''
 
   executing = false
@@ -44,6 +52,24 @@ export class DlcFileComponent implements OnInit {
     reader.readAsText(f)
   }
 
+  acceptInputChange(fileInputEvent: any) {
+    console.debug('acceptInputChange()', fileInputEvent, fileInputEvent.target.files[0])
+
+    if (fileInputEvent.target.files && fileInputEvent.target.files[0]) {
+      this.handleFileLoad(fileInputEvent.target.files[0], 'offerDLCInput', this.onAcceptDLC.bind(this))
+    }
+  }
+
+  onAcceptDLC() {
+    console.debug('onAcceptDLC()')
+
+    if (this.offerDLCInput) {
+      const offerDLC = this.offerDLCInput.trim()
+      // hex will be validated elsewhere
+      this.offer.emit(offerDLC)
+    }
+  }
+
   signInputChange(fileInputEvent: any) {
     console.debug('signInputChange()', fileInputEvent, fileInputEvent.target.files[0])
 
@@ -57,51 +83,37 @@ export class DlcFileComponent implements OnInit {
 
     if (this.acceptedDLCInput) {
       const acceptedDLC = this.acceptedDLCInput.trim()
-
       if (!acceptedDLC || !validateHexString(acceptedDLC)) {
-        // TODO
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.invalidHexError.title',
+            content: 'dialog.invalidHexError.content',
+          }
+        })
         return
       }
 
-      const filename = 'Signed Accept.txt'
-
       this.executing = true
-      this.messageService.sendMessage(getMessageBody(WalletMessageType.signdlc, [acceptedDLC])).subscribe(r => {
-        console.debug('signdlc', r)
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeaccept, [acceptedDLC]), false)
+      .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+        console.debug('decodeaccept', r)
 
         if (r.result) {
-          this.result = 'Success'
-
-          // Save to file
-          const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
-          FileSaver.saveAs(blob, filename)
-          // works fine, but I'm not sure if this is decodable on the other side...
-
-          // See https://github.com/AtomicFinance/node-dlc/blob/master/packages/messaging/lib/messages/DlcSign.ts
-          // Should be able to decode at Node and map contractId to show local key data
-
-          // Bitcoin-S equivalent functionality issue https://github.com/bitcoin-s/bitcoin-s/issues/3847
-
-          this.walletStateService.refreshDLCStates()
-
-          this.executing = false
+          const accept = r.result
+          const acceptWithHex = <AcceptWithHex>{ accept, hex: acceptedDLC }
+          this.accept.emit(acceptWithHex)
+        } else {
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.decodingDLCError.title',
+              content: 'dialog.decodingDLCError.content',
+              params: { state: DLCState.accepted },
+            }
+          })
         }
       })
     }
-    
   }
-
-  // onSignAcceptFromFile() {
-  //   console.debug('onSignAcceptFromFile()')
-
-  //   // TODO : Get File Path
-
-  //   return
-
-  //   this.messageService.sendMessage(getMessageBody(WalletMessageType.signdlcfromfile, [])).subscribe(r => {
-  //     console.debug('signdlcfromfile', r)
-  //   })
-  // }
 
   broadcastInputChange(fileInputEvent: any) {
     console.debug('broadcastInputChange()', fileInputEvent, fileInputEvent.target.files[0])
@@ -114,48 +126,39 @@ export class DlcFileComponent implements OnInit {
   onBroadcastSignedDLC() {
     console.debug('onBroadcastSignedDLC()')
 
-    // return
-
     if (this.signedDLCInput) {
       const signedDLCInput = this.signedDLCInput.trim()
-
       if (!signedDLCInput || !validateHexString(signedDLCInput)) {
-        // TODO
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.invalidHexError.title',
+            content: 'dialog.invalidHexError.content',
+          }
+        })
         return
       }
 
-      const filename = 'Broadcast Signed.txt'
-
-      this.messageService.sendMessage(getMessageBody(WalletMessageType.adddlcsigsandbroadcast, [])).subscribe(r => {
-        console.debug('adddlcsigsandbroadcast', r)
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodesign, [signedDLCInput]), false)
+      .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+        console.debug('decodesign', r)
 
         if (r.result) {
-          this.result = 'Success'
-
-          // Save to file
-          const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
-          FileSaver.saveAs(blob, filename)
-
-          this.walletStateService.refreshDLCStates()
-
-          this.executing = false
+          const sign = r.result
+          const signWithHex = <SignWithHex>{ sign, hex: signedDLCInput }
+          this.sign.emit(signWithHex)
+        } else {
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.decodingDLCError.title',
+              content: 'dialog.decodingDLCError.content',
+              params: { state: DLCState.signed },
+            }
+          })
         }
       })
     }
     
   }
-
-  // onBroadcastSignedDLCFromFile() {
-  //   console.debug('onBroadcastSignedDLCFromFile()')
-
-  //   // TODO : Get File Path
-
-  //   // return
-
-  //   this.messageService.sendMessage(getMessageBody(WalletMessageType.adddlcsigsandbroadcastfromfile, [])).subscribe(r => {
-  //     console.debug('adddlcsigsandbroadcastfromfile', r)
-  //   })
-  // }
-
 
 }

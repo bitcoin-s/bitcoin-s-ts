@@ -16,10 +16,10 @@ export function copyToClipboard(s: string|undefined|null) {
 }
 
 export enum BitcoinNetwork {
-  // regtest = 'regtest', // NOT VALIDATED AGAINST BACKEND
-  test = 'test',
   main = 'main', // NOT VALIDATED AGAINST BACKEND
+  test = 'test',
   signet = 'signet', // NOT VALIDATED AGAINST BACKEND
+  regnet = 'regnet', // NOT VALIDATED AGAINST BACKEND
 }
 
 // Network Regex Validators
@@ -38,6 +38,18 @@ export function validateBitcoinAddress(network: string, address: string) {
       console.error('unknown network', network)
   }
   return false
+}
+
+export function getValidationRegexForNetwork(network: string) {
+  switch (network) {
+    case BitcoinNetwork.test:
+      return TESTNET_REGEX
+    case BitcoinNetwork.main:
+      return MAINNET_REGEX
+    default:
+      console.error('unknown network', network)
+      return TESTNET_REGEX
+  }
 }
 
 export function formatDatePlusDays(date: string, days: number) {
@@ -97,7 +109,7 @@ export function formatShortHex(s: string|null|undefined) {
   return ''
 }
 
-export function mempoolTransactionURL(txIdHex: string, network: BitcoinNetwork) {
+export function mempoolTransactionURL(txIdHex: string, network: string) {
   switch (network) {
     case BitcoinNetwork.main:
       return `https://mempool.space/tx/${txIdHex}`

@@ -13,3 +13,18 @@
     margin-right: 0.5rem;
   }
 }
+
+.form-container {
+  min-width: 450px; // to see a full address
+  fieldset {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+    padding: 0;
+
+    span, mat-button-toggle {
+      margin-left: 0.5rem;
+    }
+  }
+}

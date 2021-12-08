@@ -6,6 +6,8 @@ export interface ConfirmationDialogContent {
   title: string
   content: string
   params: any // { key: value }
+  linksContent: string
+  links: string[]
   action: string
   actionColor: string
   showCancelButton: boolean

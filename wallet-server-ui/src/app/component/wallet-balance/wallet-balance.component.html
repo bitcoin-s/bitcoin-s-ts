@@ -18,11 +18,11 @@
         <span class="unit" translate>unit.sats</span>
       </div>
       <div class="balance-group">
-        <label translate>walletBalance.reserveBalance</label>
+        <label translate>walletBalance.reservedBalance</label>
         <span class="value">{{ formatNumber(walletStateService.balances.reserved) }}</span>
         <span class="unit" translate>unit.sats</span>
       </div>
-      <div class="balance-group">
+      <div class="balance-group total-group">
         <label translate>walletBalance.totalBalance</label>
         <span class="value">{{ formatNumber(walletStateService.balances.total) }}</span>
         <span class="unit" translate>unit.sats</span>
@@ -42,17 +42,17 @@
         <span class="unit" translate>unit.percent</span>
       </div>
     </div>
-  </div>
 
-  <div class="button-group">
-    <button mat-stroked-button (click)="getNewAddress()">
-      <mat-icon>add_circle</mat-icon>
-      <span translate>walletBalance.getNewAddress</span>
-    </button>
-    <button mat-stroked-button (click)="sendFunds()">
-      <mat-icon>send</mat-icon>
-      <span translate>walletBalance.sendFunds</span>
-    </button>
+    <div class="pane buttons">
+      <button mat-flat-button color="primary" (click)="getNewAddress()">
+        <mat-icon>add</mat-icon>
+        <span translate>walletBalance.getNewAddress</span>
+      </button>
+      <button mat-flat-button color="primary" (click)="sendFunds()">
+        <mat-icon class="material-icons-outlined">send</mat-icon>
+        <span translate>walletBalance.sendFunds</span>
+      </button>
+    </div>
   </div>
 
 </section>

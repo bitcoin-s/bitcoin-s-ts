@@ -17,10 +17,8 @@
   .wallet-container {
     display: flex;
     flex-direction: row;
-
-    > * {
-      flex-grow: 1;
-    }
+    flex-wrap: wrap;
+    column-gap: 2rem;
   }
 
   .tor-dlc-host-address {
@@ -31,6 +29,10 @@
       display: inline-block;
       width: 28rem;
     }
+  }
+
+  .spacer {
+    height: 1rem;
   }
 
   .state-info {
@@ -56,7 +58,7 @@
     align-items: center;
 
     font-size: smaller;
-    color: #8c959f;
+    color: #8c959f; // TODO : From palette
     
     margin-bottom: 0.25rem;
 

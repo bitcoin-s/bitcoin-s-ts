@@ -37,7 +37,8 @@
     "copyToClipboard": "Copy to Clipboard",
     "reload": "Reload",
     "refresh": "Refresh",
-    "close": "Close"
+    "close": "Close",
+    "send": "Send"
   },
 
   "unit": {
@@ -51,7 +52,8 @@
     "satsPerVbyte": "sats/vbyte",
     "ellipsis": "...",
     "max": "MAX",
-    "allFunds": "All Funds"
+    "allFunds": "All Funds",
+    "allAvailable": "All available"
   },
 
   "configuration": {
@@ -71,7 +73,13 @@
     "pasteHex": "Paste Hex",
     "invalidHex": "The hex string entered is not valid hex",
     "invalidAnnouncementContractInfoHex": "The entered hex string is not an Announcement or ContractInfo",
-    "invalidOfferHex": "The entered hex string is not an Offer"
+    "invalidOfferHex": "The entered hex string is not an Offer",
+    "pasteHexStringHere": "Paste Hex String Here"
+  },
+
+  "buildAcceptOfferDescription": {
+    "buildOffer": "Start a new Offer from an Announcement or Contract Info",
+    "acceptOffer": "View an Offer you've received"
   },
 
   "walletBalance": {
@@ -80,7 +88,7 @@
     "dlcReturns": "DLC Returns",
     "confirmedBalance": "Confirmed",
     "unconfirmedBalance": "Unconfirmed",
-    "reserveBalance": "Reserve",
+    "reservedBalance": "Reserved",
     "totalBalance": "Total",
     "profitAndLoss": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
@@ -140,8 +148,8 @@
     "maturityDate": "Maturity Date",
     "oraclePublicKey": "Oracle Public Key",
     "collateral": "Collateral",
-    "yourCollateral": "Your's",
-    "counterpartyCollateral": "Counterparty's",
+    "yourCollateral": "Yours",
+    "counterpartyCollateral": "Theirs",
     "totalCollateral": "Total",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
@@ -182,10 +190,10 @@
     "state": "State",
     "realizedPNL": "Realized PNL",
     "rateOfReturn": "Rate of Return",
-    "collateral": "Collateral",
-    "counterpartyCollateral": "Counterparty Collateral",
-    "totalCollateral": "Total Collateral",
-    "lastUpdated": "Last Updated",
+    "collateral": "Yours",
+    "counterpartyCollateral": "Theirs",
+    "totalCollateral": "Total",
+    "lastUpdated": "Updated",
     "noContracts": "No DLC Contracts Started",
     "copyContractId": "Copy Contract Id to Clipboard"
   },
@@ -197,6 +205,7 @@
     "initiator": "Initiator",
     "state": "State",
     "contractId": "Contract Id",
+    "tempContractId": "Temporary Contract Id",
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
     "contractMaturity": "Contract Maturity",
@@ -204,11 +213,11 @@
     "outcomePayouts": "Outcome Payouts",
     "collateral": "Collateral",
     "totalCollateral": "Total",
-    "localCollateral": "Your's",
-    "remoteCollateral": "Counterparty's",
+    "localCollateral": "Yours",
+    "remoteCollateral": "Theirs",
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
-    "oracleSignatures": "Oracle Signatures",
+    "oracleAttestations": "Oracle Attestations",
     "rebroadcast": "Rebroadcast",
     "cancelContract": "Cancel Contract",
     "cancelContractSuccess": "Successfully canceled contract",
@@ -221,7 +230,23 @@
     "yourPayout": "Your Payout",
     "counterpartyPayout": "Counterparty Payout",
     "pnl": "Profit or Loss",
-    "rateOfReturn": "Rate of Return"
+    "rateOfReturn": "Rate of Return",
+
+    "signAcceptOffer": "Sign Accepted Offer",
+    "filename": "Filename",
+    "defaultSignFilename": "Signed DLC Accept.txt",
+    "acceptSigned": "Signed DLC Accept File",
+
+    "broadcastSigned": "Broadcast Signed DLC",
+    "signBroadcast": "Signed DLC File Broadcast"
+  },
+
+  "contractDetailDescription": {
+    "signAcceptOffer": "Your counterparty has accepted your Offer. Sign their Accept by clicking Execute and send the saved file back to your counterparty.",
+    "broadcastSigned": "Your counterparty has signed your Offer. Countersign and broadcast the DLC to finalize it by clicking Execute.",
+    "filename": "Filename to save Signed DLC Accept into",
+    "cannotSignOwnAccept": "You cannot sign your own Accepted DLC. You must give it to your counterparty to sign.",
+    "cannotBroadcastOwnSign": "You cannot broadcast your own Signed DLC. You must give it to your counterparty for broadcast."
   },
 
   "events": {
@@ -234,15 +259,15 @@
 
   "dlcFile": {
     "heading": "DLC File Operations",
-    "sign": "Sign from hex",
-    "broadcast": "Broadcast from hex",
-    "signFile": "Sign Accept from file",
-    "broadcastFile": "Broadcast Signed DLC from file"
+    "chooseOffer": "Choose Offer DLC File to Accept",
+    "chooseAccept": "Choose Accepted DLC File to Sign",
+    "chooseSign": "Choose Signed DLC File to Broadcast"
   },
 
   "dlcFileDescription": {
-    "sign": "Select file to open and sign. This file should be in Accepted state.",
-    "broadcast": "Select file to open and broadcast. This file should be in Signed state.",
+    "accept": "Select file to open and accept. This file should be a DLC in Offered state.",
+    "sign": "Select file to open and sign. This file should be a DLC in Accepted state.",
+    "broadcast": "Select file to open and broadcast. This file should be a DLC in Signed state.",
     "signFile": "",
     "broadcastFile": ""
   },
@@ -261,10 +286,38 @@
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",
-      "content": "{{ amount }} sats successfully sent to {{ address }}"
+      "content": "{{ amount }} sats sent to {{ address }}. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
+    "cancelContractSuccess": {
+      "title": "Contract Canceled",
+      "content": "Contract with id {{ contractId }} has been canceled. The transactionId is {{ txId }} and should appear in the mempool shortly.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
+    "broadcastSuccess": {
+      "title": "Broadcast Successful",
+      "content": "The transaction with id {{ txId }} was broadcast.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
+    "rebroadcastSuccess": {
+      "title": "Rebroadcast Successful",
+      "content": "The transaction with id {{ txId }} was rebroadcast.",
+      "linksContent": "View the transaction on Mempool.space at"
     },
     "sendMessageError": {
       "title": "Error sending message to appServer"
+    },
+    "dlcNotFound": {
+      "title": "DLC not found in wallet",
+      "content": "No DLC with matching contract id could be found"
+    },
+    "decodingDLCError": {
+      "title": "Error decoding DLC",
+      "content": "There was an error decoding the selected file. Please make sure it is a DLC in {{ state }} state."
+    },
+    "invalidHexError": {
+      "title": "Error processing file",
+      "content": "The file content is not valid hex"
     }
   },
 

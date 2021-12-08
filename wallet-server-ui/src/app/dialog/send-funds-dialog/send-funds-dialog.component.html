@@ -1,36 +1,37 @@
 <h2 mat-dialog-title>{{ 'dialog.sendFunds.title' | translate }}</h2>
 
 <mat-dialog-content>
-
-  <div class="field-group">
-    <label translate>dialog.sendFunds.address</label>
-    <!-- (blur)="inputsValid()" (input)="inputsValid()" -->
-    <input type="text" [(ngModel)]="address">
-    <!-- Validation is just on length, not on ultimate validity, probably not safe to show -->
-    <!--
-    <span *ngIf="address && validAddress"><mat-icon class="material-icons-outlined">check_circle</mat-icon></span>
-    <span *ngIf="address && !validAddress"><mat-icon class="material-icons-outlined">cancel</mat-icon></span>
-    -->
-  </div>
-  <div class="field-group">
-    <label translate>dialog.sendFunds.amount</label>
-    <input type="number" placeholder="{{ (sendMax? 'unit.allFunds' : 'unit.sats') | translate }}"
-      [(ngModel)]="amount" [disabled]="sendMax">
-    <mat-button-toggle [(ngModel)]="sendMax" (change)="onMax()">
-      {{ 'unit.max' | translate }}
-    </mat-button-toggle>
-  </div>
-  <div class="field-group">
-    <label translate>dialog.sendFunds.feeRate</label>
-    <input type="number" placeholder="{{ 'unit.satsPerVbyte' | translate }}" [(ngModel)]="feeRate">
-  </div>
-
+  <form class="form-container" [formGroup]="form" autocomplete="off">
+    <fieldset>
+      <mat-form-field>
+        <mat-label translate>dialog.sendFunds.address</mat-label>
+        <input formControlName="address" matInput type="text">
+        <!-- <span matSuffix class="validation">
+          <mat-icon class="material-icons-outlined">check_circle</mat-icon>
+          <mat-icon class="material-icons-outlined">cancel</mat-icon>
+        </span> -->
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label [translate]="sendMax ? 'unit.allFunds' : 'dialog.sendFunds.amount'"></mat-label>
+        <input formControlName="amount" matInput type="number">
+        <span matSuffix translate>unit.sats</span>
+        <mat-button-toggle class="mat-button-toggle-sm" matSuffix color="primary"
+          [checked]="sendMax" (change)="onMax()">
+          {{ 'unit.max' | translate }}
+        </mat-button-toggle>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>dialog.sendFunds.feeRate</mat-label>
+        <input formControlName="feeRate" matInput type="number" min="1">
+      </mat-form-field>
+    </fieldset>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-stroked-button mat-dialog-close>{{ 'action.cancel' | translate }}</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
   <button mat-stroked-button [mat-dialog-close]="true" [color]="actionColor"
-    [mat-dialog-close]="{ address, amount, feeRate, sendMax }"
-    [disabled]="!inputsValid()">{{ action | translate }}</button>
+    [mat-dialog-close]="getFormState()"
+    [disabled]="form.invalid">{{ action | translate }}</button>
 </mat-dialog-actions>

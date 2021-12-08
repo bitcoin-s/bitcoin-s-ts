@@ -154,11 +154,12 @@
 
   <div class="execute-container">
     <div class="button-group">
-      <button mat-stroked-button matTooltip="{{ 'action.copyToClipboard' | translate }}">
+      <button mat-stroked-button class="tor-dlc-host-address-button"
+        matTooltip="{{ 'action.copyToClipboard' | translate }}">
         <mat-icon>content_copy</mat-icon>
         <span translate>torDLCHostAddress</span>
       </button>
-      <button mat-stroked-button color="primary" (click)="onExecute()"
+      <button mat-flat-button color="primary" (click)="onExecute()"
         [disabled]="form.invalid || payoutInputsInvalid || offerCreated">
         {{ 'action.execute' | translate }}
       </button>

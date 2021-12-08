@@ -1,14 +1,19 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
+import * as FileSaver from 'file-saver'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, validateHexString } from '~util/utils'
+import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -38,6 +43,16 @@ export class ContractDetailComponent implements OnInit {
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) { this._contractInfo = e }
 
+  // Optional
+  _accept: AcceptWithHex|null = null
+  get accept(): AcceptWithHex|null { return this._accept }
+  @Input() set accept(a: AcceptWithHex|null) { this._accept = a }
+
+  // Optional
+  _sign: SignWithHex|null = null
+  get sign(): SignWithHex|null { return this._sign }
+  @Input() set sign(s: SignWithHex|null) { this._sign = s }
+
   getEnumContractDescriptor() {
     return <EnumContractDescriptor>this.contractInfo.contractDescriptor
   }
@@ -53,7 +68,7 @@ export class ContractDetailComponent implements OnInit {
 
   // showDeleteSuccess = false
 
-  oracleSignature: string
+  oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
 
@@ -61,18 +76,33 @@ export class ContractDetailComponent implements OnInit {
     if (this.dlc) {
       this.contractMaturity = formatDateTime(this.dlc.contractMaturity)
       this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
-      this.oracleSignature = this.dlc.oracleSigs?.toString() || ''
+      this.oracleAttestations = this.dlc.oracleSigs?.toString() || ''
     } else {
-      this.oracleSignature = ''
+      this.oracleAttestations = ''
       this.contractTimeout = ''
     }
   }
 
+  // For Completing DLC Contracts
+
+  form: FormGroup
+  get f() { return this.form.controls }
+
+  private defaultFilename: string
+
+  executing = false
+  acceptSigned = false
+  signBroadcast = false
+
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
-    private messsageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
+    private messsageService: MessageService, private walletStateService: WalletStateService, 
+    private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService) { }
 
   ngOnInit(): void {
-    
+    this.defaultFilename = this.translate.instant('contractDetail.defaultSignFilename')
+    this.form = this.formBuilder.group({
+      filename: [this.defaultFilename, Validators.required],
+    })
   }
 
   onClose() {
@@ -87,6 +117,10 @@ export class ContractDetailComponent implements OnInit {
   isNumeric() {
     const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
+  }
+
+  showTransactionIds() {
+    return !([DLCState.offered].includes(this.dlc.state))
   }
 
   onCancelContract() {
@@ -109,41 +143,39 @@ export class ContractDetailComponent implements OnInit {
     })
   }
 
-  onOracleSignatures() {
-    console.debug('onOracleSignatures', this.oracleSignature)
-    if (this.oracleSignature) {
+  onOracleAttestations() {
+    console.debug('onOracleAttestations()', this.oracleAttestations)
+    if (this.oracleAttestations) {
       // Keep extra whitespace out of the system
-      const os = this.oracleSignature.trim()
-      // Validate oracleSignature as hex
-      const isValidHex = validateHexString(os)
+      const attestations = this.oracleAttestations.trim()
 
+      // Validate oracleSignature as hex
+      const isValidHex = validateHexString(attestations)
       if (!isValidHex) {
-        console.error('oracleSignature is not valid hex')
+        console.error('oracleAttestations is not valid hex')
         const dialog = this.dialog.open(ErrorDialogComponent, {
           data: {
             title: 'dialog.error',
-            content: 'The oracleSignatures entered are not valid hex',
+            content: 'The oracleAttestations entered are not valid hex',
           }
         })
         return
       }
 
-      console.debug('oracleSignature:', os)
+      console.debug('oracleAttestations:', attestations)
 
-      // ExecuteDLCDialog.scala:22
-      // OracleAttestmentTLV.fromHex(str.trim)
-      this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [os])).subscribe(r => {
+      this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
         console.debug('decodeattestments', r)
 
         if (r.result) {
           const attestment: Attestment = r.result
           console.debug('attestment:', attestment)
 
-          const sigs = [os] // attestment.signatures
+          const sigs = [attestations] // attestment.signatures
           const contractId = this.dlc.contractId
           const noBroadcast = false // Could allow changing
 
-          console.warn('os:', os, 'attestment.signatures:', attestment.signatures)
+          // console.warn('attestations:', attestations, 'attestment.signatures:', attestment.signatures)
 
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlc, 
             [contractId, sigs, noBroadcast])).subscribe(r => {
@@ -192,8 +224,17 @@ export class ContractDetailComponent implements OnInit {
       if (r.result) {
         const txId = r.result
         this.refreshDLCState()
-
-        // TODO : Dialog with txId and link to mempool or link on page
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.cancelContractSuccess.title',
+            content: 'dialog.cancelContractSuccess.content',
+            params: { contractId, txId },
+            linksContent: 'dialog.cancelContractSuccess.linksContent',
+            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+            action: 'action.close',
+            showCancelButton: false,
+          }
+        })
       }
     })
   }
@@ -202,15 +243,27 @@ export class ContractDetailComponent implements OnInit {
     console.debug('onRebroadcastFundingTransaction()')
 
     const contractId = this.dlc.contractId
+    const txId = <string>this.dlc.fundingTxId
 
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
       // console.debug('broadcastdlcfundingtx', r)
 
-      if (r.result) { // funding tx id
-        // Show success
-        const config: any = { verticalPosition: 'top', duration: 3000 }
-        this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),
-          this.translate.instant('action.dismiss'), config)
+      if (r.result) {
+        // const config: any = { verticalPosition: 'top', duration: 3000 }
+        // this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),
+        //   this.translate.instant('action.dismiss'), config)
+
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.rebroadcastSuccess.title',
+            content: 'dialog.rebroadcastSuccess.content',
+            params: { txId },
+            linksContent: "dialog.rebroadcastSuccess.linksContent",
+            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+            action: 'action.close',
+            showCancelButton: false,
+          }
+        })
 
         // Let polling take care of changing future state?
       }
@@ -232,11 +285,22 @@ export class ContractDetailComponent implements OnInit {
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.sendrawtransaction, [rawTransactionHex])).subscribe(r => {
             // console.debug('sendrawtransaction', r)
 
-            if (r.result) { // closing tx id
-              // Show success
-              const config: any = { verticalPosition: 'top', duration: 3000 }
-              this.snackBar.open(this.translate.instant('contractDetail.closingRebroadcastSuccess'),
-                this.translate.instant('action.dismiss'), config)
+            if (r.result) {
+              // const config: any = { verticalPosition: 'top', duration: 3000 }
+              // this.snackBar.open(this.translate.instant('contractDetail.closingRebroadcastSuccess'),
+              //   this.translate.instant('action.dismiss'), config)
+
+              const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'dialog.rebroadcastSuccess.title',
+                  content: 'dialog.rebroadcastSuccess.content',
+                  params: { txId },
+                  linksContent: "dialog.rebroadcastSuccess.linksContent",
+                  links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                  action: 'action.close',
+                  showCancelButton: false,
+                }
+              })
             }
           })
         }
@@ -274,4 +338,66 @@ export class ContractDetailComponent implements OnInit {
     }
   }
 
+  // Sign Accepted
+
+  onSign() {
+    console.debug('onSign()')
+
+    if (this.accept) {
+      const v = this.form.value
+      const acceptedDLC = this.accept.hex
+      const filename = v.filename
+
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.signdlc, [acceptedDLC])).subscribe(r => {
+        console.debug('signdlc', r)
+
+        if (r.result) {
+          // Save to file
+          const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
+          FileSaver.saveAs(blob, filename)
+
+          this.executing = false
+          this.acceptSigned = true
+
+          this.refreshDLCState()
+        }
+      })
+    }
+  }
+
+  // Countersign Signed and broadcast
+
+  onBroadcast() {
+    console.debug('onBroadcast()')
+
+    if (this.sign) {
+      const signedDLC = this.sign.hex
+
+      this.executing = true
+      this.messageService.sendMessage(getMessageBody(WalletMessageType.adddlcsigsandbroadcast, [signedDLC])).subscribe(r => {
+        console.debug('adddlcsigsandbroadcast', r)
+
+        if (r.result) {
+          const txId = r.result
+          const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            data: {
+              title: 'dialog.broadcastSuccess.title',
+              content: 'dialog.broadcastSuccess.content',
+              params: { txId },
+              linksContent: "dialog.broadcastSuccess.linksContent",
+              links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+              action: 'action.close',
+              showCancelButton: false,
+            }
+          })
+
+          this.executing = false
+          this.signBroadcast = true
+
+          this.refreshDLCState()
+        }
+      })
+    }
+  }
 }

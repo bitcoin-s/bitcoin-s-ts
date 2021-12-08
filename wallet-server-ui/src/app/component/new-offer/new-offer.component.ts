@@ -70,7 +70,6 @@ export class NewOfferComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter()
 
   form: FormGroup
-  // convenience getter for easy access to form fields
   get f() { return this.form.controls }
 
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
@@ -110,11 +109,6 @@ export class NewOfferComponent implements OnInit {
   payoutInputsInvalid = false
   payoutValidationError: string = ''
 
-  // TODO : Should be able to disappear these into form state
-  yourCollateral: number // wallet users funds in contract
-  refundDate: string // Date
-  feeRate: number
-
   minDate: Date
 
   executing = false
@@ -140,7 +134,7 @@ export class NewOfferComponent implements OnInit {
       }
     } else if (this.isNumeric()) {
       if (this.announcement) {
-        const ed = <NumericEventDescriptor>this.numericEventDescriptor // this.announcement.announcement.event.descriptor
+        const ed = <NumericEventDescriptor>this.numericEventDescriptor
         const nounceCount = this.event.nonces.length // numDigits
         const maxValue = Math.pow(ed.base, nounceCount) -1
         const minValue = ed.isSigned ? -maxValue : 0
@@ -152,11 +146,6 @@ export class NewOfferComponent implements OnInit {
       }
     }
 
-    this.yourCollateral = <number><unknown>null
-    // This should not get auto-set, should be required for user to enter, default to day after maturity
-    this.refundDate = formatDatePlusDays(this.event.maturity, DEFAULT_DAYS_UNTIL_REFUND) // new Date(this.event.maturity).toISOString()
-    this.feeRate = this.walletStateService.feeEstimate
-
     this.minDate = new Date(this.event.maturity)
 
     this.newOfferResult = ''
@@ -164,8 +153,8 @@ export class NewOfferComponent implements OnInit {
     if (this.form) {
       this.form.patchValue({
         refundDate: datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND),
-        yourCollateral: this.yourCollateral,
-        feeRate: this.feeRate,
+        yourCollateral: null,
+        feeRate: this.walletStateService.feeEstimate,
       })
     }
   }
@@ -183,9 +172,9 @@ export class NewOfferComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      refundDate: [datePlusDays(new Date(this.event.maturity), 1), Validators.required],
-      yourCollateral: [this.yourCollateral, Validators.required],
-      feeRate: [this.feeRate, Validators.required],
+      refundDate: [datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND), Validators.required],
+      yourCollateral: [null, Validators.required],
+      feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
     })
   }
@@ -267,7 +256,7 @@ export class NewOfferComponent implements OnInit {
       const numericPayoutVals = this.points
       const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
 
-      console.warn('numericPayoutVals:', numericPayoutVals, 'maxCollateral:', maxCollateral, 'yourCollateral:', this.yourCollateral)
+      console.warn('numericPayoutVals:', numericPayoutVals, 'maxCollateral:', maxCollateral, 'yourCollateral:', v.yourCollateral)
       
       // console.debug('numericAnnouncementHex:', numericAnnouncementHex, 'totalCollateral:', totalCollateral, 'numericPayoutVals:', numericPayoutVals)
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 

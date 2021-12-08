@@ -1,5 +1,12 @@
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 <mat-dialog-content [translate]="data.content" [translateParams]="data.params"></mat-dialog-content>
+<mat-dialog-content *ngIf="data.linksContent" class="links-content"
+  [translate]="data.linksContent"></mat-dialog-content>
+<mat-dialog-content *ngIf="data.links" class="links">
+  <ng-container *ngFor="let link of data.links">
+    <a [href]="link" target="_blank">{{ link }}</a>
+  </ng-container>
+</mat-dialog-content>
 <mat-dialog-actions>
   <button *ngIf="data.showCancelButton" mat-stroked-button mat-dialog-close>{{ 'action.cancel' | translate }}</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->

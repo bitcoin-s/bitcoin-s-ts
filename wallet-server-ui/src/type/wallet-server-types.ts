@@ -228,6 +228,8 @@ export const enum CoreMessageType {
   decodepsbt = 'decodepsbt',
   decoderawtransaction = 'decoderawtransaction',
   analyzepsbt = 'analyzepsbt',
+  decodesign = 'decodesign',
+  decodeaccept = 'decodeaccept',
   decodeoffer = 'decodeoffer',
   decodecontractinfo = 'decodecontractinfo',
   decodeannouncement = 'decodeannouncement',
@@ -269,6 +271,27 @@ export interface Attestment {
   eventId: string
   signatures: string[]
   values: string[] // ['num', 'num2', ...] for numeric, ['outcome'] for enum
+}
+
+export interface Sign {
+  cetAdaptorSignatures: {ecdsaAdaptorSignatures:{signature: string}[]}[]
+  contractId: string
+  fundingSignatures: {fundingSignatures:{witness:string}[]}
+  refundSignature: string
+}
+
+export interface Accept {
+  acceptCollateral: number
+  cetAdaptorSignatures: {ecdsaAdaptorSignatures:{signature: string}[]}[]
+  changeSerialId: string
+  changeSpk: string
+  fundingInputs: FundingInput[]
+  fundingPubkey: string 
+  negotiationFields: any // TODO : Type me
+  payoutSerialId: string
+  payoutSpk: string
+  refundSignature: string
+  temporaryContractId: string
 }
 
 export interface Offer {

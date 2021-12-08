@@ -132,7 +132,7 @@
 
   <div class="execute-container">
     <div class="button-group">
-      <button mat-stroked-button color="primary" (click)="onExecute()"
+      <button mat-flat-button color="primary" (click)="onExecute()"
         [disabled]="form.invalid || executing || offerAccepted">
         <mat-icon *ngIf="acceptOfferType === AcceptOfferType.TOR" class="material-icons-outlined">cloud_sync</mat-icon>
         <mat-icon *ngIf="acceptOfferType === AcceptOfferType.FILES" class="material-icons-outlined">file_download</mat-icon>
@@ -143,14 +143,7 @@
       </div>
     </div>
 
-    <!-- TODO : app-alert instead of using result group? -->
-
-    <fieldset class="result-group" [disabled]="!result">
-      <label translate>result</label>
-      <textarea class="result-textarea" [(ngModel)]="result"></textarea>
-      <button mat-icon-button class="copy-button" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(result)" [disabled]="!result"><mat-icon>content_copy</mat-icon></button>
-    </fieldset>
+    <app-alert *ngIf="result" [type]="AlertType.success" [message]="result" icon="check_circle"></app-alert>
   </div>
   
 </section>
