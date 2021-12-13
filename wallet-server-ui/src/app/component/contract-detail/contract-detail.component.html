@@ -2,6 +2,9 @@
   <div class="section-header">
     <h2 translate>contractDetail.heading</h2>
     <div class="section-header-button-group">
+      <div *ngIf="executing" class="spinner">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
       <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}"
         (click)="onReloadContract()">
         <mat-icon>refresh</mat-icon>
@@ -13,180 +16,199 @@
     </div>
   </div>
 
-  <div *ngIf="dlc && contractInfo">
-    <div class="field-group">
-      <label translate>contractDetail.eventId</label>
-      <input class="event-id-input"
-        [value]="contractInfo.oracleInfo.announcement.event.eventId" disabled>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.state</label>
-      <input [value]="dlc.state" disabled>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.initiator</label>
-      <input [value]="dlc.isInitiator" disabled>
-    </div>
-    
-    <div class="spacer"></div>
+  <form class="form-container" [formGroup]="form" autocomplete="off">
+    <fieldset>
+      <mat-form-field class="w-100">
+        <mat-label translate>contractDetail.eventId</mat-label>
+        <input matInput [value]="contractInfo.oracleInfo.announcement.event.eventId" readonly>
+      </mat-form-field>
 
-    <div class="field-group">
-      <label translate>contractDetail.contractMaturity</label>
-      <input [(ngModel)]="contractMaturity" disabled>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.contractTimeout</label>
-      <input [(ngModel)]="contractTimeout" disabled>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.feeRate</label>
-      <input class="numeric" [value]="dlc.feeRate" disabled>
-      <span translate>unit.satsPerVbyte</span>
-    </div>
-
-    <div class="spacer"></div>
-
-    <label class="group-label" translate>contractDetail.collateral</label>
-    <div class="field-group">
-      <label translate>contractDetail.localCollateral</label>
-      <input class="numeric" [value]="formatNumber(dlc.localCollateral)" disabled>
-      <span translate>unit.sats</span>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.remoteCollateral</label>
-      <input class="numeric" [value]="formatNumber(dlc.remoteCollateral)" disabled>
-      <span translate>unit.sats</span>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.totalCollateral</label>
-      <input class="numeric" [value]="formatNumber(dlc.totalCollateral)" disabled>
-      <span translate>unit.sats</span>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined" class="payout-group">
-      <label class="group-label" translate>contractDetail.contractOutcome</label>
-      <div class="field-group">
-        <label translate>contractDetail.yourPayout</label>
-        <input class="numeric" [value]="formatNumber(dlc.myPayout)" disabled>
-        <span translate>unit.sats</span>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.state</mat-label>
+          <input matInput [value]="dlc.state" readonly>
+        </mat-form-field>
+        <!-- Use checkbox? -->
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.initiator</mat-label>
+          <input matInput [value]="dlc.isInitiator" readonly>
+        </mat-form-field>
       </div>
-      <div class="field-group">
-        <label translate>contractDetail.counterpartyPayout</label>
-        <input class="numeric" [value]="formatNumber(dlc.counterPartyPayout)" disabled>
-        <span translate>unit.sats</span>
+
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.contractMaturity</mat-label>
+          <input matInput [value]="contractMaturity" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.contractTimeout</mat-label>
+          <input matInput [value]="contractTimeout" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrower">
+          <mat-label translate>contractDetail.feeRate</mat-label>
+          <input matInput [value]="dlc.feeRate" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
       </div>
-      <div class="field-group">
-        <label translate>contractDetail.pnl</label>
-        <input class="numeric" [value]="dlc.pnl" disabled>
-        <span translate>unit.sats</span>
+
+      <!-- Enum / Numeric -->
+
+      <div *ngIf="isEnum()" class="enum-outcomes">
+        <label class="mat-form-label" translate>contractDetail.outcomePayouts</label>
+        <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
+          <label class="outcome-label">{{ l }}</label>
+          <input class="outcome-payout text-right" [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
+          <span translate>unit.sats</span>
+        </div>
       </div>
-      <div class="field-group">
-        <label translate>contractDetail.rateOfReturn</label>
-        <input class="numeric" [value]="formatPercent(dlc.rateOfReturn, 2, false)" disabled>
-        <span translate>unit.percent</span>
+  
+      <div *ngIf="isNumeric()" class="numeric-outcomes">
+        <label class="mat-form-label" translate>contractDetail.outcomeCurve</label>
+        <div class="numeric-group heading-group">
+          <label class="outcome-heading text-center" translate>newOffer.outcome</label>
+          <label class="payout-heading text-center" translate>newOffer.payout</label>
+          <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+        </div>
+        <div class="numeric-group" *ngFor="let p of getNumericContractDescriptor().payoutFunction.points">
+          <label class="outcome-label">{{ p.outcome }}</label>
+          <input class="outcome-payout text-right" [value]="getOutcomeValue( p.payout )" disabled>
+          <input type="checkbox" [checked]="p.isEndpoint" disabled>
+        </div>
       </div>
+
+      <ng-container *ngIf="outcome">
+        <mat-form-field class="w-100">
+          <mat-label translate>contractDetail.outcome</mat-label>
+          <input matInput [value]="outcome" readonly>
+        </mat-form-field>
+      </ng-container>
+
+      <label class="mat-form-label" translate>contractDetail.collateral</label>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.localCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.localCollateral)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.remoteCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.remoteCollateral)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+      </div>
+
+      <ng-container *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined">
+        <label class="mat-form-label" translate>contractDetail.contractOutcome</label>
+        <div class="mat-form-field-row">
+          <mat-form-field class="narrow">
+            <mat-label translate>contractDetail.yourPayout</mat-label>
+            <input matInput [value]="formatNumber(dlc.myPayout)" readonly>
+          </mat-form-field>
+          <mat-form-field class="narrow">
+            <mat-label translate>contractDetail.counterpartyPayout</mat-label>
+            <input matInput [value]="formatNumber(dlc.counterPartyPayout)" readonly>
+          </mat-form-field>
+          <mat-form-field class="narrow">
+            <mat-label translate>contractDetail.pnl</mat-label>
+            <input matInput [value]="formatNumber(dlc.pnl)" readonly>
+            <span matSuffix translate>unit.sats</span>
+          </mat-form-field>
+        </div>
+        <!--
+        <div class="mat-form-field-row">
+            <mat-label translate>contractDetail.rateOfReturn</mat-label>
+            <input matInput [value]="formatPercent(dlc.rateOfReturn, 2, false)" readonly>
+            <span matSuffix translate>unit.percent</span>
+          </mat-form-field>
+        </div>
+        -->
+      </ng-container>
 
       <div class="spacer"></div>
-    </div>
-
-    <div *ngIf="isEnum()" class="enum-outcomes">
-      <label class="group-label" translate>contractDetail.outcomePayouts</label>
-      <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
-        <label class="outcome-label">{{ l }}</label>
-        <input class="outcome-payout text-right" [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
-        <span translate>unit.sats</span>
+      
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow ellipsis">
+          <mat-label translate>contractDetail.dlcId</mat-label>
+          <input matInput [value]="dlc.dlcId" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.dlcId)">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field class="narrow ellipsis">
+          <mat-label translate>contractDetail.contractInfo</mat-label>
+          <input matInput [value]="dlc.contractInfo" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.contractInfo)">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field class="narrow ellipsis">
+          <mat-label translate>contractDetail.contractId</mat-label>
+          <input matInput [value]="dlc.contractId" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.contractId)">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </mat-form-field>
+        <!-- Only show tempContractId when there is not a final contractId -->
+        <mat-form-field *ngIf="!dlc.contractId" class="narrow ellipsis">
+          <mat-label translate>contractDetail.tempContractId</mat-label>
+          <input matInput [value]="dlc.tempContractId" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.tempContractId)">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </mat-form-field>
       </div>
 
-      <div class="spacer"></div>
-    </div>
+      <ng-container *ngIf="showTransactionIds()">
+        <div class="mat-form-field-row">
+          <mat-form-field class="ellipsis">
+            <mat-label translate>contractDetail.fundingTransactionId</mat-label>
+            <input matInput [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" readonly>
+            <button *ngIf="isFundingTxRebroadcastable(dlc.state)" matSuffix
+              mat-flat-button color="primary" class="mat-flat-button-sm"
+              (click)="onRebroadcastFundingTransaction()" [disabled]="executing">
+              <span translate>contractDetail.rebroadcast</span>
+            </button>
+            <!-- TODO : Link -->
+          </mat-form-field>
+          <mat-form-field class="ellipsis">
+            <mat-label translate>contractDetail.closingTransactionId</mat-label>
+            <input matInput [value]="dlc.closingTxId ? dlc.closingTxId : ''" readonly>
+            <button *ngIf="dlc.closingTxId" matSuffix
+              mat-flat-button color="primary" class="mat-flat-button-sm"
+              (click)="onRebroadcastClosingTransaction()" [disabled]="executing">
+              <span translate>contractDetail.rebroadcast</span>
+            </button>
+            <!-- TODO : Link -->
+          </mat-form-field>
+        </div>
+        <div class="mat-form-field-row">
+          <mat-form-field class="ellipsis">
+            <mat-label translate>contractDetail.oracleAttestations</mat-label>
+            <input matInput [value]="oracleAttestations" [readonly]="!isExecutable(dlc.state)">
+            <button *ngIf="isExecutable(dlc.state)" matSuffix
+              mat-flat-button color="primary" class="mat-flat-button-sm"
+              (click)="onOracleAttestations()"
+              [disabled]="!oracleAttestations || executing">
+              <span translate>action.execute</span>
+            </button>
+          </mat-form-field>
+        </div>
+      </ng-container>
 
-    <!-- TODO : Enum Outcome -->
+    </fieldset>
+  </form>
 
-    <!-- TODO : Payout curve -->
-
-    <div class="field-group">
-      <label translate>contractDetail.dlcId</label>
-      <input [value]="dlc.dlcId" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" 
-        matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(dlc.dlcId)" [disabled]= "!dlc.dlcId">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.contractInfo</label>
-      <input [value]="dlc.contractInfo" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" 
-        matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(dlc.contractInfo)" [disabled]= "!dlc.contractInfo">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
-    <div class="field-group">
-      <label translate>contractDetail.contractId</label>
-      <input [value]="dlc.contractId ? dlc.contractId : ''" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" 
-        matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(dlc.contractId)" [disabled]= "!dlc.contractId">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
-    <!-- Only show tempContractId when there is not a final contractId -->
-    <div *ngIf="!dlc.contractId" class="field-group">
-      <label translate>contractDetail.tempContractId</label>
-      <input [value]="dlc.tempContractId" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" 
-        matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(dlc.tempContractId)" [disabled]= "!dlc.tempContractId">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
-    
-    <ng-container *ngIf="showTransactionIds()">
-      <div class="spacer"></div>
-      <div class="field-group">
-        <label translate>contractDetail.fundingTransactionId</label>
-        <input [value]="dlc.fundingTxId ? dlc.fundingTxId : ''" disabled>
-        <button mat-flat-button color="primary" class="mat-flat-button-sm"
-          (click)="onRebroadcastFundingTransaction()"
-          [disabled]="!isFundingTxRebroadcastable(dlc.state)">
-          <span translate>contractDetail.rebroadcast</span>
-        </button>
-        <!-- TODO : Link -->
-      </div>
-      <div class="field-group">
-        <label translate>contractDetail.closingTransactionId</label>
-        <input [value]="dlc.closingTxId ? dlc.closingTxId : ''" disabled>
-        <button mat-flat-button color="primary" class="mat-flat-button-sm"
-          (click)="onRebroadcastClosingTransaction()"
-          [disabled]="!dlc.closingTxId">
-          <span translate>contractDetail.rebroadcast</span>
-        </button>
-        <!-- TODO : Link -->
-      </div>
-      <div class="field-group">
-        <label translate>contractDetail.oracleAttestations</label>
-        <input [(ngModel)]="oracleAttestations" [disabled]="!isExecutable(dlc.state)">
-        <button mat-flat-button color="primary" class="mat-flat-button-sm"
-          (click)="onOracleAttestations()"
-          [disabled]="!isExecutable(dlc.state) || !oracleAttestations">
-          <span translate>action.execute</span>
-        </button>
-      </div>
-    </ng-container>
-  </div>
-
-  <div class="spacer"></div>
-
+  <!-- Action Buttons -->
   <div *ngIf="!accept && !sign" class="button-group">
     <button mat-stroked-button color="warn" (click)="onCancelContract()"
       [disabled]="!isCancelable(dlc.state)">
       <span translate>contractDetail.cancelContract</span>
     </button>
     <button mat-stroked-button color="warn" (click)="onRefund()"
-      [disabled]="!isRefundable(dlc.state)">
+      [disabled]="!isRefundable(dlc.state) || executing">
       <span translate>contractDetail.refundContract</span>
     </button>
     <!-- Don't have sha256 id to do this operation yet. -->
@@ -196,6 +218,7 @@
     </button>
   </div>
 
+  <!-- Signing Accept -->
   <div *ngIf="accept" class="accept-group">
     <h2 translate>contractDetail.signAcceptOffer</h2>
     <div class="description text-justify">
@@ -225,10 +248,11 @@
         </div>
       </div>
     </div>
-    <app-alert *ngIf="!dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotBroadcastOwnSign" icon="check_circle"></app-alert>
+    <app-alert *ngIf="!dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotSignOwnAccept" icon="warning_amber"></app-alert>
     <app-alert *ngIf="acceptSigned" [type]="AlertType.success" message="contractDetail.acceptSigned" icon="check_circle"></app-alert>
   </div>
 
+  <!-- Counter-sign and broadcast  -->
   <div *ngIf="sign" class="sign-group">
     <h2 translate>contractDetail.broadcastSigned</h2>
     <div class="description text-justify">
@@ -239,7 +263,6 @@
       <div class="button-group">
         <button mat-flat-button color="primary" (click)="onBroadcast()"
           [disabled]="dlc.isInitiator || executing || signBroadcast">
-          <!-- <mat-icon class="material-icons-outlined">file_download</mat-icon> -->
           <span translate>action.execute</span>
         </button>
         <div class="spinner" [hidden]="!executing">
@@ -248,9 +271,8 @@
       </div>
     </div>
 
-    <app-alert *ngIf="dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotBroadcastOwnSign" icon="check_circle"></app-alert>
+    <app-alert *ngIf="dlc.isInitiator" [type]="AlertType.warn" message="contractDetailDescription.cannotBroadcastOwnSign" icon="warning_amber"></app-alert>
     <app-alert *ngIf="signBroadcast" [type]="AlertType.success" message="contractDetail.signBroadcast" icon="check_circle"></app-alert>
   </div>
 
-  <!-- <app-alert *ngIf="showDeleteSuccess" [type]="AlertType.success" message="Contract Deleted"></app-alert> -->
 </section>

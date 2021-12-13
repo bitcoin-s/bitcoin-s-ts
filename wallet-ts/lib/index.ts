@@ -456,7 +456,8 @@ export function ExecuteDLC(contractIdHex: string, oracleSigs: string[], noBroadc
 
   const m = getMessageBody(WalletMessageType.executedlc, [contractIdHex, oracleSigs, noBroadcast])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // Return is closing txId
+    return <ServerResponse<string>>response
   })
 }
 

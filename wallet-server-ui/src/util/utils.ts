@@ -148,3 +148,16 @@ export function isExecutable(state: DLCState) {
 export function isFundingTxRebroadcastable(state: DLCState) {
   return [DLCState.broadcast].includes(state)
 }
+
+// Convert binary digits array to number
+// [1, 1, 0, 0, 1, 0, 0] => 100
+export function outcomeDigitsToNumber(digits: number[]) {
+  let sum = 0
+  while (digits.length > 0) {
+    const d = digits.shift()
+    if (d) {
+      sum += Math.pow(2, digits.length)
+    }
+  }
+  return sum
+}

@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { MatInput } from '@angular/material/input'
+import { MatDrawer } from '@angular/material/sidenav'
 import { Observable, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
@@ -21,12 +21,16 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 })
 export class BuildAcceptOfferComponent implements OnInit {
 
+  DEBUG = false
+  // DO NOT PUBLISH
+  EnumOfferHex = ''
+  NumericOfferHex = ''
+
+  @ViewChild('rightDrawer') rightDrawer: MatDrawer
+
   @Output() announcement: EventEmitter<AnnouncementWithHex> = new EventEmitter<AnnouncementWithHex>()
   @Output() contractInfo: EventEmitter<ContractInfoWithHex> = new EventEmitter<ContractInfoWithHex>()
-
   @Output() acceptOffer: EventEmitter<OfferWithHex> = new EventEmitter<OfferWithHex>()
-
-  DEBUG = false
 
   // Testing Data
   // https://test.oracle.suredbits.com/announcement/63fa7885e3c6052e97956961698cde2b286dc1621544bbd8fcfbd78b2b1dbdcf
@@ -38,8 +42,16 @@ export class BuildAcceptOfferComponent implements OnInit {
   // https://test.oracle.suredbits.com/contract/numeric/fd77c10613f25566c9aa9da72e4f02d1271a4cd0d9287ac461a21f50464232e6
   numericContractInfoHex = 'fdd82efd034100000000000186a0fda720540012fda72648000501000000000000000000000001fd753000000000000061a8000001fd88b8000000000000c350000001fd9c4000000000000186a0000001fe0003ffff00000000000186a00000fda724020000fda712fd02dbfdd824fd02d527bd1f768121a074176a1986e2cacd46e6cd992a7b3d5ac3827a3f90b5f12d0753ec47c521966aae316c65a4350e22207ae47286d343de866f19f5eeb7de13815d1bcfab252c6dd9edd7aea4c5eeeef138f7ff7346061ea40143a9f5ae80baa9fdd822fd026f001296d22911c0abd9f2736a45ce0fac39ccd7ded8cbd7a88d160c86e66c37d698a5934f30404cf929aa1f3fe40a04c3c952ca8c6b239c01c9b61676fb7590876b015811222090ee7015017617f468ed05d567e511d9d76d5d115dee863e5f43f8654509a3f2643971573e74f5c5bf5b9d482768a50726383c784af741ae4f59b61ab80d24f5b25dc4c826fd4275715b047dc55b23814d2b81539fcbcd536bd858b0cab6b1a6e7050943a0ee3e01ea005abf62abbd28f8c07362c53d6c187d8eb88dd9b4fd15aad3c3b2271c62bfa8eef0504912164a0f16ca931d59e3dc63d3d92eae714f2abe0f9a0d215357845b3137bf8c96fac0726c82735a23a3baa656229fdcca56ca502cb1623a985e1f6be919c7cfe11155ebf802d4544d4dfc7b354f644e3fb99088aef2c0d71916178c9f3695089e85edfe27044a9cf1a7b821a2a239a196682a0a35ad1a2f60f0f888aa51e4a0a44523592996de3f7f93af6c587f6252b850c562e1bfb97e0a8ee1406ae0c129d34b42a2d8a44597a0147c5cc0dc192beb614664e9b1949f1d95b4ae92ec85617e93b1fb6991b994df3b26ca21aacc908ed102de9988c55cf3a3a70c87e4067ae7648efd6763cd6655ce2c98b5b298ca7eb94fefaf53f58fdd3cbd486da3d79e651dfd392dccf2bd60dfbc708ca171587cda472646709ee6d51650eb2a808796ffd709b041c00afe0e028530f7bb888d90dff6ec6902108e1ec5a1bd1ba33515fdfe1bdb49bd3dfa576de14f83e51ac53a2f72fe6556576ee76cbbfc1e5f09c7ad076fd7ca847962c87dce96dd496d6062da80fdd80a11000200074254432d55534400000000001213446572696269742d4254432d33304d41523231'
   // Unpublished
-  enumOfferHex = '' // this.EnumOfferHex
-  numericOfferHex = '' // this.NumericOfferHex
+  enumOfferHex = this.EnumOfferHex
+  numericOfferHex = this.NumericOfferHex
+
+  // Build
+  selectedAnnouncement: AnnouncementWithHex|null
+  selectedContractInfo: ContractInfoWithHex|null
+  // Accept
+  selectedOffer: OfferWithHex|null
+
+  offerVisible = false
 
   constructor(private messageService: MessageService, private walletStateService: WalletStateService, 
     private dialog: MatDialog) { }
@@ -95,16 +107,14 @@ export class BuildAcceptOfferComponent implements OnInit {
         })).subscribe(r => {
           console.debug('decodecontractinfo', r)
           if (r.result) {
-            const contractInfo = <ContractInfoWithHex>{ contractInfo: r.result, hex }
-            this.contractInfo.next(contractInfo)
+            this.onContractInfo(<ContractInfoWithHex>{ contractInfo: r.result, hex })
           }
         })
         return new Observable<any>()
       })).subscribe(r => {
         console.debug('decodeannouncement', r)
         if (r.result) {
-          const announcementWithHex = <AnnouncementWithHex>{ announcement: r.result, hex }
-          this.announcement.next(announcementWithHex)
+          this.onAnnouncement(<AnnouncementWithHex>{ announcement: r.result, hex })
         }
       })
     }
@@ -115,13 +125,12 @@ export class BuildAcceptOfferComponent implements OnInit {
     const clipboardData = event.clipboardData
     if (clipboardData) {
       const trimmedPastedText = clipboardData.getData('text').trim()
-      // console.debug('trimmedPastedTexttedText:', trimmedPastedText)
-      this.onAcceptOffer(trimmedPastedText)
+      this.handleAcceptOffer(trimmedPastedText)
     }
   }
 
-  onAcceptOffer(hex: string) {
-    console.debug('onAcceptOffer()', hex)
+  handleAcceptOffer(hex: string) {
+    console.debug('handleAcceptOffer()', hex)
     if (hex) {
       if (!this.validateHex(hex)) return
 
@@ -130,8 +139,7 @@ export class BuildAcceptOfferComponent implements OnInit {
         console.debug('decodeoffer', r)
 
         if (r.result) {
-          const offer = <OfferWithHex>{ offer: r.result, hex }
-          this.acceptOffer.next(offer)
+          this.onAcceptOffer(<OfferWithHex>{ offer: r.result, hex })
         } else {
           const dialog = this.dialog.open(ErrorDialogComponent, {
             data: {
@@ -142,6 +150,45 @@ export class BuildAcceptOfferComponent implements OnInit {
         }
       })
     }
+  }
+
+  onAnnouncement(announcement: AnnouncementWithHex) {
+    console.debug('onAnnouncement()', announcement)
+    this.selectedAnnouncement = announcement
+    this.announcement.next(announcement)
+    this.offerVisible = true
+    this.rightDrawer.open()
+  }
+
+  onContractInfo(contractInfo: ContractInfoWithHex) {
+    console.debug('onContractInfo()', contractInfo)
+    this.selectedContractInfo = contractInfo
+    this.contractInfo.next(contractInfo)
+    this.offerVisible = true
+    this.rightDrawer.open()
+  }
+
+  onAcceptOffer(offer: OfferWithHex) {
+    console.debug('onAcceptOffer()', offer)
+    this.selectedOffer = offer
+    this.acceptOffer.next(offer)
+    this.offerVisible = true
+    this.rightDrawer.open()
+  }
+
+  rightDrawerOpened(opened: boolean) {
+    console.debug('rightDrawerOpened()', opened)
+    // Clean up state on close
+    if (!opened) {
+      this.clearSelection()
+    }
+  }
+
+  clearSelection() {
+    this.rightDrawer.close()
+    this.selectedAnnouncement = null
+    this.selectedContractInfo = null
+    this.selectedOffer = null
   }
 
 }

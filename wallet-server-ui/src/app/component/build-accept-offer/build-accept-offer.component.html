@@ -3,46 +3,68 @@
     <h2 translate>buildAcceptOffer.heading</h2>
   </div> -->
 
-  <div class="build-offer">
-    <h2 translate>buildAcceptOffer.buildOffer</h2>
-    <div class="content">
-      <div class="description">
-        {{ 'buildAcceptOfferDescription.buildOffer' | translate }}
-      </div>
-      <mat-form-field class="w-100">
-        <input matInput type="text"
-          placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
-          (paste)="onBuildOfferPaste($event); $event.preventDefault()">
-      </mat-form-field>
+  <mat-sidenav-container>
+    <mat-sidenav-content class="offers">
 
-      <div [hidden]="!DEBUG" class="button-group">
-        <label>Enum</label>
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumAnnouncementHex)">A</button>
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumContractInfoHex)">CI</button>
-        <label>Numeric</label>
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericAnnouncementHex)">A</button>
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericContractInfoHex)">CI</button>
-      </div>
-    </div>
-  </div>
+      <div class="build-offer">
+        <h2 translate>buildAcceptOffer.buildOffer</h2>
+        <div class="content">
+          <div class="description">
+            {{ 'buildAcceptOfferDescription.buildOffer' | translate }}
+          </div>
+          <mat-form-field class="w-100">
+            <input matInput type="text"
+              placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
+              (paste)="onBuildOfferPaste($event); $event.preventDefault()">
+          </mat-form-field>
 
-  <div class="accept-offer">
-    <h2 translate>buildAcceptOffer.acceptOffer</h2>
-    <div class="content">
-      <div class="description">
-        {{ 'buildAcceptOfferDescription.acceptOffer' | translate }}
+          <div [hidden]="!DEBUG" class="button-group">
+            <label>Enum</label>
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumAnnouncementHex)">A</button>
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumContractInfoHex)">CI</button>
+            <label>Numeric</label>
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericAnnouncementHex)">A</button>
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(numericContractInfoHex)">CI</button>
+          </div>
+        </div>
       </div>
-      <mat-form-field class="w-100">
-        <input matInput type="text"
-          placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
-          (paste)="onAcceptOfferPaste($event); $event.preventDefault()">
-      </mat-form-field>
 
-      <div [hidden]="!DEBUG">
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onAcceptOffer(enumOfferHex)">Enum</button>
-        <button mat-stroked-button class="mat-stroked-button-sm" (click)="onAcceptOffer(numericOfferHex)">Numeric</button>
+      <div class="accept-offer">
+        <h2 translate>buildAcceptOffer.acceptOffer</h2>
+        <div class="content">
+          <div class="description">
+            {{ 'buildAcceptOfferDescription.acceptOffer' | translate }}
+          </div>
+          <mat-form-field class="w-100">
+            <input matInput type="text"
+              placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
+              (paste)="onAcceptOfferPaste($event); $event.preventDefault()">
+          </mat-form-field>
+
+          <div [hidden]="!DEBUG">
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="handleAcceptOffer(enumOfferHex)">Enum</button>
+            <button mat-stroked-button class="mat-stroked-button-sm" (click)="handleAcceptOffer(numericOfferHex)">Numeric</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+
+    </mat-sidenav-content>
+    <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
+      <div class="drawer-container">
+        <ng-container *ngIf="offerVisible">
+          <!-- Don't like having two instances, but avoids null handling logic -->
+          <app-new-offer #buildOffer *ngIf="selectedAnnouncement" 
+            [announcement]="selectedAnnouncement"
+            (close)="clearSelection()"></app-new-offer>
+          <app-new-offer #buildOffer *ngIf="selectedContractInfo" 
+            [contractInfo]="selectedContractInfo"
+            (close)="clearSelection()"></app-new-offer>
+
+          <app-accept-offer #acceptOffer *ngIf="selectedOffer" [offer]="selectedOffer"
+            (close)="clearSelection()"></app-accept-offer>
+        </ng-container>
+      </div>
+    </mat-sidenav>
+  </mat-sidenav-container>
 
 </section>

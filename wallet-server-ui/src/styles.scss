@@ -8,6 +8,8 @@ body { margin: 0; }
 
 fieldset {
   border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /** Utility Classes */
@@ -18,6 +20,16 @@ fieldset {
   .w-#{$size} {
     width: percentage($size * .01);
   }
+}
+
+/** Spacing */
+@for $i from 1 through 6 {
+  .spacer-#{$i} {
+    margin-right: #{$i}rem;
+  }
+}
+.spacer-auto {
+  margin-right: auto;
 }
 
 /** Text Align */
@@ -43,7 +55,18 @@ fieldset {
   align-items: center;
 
   .section-header-button-group {
+    display: flex;
+    flex-direction: row;
+    row-gap: 0.25rem;
 
+    .spinner {
+      width: 40px; // to match icon button
+      // height: 40px;
+
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
   }
 }
 .close-button {
@@ -176,6 +199,7 @@ mat-form-field {
 
 .mat-form-label {
   display: block;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
@@ -216,5 +240,22 @@ mat-form-field {
     flex: 1;
     margin-right: 0.5rem;
     // max-width: 20rem;
+  }
+}
+
+/** Right drawer */
+.drawer-container {
+  padding: 0 1rem;
+  min-width: 300px;
+}
+
+/** Header darkMode fix */
+// Hack to fix mat-menu icon and text color
+.cdk-overlay-container.darkMode {
+  .mat-menu-item {
+    color: #fff; // mat-color($dark-background-palette, text);
+    .mat-icon.mat-icon-no-color {
+      color: #fff;
+    }
   }
 }

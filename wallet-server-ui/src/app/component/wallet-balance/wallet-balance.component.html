@@ -44,11 +44,11 @@
     </div>
 
     <div class="pane buttons">
-      <button mat-flat-button color="primary" (click)="getNewAddress()">
+      <button mat-flat-button color="primary" (click)="backendService.getNewAddress()">
         <mat-icon>add</mat-icon>
         <span translate>walletBalance.getNewAddress</span>
       </button>
-      <button mat-flat-button color="primary" (click)="sendFunds()">
+      <button mat-flat-button color="primary" (click)="backendService.sendFunds()">
         <mat-icon class="material-icons-outlined">send</mat-icon>
         <span translate>walletBalance.sendFunds</span>
       </button>

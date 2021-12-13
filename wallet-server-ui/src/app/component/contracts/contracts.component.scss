@@ -3,14 +3,24 @@
 $padding: 0.5rem;
 
 .contracts {
+  height: 100%;
   margin-bottom: 2rem;
+
+  .mat-drawer-container {
+    height: 100%;
+    flex: 1;
+    .mat-drawer-content {
+      height: 100%;
+    }
+  }
 
   .contract-container {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
 
     .contract-table {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      min-height: 100px;
 
       .header-row-group {
         height: 24px; // original 56px

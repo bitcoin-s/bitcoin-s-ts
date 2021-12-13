@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { BehaviorSubject } from "rxjs"
-import { first, tap } from "rxjs/operators"
+import { BehaviorSubject, Observable, of, Subscription, timer } from "rxjs"
+import { catchError, concatMap, filter, first, retry, tap } from "rxjs/operators"
 import { BuildConfig } from "~type/proxy-server-types"
 
 import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
@@ -10,17 +10,30 @@ import { getMessageBody } from "~util/wallet-server-util"
 import { MessageService } from "./message.service"
 
 
+export /* const */ enum WalletServiceState {
+  offline = 'offline',
+  online = 'online',
+  polling = 'polling',
+}
+
+const POLLING_TIME = 15000 // ms
+
 const MATCH_LEADING_DIGITS = /^([0-9]+) /
 
 @Injectable({ providedIn: 'root' })
 export class WalletStateService {
+
+  private _state: WalletServiceState = WalletServiceState.offline
+  set state(s: WalletServiceState) { this._state = s }
+  get state() { return this._state }
 
   serverVersion: string
   buildConfig: BuildConfig
 
   info: GetInfoResponse
   getNetwork() {
-    return <BitcoinNetwork>this.info.network
+    if (this.info) return <BitcoinNetwork>this.info.network
+    else return ''
   }
   balances: Balances
   fundedAddresses: FundedAddress[]
@@ -31,7 +44,42 @@ export class WalletStateService {
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
+  pollingTimer$: Subscription;
+  initialized = false
+
   constructor(private messageService: MessageService) {
+
+    this.pollingTimer$ = timer(0, POLLING_TIME).pipe(
+      tap(_ => { this.state = WalletServiceState.polling }),
+      concatMap(() => this.messageService.walletHeartbeat().pipe(
+        catchError(e => of({success: false})),
+      )),
+    ).pipe(tap(r => {
+      if (r.success === true) {
+        this.state = WalletServiceState.online
+
+        if (!this.initialized) { // coming online
+          this.initializeState()
+        }
+        this.refreshWalletState()
+        this.refreshDLCStates()
+      } else {
+        this.state = WalletServiceState.offline
+
+        if (this.initialized) { // going offline
+          this.uninitializeState()
+        }
+      }
+    }), filter(r => r.success === true)).subscribe(r => {
+      // Nothing to do
+    })
+  }
+
+  uninitializeState() {
+    this.initialized = false
+  }
+
+  initializeState() {
     this.messageService.getServerVersion().subscribe(r => {
       if (r.result) {
         this.serverVersion = r.result.version;
@@ -41,17 +89,6 @@ export class WalletStateService {
       if (result) {
         result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
         this.buildConfig = result
-      }
-    })
-    this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo)).subscribe(r => {
-      if (r.result) {
-        this.info = r.result
-      }
-    })
-    this.refreshBalances()
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).subscribe(r => {
-      if (r.result) {
-        this.dlcWalletAccounting = r.result
       }
     })
     this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).subscribe(r => {
@@ -71,7 +108,21 @@ export class WalletStateService {
         console.warn('torDLCHostAddress:', this.torDLCHostAddress)
       }
     })
-    this.refreshDLCStates()
+    this.initialized = true
+  }
+
+  refreshWalletState() {
+    this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo)).subscribe(r => {
+      if (r.result) {
+        this.info = r.result
+      }
+    })
+    this.refreshBalances()
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).subscribe(r => {
+      if (r.result) {
+        this.dlcWalletAccounting = r.result
+      }
+    })
   }
 
   refreshBalances() {
@@ -118,7 +169,7 @@ export class WalletStateService {
         // Decode all ContractInfos
         for (const dlc of <DLCContract[]>r.result) {
           this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo])).subscribe((r: ServerResponse<ContractInfo>) => {
-            console.warn('decodecontractinfo', r)
+            // console.debug('decodecontractinfo', r)
             if (r.result) {
               const ci = this.contractInfos.value
               ci[dlc.dlcId] = r.result

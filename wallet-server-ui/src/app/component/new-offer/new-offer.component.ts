@@ -246,9 +246,9 @@ export class NewOfferComponent implements OnInit {
               if (r.result) {
                 this.newOfferResult = r.result
                 this.walletStateService.refreshDLCStates()
-                this.executing = false
                 this.offerCreated = true
               }
+              this.executing = false
             })
           }
         })
@@ -278,9 +278,9 @@ export class NewOfferComponent implements OnInit {
             if (r.result) {
               this.newOfferResult = r.result
               this.walletStateService.refreshDLCStates()
-              this.executing = false
               this.offerCreated = true
             }
+            this.executing = false
           })
         }
         

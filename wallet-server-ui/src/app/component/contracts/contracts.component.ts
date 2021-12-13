@@ -1,9 +1,12 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
+import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort, MatSortable } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { Subscription } from 'rxjs'
 
 import { WalletStateService } from '~service/wallet-state-service'
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
+import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
 
@@ -15,7 +18,7 @@ export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
   templateUrl: './contracts.component.html',
   styleUrls: ['./contracts.component.scss']
 })
-export class ContractsComponent implements OnInit, AfterViewInit {
+export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
@@ -25,6 +28,7 @@ export class ContractsComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatTable) table: MatTable<DLCContract>
   @ViewChild(MatSort) sort: MatSort
+  @ViewChild('rightDrawer') rightDrawer: MatDrawer
 
   @Input() clearSelection() {
     console.debug('clearSelection()')
@@ -37,8 +41,12 @@ export class ContractsComponent implements OnInit, AfterViewInit {
   displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
 
-  selectedDLCContract: DLCContract
-  // selectedContractInfo: ContractInfo
+  selectedDLCContract: DLCContract|null
+  selectedDLCContractInfo: ContractInfo|null
+  selectedAccept: AcceptWithHex|null
+  selectedSign: SignWithHex|null
+
+  contractDetailsVisible = false
 
   getContractInfo(dlcId: string) {
     return this.walletStateService.contractInfos.value[dlcId]
@@ -50,10 +58,16 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     return null
   }
 
+  private dlc$: Subscription
+
   constructor(public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
     
+  }
+
+  ngOnDestroy(): void {
+    this.dlc$.unsubscribe()
   }
 
   ngAfterViewInit() {
@@ -61,7 +75,7 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     this.sort.sort(<MatSortable>{ id: 'lastUpdated', start: 'desc'})
     this.dataSource.sort = this.sort;
 
-    this.walletStateService.dlcs.subscribe(_ => {
+    this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
     })
@@ -78,26 +92,22 @@ export class ContractsComponent implements OnInit, AfterViewInit {
     console.debug('onRowClick()', dlcContract, this.walletStateService.contractInfos.value[dlcContract.dlcId])
 
     this.selectedDLCContract = dlcContract
-
+    this.selectedDLCContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
     this.selectedDLC.emit(<DLCContractInfo>{
       dlc: dlcContract,
-      contractInfo: this.walletStateService.contractInfos.value[dlcContract.dlcId],
+      contractInfo: this.selectedDLCContractInfo,
     })
 
-    // this.showContractDetail(dlcContract)
+    this.contractDetailsVisible = true
+    this.rightDrawer.open()
   }
 
-  // showContractDetail(dlcContract: DLCContract) {
-  //   console.debug('showContractDetail()', dlcContract)
-
-  //   this.selectedContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
-  //   console.debug('selectedContractInfo:', this.selectedContractInfo)
-  // }
-
-  // onCloseContractDetail() {
-  //   console.debug('onCloseContractDetail()')
-  //   this.selectedDLC = <DLCContract><unknown>undefined
-  //   this.selectedContractInfo = <ContractInfo><unknown>undefined
-  // }
+  rightDrawerOpened(opened: boolean) {
+    console.debug('rightDrawerOpened()', opened)
+    // Clean up state on close
+    if (!opened) {
+      this.contractDetailsVisible = false
+    }
+  }
 
 }

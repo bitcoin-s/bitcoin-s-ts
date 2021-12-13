@@ -4,42 +4,44 @@
   </div>
 
   <div class="operations">
-    <div class="field-group">
-      <input #acceptInput hidden="true" type="file"
-        onclick="this.value=null" (change)="acceptInputChange($event)"/>
-      <button mat-flat-button color="primary" 
-        (click)="acceptInput.click()">
-        <span>{{ 'dlcFile.chooseOffer' | translate }}</span>
-      </button>
-      <app-more-info matSuffix tooltip="dlcFileDescription.accept"></app-more-info>
-    </div>
+    <fieldset [disabled]="executing">
+      <div class="field-group">
+        <input #acceptInput hidden="true" type="file"
+          onclick="this.value=null" (change)="acceptInputChange($event)"/>
+        <button mat-flat-button color="primary" 
+          (click)="acceptInput.click()">
+          <span>{{ 'dlcFile.chooseOffer' | translate }}</span>
+        </button>
+        <app-more-info matSuffix tooltip="dlcFileDescription.accept"></app-more-info>
+      </div>
 
-    <div class="field-group">
-      <input #signInput hidden="true" type="file"
-        onclick="this.value=null" (change)="signInputChange($event)"/>
-      <button mat-flat-button color="primary"
-        (click)="signInput.click()">
-        <span>{{ 'dlcFile.chooseAccept' | translate }}</span>
-      </button>
-      <app-more-info matSuffix tooltip="dlcFileDescription.sign"></app-more-info>
-    </div>
-  
-    <div class="field-group">
-      <input #broadcastInput hidden="true" type="file"
-        onclick="this.value=null" (change)="broadcastInputChange($event)"/>
-      <button mat-flat-button color="primary"
-        (click)="broadcastInput.click()">
-        <span>{{ 'dlcFile.chooseSign' | translate }}</span>
-      </button>
-      <app-more-info matSuffix tooltip="dlcFileDescription.broadcast"></app-more-info>
-    </div>
-  
-    <!--
-    <fieldset class="result-group" [disabled]="!result">
-      <label translate>result</label>
-      <textarea class="result-textarea" [(ngModel)]="result"></textarea>
+      <div class="field-group">
+        <input #signInput hidden="true" type="file"
+          onclick="this.value=null" (change)="signInputChange($event)"/>
+        <button mat-flat-button color="primary"
+          (click)="signInput.click()">
+          <span>{{ 'dlcFile.chooseAccept' | translate }}</span>
+        </button>
+        <app-more-info matSuffix tooltip="dlcFileDescription.sign"></app-more-info>
+      </div>
+    
+      <div class="field-group">
+        <input #broadcastInput hidden="true" type="file"
+          onclick="this.value=null" (change)="broadcastInputChange($event)"/>
+        <button mat-flat-button color="primary"
+          (click)="broadcastInput.click()">
+          <span>{{ 'dlcFile.chooseSign' | translate }}</span>
+        </button>
+        <app-more-info matSuffix tooltip="dlcFileDescription.broadcast"></app-more-info>
+      </div>
     </fieldset>
-    -->
+
+    <!-- TODO : Improve busy-ness indicator-->
+    <div>
+      <div class="spinner" [hidden]="!executing">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+    </div>
   </div>
 
 </section>

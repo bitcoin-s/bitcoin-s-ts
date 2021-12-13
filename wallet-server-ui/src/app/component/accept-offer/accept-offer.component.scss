@@ -75,13 +75,7 @@ $maxWidth: 400px;
 
   .form-container {
     margin-top: 1rem;
-    fieldset {
-      margin: 0;
-      padding: 0;
-      // > *:not(mat-radio-group) {
-      //   width: 100%;
-      // }
-    }
+    
     .accept-offer-type {
       mat-radio-button {
         margin-right: 0.5rem;

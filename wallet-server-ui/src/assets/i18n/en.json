@@ -11,6 +11,16 @@
     "dontShowSplashAgain": "Don't show this screen again"
   },
 
+  "header": {
+    "createDLC": "Create DLC"
+  },
+
+  "about": {
+    "heading": "About",
+    "serverVersion": "Server Version",
+    "uiVersion": "UI Version"
+  },
+
   "status": {
     "network": "Network",
     "connected": "Connected",
@@ -61,8 +71,8 @@
     "darkMode": "Dark Mode"
   },
 
-  "debug": {
-    "heading": "Debug",
+  "advanced": {
+    "heading": "Advanced",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs"
   },
@@ -188,10 +198,12 @@
     "eventId": "Event Id",
     "contractId": "Contract Id",
     "state": "State",
+    "return": "Return",
     "realizedPNL": "Realized PNL",
     "rateOfReturn": "Rate of Return",
-    "collateral": "Yours",
-    "counterpartyCollateral": "Theirs",
+    "collateral": "Collateral",
+    "yours": "Yours",
+    "theirs": "Theirs",
     "totalCollateral": "Total",
     "lastUpdated": "Updated",
     "noContracts": "No DLC Contracts Started",
@@ -211,6 +223,8 @@
     "contractMaturity": "Contract Maturity",
     "contractTimeout": "Contract Timeout",
     "outcomePayouts": "Outcome Payouts",
+    "outcomeCurve": "Outcome Curve",
+    "outcome": "Outcome",
     "collateral": "Collateral",
     "totalCollateral": "Total",
     "localCollateral": "Yours",
@@ -226,9 +240,9 @@
     "refundContract": "Refund Contract",
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
-    "contractOutcome": "Contract Outcome",
-    "yourPayout": "Your Payout",
-    "counterpartyPayout": "Counterparty Payout",
+    "contractOutcome": "Payout",
+    "yourPayout": "Yours",
+    "counterpartyPayout": "Theirs",
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
 
@@ -242,8 +256,8 @@
   },
 
   "contractDetailDescription": {
-    "signAcceptOffer": "Your counterparty has accepted your Offer. Sign their Accept by clicking Execute and send the saved file back to your counterparty.",
-    "broadcastSigned": "Your counterparty has signed your Offer. Countersign and broadcast the DLC to finalize it by clicking Execute.",
+    "signAcceptOffer": "Your counterparty has Accepted your Offer. Sign the DLC by clicking Execute and send the saved file back to your counterparty.",
+    "broadcastSigned": "You've received a Signed DLC. Countersign and broadcast the DLC to finalize it by clicking Execute.",
     "filename": "Filename to save Signed DLC Accept into",
     "cannotSignOwnAccept": "You cannot sign your own Accepted DLC. You must give it to your counterparty to sign.",
     "cannotBroadcastOwnSign": "You cannot broadcast your own Signed DLC. You must give it to your counterparty for broadcast."
@@ -304,6 +318,11 @@
       "content": "The transaction with id {{ txId }} was rebroadcast.",
       "linksContent": "View the transaction on Mempool.space at"
     },
+    "oracleAttestationSuccess": {
+      "title": "Oracle Attestment Successful",
+      "content": "A closing transaction with id {{ txId }} was broadcast.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
     "sendMessageError": {
       "title": "Error sending message to appServer"
     },
@@ -321,6 +340,11 @@
     }
   },
 
-  "torDLCHostAddress": "Tor DLC Host Address"
+  "torDLCHostAddress": "Tor DLC Host Address",
 
+  "WalletServiceState": {
+    "offline": "Offline",
+    "online": "Online",
+    "polling": "Polling"
+  }
 }

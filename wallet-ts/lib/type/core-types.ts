@@ -89,7 +89,7 @@ export interface Offer {
 }
 
 export interface ContractInfo {
-  totalCollateral: number,
+  totalCollateral: number
   contractDescriptor: EnumContractDescriptor|NumericContractDescriptor
   oracleInfo: OracleInfo
 }
@@ -108,7 +108,7 @@ export interface ContractDescriptor {
   hex: string // hex encoding of ContractDescriptor
 }
 
-export interface EnumContractDescriptor extends ContractDescriptor { // enum
+export interface EnumContractDescriptor extends ContractDescriptor {
   outcomes: { [key: string]: number } // outcomes: { YES: 1, NO: 0 }
 }
 

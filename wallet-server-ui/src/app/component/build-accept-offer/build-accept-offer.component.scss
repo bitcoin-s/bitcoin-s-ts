@@ -1,20 +1,32 @@
 
 .build-accept-offer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1rem;
+  height: 100%;
 
-  .build-offer, .accept-offer {
-    .content {
-      padding: 1rem;
-      border: 1px solid rgba(0, 0, 0, 0.2);
-    }
-    .description {
-      line-height: 1.5;
+  .mat-drawer-container {
+    height: 100%;
+    flex: 1;
+    .mat-drawer-content {
+      height: 100%;
     }
   }
 
+  .offers {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .build-offer, .accept-offer {
+      .content {
+        padding: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+      .description {
+        line-height: 1.5;
+      }
+    }
+  }
+  
   .button-group {
     label {
       margin-right: 0.5rem;
