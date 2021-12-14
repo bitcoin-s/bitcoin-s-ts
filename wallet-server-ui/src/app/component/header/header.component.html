@@ -12,7 +12,7 @@
 
   <div class="spacer-auto"></div>
 
-  <button mat-icon-button class="not-sm"
+  <button mat-icon-button class="wallet-icon"
     matTooltip="{{ 'Wallet' | translate }}"
     [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
     <span class="material-icons-outlined">account_balance_wallet</span>
@@ -28,35 +28,33 @@
     </button>
   </mat-menu>
 
-  <ng-container *ngIf="false">
-    <button mat-icon-button class="not-sm"
-      matTooltip="{{ 'Upload a DLC File' | translate }}"
-      [matMenuTriggerFor]="uploadMenu" aria-label="Upload a DLC File">
-      <span class="material-icons-outlined">file_upload</span>
-    </button>
-    <mat-menu #uploadMenu="matMenu">
-      <button mat-menu-item>
-        <mat-icon class="material-icons-outlined">file_upload</mat-icon>
-        <span>Offer</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon class="material-icons-outlined">file_upload</mat-icon>
-        <span>Accept</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon class="material-icons-outlined">file_upload</mat-icon>
-        <span>Sign</span>
-      </button>
-    </mat-menu>
-  </ng-container>
-
-  <button mat-icon-button routerLink="/about" routerLinkActive="active"
-    matTooltip="{{ 'about.heading' | translate }}"
-    aria-label="About">
-    <mat-icon>help_outline</mat-icon>
+  <button mat-icon-button class="upload-icon"
+    matTooltip="{{ 'Upload a DLC File' | translate }}"
+    [matMenuTriggerFor]="uploadMenu" aria-label="Upload a DLC File">
+    <span class="material-icons-outlined">file_upload</span>
   </button>
+  <mat-menu #uploadMenu="matMenu">
+    <input #acceptInput hidden="true" type="file"
+      onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.offer)"/>
+    <button mat-menu-item (click)="acceptInput.click()">
+      <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+      <span translate>dlcFile.chooseOffer</span>
+    </button>
+    <input #signInput hidden="true" type="file"
+      onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.accept)"/>
+    <button mat-menu-item (click)="signInput.click()">
+      <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+      <span translate>dlcFile.chooseAccept</span>
+    </button>
+    <input #broadcastInput hidden="true" type="file"
+      onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.sign)"/>
+    <button mat-menu-item (click)="broadcastInput.click()">
+      <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+      <span translate>dlcFile.chooseSign</span>
+    </button>
+  </mat-menu>
 
-  <button mat-icon-button 
+  <button mat-icon-button class="more-icon"
     matTooltip="{{ 'More' | translate }}"
     [matMenuTriggerFor]="moreMenu" aria-label="More">
     <mat-icon>more_vert</mat-icon>
@@ -71,6 +69,12 @@
       <span translate>advanced.heading</span>
     </button>
   </mat-menu>
+
+  <button mat-icon-button routerLink="/about" routerLinkActive="active"
+    matTooltip="{{ 'about.heading' | translate }}"
+    aria-label="About">
+    <mat-icon>help_outline</mat-icon>
+  </button>
 
   <div class="indicator-padding"></div>
 

@@ -3,43 +3,43 @@
   .about-content {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    margin: 0 1rem 1rem 1rem;
 
     .network, .block-height, .fee-estimate {
       margin-bottom: 0.5rem;
     }
     .tor-dlc-host-address {
       margin-top: 1rem;
+      margin-bottom: 1rem;
       label {
         margin-right: 0.5rem;
       }
     }
-  }
-  .footer {
-    display: flex;
-    flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
-    row-gap: 0.25rem;
 
-    font-size: smaller;
-    color: #8c959f; // TODO : From palette
-    
-    margin-bottom: 0.25rem;
-
-    .label {
-      // margin-right: 0.25rem;
-      display: inline-block;
-      width: 7rem;
-    }
-    .server-version {
-      margin-right: 1rem;
-    }
-    .version {
-      margin-right: 0.25rem;
-    }
-    .date {
-      margin-right: 1rem;
+    .footer {
+      display: flex;
+      flex-direction: column;
+      // justify-content: center;
+      // align-items: center;
+      row-gap: 0.25rem;
+  
+      font-size: smaller;
+      color: #8c959f; // TODO : From palette
+      
+      .label {
+        // margin-right: 0.25rem;
+        display: inline-block;
+        width: 7rem;
+      }
+      .server-version {
+        margin-right: 1rem;
+      }
+      .version {
+        margin-right: 0.25rem;
+      }
+      .date {
+        margin-right: 1rem;
+      }
     }
   }
 }

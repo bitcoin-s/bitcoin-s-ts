@@ -1,13 +1,17 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
-import { Observable, of } from 'rxjs'
+import { ActivatedRoute } from '@angular/router'
+import { Observable, of, Subscription } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
+import { DLCFileService } from '~service/dlc-file.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
+
 import { CoreMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
+
 import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -19,7 +23,7 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
   templateUrl: './build-accept-offer.component.html',
   styleUrls: ['./build-accept-offer.component.scss']
 })
-export class BuildAcceptOfferComponent implements OnInit {
+export class BuildAcceptOfferComponent implements OnInit, OnDestroy, AfterViewInit {
 
   DEBUG = false
   // DO NOT PUBLISH
@@ -53,10 +57,26 @@ export class BuildAcceptOfferComponent implements OnInit {
 
   offerVisible = false
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService, 
+  offerSub: Subscription
+
+  constructor(private route: ActivatedRoute, private messageService: MessageService, 
+    private walletStateService: WalletStateService, private dlcFileService: DLCFileService,
     private dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngOnDestroy() {
+    this.offerSub.unsubscribe()
+  }
+
+  ngAfterViewInit() {
+    this.offerSub = this.dlcFileService.offer$.subscribe(offer => {
+      if (offer) {
+        console.debug('ba-offer on offer', offer)
+        this.onAcceptOffer(offer)
+        this.dlcFileService.clearOffer()
+      }
+    })
   }
 
   onBuildOfferPaste(event: ClipboardEvent) {
@@ -64,10 +84,6 @@ export class BuildAcceptOfferComponent implements OnInit {
     const clipboardData = event.clipboardData
     if (clipboardData) {
       const trimmedPastedText = clipboardData.getData('text').trim()
-      // console.debug('trimmedPastedText:', trimmedPastedText)
-
-      // Sanity check on pastedText first?
-
       this.onBuildOffer(trimmedPastedText)
     }
   }

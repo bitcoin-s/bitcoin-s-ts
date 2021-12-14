@@ -1,23 +1,13 @@
 import { OverlayContainer } from '@angular/cdk/overlay'
 import { Component, HostBinding, OnInit, ViewChild } from '@angular/core'
-import { FormControl } from '@angular/forms'
-import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
-import { MatSnackBar } from '@angular/material/snack-bar'
 import { Title } from '@angular/platform-browser'
+import { Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 
+import { DLCFileService } from '~service/dlc-file.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { BuildConfig } from '~type/proxy-server-types'
-import { Announcement, ContractInfo, DLCContract, DLCMessageType, Offer, WalletMessageType } from '~type/wallet-server-types'
-import { AcceptWithHex, AnnouncementWithHex, ContractInfoWithHex, OfferWithHex, SignWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard } from '~util/utils'
-import { getMessageBody } from '~util/wallet-server-util'
-import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component'
-import { ContractsComponent, DLCContractInfo } from './component/contracts/contracts.component'
-import { NewOfferComponent } from './component/new-offer/new-offer.component'
-import { ErrorDialogComponent } from './dialog/error/error.component'
 
 
 const CSS_DARK_MODE = 'CSS_DARK_MODE'
@@ -39,8 +29,9 @@ export class AppComponent implements OnInit {
   configurationVisible = false
   advancedVisible = false
   
-  constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, private snackBar: MatSnackBar, private overlay: OverlayContainer,
-    public walletStateService: WalletStateService, private dialog: MatDialog) {
+  constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, 
+    private overlay: OverlayContainer, private router: Router,
+    public walletStateService: WalletStateService, private dlcFileService: DLCFileService) {
     
   }
 
@@ -49,6 +40,20 @@ export class AppComponent implements OnInit {
 
     const enableDarkMode = localStorage.getItem(CSS_DARK_MODE) !== null
     this.onRootClassName(enableDarkMode)
+
+    // Route DLC file events
+    this.dlcFileService.offer$.subscribe(offer => {
+      console.debug('app on offer', offer)
+      this.router.navigate(['/offers'])
+    })
+    this.dlcFileService.accept$.subscribe(accept => {
+      console.debug('app on accept', accept)
+      this.router.navigate(['/contracts'])
+    })
+    this.dlcFileService.sign$.subscribe(sign => {
+      console.debug('app on sign', sign)
+      this.router.navigate(['/contracts'])
+    })
   }
 
   showConfiguration() {

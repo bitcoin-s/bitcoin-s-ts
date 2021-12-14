@@ -4,8 +4,7 @@ $padding: 0.5rem;
 
 .contracts {
   height: 100%;
-  margin-bottom: 2rem;
-
+  
   .mat-drawer-container {
     height: 100%;
     flex: 1;
@@ -16,11 +15,13 @@ $padding: 0.5rem;
 
   .contract-container {
     display: flex;
+    margin: 0 1rem;
 
     .contract-table {
       flex: 1 1 auto;
       overflow-y: auto;
       min-height: 100px;
+      margin-bottom: 1rem;
 
       .header-row-group {
         height: 24px; // original 56px

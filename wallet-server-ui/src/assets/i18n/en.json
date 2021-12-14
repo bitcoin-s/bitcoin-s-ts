@@ -121,6 +121,7 @@
     "roundingIntervals": "Rounding Intervals",
     "roundingLevel": "Rounding Level",
     "yourCollateral": "Your Collateral",
+    "totalCollateral": "Total Collateral",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
     "createOffer": "Create Offer",
@@ -130,6 +131,7 @@
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the outcome",
     "yourCollateral": "Your collateral at stake (sats)",
+    "totalCollateral": "Total collateral at stake (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
     "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
@@ -142,8 +144,10 @@
     "payoutRequired": "Payout values must be populated",
     "payoutNonNegative": "Payout values must be non-negative",
     "yourCollateralMustBeLessThanMax": "Your Collateral ({{yourCollateral}} sats) must be equal to the maximum payout ({{maxCollateral}} sats) or less",
+    "maxCollateralMustBeLessThanTotal": "The maximum payout value ({{maxCollateral}} sats) must be less than or equal to the Total Collateral ({{totalCollateral}} sats).",
     "outcomeValues": "Outcome values must be positive",
     "yourCollateral": "Your Collateral must be positive",
+    "yourCollateralMoreThanTotal": "Your Collateral must be less than Total Collateral",
     "feeRate": "Fee Rate must be positive",
     "maxCollateral": "Your Collateral is greater than the maximum payout"
   },

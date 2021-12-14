@@ -39,11 +39,13 @@ export class DlcFileComponent implements OnInit {
 
   private handleFileLoad(f: File, writeTo?: string, callback?: Function) {
     const reader = new FileReader()
-    reader.addEventListener("load", () => {
-      console.debug('load reader', location) //, reader.result)
+    reader.addEventListener('load', () => {
+      console.debug('load reader', location)
+      // Store data
       if (writeTo) {
         (<any>this)[writeTo] = reader.result
       }
+      // Call callback
       if (callback) {
         callback()
       }

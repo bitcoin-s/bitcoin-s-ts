@@ -77,7 +77,13 @@ $dark-background-palette: map-get($angular-dark-theme, background);
   }
 
   @include lt-sm {
-    .not-sm {
+    .wallet-icon {
+      display: none;
+    }
+    .upload-icon {
+      display: none;
+    }
+    .more-icon {
       display: none;
     }
   }

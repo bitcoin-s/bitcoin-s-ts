@@ -154,6 +154,7 @@ export class NewOfferComponent implements OnInit {
       this.form.patchValue({
         refundDate: datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND),
         yourCollateral: null,
+        totalCollateral: null,
         feeRate: this.walletStateService.feeEstimate,
       })
     }
@@ -167,13 +168,14 @@ export class NewOfferComponent implements OnInit {
     return { outcome, roundingInterval }
   }
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
+  constructor(private messageService: MessageService, public walletStateService: WalletStateService,
     private formBuilder: FormBuilder, private translate: TranslateService) { }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       refundDate: [datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND), Validators.required],
       yourCollateral: [null, Validators.required],
+      totalCollateral: [null, Validators.required],
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
     })
@@ -223,12 +225,13 @@ export class NewOfferComponent implements OnInit {
 
     if (this.isEnum()) {
       const payoutVals = this.buildPayoutVals()
-      const maxCollateral = this.computeMaxCollateral(payoutVals)
+      const totalCollateral = v.totalCollateral
+      // const maxCollateral = this.computeMaxCollateral(payoutVals)
   
-      console.debug('payoutVals:', payoutVals, 'maxCollateral:', maxCollateral)
+      console.debug('payoutVals:', payoutVals, 'totalCollateral:', totalCollateral)
   
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
-        [hex, maxCollateral, payoutVals])).subscribe(r => {
+        [hex, totalCollateral, payoutVals])).subscribe(r => {
           console.debug('createcontractinfo', r)
   
           if (r.result) {
@@ -254,13 +257,14 @@ export class NewOfferComponent implements OnInit {
         })
     } else if (this.isNumeric()) {
       const numericPayoutVals = this.points
-      const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
+      const totalCollateral = v.totalCollateral
+      // const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
 
-      console.warn('numericPayoutVals:', numericPayoutVals, 'maxCollateral:', maxCollateral, 'yourCollateral:', v.yourCollateral)
+      console.warn('numericPayoutVals:', numericPayoutVals, 'totalCollateral:', totalCollateral, 'yourCollateral:', v.yourCollateral)
       
       // console.debug('numericAnnouncementHex:', numericAnnouncementHex, 'totalCollateral:', totalCollateral, 'numericPayoutVals:', numericPayoutVals)
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
-        [hex, maxCollateral, numericPayoutVals])).subscribe(r => {
+        [hex, totalCollateral, numericPayoutVals])).subscribe(r => {
         console.warn('createcontractinfo', r)
 
         if (r.result) {
@@ -338,12 +342,20 @@ export class NewOfferComponent implements OnInit {
       }
       if (validInputs) {
         const maxCollateral = this.computeMaxCollateral(this.buildPayoutVals())
-        if (v.yourCollateral > maxCollateral) {
+        // if (v.yourCollateral > maxCollateral) {
+        //   validInputs = false
+        //   errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral })
+        // }
+        if (v.totalCollateral < maxCollateral) {
           validInputs = false
-          errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral }) // `yourCollateral (${v.yourCollateral}) must be equal to maxCollateral (${maxCollateral}) or less`
+          errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal', 
+          { totalCollateral: v.totalCollateral || 0, 
+            maxCollateral: maxCollateral || 0,
+          })
         }
       }
     } else if (this.isNumeric()) {
+      // With min="0", it's leaving the value on the control at null, an erroring required when it should error non-negative
       for (const p of this.points) {
         if (p.outcome === null) {
           validInputs = false
@@ -370,10 +382,24 @@ export class NewOfferComponent implements OnInit {
 
       if (validInputs) {
         const maxCollateral = this.computeNumericMaxCollateral(this.points)
-        if (v.yourCollateral > maxCollateral) {
+        // if (v.yourCollateral > maxCollateral) {
+        //   validInputs = false
+        //   errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral }) // `yourCollateral (${v.yourCollateral}) must be equal to maxCollateral (${maxCollateral}) or less`
+        // }
+        if (v.totalCollateral < maxCollateral) {
           validInputs = false
-          errorString = this.translate.instant('newOfferValidation.yourCollateralMustBeLessThanMax', { yourCollateral: v.yourCollateral, maxCollateral }) // `yourCollateral (${v.yourCollateral}) must be equal to maxCollateral (${maxCollateral}) or less`
+          errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal',
+          { totalCollateral: v.totalCollateral || 0, 
+            maxCollateral: maxCollateral || 0
+          })
         }
+      }
+    }
+
+    if (validInputs) {
+      if (v.yourCollateral > v.totalCollateral) {
+        validInputs = false
+        errorString = this.translate.instant('newOfferValidation.yourCollateralMoreThanTotal')
       }
     }
 
@@ -382,6 +408,17 @@ export class NewOfferComponent implements OnInit {
     else this.payoutValidationError = ''
 
     this.payoutInputsInvalid = !validInputs
+  }
+
+  onTotalCollateral() {
+    const tc = this.form.value.totalCollateral
+    const yc = this.form.value.yourCollateral
+    console.debug('onTotalCollateral()', tc, yc)
+    // If Total Collateral is being populated and Your Collateral is not yet set, set it to half of total
+    if (tc && yc === null) {
+      const half = Math.floor(this.form.value.totalCollateral / 2)
+      this.form.patchValue({ yourCollateral: half })
+    }
   }
 
   // Numeric

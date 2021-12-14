@@ -22,17 +22,17 @@
         <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
     </div>
-  </div>
 
-  <div class="footer">
-    <div class="footer-section">
-      <span class="label" translate>about.serverVersion</span>
-      <span class="server-version">{{ walletStateService.serverVersion }}</span>
-    </div>
-    <div *ngIf="walletStateService.buildConfig" class="footer-section">
-      <span class="label" translate>about.uiVersion</span>
-      <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
-      <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
+    <div class="footer">
+      <div class="footer-section">
+        <span class="label" translate>about.serverVersion</span>
+        <span class="server-version">{{ walletStateService.serverVersion }}</span>
+      </div>
+      <div *ngIf="walletStateService.buildConfig" class="footer-section">
+        <span class="label" translate>about.uiVersion</span>
+        <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
+        <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
+      </div>
     </div>
   </div>
 

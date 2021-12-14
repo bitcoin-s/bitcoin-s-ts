@@ -53,6 +53,7 @@ fieldset {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin: 0 1rem;
 
   .section-header-button-group {
     display: flex;
@@ -247,6 +248,10 @@ mat-form-field {
 .drawer-container {
   padding: 0 1rem;
   min-width: 300px;
+
+  .section-header {
+    margin: 0;
+  }
 }
 
 /** Header darkMode fix */

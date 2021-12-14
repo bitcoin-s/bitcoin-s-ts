@@ -112,9 +112,9 @@
         -->
       </div>
 
-      <div *ngIf="payoutInputsInvalid">
+      <ng-container *ngIf="payoutInputsInvalid">
         <app-alert [type]="AlertType.error" [message]="payoutValidationError"></app-alert>
-      </div>
+      </ng-container>
       
       <div class="spacer"></div>
 
@@ -125,6 +125,27 @@
           <span matSuffix translate>unit.sats</span>
           <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
         </mat-form-field>
+        <mat-form-field class="medium">
+          <mat-label translate>newOffer.totalCollateral</mat-label>
+          <input formControlName="totalCollateral" matInput type="number" min="0"
+            (change)="validatePayoutInputs()" (blur)="onTotalCollateral()">
+          <span matSuffix translate>unit.sats</span>
+          <app-more-info matSuffix tooltip="newOfferDescription.totalCollateral" params="{ unit: unit.sats }"></app-more-info>
+        </mat-form-field>
+      </div>
+      
+      <div class="spacer"></div>
+
+      <div class="mat-form-field-row">
+        <mat-form-field class="ellipsis">
+          <mat-label translate>
+            {{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}
+          </mat-label>
+          <input matInput [value]="hex" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(hex)">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </mat-form-field>
         <mat-form-field class="narrower">
           <mat-label translate>newOffer.feeRate</mat-label>
           <input formControlName="feeRate" matInput type="number" min="1">
@@ -132,18 +153,6 @@
           <app-more-info matSuffix tooltip="newOfferDescription.feeRate"></app-more-info>
         </mat-form-field>
       </div>
-      
-      <div class="spacer"></div>
-
-      <mat-form-field class="ellipsis">
-        <mat-label translate>
-          {{ (announcement ? 'newOffer.oracleAnnouncement' : contractInfo ? 'newOffer.contractInfo' : '') | translate }}
-        </mat-label>
-        <input matInput [value]="hex" readonly>
-        <button mat-icon-button matSuffix (click)="copyToClipboard(hex)">
-          <mat-icon>content_copy</mat-icon>
-        </button>
-      </mat-form-field>
 
     </fieldset>
   </form>
@@ -155,7 +164,8 @@
   <div class="execute-container">
     <div class="button-group">
       <button mat-stroked-button class="tor-dlc-host-address-button"
-        matTooltip="{{ 'action.copyToClipboard' | translate }}">
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
         <mat-icon>content_copy</mat-icon>
         <span translate>torDLCHostAddress</span>
       </button>
@@ -169,7 +179,9 @@
     </div>
   </div>
 
-  <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
+  <ng-container *ngIf="offerCreated">
+    <app-alert [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
+  </ng-container>
   
   <!-- Could have button to open new contract or auto-open new contract detail -->
 

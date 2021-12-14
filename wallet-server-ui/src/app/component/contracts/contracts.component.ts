@@ -1,14 +1,19 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort, MatSortable } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { Subscription } from 'rxjs'
 
+import { DLCFileService } from '~service/dlc-file.service'
 import { WalletStateService } from '~service/wallet-state-service'
+
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
+
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
@@ -59,15 +64,19 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private dlc$: Subscription
+  private acceptSub: Subscription
+  private signSub: Subscription
 
-  constructor(public walletStateService: WalletStateService) { }
+  constructor(public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
+    private dialog: MatDialog) { }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
+
 
   ngOnDestroy(): void {
     this.dlc$.unsubscribe()
+    this.acceptSub.unsubscribe()
+    this.signSub.unsubscribe()
   }
 
   ngAfterViewInit() {
@@ -78,6 +87,43 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
+    })
+
+    this.acceptSub = this.dlcFileService.accept$.subscribe(accept => {
+      if (accept) {
+        console.debug('contracts on accept', accept)
+        const dlc = this.walletStateService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
+        if (dlc) {
+          this.selectedAccept = accept
+          this.onRowClick(dlc)
+        } else {
+          this.onDLCNotFound()
+        }
+        this.dlcFileService.clearAccept()
+      }
+    })
+    this.signSub = this.dlcFileService.sign$.subscribe(sign => {
+      if (sign) {
+        console.debug('contracts on sign', sign)
+        const dlc = this.walletStateService.dlcs.value.find(d => d.contractId === sign.sign.contractId)
+        if (dlc) {
+          this.selectedSign = sign
+          this.onRowClick(dlc)
+        } else {
+          this.onDLCNotFound()
+        }
+        this.dlcFileService.clearSign()
+      }
+    })
+  }
+
+  private onDLCNotFound() {
+    console.error('could not find matching dlc contract')
+    const dialog = this.dialog.open(ErrorDialogComponent, {
+      data: {
+        title: 'dialog.dlcNotFound.title',
+        content: 'dialog.dlcNotFound.content',
+      }
     })
   }
 
