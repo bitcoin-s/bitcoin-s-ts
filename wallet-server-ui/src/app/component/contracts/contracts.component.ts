@@ -18,6 +18,8 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 
+// const DEFAULT_SORT = <MatSortable>{ id: 'lastUpdated', start: 'desc'}
+
 @Component({
   selector: 'app-contracts',
   templateUrl: './contracts.component.html',
@@ -72,7 +74,6 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {}
 
-
   ngOnDestroy(): void {
     this.dlc$.unsubscribe()
     this.acceptSub.unsubscribe()
@@ -80,9 +81,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Set default sort
-    this.sort.sort(<MatSortable>{ id: 'lastUpdated', start: 'desc'})
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort
 
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value

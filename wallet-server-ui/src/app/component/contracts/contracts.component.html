@@ -7,7 +7,8 @@
       </div>
 
       <div *ngIf="walletStateService.dlcs" class="contract-container">
-        <table class="contract-table mat-elevation-z8" mat-table #table matSort [dataSource]="dataSource">
+        <table class="contract-table mat-elevation-z8" mat-table #table [dataSource]="dataSource"
+          matSort matSortActive="lastUpdated" matSortDirection="desc">
 
           <!-- Grouping row -->
           <ng-container matColumnDef="header-row-spacer-group">

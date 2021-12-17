@@ -23,7 +23,8 @@ const appRoutes: Routes = [
     CommonModule,
     RouterModule.forRoot(
       appRoutes,
-      { useHash: true, enableTracing: true } // <-- debugging purposes only
+      { useHash: true, 
+        enableTracing: false } // <-- debugging purposes only
     )
   ],
   exports: [

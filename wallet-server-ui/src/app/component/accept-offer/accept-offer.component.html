@@ -31,6 +31,25 @@
 
       <div class="spacer"></div>
 
+      <label class="mat-form-label" translate>acceptOffer.collateral</label>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.yourCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
+          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+      </div>
+
+      <div class="spacer"></div>
+
       <label class="mat-form-label" translate>Payouts</label>
       <div *ngIf="isEnum()" class="enum-offer">
         <div class="outcome-group">
@@ -60,25 +79,6 @@
             <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint" disabled>
           </div>
         </div>
-      </div>
-
-      <div class="spacer"></div>
-
-      <label class="mat-form-label" translate>acceptOffer.collateral</label>
-      <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.yourCollateral</mat-label>
-          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
-          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.totalCollateral</mat-label>
-          <input matInput [value]="formatNumber(contractInfo.totalCollateral)" readonly>
-          <span matSuffix translate>unit.sats</span>
-        </mat-form-field>
       </div>
 
       <div class="spacer"></div>

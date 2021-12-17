@@ -44,11 +44,10 @@ export class WalletStateService {
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
-  pollingTimer$: Subscription;
-  initialized = false
+  private pollingTimer$: Subscription;
+  private initialized = false
 
   constructor(private messageService: MessageService) {
-
     this.pollingTimer$ = timer(0, POLLING_TIME).pipe(
       tap(_ => { this.state = WalletServiceState.polling }),
       concatMap(() => this.messageService.walletHeartbeat().pipe(
@@ -60,9 +59,11 @@ export class WalletStateService {
 
         if (!this.initialized) { // coming online
           this.initializeState()
+          // Initial data load before websocket polling kicks in
+          // this.updateState()
         }
-        this.refreshWalletState()
-        this.refreshDLCStates()
+        // Polling on blocks received now
+        this.updateState()
       } else {
         this.state = WalletServiceState.offline
 
@@ -75,11 +76,12 @@ export class WalletStateService {
     })
   }
 
-  uninitializeState() {
-    this.initialized = false
+  private uninitializeState() {
+    this.initialized = false  
+    // Could clear pieces of state here...
   }
 
-  initializeState() {
+  private initializeState() {
     this.messageService.getServerVersion().subscribe(r => {
       if (r.result) {
         this.serverVersion = r.result.version;
@@ -109,6 +111,11 @@ export class WalletStateService {
       }
     })
     this.initialized = true
+  }
+
+  updateState() {
+    this.refreshWalletState()
+    this.refreshDLCStates()
   }
 
   refreshWalletState() {
@@ -154,6 +161,7 @@ export class WalletStateService {
           // The DLC didn't exist yet, this shouldn't happen...
           this.dlcs.value.push(dlc)
           this.dlcs.next(this.dlcs.value)
+          this.loadContractInfo(dlc)
         }
         return dlc
       }
@@ -168,17 +176,22 @@ export class WalletStateService {
         this.dlcs.next(r.result)
         // Decode all ContractInfos
         for (const dlc of <DLCContract[]>r.result) {
-          this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo])).subscribe((r: ServerResponse<ContractInfo>) => {
-            // console.debug('decodecontractinfo', r)
-            if (r.result) {
-              const ci = this.contractInfos.value
-              ci[dlc.dlcId] = r.result
-            }
-          })
+          this.loadContractInfo(dlc)
         }
       }
     })
   }
 
+  loadContractInfo(dlc: DLCContract) {
+    const ci = this.contractInfos.value
+    if (!ci[dlc.dlcId]) { // Don't bother reloading ContractInfo we already have
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))
+      .subscribe((r: ServerResponse<ContractInfo>) => {
+        if (r.result) {
+          ci[dlc.dlcId] = r.result
+        }
+      })
+    }
+  }
 
 }

@@ -51,6 +51,23 @@
         </mat-form-field>
       </div>
 
+      <label class="mat-form-label" translate>contractDetail.collateral</label>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.localCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.localCollateral)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.remoteCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.remoteCollateral)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+      </div>
+
       <!-- Enum / Numeric -->
 
       <div *ngIf="isEnum()" class="enum-outcomes">
@@ -82,23 +99,6 @@
           <input matInput [value]="outcome" readonly>
         </mat-form-field>
       </ng-container>
-
-      <label class="mat-form-label" translate>contractDetail.collateral</label>
-      <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.localCollateral</mat-label>
-          <input matInput [value]="formatNumber(dlc.localCollateral)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.remoteCollateral</mat-label>
-          <input matInput [value]="formatNumber(dlc.remoteCollateral)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.totalCollateral</mat-label>
-          <input matInput [value]="formatNumber(dlc.totalCollateral)" readonly>
-          <span matSuffix translate>unit.sats</span>
-        </mat-form-field>
-      </div>
 
       <ng-container *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined">
         <label class="mat-form-label" translate>contractDetail.contractOutcome</label>

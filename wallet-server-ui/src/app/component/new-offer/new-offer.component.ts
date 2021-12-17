@@ -75,6 +75,9 @@ export class NewOfferComponent implements OnInit {
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 
   maturityDate: string
+  minDate: Date
+
+  theirCollateral: number|null
 
   // enum
   outcomeValues: { [label: string]: number|null } = {}
@@ -104,12 +107,10 @@ export class NewOfferComponent implements OnInit {
     p.payout = v
     this.validatePayoutInputs()
   }
-  roundingIntervals: any[] = []
+  // roundingIntervals: any[] = []
 
   payoutInputsInvalid = false
   payoutValidationError: string = ''
-
-  minDate: Date
 
   executing = false
   offerCreated = false
@@ -118,6 +119,7 @@ export class NewOfferComponent implements OnInit {
 
   private reset() {
     this.maturityDate = formatDateTime(dateToSecondsSinceEpoch(new Date(this.event.maturity)))
+    this.minDate = new Date(this.event.maturity)
     this.outcomeValues = {}
     this.points = []
 
@@ -145,8 +147,6 @@ export class NewOfferComponent implements OnInit {
         this.points = this.numericContractDescriptor.payoutFunction.points
       }
     }
-
-    this.minDate = new Date(this.event.maturity)
 
     this.newOfferResult = ''
 
@@ -211,6 +211,18 @@ export class NewOfferComponent implements OnInit {
       const date = event.target.value
       this.datePicker.value = new Date(date)
     }
+  }
+
+  // Show 'Their' collateral value.
+  setTheirCollateral() {
+    const v = this.form.value
+    const your = v.yourCollateral
+    const total = v.totalCollateral
+    let their: number|null = null
+    if (total !== null && your !== null) {
+      their = total - your
+    }
+    this.theirCollateral = their
   }
 
   onExecute() {

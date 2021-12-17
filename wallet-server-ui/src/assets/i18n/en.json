@@ -116,12 +116,15 @@
     "point": "Point",
     "outcome": "Outcome",
     "payout": "Payout",
+    "payouts": "Payouts",
     "endpoint": "Endpoint",
     "roundingInfo": "Rounding Info",
     "roundingIntervals": "Rounding Intervals",
     "roundingLevel": "Rounding Level",
-    "yourCollateral": "Your Collateral",
-    "totalCollateral": "Total Collateral",
+    "collateral": "Collateral",
+    "yourCollateral": "Yours",
+    "theirs": "Theirs",
+    "totalCollateral": "Total",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
     "createOffer": "Create Offer",
@@ -192,7 +195,7 @@
     "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online.",
     "filename": "Filename to save Accepted DLC Offer to",
     "acceptOfferType": {
-      "tor": "Use Tor to pass messages. Your counterparty needs to be online and have a Tor DLC Host Address they will share with you.",
+      "tor": "Use Tor to pass messages. Your counterparty needs to be online and share their Tor DLC Host Address with you.",
       "files": "Exchange files to pass messages. You will send the saved file to your counterparty."
     }
   },
