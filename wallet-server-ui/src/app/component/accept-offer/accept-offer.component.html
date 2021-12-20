@@ -14,18 +14,13 @@
       </mat-form-field>
 
       <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
+        <mat-form-field>
           <mat-label translate>acceptOffer.maturityDate</mat-label>
           <input matInput [value]="maturityDate" readonly>
         </mat-form-field>
-        <mat-form-field class="narrow">
+        <mat-form-field>
           <mat-label translate>acceptOffer.refundDate</mat-label>
           <input matInput [value]="refundDate" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrower">
-          <mat-label translate>acceptOffer.feeRate</mat-label>
-          <input matInput [value]="offer.offer.feeRatePerVb" readonly>
-          <span matSuffix translate>unit.satsPerVbyte</span>
         </mat-form-field>
       </div>
 
@@ -96,6 +91,14 @@
         </mat-form-field>
       </div>
 
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrower">
+          <mat-label translate>acceptOffer.feeRate</mat-label>
+          <input matInput [value]="offer.offer.feeRatePerVb" readonly>
+          <span matSuffix translate>unit.satsPerVbyte</span>
+        </mat-form-field>
+      </div>
+      
     </fieldset>
 
     <h2 translate>acceptOffer.acceptOffer</h2>

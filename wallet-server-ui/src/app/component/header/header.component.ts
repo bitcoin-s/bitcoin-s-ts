@@ -3,6 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { BackendService } from '~service/backend.service'
 import { DLCFileService, DLCFileType } from '~service/dlc-file.service'
 import { WalletServiceState, WalletStateService } from '~service/wallet-state-service'
+import { formatNumber } from '~util/utils'
 
 
 @Component({
@@ -14,6 +15,7 @@ export class HeaderComponent implements OnInit {
 
   public DLCFileType = DLCFileType
   public WalletServiceState = WalletServiceState
+  public formatNumber = formatNumber
 
   @Output() showConfiguration: EventEmitter<void> = new EventEmitter()
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()

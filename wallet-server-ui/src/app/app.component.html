@@ -1,33 +1,28 @@
-<section class="content-root mat-app-background">
+<div class="app-root mat-app-background">
 
   <splash></splash>
 
-  <div class="app-container">
-    <app-header
-      (showConfiguration)="showConfiguration()"
-      (showAdvanced)="showAdvanced()"
-    ></app-header>
+  <app-header
+    (showConfiguration)="showConfiguration()"
+    (showAdvanced)="showAdvanced()"
+  ></app-header>
 
-    <mat-sidenav-container>
-      <mat-sidenav-content>
-        <div class="main-content">
-          <router-outlet></router-outlet>
-        </div>
-      </mat-sidenav-content>
+  <mat-sidenav-container>
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
 
-      <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
-        <div class="drawer-container">
-          <app-configuration *ngIf="configurationVisible"
-            (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+    <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
+      <div class="drawer-container">
+        <app-configuration *ngIf="configurationVisible"
+          (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
 
-          <!-- Advanced -->
-          <app-debug *ngIf="advancedVisible"
-            (close)="onAdvancedClose()"></app-debug>
-        </div>
-      </mat-sidenav>
+        <!-- Advanced -->
+        <app-debug *ngIf="advancedVisible"
+          (close)="onAdvancedClose()"></app-debug>
+      </div>
+    </mat-sidenav>
 
-    </mat-sidenav-container>
+  </mat-sidenav-container>
 
-  </div>
-
-</section>
+</div>

@@ -1,49 +1,18 @@
-$header-height: 56px; // measured
 
-.content-root {
+.app-root {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; //  FF flexbox overflow
 
-  .app-container {
+  .mat-sidenav-container {
     height: 100%;
-    display: flex;
-    flex-direction: column;
-  
-    .main-content {
-      height: 100%;
+    
+    .mat-drawer {
+      
     }
-  
-    .mat-sidenav-container {
-      flex: 1;
-    }
-  
-    .wallet-container {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      column-gap: 2rem;
-    }
-
-  
-    .spacer {
-      height: 1rem;
-    }
-  
-    .state-info {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: center;
-  
-      .network {
-  
-      }
-      .block-height {
-  
-      }
-      .fee-estimate {
-  
-      }
+    .mat-drawer-content {
+      
     }
   }
-
 }

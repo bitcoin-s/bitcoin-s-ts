@@ -152,6 +152,8 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     // Clean up state on close
     if (!opened) {
       this.contractDetailsVisible = false
+      this.selectedDLCContract = null
+      this.selectedDLCContractInfo = null
     }
   }
 

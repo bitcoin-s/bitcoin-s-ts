@@ -31,6 +31,13 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     background: rgba(0,0,0,.2);
   }
 
+  .wallet-status {
+    display: flex;
+    flex-direction: row;
+
+    font-size: small;
+  }
+
   .indicator-padding {
     margin-right: 2rem;
   }
@@ -67,6 +74,13 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     }
   }
 
+  // Responsive Sizing and Visibility
+
+  @include lt-lg {
+    .wallet-status {
+      display: none;
+    }
+  }
   @include lt-md {
     .indicator-padding {
       margin-right: 1rem;
@@ -75,7 +89,6 @@ $dark-background-palette: map-get($angular-dark-theme, background);
       display: none;
     }
   }
-
   @include lt-sm {
     .wallet-icon {
       display: none;

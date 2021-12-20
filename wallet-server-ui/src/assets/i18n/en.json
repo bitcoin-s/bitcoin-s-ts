@@ -12,7 +12,9 @@
   },
 
   "header": {
-    "createDLC": "Create DLC"
+    "title": "Suredbits",
+    "createDLC": "Create DLC",
+    "total": "Total Balance: {{ total }}"
   },
 
   "about": {
@@ -206,8 +208,8 @@
     "contractId": "Contract Id",
     "state": "State",
     "return": "Return",
-    "realizedPNL": "Realized PNL",
-    "rateOfReturn": "Rate of Return",
+    "realizedPNL": "PNL",
+    "rateOfReturn": "Rate",
     "collateral": "Collateral",
     "yours": "Yours",
     "theirs": "Theirs",

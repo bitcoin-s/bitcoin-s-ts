@@ -33,21 +33,21 @@
           <mat-label translate>contractDetail.initiator</mat-label>
           <input matInput [value]="dlc.isInitiator" readonly>
         </mat-form-field>
-      </div>
-
-      <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.contractMaturity</mat-label>
-          <input matInput [value]="contractMaturity" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.contractTimeout</mat-label>
-          <input matInput [value]="contractTimeout" readonly>
-        </mat-form-field>
         <mat-form-field class="narrower">
           <mat-label translate>contractDetail.feeRate</mat-label>
           <input matInput [value]="dlc.feeRate" readonly>
           <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+      </div>
+
+      <div class="mat-form-field-row">
+        <mat-form-field>
+          <mat-label translate>contractDetail.contractMaturity</mat-label>
+          <input matInput [value]="contractMaturity" readonly>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>contractDetail.contractTimeout</mat-label>
+          <input matInput [value]="contractTimeout" readonly>
         </mat-form-field>
       </div>
 
