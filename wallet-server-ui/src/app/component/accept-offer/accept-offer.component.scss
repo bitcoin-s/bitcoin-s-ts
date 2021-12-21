@@ -1,7 +1,6 @@
-// total magic. Need to max-width the pane and have it trickle down. Currently w-100 is pushing panel width, but not clear on what's maxing it out
-$maxWidth: 400px;
 
 .accept-offer {
+  max-width: 450px;
 
   .enum-offer, .numeric-offer {
     .outcome-group {
@@ -75,13 +74,7 @@ $maxWidth: 400px;
 
   .form-container {
     margin-top: 1rem;
-    fieldset {
-      margin: 0;
-      padding: 0;
-      // > *:not(mat-radio-group) {
-      //   width: 100%;
-      // }
-    }
+    
     .accept-offer-type {
       mat-radio-button {
         margin-right: 0.5rem;
@@ -89,7 +82,6 @@ $maxWidth: 400px;
     }
     .description {
       margin: 1rem 0 1rem 0;
-      max-width: $maxWidth;
       line-height: 1.3;
     }
   }

@@ -1,6 +1,7 @@
-$maxWidth: 450px;
 
 .contract-detail {
+  max-width: 500px;
+  margin-bottom: 1rem;
 
   .field-group {
     label {
@@ -15,7 +16,9 @@ $maxWidth: 450px;
       text-align: right;
     }
     // No margin required for copy to clipboard buttons
-    button.mat-flat-button, button.mat-stroked-button, span {
+    > button.mat-flat-button, 
+    > button.mat-stroked-button,
+    > span {
       margin-left: 0.25rem;
     }
   }
@@ -24,8 +27,8 @@ $maxWidth: 450px;
     width: 20rem !important;
   }
 
-  .enum-outcomes {
-    .enum-group {
+  .enum-outcomes, .numeric-outcomes {
+    .enum-group, .numeric-group {
       margin-left: 1rem;
 
       label {
@@ -40,21 +43,43 @@ $maxWidth: 450px;
         margin-left: 0.25rem;
       }
       .outcome-label {
-
+        margin-right: 1rem;
+        text-align: right;
       }
       .outcome-payout {
 
       }
+
+      .outcome-heading {
+        width: 12rem;
+        margin-right: 1rem;
+      }
+      .payout-heading {
+        width: 6rem;
+        margin-right: 1rem;
+      }
+      .endpoint-heading {
+        width: 4rem;
+      }
+      input[type="number"] {
+        width: 6rem;
+        margin-right: 0.25rem;
+      }
+      input[type="checkbox"] { // .endpoint-checkbox
+        width: 4rem;
+        vertical-align: middle;
+      }
+    }
+    .heading-group {
+      margin-bottom: 0.25rem;
     }
   }
 
   .payout-group {
     
   }
-
-  .group-label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
+  .outcome-group {
+    margin-top: 0.5rem;
   }
 
   .spacer {
@@ -64,7 +89,6 @@ $maxWidth: 450px;
   .accept-group, .sign-group {
     margin-bottom: 0.5rem;
 
-    max-width: $maxWidth;
     line-height: 1.3;
 
     .description {

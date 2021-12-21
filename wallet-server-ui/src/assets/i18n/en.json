@@ -11,6 +11,18 @@
     "dontShowSplashAgain": "Don't show this screen again"
   },
 
+  "header": {
+    "title": "Suredbits",
+    "createDLC": "Create DLC",
+    "total": "Total Balance: {{ total }}"
+  },
+
+  "about": {
+    "heading": "About",
+    "serverVersion": "Server Version",
+    "uiVersion": "UI Version"
+  },
+
   "status": {
     "network": "Network",
     "connected": "Connected",
@@ -61,8 +73,8 @@
     "darkMode": "Dark Mode"
   },
 
-  "debug": {
-    "heading": "Debug",
+  "advanced": {
+    "heading": "Advanced",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs"
   },
@@ -106,11 +118,15 @@
     "point": "Point",
     "outcome": "Outcome",
     "payout": "Payout",
+    "payouts": "Payouts",
     "endpoint": "Endpoint",
     "roundingInfo": "Rounding Info",
     "roundingIntervals": "Rounding Intervals",
     "roundingLevel": "Rounding Level",
-    "yourCollateral": "Your Collateral",
+    "collateral": "Collateral",
+    "yourCollateral": "Yours",
+    "theirs": "Theirs",
+    "totalCollateral": "Total",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
     "createOffer": "Create Offer",
@@ -120,6 +136,7 @@
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the outcome",
     "yourCollateral": "Your collateral at stake (sats)",
+    "totalCollateral": "Total collateral at stake (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
     "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
@@ -132,8 +149,10 @@
     "payoutRequired": "Payout values must be populated",
     "payoutNonNegative": "Payout values must be non-negative",
     "yourCollateralMustBeLessThanMax": "Your Collateral ({{yourCollateral}} sats) must be equal to the maximum payout ({{maxCollateral}} sats) or less",
+    "maxCollateralMustBeLessThanTotal": "The maximum payout value ({{maxCollateral}} sats) must be less than or equal to the Total Collateral ({{totalCollateral}} sats).",
     "outcomeValues": "Outcome values must be positive",
     "yourCollateral": "Your Collateral must be positive",
+    "yourCollateralMoreThanTotal": "Your Collateral must be less than Total Collateral",
     "feeRate": "Fee Rate must be positive",
     "maxCollateral": "Your Collateral is greater than the maximum payout"
   },
@@ -178,7 +197,7 @@
     "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online.",
     "filename": "Filename to save Accepted DLC Offer to",
     "acceptOfferType": {
-      "tor": "Use Tor to pass messages. Your counterparty needs to be online and have a Tor DLC Host Address they will share with you.",
+      "tor": "Use Tor to pass messages. Your counterparty needs to be online and share their Tor DLC Host Address with you.",
       "files": "Exchange files to pass messages. You will send the saved file to your counterparty."
     }
   },
@@ -188,10 +207,12 @@
     "eventId": "Event Id",
     "contractId": "Contract Id",
     "state": "State",
-    "realizedPNL": "Realized PNL",
-    "rateOfReturn": "Rate of Return",
-    "collateral": "Yours",
-    "counterpartyCollateral": "Theirs",
+    "return": "Return",
+    "realizedPNL": "PNL",
+    "rateOfReturn": "Rate",
+    "collateral": "Collateral",
+    "yours": "Yours",
+    "theirs": "Theirs",
     "totalCollateral": "Total",
     "lastUpdated": "Updated",
     "noContracts": "No DLC Contracts Started",
@@ -211,6 +232,8 @@
     "contractMaturity": "Contract Maturity",
     "contractTimeout": "Contract Timeout",
     "outcomePayouts": "Outcome Payouts",
+    "outcomeCurve": "Outcome Curve",
+    "outcome": "Outcome",
     "collateral": "Collateral",
     "totalCollateral": "Total",
     "localCollateral": "Yours",
@@ -226,9 +249,9 @@
     "refundContract": "Refund Contract",
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
-    "contractOutcome": "Contract Outcome",
-    "yourPayout": "Your Payout",
-    "counterpartyPayout": "Counterparty Payout",
+    "contractOutcome": "Payout",
+    "yourPayout": "Yours",
+    "counterpartyPayout": "Theirs",
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
 
@@ -242,8 +265,8 @@
   },
 
   "contractDetailDescription": {
-    "signAcceptOffer": "Your counterparty has accepted your Offer. Sign their Accept by clicking Execute and send the saved file back to your counterparty.",
-    "broadcastSigned": "Your counterparty has signed your Offer. Countersign and broadcast the DLC to finalize it by clicking Execute.",
+    "signAcceptOffer": "Your counterparty has Accepted your Offer. Sign the DLC by clicking Execute and send the saved file back to your counterparty.",
+    "broadcastSigned": "You've received a Signed DLC. Countersign and broadcast the DLC to finalize it by clicking Execute.",
     "filename": "Filename to save Signed DLC Accept into",
     "cannotSignOwnAccept": "You cannot sign your own Accepted DLC. You must give it to your counterparty to sign.",
     "cannotBroadcastOwnSign": "You cannot broadcast your own Signed DLC. You must give it to your counterparty for broadcast."
@@ -304,6 +327,11 @@
       "content": "The transaction with id {{ txId }} was rebroadcast.",
       "linksContent": "View the transaction on Mempool.space at"
     },
+    "oracleAttestationSuccess": {
+      "title": "Oracle Attestment Successful",
+      "content": "A closing transaction with id {{ txId }} was broadcast.",
+      "linksContent": "View the transaction on Mempool.space at"
+    },
     "sendMessageError": {
       "title": "Error sending message to appServer"
     },
@@ -321,6 +349,11 @@
     }
   },
 
-  "torDLCHostAddress": "Tor DLC Host Address"
+  "torDLCHostAddress": "Tor DLC Host Address",
 
+  "WalletServiceState": {
+    "offline": "Offline",
+    "online": "Online",
+    "polling": "Polling"
+  }
 }

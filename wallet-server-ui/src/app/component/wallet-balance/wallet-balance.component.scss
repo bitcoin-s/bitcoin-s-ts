@@ -3,6 +3,7 @@
   .wallet-state {
     flex-wrap: wrap;
     gap: 1rem;
+    margin: 0 1rem;
     
     .balances, .pnl, .buttons {
       border: 1px solid rgba(0,0,0,.2);
@@ -23,7 +24,7 @@
           width: 6rem;
         }
         .value {
-          width: 6rem;
+          width: 8rem;
         }
       }
       .total-group {

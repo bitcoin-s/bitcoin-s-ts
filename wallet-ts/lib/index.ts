@@ -456,7 +456,8 @@ export function ExecuteDLC(contractIdHex: string, oracleSigs: string[], noBroadc
 
   const m = getMessageBody(WalletMessageType.executedlc, [contractIdHex, oracleSigs, noBroadcast])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // Return is closing txId
+    return <ServerResponse<string>>response
   })
 }
 
@@ -726,10 +727,12 @@ export function GetDLCWalletAccounting() {
 // Do we want to support getting this back as a json payload?
 export function BackupWallet(path: string) {
   console.debug('BackupWallet()', path)
+  validateString(path, 'BackupWallet()', 'path')
 
   const m = getMessageBody(WalletMessageType.backupwallet, [path])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // result: 'done'
+    return <ServerResponse<string>>response
   })
 }
 
@@ -877,12 +880,14 @@ export function CreateMultiSig() {
   })
 }
 
-export function ZipDataDir() {
-  console.debug('ZipDataDir()')
+// Full wallet data directory backup less chainstate
+export function ZipDataDir(path: string) {
+  console.debug('ZipDataDir()', path)
+  validateString(path, 'ZipDataDir()', 'path')
 
-  const m = getMessageBody(CoreMessageType.zipdatadir)
+  const m = getMessageBody(CoreMessageType.zipdatadir, [path])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<unknown>>response
+    // result: 'failure' / null
+    return <ServerResponse<string|null>>response
   })
 }
-

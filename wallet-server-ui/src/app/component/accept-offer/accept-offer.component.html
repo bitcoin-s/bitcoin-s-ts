@@ -14,18 +14,32 @@
       </mat-form-field>
 
       <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
+        <mat-form-field>
           <mat-label translate>acceptOffer.maturityDate</mat-label>
           <input matInput [value]="maturityDate" readonly>
         </mat-form-field>
-        <mat-form-field class="narrow">
+        <mat-form-field>
           <mat-label translate>acceptOffer.refundDate</mat-label>
           <input matInput [value]="refundDate" readonly>
         </mat-form-field>
-        <mat-form-field class="narrower">
-          <mat-label translate>acceptOffer.feeRate</mat-label>
-          <input matInput [value]="offer.offer.feeRatePerVb" readonly>
-          <span matSuffix translate>unit.satsPerVbyte</span>
+      </div>
+
+      <div class="spacer"></div>
+
+      <label class="mat-form-label" translate>acceptOffer.collateral</label>
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.yourCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
+          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>acceptOffer.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
         </mat-form-field>
       </div>
 
@@ -64,25 +78,6 @@
 
       <div class="spacer"></div>
 
-      <label class="mat-form-label" translate>acceptOffer.collateral</label>
-      <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.yourCollateral</mat-label>
-          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
-          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>acceptOffer.totalCollateral</mat-label>
-          <input matInput [value]="formatNumber(contractInfo.totalCollateral)" readonly>
-          <span matSuffix translate>unit.sats</span>
-        </mat-form-field>
-      </div>
-
-      <div class="spacer"></div>
-
       <div class="mat-form-field-row">
         <mat-form-field class="ellipsis">
           <mat-label translate>acceptOffer.dlcOffer</mat-label>
@@ -96,6 +91,14 @@
         </mat-form-field>
       </div>
 
+      <div class="mat-form-field-row">
+        <mat-form-field class="narrower">
+          <mat-label translate>acceptOffer.feeRate</mat-label>
+          <input matInput [value]="offer.offer.feeRatePerVb" readonly>
+          <span matSuffix translate>unit.satsPerVbyte</span>
+        </mat-form-field>
+      </div>
+      
     </fieldset>
 
     <h2 translate>acceptOffer.acceptOffer</h2>

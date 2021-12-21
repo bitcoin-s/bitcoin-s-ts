@@ -46,19 +46,18 @@ $angular-default-theme: mat.define-light-theme(
 @include mix-app-theme($angular-default-theme);
 
 // Setup Dark Mode
+// $angular-primary-dark: $angular-primary;
+$angular-primary-dark: mat.define-palette(mat.$deep-purple-palette, 400, 100, 600, 200); // lightening text
+$angular-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $angular-primary-dark,
+      accent: $angular-accent,
+      warn: $angular-warn,
+    ),
+  )
+);
 .darkMode {
-  // $angular-primary-dark: $angular-primary;
-  $angular-primary-dark: mat.define-palette(mat.$deep-purple-palette, 400, 100, 600, 200); // lightening text
-  $angular-dark-theme: mat.define-dark-theme(
-    (
-      color: (
-        primary: $angular-primary-dark,
-        accent: $angular-accent,
-        warn: $angular-warn,
-      ),
-    )
-  );
-
   @include mat.all-component-colors($angular-dark-theme);
   @include mix-app-theme($angular-dark-theme);
 }

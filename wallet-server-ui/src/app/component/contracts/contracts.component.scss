@@ -3,87 +3,134 @@
 $padding: 0.5rem;
 
 .contracts {
-  margin-bottom: 2rem;
+  height: 100%;
+  flex: 1;
 
-  .contract-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  // min-width: 0; //  FF flexbox overflow
 
-    .contract-table {
+  .mat-drawer-container {
+    height: 100%;
 
+    .mat-drawer-content {
+      // overflow: hidden;
+      // padding: 0 1rem; // works, won't apply to bottom
+
+      .section-header {
+
+      }
+    }
+  }
+
+  .horizontal-pane {
+    margin-left: 1rem; // to match inset
+    margin-bottom: 1rem;
+
+    .pnl {
+      border: 1px solid rgba(0,0,0,.2);
+      padding: 1rem;
+  
+      > label {
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        font-size: large;
+      }
+    }
+  
+    .pnl-group {
+      margin-bottom: 0.25rem;
+      label {
+        display: inline-block;
+        width: 8rem;
+      }
+      .value {
+        // autosizing for now
+        margin-right: 0.25rem;
+      }
+      .unit {
+
+      }
+    }
+  }
+
+  .contract-table {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    width: 100%;
+
+    .header-row-group {
+      height: 24px; // original 56px
+    }
+    .header-row-columns {
+      height: 40px; // original 56px
+    }
+
+    .mat-column-header-row-spacer-group {
+      border: 0;
+    }
+
+    // Column padding
+    .mat-header-cell, .mat-cell, .mat-footer-cell {
+      padding-left: $padding;
+      padding-right: $padding;
+      &:first-of-type {
+        padding-left: $padding * 2;
+      }
+      &:last-of-type {
+        padding-right: $padding * 2;
+      }
+    }
+
+    .numeric-cell {
+      text-align: right;
+    }
+    .percent-cell {
+      text-align: center;
+    }
+
+    .focus-row {
+      font-weight: bold;
+    }
+    .mat-no-data-row {
+      text-align: center;
+    }
+
+    .mat-cell.mat-column-contractId {
+      white-space: nowrap;
+    }
+
+    // Hide Outcomes and Attestations on narrow screens
+    @include lt-lg {
       .header-row-group {
-        height: 24px; // original 56px
+        display: none;
       }
-      .header-row-columns {
-        height: 40px; // original 56px
-      }
-
       .mat-column-header-row-spacer-group {
-        border: 0;
+        display: none;
       }
-
-      // Column padding
-      .mat-header-cell, .mat-cell, .mat-footer-cell {
-        padding-left: $padding;
-        padding-right: $padding;
-        &:first-of-type {
-          padding-left: $padding * 2;
-        }
-        &:last-of-type {
-          padding-right: $padding * 2;
-        }
+      .mat-column-header-row-return-group {
+        display: none;
       }
-
-      .numeric-cell {
-        text-align: right;
+      .mat-column-realizedPNL {
+        display: none;
       }
-      .percent-cell {
-        text-align: center;
+      .mat-column-rateOfReturn {
+        display: none;
       }
-
-      .focus-row {
-        font-weight: bold;
+    }
+    @include lt-xl {
+      .mat-column-header-row-collateral-group {
+        display: none;
       }
-      .mat-no-data-row {
-        text-align: center;
+      .mat-column-collateral {
+        display: none;
       }
-
-      .mat-cell.mat-column-contractId {
-        white-space: nowrap;
+      .mat-column-counterpartyCollateral {
+        display: none;
       }
-
-      // Hide Outcomes and Attestations on narrow screens
-      @include lt-lg {
-        .header-row-group {
-          display: none;
-        }
-        .mat-column-header-row-spacer-group {
-          display: none;
-        }
-        .mat-column-header-row-return-group {
-          display: none;
-        }
-        .mat-column-realizedPNL {
-          display: none;
-        }
-        .mat-column-rateOfReturn {
-          display: none;
-        }
-      }
-      @include lt-xl {
-        .mat-column-header-row-collateral-group {
-          display: none;
-        }
-        .mat-column-collateral {
-          display: none;
-        }
-        .mat-column-counterpartyCollateral {
-          display: none;
-        }
-        .mat-column-totalCollateral {
-          display: none;
-        }
+      .mat-column-totalCollateral {
+        display: none;
       }
     }
   }

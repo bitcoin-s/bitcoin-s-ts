@@ -1,0 +1,104 @@
+<header>
+  <nav class="header">
+    <a mat-button class="app-button" routerLink="/">
+      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" alt="Suredbits">
+      <span translate>header.title</span>
+    </a>
+    <a mat-button routerLink="/wallet" routerLinkActive="active">
+      {{ 'walletBalance.heading' | translate }}</a>
+    <a mat-button routerLink="/contracts" routerLinkActive="active">
+      {{ 'contracts.heading' | translate }}</a>
+    <a mat-button routerLink="/offers" routerLinkActive="active">
+      {{ 'header.createDLC' | translate }}</a>
+
+    <div class="spacer-auto"></div>
+
+    <div *ngIf="walletStateService.balances" class="wallet-status">
+      <span translate="header.total"
+        [translateParams]="{ total: formatNumber(walletStateService.balances.total) }"></span>
+    </div>
+
+    <button mat-icon-button class="wallet-icon"
+      matTooltip="{{ 'Wallet' | translate }}"
+      [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
+      <span class="material-icons-outlined">account_balance_wallet</span>
+    </button>
+    <mat-menu #walletMenu="matMenu">
+      <button mat-menu-item (click)="backendService.getNewAddress()">
+        <mat-icon>add</mat-icon>
+        <span translate>dialog.newAddress.title</span>
+      </button>
+      <button mat-menu-item (click)="backendService.sendFunds()">
+        <mat-icon class="material-icons-outlined">send</mat-icon>
+        <span translate>dialog.sendFunds.title</span>
+      </button>
+    </mat-menu>
+
+    <button mat-icon-button class="upload-icon"
+      matTooltip="{{ 'Upload a DLC File' | translate }}"
+      [matMenuTriggerFor]="uploadMenu" aria-label="Upload a DLC File">
+      <span class="material-icons-outlined">file_upload</span>
+    </button>
+    <mat-menu #uploadMenu="matMenu">
+      <input #acceptInput hidden="true" type="file"
+        onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.offer)"/>
+      <button mat-menu-item (click)="acceptInput.click()">
+        <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+        <span translate>dlcFile.chooseOffer</span>
+      </button>
+      <input #signInput hidden="true" type="file"
+        onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.accept)"/>
+      <button mat-menu-item (click)="signInput.click()">
+        <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+        <span translate>dlcFile.chooseAccept</span>
+      </button>
+      <input #broadcastInput hidden="true" type="file"
+        onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.sign)"/>
+      <button mat-menu-item (click)="broadcastInput.click()">
+        <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
+        <span translate>dlcFile.chooseSign</span>
+      </button>
+    </mat-menu>
+
+    <button mat-icon-button class="more-icon"
+      matTooltip="{{ 'More' | translate }}"
+      [matMenuTriggerFor]="moreMenu" aria-label="More">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #moreMenu="matMenu">
+      <button mat-menu-item (click)="onConfiguration()">
+        <mat-icon class="material-icons-outlined">settings</mat-icon>
+        <span translate>configuration.heading</span>
+      </button>
+      <button mat-menu-item (click)="onAdvanced()">
+        <mat-icon class="material-icons-outlined">build</mat-icon>
+        <span translate>advanced.heading</span>
+      </button>
+    </mat-menu>
+
+    <button mat-icon-button routerLink="/about" routerLinkActive="active"
+      matTooltip="{{ 'about.heading' | translate }}"
+      aria-label="About">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+
+    <div class="indicator-padding"></div>
+
+    <div class="backend-status">
+      <div class="indicator" [ngClass]="walletStateService.state"
+        matTooltip="{{ 'WalletServiceState.' + WalletServiceState[walletStateService.state] | translate }}"></div>
+      <!-- <label [translate]="'WalletServiceState.' + WalletServiceState[walletStateService.state]"></label> -->
+    </div>
+
+    <div *ngIf="walletStateService.info && walletStateService.state !== WalletServiceState.offline" 
+      class="network-status" 
+      matTooltip="{{ 'status.feeEstimateLabel' | translate : { fee: walletStateService.feeEstimate } }}">
+      <div class="network" translate="status.networkLabel"
+        [translateParams]="{ network : walletStateService.getNetwork() }"></div>
+      <div class="block-height" translate="status.blockHeightLabel"
+        [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
+    </div>
+
+    <div class="spacer-1"></div>
+  </nav>
+</header>

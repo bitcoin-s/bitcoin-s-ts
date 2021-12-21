@@ -11,9 +11,9 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
+import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, outcomeDigitsToNumber, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -37,11 +37,33 @@ export class ContractDetailComponent implements OnInit {
 
   _dlc!: DLCContract
   get dlc(): DLCContract { return this._dlc }
-  @Input() set dlc(e: DLCContract) { this._dlc = e; this.reset() }
+  @Input() set dlc(e: DLCContract) { 
+    this._dlc = e
+    this.reset()
+  }
 
   _contractInfo!: ContractInfo
   get contractInfo(): ContractInfo { return this._contractInfo }
-  @Input() set contractInfo(e: ContractInfo) { this._contractInfo = e }
+  @Input() set contractInfo(e: ContractInfo) {
+    this._contractInfo = e
+    this.setOutcome(e)
+  }
+
+  private setOutcome(contractInfo: ContractInfo) {
+    let outcome = ''
+    if (contractInfo && this.dlc.outcomes) {
+      if ((<EnumContractDescriptor>contractInfo.contractDescriptor).outcomes !== undefined) { // this.isEnum()
+        outcome = <string>this.dlc.outcomes
+      } else { // this.isNumeric()
+        if (this.dlc.outcomes.length > 0 && this.dlc.outcomes[0]) {
+          const digits = <number[]>this.dlc.outcomes[0]
+          outcome = outcomeDigitsToNumber(digits).toString()
+        }
+      }
+    }
+    console.debug('getOutcome()', outcome)
+    this.outcome = outcome
+  }
 
   // Optional
   _accept: AcceptWithHex|null = null
@@ -57,6 +79,10 @@ export class ContractDetailComponent implements OnInit {
     return <EnumContractDescriptor>this.contractInfo.contractDescriptor
   }
 
+  getNumericContractDescriptor() {
+    return <NumericContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
   getContractDescriptor() {
     if (this.isEnum())
       return <EnumContractDescriptor>this.contractInfo.contractDescriptor
@@ -66,11 +92,10 @@ export class ContractDetailComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  // showDeleteSuccess = false
-
   oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
+  outcome: string
 
   private reset() {
     if (this.dlc) {
@@ -81,6 +106,7 @@ export class ContractDetailComponent implements OnInit {
       this.oracleAttestations = ''
       this.contractTimeout = ''
     }
+    this.outcome = ''
   }
 
   // For Completing DLC Contracts
@@ -120,7 +146,7 @@ export class ContractDetailComponent implements OnInit {
   }
 
   showTransactionIds() {
-    return !([DLCState.offered].includes(this.dlc.state))
+    return !([DLCState.offered,DLCState.accepted].includes(this.dlc.state))
   }
 
   onCancelContract() {
@@ -128,10 +154,10 @@ export class ContractDetailComponent implements OnInit {
 
     // TODO : Confirmation dialog?
 
+    this.executing = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.canceldlc, [this.dlc.dlcId])).subscribe(r => {
       // console.debug(' onCancelContract()', r)
       if (r.result) { // "Success"
-        // this.showDeleteSuccess = true
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.cancelContractSuccess'),
           this.translate.instant('action.dismiss'), config)
@@ -140,6 +166,7 @@ export class ContractDetailComponent implements OnInit {
         this.walletStateService.refreshDLCStates()
         this.close.next()
       }
+      this.executing = false
     })
   }
 
@@ -164,6 +191,7 @@ export class ContractDetailComponent implements OnInit {
 
       console.debug('oracleAttestations:', attestations)
 
+      this.executing = true
       this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
         console.debug('decodeattestments', r)
 
@@ -181,15 +209,22 @@ export class ContractDetailComponent implements OnInit {
             [contractId, sigs, noBroadcast])).subscribe(r => {
             console.debug('executedlc', r)
     
-            if (r.result) { // closingTxId?
-              // This contract will change state and having closingTxId now, needs reloaded
-    
-              // Force update DLC list
-              // this.walletStateService.refreshDLCStates()
-    
-              // Update just this item?
+            if (r.result) { // closingTxId
+              const txId = r.result
               this.refreshDLCState()
+              const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'dialog.oracleAttestationSuccess.title',
+                  content: 'dialog.oracleAttestationSuccess.content',
+                  params: { txId },
+                  linksContent: 'dialog.oracleAttestationSuccess.linksContent',
+                  links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                  action: 'action.close',
+                  showCancelButton: false,
+                }
+              })
             }
+            this.executing = false
           })
         }
       })
@@ -218,6 +253,7 @@ export class ContractDetailComponent implements OnInit {
     const contractId = this.dlc.contractId
     const noBroadcast = false
 
+    this.executing = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast])).subscribe(r => {
       // console.debug('executedlcrefund', r)
 
@@ -236,6 +272,7 @@ export class ContractDetailComponent implements OnInit {
           }
         })
       }
+      this.executing = false
     })
   }
 
@@ -245,6 +282,7 @@ export class ContractDetailComponent implements OnInit {
     const contractId = this.dlc.contractId
     const txId = <string>this.dlc.fundingTxId
 
+    this.executing = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
       // console.debug('broadcastdlcfundingtx', r)
 
@@ -264,9 +302,9 @@ export class ContractDetailComponent implements OnInit {
             showCancelButton: false,
           }
         })
-
         // Let polling take care of changing future state?
       }
+      this.executing = false
     })
   }
 
@@ -392,11 +430,11 @@ export class ContractDetailComponent implements OnInit {
             }
           })
 
-          this.executing = false
           this.signBroadcast = true
 
           this.refreshDLCState()
         }
+        this.executing = false
       })
     }
   }

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import * as FileSaver from 'file-saver'
 import { of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
@@ -8,8 +7,8 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Accept, CoreMessageType, DLCState, WalletMessageType } from '~type/wallet-server-types'
-import { AcceptWithHex, OfferWithHex, SignWithHex } from '~type/wallet-ui-types'
+import { CoreMessageType, DLCState } from '~type/wallet-server-types'
+import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -30,21 +29,23 @@ export class DlcFileComponent implements OnInit {
   signedDLCInput: string = ''
 
   executing = false
-
   result: string
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService, private dialog: MatDialog) { }
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService, 
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
   private handleFileLoad(f: File, writeTo?: string, callback?: Function) {
     const reader = new FileReader()
-    reader.addEventListener("load", () => {
-      console.debug('load reader', location) //, reader.result)
+    reader.addEventListener('load', () => {
+      console.debug('load reader', location)
+      // Store data
       if (writeTo) {
         (<any>this)[writeTo] = reader.result
       }
+      // Call callback
       if (callback) {
         callback()
       }
@@ -111,6 +112,7 @@ export class DlcFileComponent implements OnInit {
             }
           })
         }
+        this.executing = false
       })
     }
   }
@@ -156,6 +158,7 @@ export class DlcFileComponent implements OnInit {
             }
           })
         }
+        this.executing = false
       })
     }
     

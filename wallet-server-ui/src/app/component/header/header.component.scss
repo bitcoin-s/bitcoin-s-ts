@@ -1,0 +1,104 @@
+@import '../../../scss/material-theme.scss';
+
+$light-foreground-palette: map-get($angular-default-theme, foreground);
+$light-background-palette: map-get($angular-default-theme, background);
+
+$dark-foreground-palette: map-get($angular-dark-theme, foreground);
+$dark-background-palette: map-get($angular-dark-theme, background);
+
+@import '../../../scss/breakpoints';
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: 0.5rem; // 1rem 0.5rem 1rem;
+
+  background-color: mat-color($angular-primary, default);
+  color: mat-color($dark-foreground-palette, text);
+
+  .app-button {
+    .app-logo {
+      width: 26px;
+      height: 26px;
+      margin-right: 0.35rem;
+    }
+  }
+
+  .mat-button.active,
+  .mat-icon-button.active {
+    background: rgba(0,0,0,.2);
+  }
+
+  .wallet-status {
+    display: flex;
+    flex-direction: row;
+
+    font-size: small;
+  }
+
+  .indicator-padding {
+    margin-right: 2rem;
+  }
+
+  .backend-status {
+    display: flex;
+    flex-direction: row;
+
+    font-size: small;
+
+    .indicator {
+      width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      // border: 1px solid black; // TODO : Style
+    }
+    .offline {
+      background-color: red;
+    }
+    .online {
+      background-color: lime;
+    }
+    .polling {
+      background-color: yellow;
+    }
+  }
+
+  .network-status {
+    font-size: small;
+    padding-left: 1rem;
+
+    > *:not(:last-of-type) {
+      margin-bottom: 0.1rem;
+    }
+  }
+
+  // Responsive Sizing and Visibility
+
+  @include lt-lg {
+    .wallet-status {
+      display: none;
+    }
+  }
+  @include lt-md {
+    .indicator-padding {
+      margin-right: 1rem;
+    }
+    .network-status {
+      display: none;
+    }
+  }
+  @include lt-sm {
+    .wallet-icon {
+      display: none;
+    }
+    .upload-icon {
+      display: none;
+    }
+    .more-icon {
+      display: none;
+    }
+  }
+
+}

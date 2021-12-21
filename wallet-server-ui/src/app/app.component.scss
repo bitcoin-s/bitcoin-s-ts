@@ -1,78 +1,18 @@
-.content-root {
-  height: 100%;
 
-  .main-content {
-    padding: 1rem;
-  }
+.app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; //  FF flexbox overflow
 
   .mat-sidenav-container {
     height: 100%;
-  }
-
-  .drawer-container {
-    padding: 0 1rem;
-    min-width: 300px;
-  }
-
-  .wallet-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 2rem;
-  }
-
-  .tor-dlc-host-address {
-    label {
-      margin-right: 1rem;
-    }
-    input {
-      display: inline-block;
-      width: 28rem;
-    }
-  }
-
-  .spacer {
-    height: 1rem;
-  }
-
-  .state-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-
-    .network {
-
-    }
-    .block-height {
-
-    }
-    .fee-estimate {
-
-    }
-  }
-
-  .footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: smaller;
-    color: #8c959f; // TODO : From palette
     
-    margin-bottom: 0.25rem;
-
-    .label {
-      margin-right: 0.25rem;
+    .mat-drawer {
+      
     }
-    .server-version {
-      margin-right: 1rem;
-    }
-    .version {
-      margin-right: 0.25rem;
-    }
-    .date {
-      margin-right: 1rem;
+    .mat-drawer-content {
+      
     }
   }
 }

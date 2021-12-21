@@ -9,7 +9,7 @@ import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatISODateTime, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -98,7 +98,7 @@ export class AcceptOfferComponent implements OnInit {
   private defaultFilename: string
 
   private reset() {
-    this.maturityDate = formatISODate(this.event.maturity)
+    this.maturityDate = formatISODateTime(this.event.maturity)
     this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
     this.acceptOfferType = AcceptOfferType.TOR
     this.result = ''

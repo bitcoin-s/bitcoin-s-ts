@@ -62,9 +62,14 @@ export function formatISODate(isoDate: string) {
   return new Date(isoDate).toLocaleDateString()
 }
 
+export function formatISODateTime(isoDate: string) {
+  return new Date(isoDate).toLocaleString()
+}
+
 // units epochSeconds?
 export function formatDateTime(dateTime: number) {
-  return new Date(dateTime * 1000).toLocaleDateString()
+  const date = new Date(dateTime * 1000)
+  return date.toLocaleString()
 }
 
 // From common-ts
@@ -147,4 +152,17 @@ export function isExecutable(state: DLCState) {
 
 export function isFundingTxRebroadcastable(state: DLCState) {
   return [DLCState.broadcast].includes(state)
+}
+
+// Convert binary digits array to number
+// [1, 1, 0, 0, 1, 0, 0] => 100
+export function outcomeDigitsToNumber(digits: number[]) {
+  let sum = 0
+  while (digits.length > 0) {
+    const d = digits.shift()
+    if (d) {
+      sum += Math.pow(2, digits.length)
+    }
+  }
+  return sum
 }
