@@ -152,18 +152,17 @@ export class ContractDetailComponent implements OnInit {
   onCancelContract() {
     console.debug('onCancelContract()', this.dlc.dlcId)
 
-    // TODO : Confirmation dialog?
+    const dlcId = this.dlc.dlcId
 
     this.executing = true
-    this.messsageService.sendMessage(getMessageBody(WalletMessageType.canceldlc, [this.dlc.dlcId])).subscribe(r => {
+    this.messsageService.sendMessage(getMessageBody(WalletMessageType.canceldlc, [dlcId])).subscribe(r => {
       // console.debug(' onCancelContract()', r)
       if (r.result) { // "Success"
+        // TODO : Confirmation dialog?
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.cancelContractSuccess'),
           this.translate.instant('action.dismiss'), config)
-
-        // Force update DLC list
-        this.walletStateService.refreshDLCStates()
+        this.walletStateService.removeDLC(dlcId)
         this.close.next()
       }
       this.executing = false
@@ -211,7 +210,7 @@ export class ContractDetailComponent implements OnInit {
     
             if (r.result) { // closingTxId
               const txId = r.result
-              this.refreshDLCState()
+              this.refreshDLCState() // necessary with websockets?
               const dialog = this.dialog.open(ConfirmationDialogComponent, {
                 data: {
                   title: 'dialog.oracleAttestationSuccess.title',
@@ -233,7 +232,7 @@ export class ContractDetailComponent implements OnInit {
 
   // Refresh the state of the visible DLC in the wallet and refresh object bound in this view
   private refreshDLCState() {
-    this.walletStateService.refreshDLCState(this.dlc).subscribe(r => {
+    this.walletStateService.refreshDLC(this.dlc.dlcId).subscribe(r => {
       console.debug('dlc:', r)
       if (r.result) {
         this.dlc = <DLCContract>r.result
@@ -241,11 +240,10 @@ export class ContractDetailComponent implements OnInit {
     })
   }
 
-  onReloadContract() {
-    console.debug('onReloadContract()')
-
-    this.refreshDLCState()
-  }
+  // onReloadContract() {
+  //   console.debug('onReloadContract()')
+  //   this.refreshDLCState()
+  // }
 
   onRefund() {
     console.debug('onRefund()')
@@ -259,7 +257,7 @@ export class ContractDetailComponent implements OnInit {
 
       if (r.result) {
         const txId = r.result
-        this.refreshDLCState()
+        this.refreshDLCState() // necessary with websockets?
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
           data: {
             title: 'dialog.cancelContractSuccess.title',
@@ -284,13 +282,7 @@ export class ContractDetailComponent implements OnInit {
 
     this.executing = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
-      // console.debug('broadcastdlcfundingtx', r)
-
       if (r.result) {
-        // const config: any = { verticalPosition: 'top', duration: 3000 }
-        // this.snackBar.open(this.translate.instant('contractDetail.fundingRebroadcastSuccess'),
-        //   this.translate.instant('action.dismiss'), config)
-
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
           data: {
             title: 'dialog.rebroadcastSuccess.title',
@@ -302,7 +294,6 @@ export class ContractDetailComponent implements OnInit {
             showCancelButton: false,
           }
         })
-        // Let polling take care of changing future state?
       }
       this.executing = false
     })
@@ -315,19 +306,11 @@ export class ContractDetailComponent implements OnInit {
 
     if (txId) {
       this.messsageService.sendMessage(getMessageBody(WalletMessageType.gettransaction, [txId])).subscribe(r => {
-        // console.debug('gettransaction', r)
-
         if (r.result) {
           const rawTransactionHex = r.result
 
           this.messsageService.sendMessage(getMessageBody(WalletMessageType.sendrawtransaction, [rawTransactionHex])).subscribe(r => {
-            // console.debug('sendrawtransaction', r)
-
             if (r.result) {
-              // const config: any = { verticalPosition: 'top', duration: 3000 }
-              // this.snackBar.open(this.translate.instant('contractDetail.closingRebroadcastSuccess'),
-              //   this.translate.instant('action.dismiss'), config)
-
               const dialog = this.dialog.open(ConfirmationDialogComponent, {
                 data: {
                   title: 'dialog.rebroadcastSuccess.title',

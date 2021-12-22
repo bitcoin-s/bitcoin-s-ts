@@ -58,12 +58,14 @@ process.on('unhandledRejection', error => {
 const UI_PATH = path.join(__dirname, Config.uiPath)
 const proxyRoot = Config.proxyRoot
 const walletServerUrl = process.env.WALLET_SERVER_API_URL || Config.walletServerUrl
+const walletServerWs = process.env.WALLET_SERVER_WS || Config.walletServerWs
 const oracleExplorerHost = Config.oracleExplorerHost // overriden by 'host-override' header
 const blockstreamUrl = Config.blockstreamUrl
 const mempoolUrl = process.env.MEMPOOL_API_URL || Config.mempoolUrl
 
-logger.info('proxyRoot: ' + proxyRoot + ' walletServerEndpoint: ' + walletServerUrl + 
-  ' oracleExplorerHost: ' + oracleExplorerHost + ' mempoolUrl: ' + mempoolUrl)
+logger.info('proxyRoot: ' + proxyRoot + ' walletServerEndpoint: ' + walletServerUrl
+  + ' walletServerWs: ' + walletServerWs + ' oracleExplorerHost: ' + oracleExplorerHost
+  + ' mempoolUrl: ' + mempoolUrl)
 
 const app = express()
 
@@ -236,7 +238,7 @@ if (USE_TOR_PROXY) {
 /** Server Proxy */
 
 // Proxy calls to this server to appServer/run or bundle/run instance
-const PROXY_TIMEOUT = 300 * 1000; // 45 seconds, upped for AcceptDLC. 3 point numeric contract takes around 23 seconds on MBP
+const PROXY_TIMEOUT = 300 * 1000; // 300 seconds, upped for AcceptDLC. 3 point numeric contract takes around 23 seconds on MBP
 app.use(Config.apiRoot, createProxyMiddleware({
   target: walletServerUrl,
   changeOrigin: true,
@@ -245,7 +247,7 @@ app.use(Config.apiRoot, createProxyMiddleware({
   },
   proxyTimeout: PROXY_TIMEOUT,
   onError: (err: Error, req: Request, res: Response) => {
-    // Handle oracleServer is unavailable
+    // Handle server is unavailable
     if (err && (<any>err).code === ECONNREFUSED) {
       res.writeHead(500, 'appServer connection refused').end()
     } else {
@@ -253,6 +255,34 @@ app.use(Config.apiRoot, createProxyMiddleware({
     }
   }
 }))
+
+// Proxy calls to this server to appServer/run or bundle/run instance
+const WS_PROXY_TIMEOUT = 300 * 1000; // 300 seconds, upped for AcceptDLC. 3 point numeric contract takes around 23 seconds on MBP
+const wsProxy =  createProxyMiddleware({
+  target: walletServerWs,
+  ws: true,
+  changeOrigin: true, // doesn't seem to matter locally
+  pathRewrite: {
+    [`^${Config.wsRoot}`]: '',
+  },
+  proxyTimeout: WS_PROXY_TIMEOUT,
+  // onOpen: () => {
+  //   console.debug('onOpen()')
+  // },
+  // onProxyReqWs: () => {
+  //   console.debug('onProxyReqWs()')
+  // },
+  // onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+  //   console.debug('onProxyReq() ws')
+  // },
+  onError: (err: Error, req: Request, res: Response) => {
+    logger.error('websocket onError', err, res.statusCode, res.statusMessage)
+    // (<any>err).code === ECONNRESET
+    // [2021-12-17T15:43:20.234Z error: websocket onError read ECONNRESET
+    // [HPM] Error occurred while proxying request localhost:4200 to undefined [ECONNRESET] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+  }
+})
+app.use(Config.wsRoot, wsProxy)
 
 /** Server Instance */
 
@@ -272,3 +302,7 @@ if (Config.useHTTPS) {
 server.listen(Config.port, async () => {
   logger.info(`Web Server started on port: ${Config.port} ⚡`)
 })
+
+// Required to get websocket proxying online
+// https://github.com/chimurai/http-proxy-middleware/blob/master/recipes/websocket.md
+server.on('upgrade', wsProxy.upgrade)

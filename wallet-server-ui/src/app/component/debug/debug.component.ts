@@ -36,7 +36,7 @@ export class DebugComponent implements OnInit {
       if (r.result) {
         // TODO : Dialog / message
 
-        this.walletStateService.refreshBalances()
+        this.walletStateService.refreshWalletState()
       }
     })
   }

@@ -13,7 +13,7 @@ const appRoutes: Routes = [
   { path: 'contracts', component: ContractsComponent },
   { path: 'offers', component: BuildAcceptOfferComponent },
   { path: 'about', component: AboutComponent },
-  { path: '',   redirectTo: '/wallet', pathMatch: 'full' },
+  // { path: '',   redirectTo: '/wallet', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];
 

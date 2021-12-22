@@ -3,7 +3,7 @@
     <h2 translate>about.heading</h2>
   </div>
 
-  <div class="about-content">
+  <div *ngIf="walletStateService.info" class="about-content">
     <div class="network"
       translate="status.networkLabel" 
       [translateParams]="{ network : walletStateService.getNetwork() }"></div>
@@ -21,6 +21,12 @@
         (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
         <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
+    </div>
+
+    <div class="brand-container">
+      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" 
+        alt="Suredbits">
+      <span translate>header.title</span>
     </div>
 
     <div class="footer">

@@ -35,20 +35,21 @@
       <label class="mat-form-label" translate>newOffer.collateral</label>
       <div class="mat-form-field-row">
         <mat-form-field class="narrow">
+          <mat-label translate>newOffer.totalCollateral</mat-label>
+          <input formControlName="totalCollateral" matInput type="number" min="0"
+            (change)="validatePayoutInputs()" (blur)="onTotalCollateral(); setTheirCollateral()">
+          <span matSuffix translate>unit.sats</span>
+          <app-more-info matSuffix tooltip="newOfferDescription.totalCollateral" params="{ unit: unit.sats }"></app-more-info>
+        </mat-form-field>
+        <mat-form-field class="narrow">
           <mat-label translate>newOffer.yourCollateral</mat-label>
           <input formControlName="yourCollateral" matInput type="number" min="0" (change)="validatePayoutInputs()" (blur)="setTheirCollateral()">
           <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
         </mat-form-field>
         <mat-form-field class="narrow">
           <mat-label translate>newOffer.theirs</mat-label>
-          <input [value]="theirCollateral" matInput type="number" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>newOffer.totalCollateral</mat-label>
-          <input formControlName="totalCollateral" matInput type="number" min="0"
-            (change)="validatePayoutInputs()" (blur)="onTotalCollateral(); setTheirCollateral()">
-          <span matSuffix translate>unit.sats</span>
-          <app-more-info matSuffix tooltip="newOfferDescription.totalCollateral" params="{ unit: unit.sats }"></app-more-info>
+          <!-- type="number" removed to get rid of numeric stepper for uneditable control on Firefox -->
+          <input [value]="theirCollateral" matInput readonly>
         </mat-form-field>
       </div>
       

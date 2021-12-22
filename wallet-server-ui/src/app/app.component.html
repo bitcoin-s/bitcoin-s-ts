@@ -9,6 +9,10 @@
 
   <mat-sidenav-container>
     <mat-sidenav-content>
+      <!-- Shows over the top of any route -->
+      <div *ngIf="!stateLoaded" class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 

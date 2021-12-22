@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort, MatSortable } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
+import { filter } from 'rxjs/operators'
 
 import { DLCFileService } from '~service/dlc-file.service'
 import { WalletStateService } from '~service/wallet-state-service'
@@ -65,17 +67,26 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     return null
   }
 
+  private initialDLCId: string|null
+
   private dlc$: Subscription
+  private contractInfo$: Subscription
   private acceptSub: Subscription
   private signSub: Subscription
 
   constructor(public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.queryParams.pipe(filter(params => params.dlcId))
+      .subscribe((params: Params) => {
+        this.initialDLCId = params.dlcId
+      })
+  }
 
   ngOnDestroy(): void {
     this.dlc$.unsubscribe()
+    this.contractInfo$.unsubscribe()
     this.acceptSub.unsubscribe()
     this.signSub.unsubscribe()
   }
@@ -86,11 +97,16 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
+      this.loadInitialDLC()
+    })
+
+    this.contractInfo$ = this.walletStateService.contractInfos.subscribe(_ => {
+      this.loadInitialDLC()
     })
 
     this.acceptSub = this.dlcFileService.accept$.subscribe(accept => {
       if (accept) {
-        console.debug('contracts on accept', accept)
+        console.debug('contracts on accept', accept.accept)
         const dlc = this.walletStateService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
         if (dlc) {
           this.selectedAccept = accept
@@ -103,7 +119,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
     this.signSub = this.dlcFileService.sign$.subscribe(sign => {
       if (sign) {
-        console.debug('contracts on sign', sign)
+        console.debug('contracts on sign', sign.sign)
         const dlc = this.walletStateService.dlcs.value.find(d => d.contractId === sign.sign.contractId)
         if (dlc) {
           this.selectedSign = sign
@@ -114,6 +130,16 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dlcFileService.clearSign()
       }
     })
+  }
+
+  private loadInitialDLC() {
+    if (this.initialDLCId && this.walletStateService.dlcs.value.length > 0 && Object.keys(this.walletStateService.contractInfos.value).length > 0) {
+      console.warn('loading initial dlcId:', this.initialDLCId)
+      const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.initialDLCId)
+      if (dlc) this.onRowClick(dlc)
+      else console.error('Could not find local DLC for id', this.initialDLCId)
+      this.initialDLCId = null
+    }
   }
 
   private onDLCNotFound() {
@@ -145,6 +171,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.contractDetailsVisible = true
     this.rightDrawer.open()
+    this.router.navigate(['/contracts'], { queryParams: { dlcId: dlcContract.dlcId }})
   }
 
   rightDrawerOpened(opened: boolean) {
@@ -154,6 +181,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contractDetailsVisible = false
       this.selectedDLCContract = null
       this.selectedDLCContractInfo = null
+      this.router.navigate(['/contracts'])
     }
   }
 

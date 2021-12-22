@@ -77,7 +77,7 @@ export class NewOfferComponent implements OnInit {
   maturityDate: string
   minDate: Date
 
-  theirCollateral: number|null
+  theirCollateral: number|'' = ''
 
   // enum
   outcomeValues: { [label: string]: number|null } = {}
@@ -218,7 +218,7 @@ export class NewOfferComponent implements OnInit {
     const v = this.form.value
     const your = v.yourCollateral
     const total = v.totalCollateral
-    let their: number|null = null
+    let their: number|'' = ''
     if (total !== null && your !== null) {
       their = total - your
     }
@@ -260,7 +260,7 @@ export class NewOfferComponent implements OnInit {
               console.warn('CreateDLCOffer()', r)
               if (r.result) {
                 this.newOfferResult = r.result
-                this.walletStateService.refreshDLCStates()
+                // this.walletStateService.refreshDLCStates() // via websocket now
                 this.offerCreated = true
               }
               this.executing = false
@@ -293,7 +293,7 @@ export class NewOfferComponent implements OnInit {
             console.warn('CreateDLCOffer()', r)
             if (r.result) {
               this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
+              // this.walletStateService.refreshDLCStates() // via websocket now
               this.offerCreated = true
             }
             this.executing = false

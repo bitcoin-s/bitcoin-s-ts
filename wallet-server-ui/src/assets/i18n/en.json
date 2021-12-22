@@ -14,7 +14,11 @@
   "header": {
     "title": "Suredbits",
     "createDLC": "Create DLC",
-    "total": "Total Balance: {{ total }}"
+    "confirmed": "Confirmed",
+    "total": "Total (sats)",
+    "network": "Network",
+    "blockHeight": "Block Height",
+    "walletBalance": "Wallet Balance"
   },
 
   "about": {
@@ -136,7 +140,7 @@
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the outcome",
     "yourCollateral": "Your collateral at stake (sats)",
-    "totalCollateral": "Total collateral at stake (sats)",
+    "totalCollateral": "Total contract collateral (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
     "createOffer": "Create this DLC Offer in your wallet and reserve funds.",

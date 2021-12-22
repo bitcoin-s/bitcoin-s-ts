@@ -3,5 +3,11 @@
     "target": "http://localhost:3002/",
     "secure": false,
     "changeOrigin": false
+  },
+  "/ws": {
+    "target": "ws://localhost:3002/",
+    "secure": false,
+    "ws": true,
+    "logLevel": "debug"
   }
 }

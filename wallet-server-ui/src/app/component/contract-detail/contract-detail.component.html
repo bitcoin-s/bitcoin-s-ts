@@ -5,10 +5,10 @@
       <div *ngIf="executing" class="spinner">
         <mat-spinner diameter="20"></mat-spinner>
       </div>
-      <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}"
+      <!-- <button mat-icon-button matTooltip="{{ 'action.reload' | translate }}"
         (click)="onReloadContract()">
         <mat-icon>refresh</mat-icon>
-      </button>
+      </button> -->
       <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}"
         (click)="onClose()">
         <mat-icon>close</mat-icon>
@@ -54,17 +54,17 @@
       <label class="mat-form-label" translate>contractDetail.collateral</label>
       <div class="mat-form-field-row">
         <mat-form-field class="narrow">
+          <mat-label translate>contractDetail.totalCollateral</mat-label>
+          <input matInput [value]="formatNumber(dlc.totalCollateral)" readonly>
+          <span matSuffix translate>unit.sats</span>
+        </mat-form-field>
+        <mat-form-field class="narrow">
           <mat-label translate>contractDetail.localCollateral</mat-label>
           <input matInput [value]="formatNumber(dlc.localCollateral)" readonly>
         </mat-form-field>
         <mat-form-field class="narrow">
           <mat-label translate>contractDetail.remoteCollateral</mat-label>
           <input matInput [value]="formatNumber(dlc.remoteCollateral)" readonly>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>contractDetail.totalCollateral</mat-label>
-          <input matInput [value]="formatNumber(dlc.totalCollateral)" readonly>
-          <span matSuffix translate>unit.sats</span>
         </mat-form-field>
       </div>
 
@@ -104,17 +104,17 @@
         <label class="mat-form-label" translate>contractDetail.contractOutcome</label>
         <div class="mat-form-field-row">
           <mat-form-field class="narrow">
+            <mat-label translate>contractDetail.pnl</mat-label>
+            <input matInput [value]="formatNumber(dlc.pnl)" readonly>
+            <span matSuffix translate>unit.sats</span>
+          </mat-form-field>
+          <mat-form-field class="narrow">
             <mat-label translate>contractDetail.yourPayout</mat-label>
             <input matInput [value]="formatNumber(dlc.myPayout)" readonly>
           </mat-form-field>
           <mat-form-field class="narrow">
             <mat-label translate>contractDetail.counterpartyPayout</mat-label>
             <input matInput [value]="formatNumber(dlc.counterPartyPayout)" readonly>
-          </mat-form-field>
-          <mat-form-field class="narrow">
-            <mat-label translate>contractDetail.pnl</mat-label>
-            <input matInput [value]="formatNumber(dlc.pnl)" readonly>
-            <span matSuffix translate>unit.sats</span>
           </mat-form-field>
         </div>
         <!--
@@ -144,7 +144,7 @@
             <mat-icon>content_copy</mat-icon>
           </button>
         </mat-form-field>
-        <mat-form-field class="narrow ellipsis">
+        <mat-form-field *ngIf="dlc.contractId" class="narrow ellipsis">
           <mat-label translate>contractDetail.contractId</mat-label>
           <input matInput [value]="dlc.contractId" readonly>
           <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.contractId)">
