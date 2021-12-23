@@ -111,8 +111,6 @@ export class AppComponent implements OnInit {
 
   // Empty string for none
   onRootClassName(darkMode: boolean) {
-    console.debug('onConfigurationClose()')
-
     const darkClassName = 'darkMode'
     this.className = darkMode ? darkClassName : ''
     if (this.className) {

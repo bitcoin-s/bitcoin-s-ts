@@ -78,7 +78,7 @@ export class WalletStateService {
     this.state = WalletServiceState.online
     if (!this.initialized) { // coming online
       this.initializeState()
-      this.refreshDLCStates() // First time
+      this.loadDLCs() // First time
       this.startPollingTimer(ONLINE_POLLING_TIME, ONLINE_POLLING_TIME)
     }
   }
@@ -91,7 +91,7 @@ export class WalletStateService {
     }
   }
 
-  checkInitialized() {
+  private checkInitialized() {
     if (this.initialized && this.dlcsInitialized) {
       this.stateLoaded.next() // initial state loaded event
     }
@@ -184,20 +184,33 @@ export class WalletStateService {
     }))
   }
 
+  /** DLCs */
+
+  private loadDLCs() {
+    console.debug('loadDLCs()')
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
+      if (r.result) {
+        const dlcs = <DLCContract[]>r.result
+        this.dlcs.next(dlcs)
+        this.loadContractInfos(dlcs)
+      }
+    })
+  }
+
   refreshDLC(dlcId: string) {
     console.debug('refreshDLCState()', dlcId)
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlcId])).pipe(tap(r => {
       console.debug('getdlc', r)
-
       if (r.result) {
         const dlc = <DLCContract>r.result
-        this.replaceDLC(dlc)
+        this.replaceDLC(dlc).subscribe()
         return dlc
       }
       return null
     }))
   }
 
+  // Caller must subscribe to returned Observable to get new Contract Info loaded
   replaceDLC(dlc: DLCContract) {
     // Inject in dlcs
     const i = this.dlcs.value.findIndex(d => d.dlcId === dlc.dlcId)
@@ -205,11 +218,14 @@ export class WalletStateService {
       const removed = this.dlcs.value.splice(i, 1, dlc)
       // console.debug('removed:', removed)
       this.dlcs.next(this.dlcs.value)
+      return of(null)
     } else {
-      console.warn('updateDLC() did not find dlcId', dlc.dlcId, 'in existing dlcs')
+      console.warn('replaceDLC() did not find dlcId', dlc.dlcId, 'in existing dlcs')
+      // Loading Contract Info before updating dlcs so data will be present for anything binding both
       this.dlcs.value.push(dlc)
       this.dlcs.next(this.dlcs.value)
-      this.loadContractInfo(dlc)
+      const obs = this.loadContractInfo(dlc)
+      return obs
     }
   }
 
@@ -221,45 +237,37 @@ export class WalletStateService {
     }
   }
 
-  refreshDLCStates() {
-    console.debug('refreshDLCStates()')
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
-      if (r.result) {
-        const dlcs = <DLCContract[]>r.result
-        this.dlcs.next(dlcs)
-        this.loadContractInfos(dlcs)
-      }
-    })
-  }
+  /** ContractInfo */
 
-  private mapContracts(dlcs: DLCContract[]) {
-    return dlcs.map(dlc => 
-      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo])))
-  }
-
-  loadContractInfos(dlcs: DLCContract[]) {
+  private loadContractInfos(dlcs: DLCContract[]) {
     const ci = this.contractInfos.value
-    return forkJoin(this.mapContracts(dlcs))
-    .subscribe((results: ServerResponse<ContractInfo>[]) => {
-      for (let i = 0; i < results.length; i++) {
-        ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
-      }
-      this.contractInfos.next(this.contractInfos.value)
-      this.dlcsInitialized = true
-      this.checkInitialized()
-    })
+    return forkJoin(dlcs.map(dlc => 
+      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))))
+      .subscribe((results: ServerResponse<ContractInfo>[]) => {
+        for (let i = 0; i < results.length; i++) {
+          ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
+        }
+        this.contractInfos.next(this.contractInfos.value)
+        this.dlcsInitialized = true
+        this.checkInitialized()
+      })
   }
 
-  loadContractInfo(dlc: DLCContract) {
+  private loadContractInfo(dlc: DLCContract) {
     const ci = this.contractInfos.value
     if (!ci[dlc.dlcId]) { // Don't bother reloading ContractInfo we already have
-      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))
-      .subscribe((r: ServerResponse<ContractInfo>) => {
+      const obs = this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))
+      .pipe(tap(r => {
+        console.warn(' loadContractInfo()', r)
         if (r.result) {
           ci[dlc.dlcId] = r.result
           this.contractInfos.next(this.contractInfos.value)
         }
-      })
+      }))
+      return obs
+    } else {
+      console.warn('loadContractInfo() already have Contract Info for', dlc.dlcId)
+      return of(null)
     }
   }
 

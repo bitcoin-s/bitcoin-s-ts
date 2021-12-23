@@ -1,9 +1,12 @@
+import { analyzeAndValidateNgModules } from '@angular/compiler'
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -162,72 +165,78 @@ export class ContractDetailComponent implements OnInit {
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.cancelContractSuccess'),
           this.translate.instant('action.dismiss'), config)
-        this.walletStateService.removeDLC(dlcId)
+        this.walletStateService.removeDLC(dlcId) // DLCState change does not come through Websocket yet
         this.close.next()
       }
       this.executing = false
     })
   }
 
+  onAttestationsPaste(event: ClipboardEvent) {
+    console.debug('onAttestationsPaste()', event)
+    const clipboardData = event.clipboardData
+    if (clipboardData) {
+      const trimmedPastedText = clipboardData.getData('text').trim()
+      this.oracleAttestations = trimmedPastedText
+    }
+  }
+
   onOracleAttestations() {
     console.debug('onOracleAttestations()', this.oracleAttestations)
-    if (this.oracleAttestations) {
-      // Keep extra whitespace out of the system
-      const attestations = this.oracleAttestations.trim()
+    const attestations = this.oracleAttestations
 
-      // Validate oracleSignature as hex
-      const isValidHex = validateHexString(attestations)
-      if (!isValidHex) {
-        console.error('oracleAttestations is not valid hex')
-        const dialog = this.dialog.open(ErrorDialogComponent, {
-          data: {
-            title: 'dialog.error',
-            content: 'The oracleAttestations entered are not valid hex',
-          }
-        })
-        return
-      }
-
-      console.debug('oracleAttestations:', attestations)
-
-      this.executing = true
-      this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
-        console.debug('decodeattestments', r)
-
-        if (r.result) {
-          const attestment: Attestment = r.result
-          console.debug('attestment:', attestment)
-
-          const sigs = [attestations] // attestment.signatures
-          const contractId = this.dlc.contractId
-          const noBroadcast = false // Could allow changing
-
-          // console.warn('attestations:', attestations, 'attestment.signatures:', attestment.signatures)
-
-          this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlc, 
-            [contractId, sigs, noBroadcast])).subscribe(r => {
-            console.debug('executedlc', r)
-    
-            if (r.result) { // closingTxId
-              const txId = r.result
-              this.refreshDLCState() // necessary with websockets?
-              const dialog = this.dialog.open(ConfirmationDialogComponent, {
-                data: {
-                  title: 'dialog.oracleAttestationSuccess.title',
-                  content: 'dialog.oracleAttestationSuccess.content',
-                  params: { txId },
-                  linksContent: 'dialog.oracleAttestationSuccess.linksContent',
-                  links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
-                  action: 'action.close',
-                  showCancelButton: false,
-                }
-              })
-            }
-            this.executing = false
-          })
+    // Validate oracleSignature as hex
+    const isValidHex = validateHexString(attestations)
+    if (!isValidHex) {
+      console.error('oracleAttestations is not valid hex')
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.oracleAttestationsInvalid.title',
+          content: 'dialog.oracleAttestationsInvalid.content',
         }
       })
-    } // eo if (this.oracleSignature)
+      return
+    }
+
+    console.debug('oracleAttestations:', attestations)
+
+    this.executing = true
+    this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
+      console.debug('decodeattestments', r)
+
+      if (r.result) {
+        const attestment: Attestment = r.result
+        console.debug('attestment:', attestment)
+
+        const sigs = [attestations] // attestment.signatures
+        const contractId = this.dlc.contractId
+        const noBroadcast = false // Could allow changing
+
+        // console.warn('attestations:', attestations, 'attestment.signatures:', attestment.signatures)
+
+        this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlc, 
+          [contractId, sigs, noBroadcast])).subscribe(r => {
+          console.debug('executedlc', r)
+  
+          if (r.result) { // closingTxId
+            const txId = r.result
+            // this.refreshDLCState() // No longer necessary with Websockets
+            const dialog = this.dialog.open(ConfirmationDialogComponent, {
+              data: {
+                title: 'dialog.oracleAttestationSuccess.title',
+                content: 'dialog.oracleAttestationSuccess.content',
+                params: { txId },
+                linksContent: 'dialog.oracleAttestationSuccess.linksContent',
+                links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                action: 'action.close',
+                showCancelButton: false,
+              }
+            })
+          }
+          this.executing = false
+        })
+      }
+    })
   }
 
   // Refresh the state of the visible DLC in the wallet and refresh object bound in this view
@@ -252,12 +261,11 @@ export class ContractDetailComponent implements OnInit {
     const noBroadcast = false
 
     this.executing = true
-    this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast])).subscribe(r => {
-      // console.debug('executedlcrefund', r)
-
+    this.messsageService.sendMessage(getMessageBody(WalletMessageType.executedlcrefund, [contractId, noBroadcast]))
+    .pipe(catchError(error => of({ result: null }))).subscribe(r => {
       if (r.result) {
         const txId = r.result
-        this.refreshDLCState() // necessary with websockets?
+        this.refreshDLCState() // DLCState change does not come through Websocket yet
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
           data: {
             title: 'dialog.cancelContractSuccess.title',
@@ -305,6 +313,7 @@ export class ContractDetailComponent implements OnInit {
     const txId = this.dlc.closingTxId
 
     if (txId) {
+      this.executing = true
       this.messsageService.sendMessage(getMessageBody(WalletMessageType.gettransaction, [txId])).subscribe(r => {
         if (r.result) {
           const rawTransactionHex = r.result
@@ -323,6 +332,7 @@ export class ContractDetailComponent implements OnInit {
                 }
               })
             }
+            this.executing = false
           })
         }
       })

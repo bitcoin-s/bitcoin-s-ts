@@ -30,7 +30,8 @@ import { DebugComponent } from './component/debug/debug.component'
 import { HeaderComponent } from './component/header/header.component'
 import { RouterModule, Routes } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
-import { AboutComponent } from './component/about/about.component'
+import { AboutComponent } from './component/about/about.component';
+import { NetworkComponent } from './component/network/network.component'
 
 
 // AoT requires an exported function for factories
@@ -70,6 +71,7 @@ export function appInitializerFactory(translate: TranslateService) {
     DebugComponent,
     HeaderComponent,
     AboutComponent,
+    NetworkComponent,
   ],
   imports: [
     BrowserModule,

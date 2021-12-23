@@ -3,7 +3,7 @@
 @include mat.core();
 @import "~@angular/material/theming";
 
-// Include Material Icons
+// Include Material Icons // TODO : Offline this
 // @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
 
@@ -60,6 +60,16 @@ $angular-dark-theme: mat.define-dark-theme(
 .darkMode {
   @include mat.all-component-colors($angular-dark-theme);
   @include mix-app-theme($angular-dark-theme);
+
+  a {
+    color: mat-color($angular-accent);
+  }
+
+  // Trying to get panes to color a little lighter as content areas like a table does
+  // $tableBackground: map-get($angular-dark-theme, background-color);
+  // .pane {
+  //   background-color: mat-color($tableBackground);
+  // }
 }
 
 // TODO : Expose background colors for other components to use

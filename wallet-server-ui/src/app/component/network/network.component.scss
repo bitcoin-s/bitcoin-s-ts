@@ -1,0 +1,20 @@
+.network-section {
+
+  .network-content {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+
+    .network, .block-height, .fee-estimate {
+      margin-bottom: 0.5rem;
+    }
+    
+    .tor-dlc-host-address {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      label {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}

@@ -18,13 +18,19 @@
     "total": "Total (sats)",
     "network": "Network",
     "blockHeight": "Block Height",
-    "walletBalance": "Wallet Balance"
+    "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
+    "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte"
+  },
+
+  "network": {
+    "heading": "Network"
   },
 
   "about": {
     "heading": "About",
     "serverVersion": "Server Version",
-    "uiVersion": "UI Version"
+    "uiVersion": "UI Version",
+    "links": "Links"
   },
 
   "status": {
@@ -246,11 +252,11 @@
     "closingTransactionId": "Closing Transaction Id",
     "oracleAttestations": "Oracle Attestations",
     "rebroadcast": "Rebroadcast",
-    "cancelContract": "Cancel Contract",
+    "cancelContract": "Cancel",
     "cancelContractSuccess": "Successfully canceled contract",
     "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
     "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
-    "refundContract": "Refund Contract",
+    "refundContract": "Refund",
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
     "contractOutcome": "Payout",
@@ -335,6 +341,10 @@
       "title": "Oracle Attestment Successful",
       "content": "A closing transaction with id {{ txId }} was broadcast.",
       "linksContent": "View the transaction on Mempool.space at"
+    },
+    "oracleAttestationsInvalid": {
+      "title": "Oracle Attestations Invalid",
+      "content": "The oracleAttestations entered are not valid hex."
     },
     "sendMessageError": {
       "title": "Error sending message to appServer"

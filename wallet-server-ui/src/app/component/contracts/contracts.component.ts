@@ -112,7 +112,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
           this.selectedAccept = accept
           this.onRowClick(dlc)
         } else {
-          this.onDLCNotFound()
+          this.onDLCNotFound(accept.accept.temporaryContractId)
         }
         this.dlcFileService.clearAccept()
       }
@@ -125,7 +125,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
           this.selectedSign = sign
           this.onRowClick(dlc)
         } else {
-          this.onDLCNotFound()
+          this.onDLCNotFound(sign.sign.contractId)
         }
         this.dlcFileService.clearSign()
       }
@@ -138,12 +138,13 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.initialDLCId)
       if (dlc) this.onRowClick(dlc)
       else console.error('Could not find local DLC for id', this.initialDLCId)
-      this.initialDLCId = null
+      // Don't clear initialDLCId so future dlc$ updates will load new DLC states during Tor contract completion
+      // this.initialDLCId = null 
     }
   }
 
-  private onDLCNotFound() {
-    console.error('could not find matching dlc contract')
+  private onDLCNotFound(contractId: string) {
+    console.error('could not find matching dlc contractId:', contractId)
     const dialog = this.dialog.open(ErrorDialogComponent, {
       data: {
         title: 'dialog.dlcNotFound.title',
@@ -152,12 +153,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  // TODO : Reset focused item post-refresh
-  onRefresh() {
-    console.debug('onRefresh()')
-    // Force update DLC list
-    this.walletStateService.refreshDLCStates()
-  }
+  // onRefresh() {
+  //   console.debug('onRefresh()')
+  //   this.walletStateService.loadDLCs()
+  // }
 
   onRowClick(dlcContract: DLCContract) {
     console.debug('onRowClick()', dlcContract, this.walletStateService.contractInfos.value[dlcContract.dlcId])
@@ -181,6 +180,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contractDetailsVisible = false
       this.selectedDLCContract = null
       this.selectedDLCContractInfo = null
+      this.initialDLCId = null
       this.router.navigate(['/contracts'])
     }
   }
