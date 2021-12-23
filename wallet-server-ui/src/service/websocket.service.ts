@@ -11,6 +11,7 @@ const WEBSOCKET_ROUTE = 'ws'
 
 enum WebsocketMessageType {
   txprocessed = 'txprocessed',
+  txbroadcast = 'txbroadcast',
   blockprocessed = 'blockprocessed',
   dlcstatechange = 'dlcstatechange',
   reservedutxos = 'reservedutxos', // Wallet[]
@@ -44,7 +45,6 @@ export class WebsocketService {
     // get location host
     const host = window.location.host;
     const websocketURL = `${protocol}//${host}/${WEBSOCKET_ROUTE}`
-    console.warn('websocketURL:', websocketURL)
     return websocketURL
   }
 
@@ -54,14 +54,15 @@ export class WebsocketService {
     ).subscribe(_ => {
       // console.debug('Websocket polling timer', this._ws)
       if (this._ws === null || this._ws.readyState === WebSocket.CLOSED) {
-        console.warn('found null Websocket, reconnecting')
         this.startWebsocket()
       }
     })
   }
 
   startWebsocket() {
-    const ws = new WebSocket(this.getWebsocketUrl())
+    const url = this.getWebsocketUrl()
+    console.debug('starting Websocket to', url)
+    const ws = new WebSocket(url)
     const self = this
 
     // Listen for messages
@@ -103,6 +104,7 @@ export class WebsocketService {
     console.debug('handleMessage() type:', message.type)
     switch (message.type) {
       case WebsocketMessageType.newaddress:
+      case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
         // Nothing to do
         break;
@@ -116,16 +118,14 @@ export class WebsocketService {
       case WebsocketMessageType.dlcstatechange:
         console.warn('message:', message)
         const dlc = <DLCContract>message.payload
-        this.walletStateService.replaceDLC(dlc)
-
-        // If someone just accepted a DLC Offer
-        if (dlc.state === DLCState.accepted && dlc.isInitiator === false) {
-          this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
-        }
-        // TESTING case
-        // if (dlc.state === DLCState.claimed && dlc.isInitiator === true) {
-        //   this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
-        // }
+        const obs = this.walletStateService.replaceDLC(dlc)
+        // Wait for ContractInfo to load before navigating
+        obs.subscribe(_ => {
+          // If someone just accepted a DLC Offer
+          if (dlc.state === DLCState.accepted && dlc.isInitiator === false) {
+            this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
+          }
+        })
         break;
       case WebsocketMessageType.reservedutxos:
         this.walletStateService.refreshBalances()
