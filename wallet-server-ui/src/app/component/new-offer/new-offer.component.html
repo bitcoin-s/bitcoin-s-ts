@@ -78,6 +78,7 @@
             <label class="outcome-heading text-center" translate>newOffer.outcome</label>
             <label class="payout-heading text-center" translate>newOffer.payout</label>
             <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+            <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
           </div>
           <div *ngFor="let point of points; let i = index" class="field-group numeric-payout-group">
             <!-- min will eventually be allowed negative bound to contract params -->

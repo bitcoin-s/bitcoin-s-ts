@@ -39,10 +39,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
 
-  @Input() clearSelection() {
-    console.debug('clearSelection()')
-    this.selectedDLCContract = <DLCContract><unknown>null
-  }
+  // @Input() clearSelection() {
+  //   console.debug('clearSelection()')
+  //   this.selectedDLCContract = <DLCContract><unknown>null
+  // }
   @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
 
   // Grid config
@@ -50,6 +50,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
 
+  private selectedDLCId: string|undefined
   selectedDLCContract: DLCContract|null
   selectedDLCContractInfo: ContractInfo|null
   selectedAccept: AcceptWithHex|null
@@ -67,8 +68,6 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     return null
   }
 
-  private initialDLCId: string|null
-
   private dlc$: Subscription
   private contractInfo$: Subscription
   private acceptSub: Subscription
@@ -78,9 +77,11 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    this.route.queryParams.pipe(filter(params => params.dlcId))
+    // Keeps state in sync with route changes
+    this.route.queryParams
       .subscribe((params: Params) => {
-        this.initialDLCId = params.dlcId
+        this.selectedDLCId = params.dlcId
+        console.debug('queryParams set selectedDLCId', this.selectedDLCId)
       })
   }
 
@@ -97,11 +98,11 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
-      this.loadInitialDLC()
+      this.loadSelectedDLC()
     })
 
     this.contractInfo$ = this.walletStateService.contractInfos.subscribe(_ => {
-      this.loadInitialDLC()
+      this.loadSelectedDLC()
     })
 
     this.acceptSub = this.dlcFileService.accept$.subscribe(accept => {
@@ -132,12 +133,14 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  private loadInitialDLC() {
-    if (this.initialDLCId && this.walletStateService.dlcs.value.length > 0 && Object.keys(this.walletStateService.contractInfos.value).length > 0) {
-      console.warn('loading initial dlcId:', this.initialDLCId)
-      const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.initialDLCId)
+  private loadSelectedDLC() {
+    if (this.selectedDLCId && 
+      this.walletStateService.dlcs.value.length > 0 && 
+      Object.keys(this.walletStateService.contractInfos.value).length > 0) {
+      console.warn('loadSelectedDLC()', this.selectedDLCId)
+      const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.selectedDLCId)
       if (dlc) this.onRowClick(dlc)
-      else console.error('Could not find local DLC for id', this.initialDLCId)
+      else console.error('Could not find local DLC for id', this.selectedDLCId)
       // Don't clear initialDLCId so future dlc$ updates will load new DLC states during Tor contract completion
       // this.initialDLCId = null 
     }
@@ -170,6 +173,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.contractDetailsVisible = true
     this.rightDrawer.open()
+    // Update queryParams and set selectedDLCId via subscription
     this.router.navigate(['/contracts'], { queryParams: { dlcId: dlcContract.dlcId }})
   }
 
@@ -180,7 +184,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contractDetailsVisible = false
       this.selectedDLCContract = null
       this.selectedDLCContractInfo = null
-      this.initialDLCId = null
+      // Update queryParams and set selectedDLCId via subscription
       this.router.navigate(['/contracts'])
     }
   }

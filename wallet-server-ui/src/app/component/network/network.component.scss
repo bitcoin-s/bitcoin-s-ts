@@ -8,13 +8,27 @@
     .network, .block-height, .fee-estimate {
       margin-bottom: 0.5rem;
     }
-    
+
     .tor-dlc-host-address {
       margin-top: 1rem;
       margin-bottom: 1rem;
       label {
         margin-right: 0.5rem;
       }
+    }
+  }
+
+  .data-connection {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+
+    label {
+      margin-bottom: 0.75rem;
+      font-size: larger;
+    }
+    .server, .websocket {
+      margin-bottom: 0.5rem;
     }
   }
 }

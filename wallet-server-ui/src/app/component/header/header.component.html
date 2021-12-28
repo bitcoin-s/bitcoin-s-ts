@@ -15,9 +15,7 @@
     <a mat-button routerLink="/wallet" routerLinkActive="active">
       {{ 'walletBalance.heading' | translate }}</a>
 
-    <div class="spacer-auto"></div>
-
-    <!-- <div class="spacer-auto"></div> -->
+    <div class="spacer-2"></div>
 
     <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
     <div *ngIf="walletStateService.balances" class="wallet-status"
@@ -27,25 +25,21 @@
         reserved: formatNumber(walletStateService.balances.reserved),
         total: formatNumber(walletStateService.balances.total) } }}"
       matTooltipClass="ws-prewrap fs-medium lineheight-14">
+      <div class="wallet-group">
+        <label class="label" translate>header.total</label>
+        <span class="value">{{formatNumber(walletStateService.balances.total)}}</span>
+      </div>
       <!-- Show Confirmed if it's non-zero and not the same as Total -->
       <div *ngIf="walletStateService.balances.confirmed > 0 && walletStateService.balances.total !== walletStateService.balances.confirmed"
         class="wallet-group">
         <label class="label" translate>header.confirmed</label>
         <span class="value">{{formatNumber(walletStateService.balances.confirmed)}}</span>
       </div>
-      <div class="wallet-group">
-        <label class="label" translate>header.total</label>
-        <span class="value">{{formatNumber(walletStateService.balances.total)}}</span>
-      </div>
     </div>
 
+    <div class="spacer-auto"></div>
+
     <button *ngIf="walletStateService.balances" mat-icon-button class="wallet-icon"
-      matTooltip="{{ 'header.walletBalance' | translate: { 
-        confirmed: formatNumber(walletStateService.balances.confirmed),
-        unconfirmed: formatNumber(walletStateService.balances.unconfirmed),
-        reserved: formatNumber(walletStateService.balances.reserved),
-        total: formatNumber(walletStateService.balances.total) } }}"
-      matTooltipClass="ws-prewrap fs-medium lineheight-14"
       [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
       <span class="material-icons-outlined">account_balance_wallet</span>
     </button>
@@ -86,11 +80,35 @@
       </button>
     </mat-menu>
 
-    <button mat-icon-button routerLink="/about" routerLinkActive="active"
+    <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
       matTooltip="{{ 'about.heading' | translate }}"
       aria-label="About">
       <mat-icon>help_outline</mat-icon>
     </button>
+
+    <button mat-icon-button class="more-icon"
+      matTooltip="{{ 'More' | translate }}"
+      [matMenuTriggerFor]="moreMenu" aria-label="More">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #moreMenu="matMenu">
+      <button class="about-menu-button" mat-menu-item routerLink="/about">
+        <mat-icon class="material-icons-outlined">help_outline</mat-icon>
+        <span translate>about.heading</span>
+      </button>
+      <button class="network-menu-button" mat-menu-item routerLink="/network">
+        <mat-icon class="material-icons-outlined">cloud</mat-icon>
+        <span translate>network.heading</span>
+      </button>
+      <button mat-menu-item (click)="onConfiguration()">
+        <mat-icon class="material-icons-outlined">settings</mat-icon>
+        <span translate>configuration.heading</span>
+      </button>
+      <button mat-menu-item (click)="onAdvanced()">
+        <mat-icon class="material-icons-outlined">build</mat-icon>
+        <span translate>advanced.heading</span>
+      </button>
+    </mat-menu>
 
     <!-- walletStateService.state !== WalletServiceState.offline -->
     <a *ngIf="walletStateService.info"
@@ -118,22 +136,6 @@
       <!-- </div> -->
     </a>
 
-    <button mat-icon-button class="more-icon"
-      matTooltip="{{ 'More' | translate }}"
-      [matMenuTriggerFor]="moreMenu" aria-label="More">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #moreMenu="matMenu">
-      <button mat-menu-item (click)="onConfiguration()">
-        <mat-icon class="material-icons-outlined">settings</mat-icon>
-        <span translate>configuration.heading</span>
-      </button>
-      <button mat-menu-item (click)="onAdvanced()">
-        <mat-icon class="material-icons-outlined">build</mat-icon>
-        <span translate>advanced.heading</span>
-      </button>
-    </mat-menu>
-
     <!--
     <div class="indicator-padding"></div>
 
@@ -152,8 +154,8 @@
       <div class="block-height" translate="status.blockHeightLabel"
         [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
     </div>
--->
 
     <div class="spacer-1"></div>
+-->
   </nav>
 </header>

@@ -15,7 +15,7 @@
     "title": "Suredbits",
     "createDLC": "Create DLC",
     "confirmed": "Confirmed",
-    "total": "Total (sats)",
+    "total": "Total Balance",
     "network": "Network",
     "blockHeight": "Block Height",
     "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
@@ -39,7 +39,10 @@
     "disconnected": "Disconnected",
     "networkLabel": "Network: {{ network }}",
     "blockHeightLabel": "Block Height: {{ height }}",
-    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte"
+    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte",
+    "dataConnection": "Data Connection",
+    "pollingLabel": "Pollling state: {{state}}",
+    "websocketLabel": "Websocket state: {{state}}"
   },
 
   "serverEvent": {
@@ -182,6 +185,7 @@
     "totalCollateral": "Total",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
+    "payouts": "Payouts",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
     "refundDatePlaceholder": "MM/DD/YYYY",

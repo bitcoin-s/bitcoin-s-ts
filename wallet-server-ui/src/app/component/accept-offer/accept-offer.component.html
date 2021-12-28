@@ -45,7 +45,7 @@
 
       <div class="vspacer-1"></div>
 
-      <label class="mat-form-label" translate>Payouts</label>
+      <label class="mat-form-label" translate>acceptOffer.payouts</label>
       <div *ngIf="isEnum()" class="enum-offer">
         <div class="outcome-group">
           <div class="enum-payout-group">
@@ -63,11 +63,14 @@
       <div *ngIf="isNumeric()" class="numeric-offer">
         <div class="outcome-group">
           <div class="numeric-payout-group">
+            <div class="icon-spacer"></div>
             <label class="outcome-heading text-center" translate>newOffer.outcome</label>
             <label class="payout-heading text-center" translate>newOffer.payout</label>
             <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+            <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
           </div>
-          <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index" class="numeric-payout-group">
+          <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index"
+            class="numeric-payout-group">
             <input class="text-right" type="number" [value]="point.outcome" readonly>
             <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
               [value]="contractInfo.totalCollateral - point.payout" readonly>

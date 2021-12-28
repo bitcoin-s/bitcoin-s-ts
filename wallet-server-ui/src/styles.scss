@@ -293,3 +293,18 @@ mat-form-field {
     }
   }
 }
+
+/** Header Menu */
+@import './scss/breakpoints';
+.cdk-overlay-container {
+  @include sm {
+    .mat-menu-item.about-menu-button {
+      display: none;
+    }
+  }
+  @include md {
+    .mat-menu-item.network-menu-button {
+      display: none;
+    }
+  }
+}

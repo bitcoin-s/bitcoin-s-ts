@@ -61,6 +61,7 @@
         </mat-form-field>
       </div>
 
+      <!-- Collateral -->
       <label class="mat-form-label" translate>contractDetail.collateral</label>
       <div class="mat-form-field-row">
         <mat-form-field class="narrow">
@@ -78,8 +79,7 @@
         </mat-form-field>
       </div>
 
-      <!-- Enum / Numeric -->
-
+      <!-- Enum / Numeric Outcomes -->
       <div *ngIf="isEnum()" class="enum-outcomes">
         <label class="mat-form-label" translate>contractDetail.outcomePayouts</label>
         <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
@@ -88,7 +88,6 @@
           <span translate>unit.sats</span>
         </div>
       </div>
-  
       <div *ngIf="isNumeric()" class="numeric-outcomes">
         <label class="mat-form-label" translate>contractDetail.outcomeCurve</label>
         <div class="numeric-group heading-group">
@@ -102,7 +101,6 @@
           <input type="checkbox" [checked]="p.isEndpoint" disabled>
         </div>
       </div>
-
       <ng-container *ngIf="outcome">
         <mat-form-field class="w-100">
           <mat-label translate>contractDetail.outcome</mat-label>
@@ -110,6 +108,7 @@
         </mat-form-field>
       </ng-container>
 
+      <!-- Payout -->
       <ng-container *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined">
         <label class="mat-form-label" translate>contractDetail.contractOutcome</label>
         <div class="mat-form-field-row">
@@ -162,7 +161,7 @@
           </button>
         </mat-form-field>
         <!-- Only show tempContractId when there is not a final contractId -->
-        <mat-form-field *ngIf="!dlc.contractId" class="narrow ellipsis">
+        <mat-form-field *ngIf="!dlc.contractId" class="medium ellipsis">
           <mat-label translate>contractDetail.tempContractId</mat-label>
           <input matInput [value]="dlc.tempContractId" readonly>
           <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.tempContractId)">
@@ -214,14 +213,14 @@
 
   <!-- Action Buttons -->
   <div *ngIf="!accept && !sign" class="button-group" hidden>
-    <button mat-stroked-button color="warn" (click)="onCancelContract()"
+    <!-- <button mat-stroked-button color="warn" (click)="onCancelContract()"
       [disabled]="!isCancelable(dlc.state) || executing">
       <span translate>contractDetail.cancelContract</span>
     </button>
     <button mat-stroked-button color="warn" (click)="onRefund()"
       [disabled]="!isRefundable(dlc.state) || executing">
       <span translate>contractDetail.refundContract</span>
-    </button>
+    </button> -->
     <!-- Don't have sha256 id to do this operation yet. -->
     <button mat-stroked-button (click)="onViewOnOracleExplorer()"
       disabled>

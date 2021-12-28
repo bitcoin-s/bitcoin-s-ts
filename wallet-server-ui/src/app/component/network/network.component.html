@@ -6,7 +6,7 @@
   <div *ngIf="walletStateService.info" class="network-content">
     <div class="network"
       translate="status.networkLabel" 
-      [translateParams]="{ network : walletStateService.getNetwork() }"></div>
+      [translateParams]="{ network: walletStateService.getNetwork() }"></div>
     <div class="block-height"
       translate="status.blockHeightLabel" 
       [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
@@ -22,6 +22,18 @@
         <mat-icon class="mat-icon-sm">content_copy</mat-icon>
       </button>
     </div>
+  </div>
+
+  <div class="data-connection">
+    <label translate>status.dataConnection</label>
+    <div class="server"
+      translate="status.pollingLabel" 
+      [translateParams]="{ state: walletStateService.state }"
+    ></div>
+    <div class="websocket"
+      translate="status.websocketLabel" 
+      [translateParams]="{ state: websocketService.state }"
+    ></div>
   </div>
 
 </section>

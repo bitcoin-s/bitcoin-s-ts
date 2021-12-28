@@ -119,6 +119,7 @@ $appLogoSize: 30px;
   }
 
   // Responsive Sizing and Visibility
+  // Menu button conditional styling has to be in global styles.scss
 
   @include lt-lg {
     // .wallet-status {
@@ -139,6 +140,7 @@ $appLogoSize: 30px;
       display: none;
     }
   }
+
   @include lt-sm {
     .wallet-icon {
       display: none;
@@ -146,7 +148,7 @@ $appLogoSize: 30px;
     .upload-icon {
       display: none;
     }
-    .more-icon {
+    .about-icon {
       display: none;
     }
   }

@@ -155,11 +155,11 @@ export class ContractDetailComponent implements OnInit {
   onCancelContract() {
     console.debug('onCancelContract()', this.dlc.dlcId)
 
+    // TODO : Cancel confirmation dialog?
     const dlcId = this.dlc.dlcId
 
     this.executing = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.canceldlc, [dlcId])).subscribe(r => {
-      // console.debug(' onCancelContract()', r)
       if (r.result) { // "Success"
         // TODO : Confirmation dialog?
         const config: any = { verticalPosition: 'top', duration: 3000 }

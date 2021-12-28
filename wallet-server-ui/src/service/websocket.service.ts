@@ -30,6 +30,18 @@ const POLLING_TIME = 15000 // ms
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
 
+  get state() {
+    if (this._ws) {
+      switch (this._ws.readyState) {
+        case 0: return 'connecting'
+        case 1: return 'open'
+        case 2: return 'closing'
+        case 3: return 'closed'
+      }
+    }
+    return ''
+  }
+
   private _ws: WebSocket|null = null
 
   private pollingTimer$: Subscription;
