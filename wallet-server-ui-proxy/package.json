@@ -2,6 +2,7 @@
   "name": "wallet-server-ui-proxy",
   "version": "0.0.1",
   "scripts": {
+    "preinstall": "cd ../wallet-ts && npm i",
     "build": "node ./build/buildVersion",
     "start": "npx ts-node server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +14,7 @@
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",
     "socks-proxy-agent": "^6.1.0",
+    "wallet-ts": "file:../wallet-ts",
     "winston": "^3.3.3"
   },
   "devDependencies": {

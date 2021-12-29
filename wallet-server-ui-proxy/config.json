@@ -10,6 +10,7 @@
 	"oracleExplorerRoot": "/oracleexplorer",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",
+	"bitcoinsHome": "~/.bitcoin-s/",
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",
 	"blockstreamUrl": "https://blockstream.info/api",

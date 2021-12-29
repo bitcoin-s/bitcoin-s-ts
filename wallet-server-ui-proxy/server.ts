@@ -1,6 +1,7 @@
 import fs from 'fs'
 import http from 'http'
 import https from 'https'
+import os from 'os'
 import path from 'path'
 
 import express, { Request, Response } from 'express'
@@ -53,6 +54,20 @@ process.on('unhandledRejection', error => {
   if (Config.stopOnError) process.exit(1)
 })
 
+/** bitcoin-s path handling */
+
+function resolveHome(filepath: string) {
+  if (filepath[0] === '~') {
+    return path.join(os.homedir(), filepath.slice(1))
+  }
+  return filepath
+}
+
+const BACKUP_PATH = 'backup/' // inside .bitcoin-s/ , assumes backup/ exists, does not current create it
+
+const bitcoinsHome = process.env.BITCOIN_S_HOME || resolveHome(Config.bitcoinsHome)
+const backupPath = bitcoinsHome + BACKUP_PATH
+
 /** State */
 
 const UI_PATH = path.join(__dirname, Config.uiPath)
@@ -93,6 +108,106 @@ app.get(`/walletHeartbeat`, async (req: Request, res: Response) => {
 })
 app.get('/buildConfig', (req: Request, res: Response) => {
   res.json(Build)
+})
+// Filesystem download
+interface DownloadRequest {
+  // path: string, // Currently absolute path
+  filename: string
+  // andDelete: boolean 
+}
+interface BodyRequest<T> extends Request {
+  body: T
+}
+// Download generic file from filesystem via POST
+// app.post('/download', express.json(), (req: BodyRequest<DownloadRequest>, res: Response) => {
+//   const body = req.body
+//   if (body.path && body.filename) {
+//     // const fullPath = resolveHome(body.path + body.filename)
+//     const fullPath = body.path + body.filename
+//     try {
+//       fs.accessSync(fullPath) // Will throw error if file does not exist
+
+//       const readStream = fs.createReadStream(fullPath)
+//       readStream.on('open', () => res.setHeader('Content-Type', 'application/zip; charset=utf-8'))
+//       readStream.on('error', (err) => { console.error('readStream error', err) })
+//       readStream.on('end', () => {
+//         if (body.andDelete) {
+//           fs.unlink(fullPath, function() {
+//             logger.debug('deleted file', fullPath)
+//           })
+//         }
+//       })
+//       readStream.pipe(res)
+
+//       // works for .get()
+//       // res.download(body.path, function(err) {
+//       //   if (err) {
+//       //     console.error('error downloading', body.path, err)
+//       //   }
+//       //   if (body.andDelete) {
+//       //     fs.unlink(body.path, function() {
+//       //       console.warn('deleted file', body.path)
+//       //     })
+//       //   }
+//       // })
+//     } catch (err) {
+//       logger.error('/download path is not valid', fullPath)
+//       res.end() // Blob size 0 returned
+//     }
+//   } else {
+//     logger.error('did not receive path or filename on /download')
+//     res.end() // Blob size 0 returned
+//   }
+// })
+
+// Make bitcoin-s state backup and return zip
+import * as WalletServer from 'wallet-ts/lib/index'
+app.post('/downloadBackup', express.json(), (req: BodyRequest<DownloadRequest>, res: Response) => {
+  const r = req.body
+  console.debug('/downloadBackup', r)
+
+  if (r.filename) {
+    const fullPath = backupPath + r.filename
+
+    // Sanity check
+    try {
+      fs.accessSync(backupPath) // Will throw error if file does not exist
+    } catch (err) {
+      logger.error('/downloadBackup backupPath is not accessible', backupPath)
+      res.end() // Blob size 0 returned
+    }
+
+    // Use wallet-ts to create backup
+    WalletServer.ZipDataDir(fullPath).then(result => {
+      console.debug(' ZipDataDir() complete', result)
+      if (result.result === null) { // success case
+        // Sanity check
+        try {
+          fs.accessSync(fullPath) // Will throw error if file does not exist
+        } catch (err) {
+          logger.error('/downloadBackup fullPath is not accessible', fullPath)
+          res.end() // Blob size 0 returned
+        }
+
+        const readStream = fs.createReadStream(fullPath)
+        readStream.on('open', () => res.setHeader('Content-Type', 'application/zip; charset=utf-8'))
+        readStream.on('error', (err) => { logger.error('readStream error', err) })
+        readStream.on('end', () => {
+          // Always delete backup zip after sending
+          fs.unlink(fullPath, function() {
+            // Nothing to do
+          })
+        })
+        readStream.pipe(res)
+      } else {
+        logger.error('ZipDataDir failed', result)
+        res.end() // Blob size 0 returned
+      }
+    })
+  } else {
+    logger.error('/downloadBackup no filename specified', r)
+    res.end() // Blob size 0 returned
+  }
 })
 
 /** External Proxy Routes */

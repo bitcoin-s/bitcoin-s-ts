@@ -89,7 +89,8 @@
   "advanced": {
     "heading": "Advanced",
     "rescan": "Rescan",
-    "unreserveAllUTXOs": "Unreserve All UTXOs"
+    "unreserveAllUTXOs": "Unreserve All UTXOs",
+    "backup": "Download Wallet Backup"
   },
 
   "buildAcceptOffer": {
@@ -364,6 +365,10 @@
     "invalidHexError": {
       "title": "Error processing file",
       "content": "The file content is not valid hex"
+    },
+    "backupError": {
+      "title": "Backup error",
+      "content": "There was an error backing up or downloading wallet data"
     }
   },
 

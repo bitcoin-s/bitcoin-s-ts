@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
-import { MatSort, MatSortable } from '@angular/material/sort'
+import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
-import { filter } from 'rxjs/operators'
 
 import { DLCFileService } from '~service/dlc-file.service'
 import { WalletStateService } from '~service/wallet-state-service'
@@ -68,28 +67,30 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     return null
   }
 
+  private queryParams$: Subscription
   private dlc$: Subscription
   private contractInfo$: Subscription
-  private acceptSub: Subscription
-  private signSub: Subscription
+  private accept$: Subscription
+  private sign$: Subscription
 
   constructor(public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
     private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     // Keeps state in sync with route changes
-    this.route.queryParams
+    this.queryParams$ = this.route.queryParams
       .subscribe((params: Params) => {
         this.selectedDLCId = params.dlcId
-        console.debug('queryParams set selectedDLCId', this.selectedDLCId)
+        // console.debug('queryParams set selectedDLCId', this.selectedDLCId)
       })
   }
 
   ngOnDestroy(): void {
+    this.queryParams$.unsubscribe()
     this.dlc$.unsubscribe()
     this.contractInfo$.unsubscribe()
-    this.acceptSub.unsubscribe()
-    this.signSub.unsubscribe()
+    this.accept$.unsubscribe()
+    this.sign$.unsubscribe()
   }
 
   ngAfterViewInit() {
@@ -105,7 +106,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadSelectedDLC()
     })
 
-    this.acceptSub = this.dlcFileService.accept$.subscribe(accept => {
+    this.accept$ = this.dlcFileService.accept$.subscribe(accept => {
       if (accept) {
         console.debug('contracts on accept', accept.accept)
         const dlc = this.walletStateService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
@@ -118,7 +119,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dlcFileService.clearAccept()
       }
     })
-    this.signSub = this.dlcFileService.sign$.subscribe(sign => {
+    this.sign$ = this.dlcFileService.sign$.subscribe(sign => {
       if (sign) {
         console.debug('contracts on sign', sign.sign)
         const dlc = this.walletStateService.dlcs.value.find(d => d.contractId === sign.sign.contractId)

@@ -11,6 +11,7 @@ export class ServerConfig {
 	oracleExplorerRoot: string // prefix on local paths like '/oracleexplorer'
 	walletServerUrl: string // wallet server endpoint like 'http://host:port/'
 	walletServerWs: string // wallet server websocket endpoint like 'ws://host:port/'
+	bitcoinsHome: string // bitcoin-s home directory
 	oracleExplorerHost: string // oracle explorer host like 'test.oracle.suredbits.com'
 	blockstreamRoot: string // prefix on local paths like '/blockstream'
 	blockstreamUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'

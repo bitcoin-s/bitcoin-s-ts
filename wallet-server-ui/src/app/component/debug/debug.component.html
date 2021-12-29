@@ -5,8 +5,12 @@
   </div>
 
   <div class="operations">
-    <button mat-stroked-button (click)="rescan()">{{ 'advanced.rescan' | translate }}</button>
-    <button mat-stroked-button (click)="unreserveAllUTXOs()">{{ 'advanced.unreserveAllUTXOs' | translate }}</button>
+    <button mat-stroked-button (click)="downloadBackup()" [disabled]="executing">
+      {{ 'advanced.backup'  | translate }}</button>
+    <button mat-stroked-button (click)="rescan()" [disabled]="executing">
+      {{ 'advanced.rescan' | translate }}</button>
+    <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
+      {{ 'advanced.unreserveAllUTXOs' | translate }}</button>
   </div>
 
 </section>
