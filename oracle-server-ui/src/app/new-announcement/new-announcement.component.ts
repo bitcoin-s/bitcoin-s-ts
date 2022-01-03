@@ -93,8 +93,8 @@ export class NewAnnouncementComponent implements OnInit {
   public AnnouncementType = AnnouncementType
 
   form: FormGroup
-  @ViewChild('announcementNameInput') announcementNameInput: MatInput;
-  @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>;
+  @ViewChild('announcementNameInput') announcementNameInput: MatInput
+  @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 
   // convenience getter for easy access to form fields
   get f() { return this.form.controls }

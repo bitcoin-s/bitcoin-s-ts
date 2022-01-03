@@ -48,19 +48,19 @@ const BAD_SIGN_NUMERIC = ['numericName', -1]
 
 // Run tests
 
-OracleServer.GetPublicKey().then(response => {
+await OracleServer.GetPublicKey().then(response => {
   console.debug('test.js GetPublicKey response:', response)
 })
 
-OracleServer.GetStakingAddress().then(response => {
+await OracleServer.GetStakingAddress().then(response => {
   console.debug('test.js GetStakingAddress response:', response)
 })
 
-OracleServer.SignMessage(TEST_MESSAGE).then(response => {
+await OracleServer.SignMessage(TEST_MESSAGE).then(response => {
   console.debug('test.js SignMessage response:', response)
 })
 
-OracleServer.ListAnnouncements().then(response => {
+await OracleServer.ListAnnouncements().then(response => {
   console.debug('test.js ListAnnouncements response:', response)
 })
 
