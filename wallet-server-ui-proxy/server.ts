@@ -90,10 +90,11 @@ app.use(express.static(UI_PATH))
 /** Heartbeat Routes */
 
 app.get(`/heartbeat`, (req: Request, res: Response) => {
-  res.json({ sucess: true })
+  res.json({ success: true })
 })
 app.get(`/walletHeartbeat`, async (req: Request, res: Response) => {
   let success = false
+  // TODO : this can use wallet-ts now
   await fetch(walletServerUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -371,7 +372,7 @@ app.use(Config.apiRoot, createProxyMiddleware({
   }
 }))
 
-// Proxy calls to this server to appServer/run or bundle/run instance
+// Proxy websocket calls to this server to appServer/run or bundle/run instance
 const WS_PROXY_TIMEOUT = 300 * 1000; // 300 seconds, upped for AcceptDLC. 3 point numeric contract takes around 23 seconds on MBP
 const wsProxy =  createProxyMiddleware({
   target: walletServerWs,

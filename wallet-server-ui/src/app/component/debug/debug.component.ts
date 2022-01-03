@@ -137,9 +137,9 @@ export class DebugComponent implements OnInit {
     const filename = 'bitcoin-s-backup.zip' // 'test.txt.zip'
 
     this.executing = true
-    this.messageService.downloadBackup(filename).subscribe(r => {
-      const blob = <Blob>r
+    this.messageService.downloadBackup(filename).subscribe(blob => {
       if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBackup blob was null or empty', blob)
         this.showDownloadError()
       } else {
         FileSaver.saveAs(blob, filename)

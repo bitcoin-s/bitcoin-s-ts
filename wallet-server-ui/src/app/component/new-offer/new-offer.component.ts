@@ -172,10 +172,14 @@ export class NewOfferComponent implements OnInit {
     private formBuilder: FormBuilder, private translate: TranslateService) { }
 
   ngOnInit(): void {
+    let totalCollateral = null
+    if (this.contractInfo) {
+      totalCollateral = this.contractInfo.contractInfo.totalCollateral
+    }
     this.form = this.formBuilder.group({
       refundDate: [datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND), Validators.required],
       yourCollateral: [null, Validators.required],
-      totalCollateral: [null, Validators.required],
+      totalCollateral: [totalCollateral, Validators.required],
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
     })
