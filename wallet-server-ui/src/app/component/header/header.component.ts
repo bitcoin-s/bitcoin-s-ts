@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { Router } from '@angular/router'
 
 import { BackendService } from '~service/backend.service'
 import { DLCFileService, DLCFileType } from '~service/dlc-file.service'
@@ -21,7 +22,7 @@ export class HeaderComponent implements OnInit {
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()
 
   constructor(public walletStateService: WalletStateService, public backendService: BackendService,
-    public dlcFileService: DLCFileService) { }
+    public dlcFileService: DLCFileService, private router: Router) { }
 
   ngOnInit(): void {
   }

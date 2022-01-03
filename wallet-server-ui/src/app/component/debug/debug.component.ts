@@ -1,8 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { TranslateService } from '@ngx-translate/core'
+import * as FileSaver from 'file-saver'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { WalletMessageType } from '~type/wallet-server-types'
+import { CoreMessageType, WalletMessageType } from '~type/wallet-server-types'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -16,7 +20,10 @@ export class DebugComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter()
   @Output() rootClassName: EventEmitter<boolean> = new EventEmitter()
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService) { }
+  executing = false
+
+  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
+    private translate: TranslateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     
@@ -30,14 +37,16 @@ export class DebugComponent implements OnInit {
   unreserveAllUTXOs() {
     console.debug('unreserveAllUTXOs()')
 
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.lockunspent, [true])).subscribe(r => {
+    this.executing = true
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.lockunspent, [true, []])).subscribe(r => {
       console.debug('r:', r)
 
       if (r.result) {
         // TODO : Dialog / message
 
-        this.walletStateService.refreshBalances()
+        this.walletStateService.refreshWalletState()
       }
+      this.executing = false
     })
   }
 
@@ -52,6 +61,7 @@ export class DebugComponent implements OnInit {
     const force = true
     const ignoreCreationTime = false // forces full rescan regardless of wallet creation time
 
+    this.executing = true
     this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).subscribe(r => {
       console.debug('r:', r)
 
@@ -60,6 +70,81 @@ export class DebugComponent implements OnInit {
 
         // this.walletStateService.refreshBalances()
       }
+      this.executing = false
+    })
+  }
+
+  // Does all calls from UI
+  // backupWalletData() {
+  //   console.debug('backupWalletData()')
+
+  //   // Could allow user to specify
+  //   const filename = 'bitcoin-s-backup.zip' // 'test.txt.zip'
+  //   // Could add UUID, parameterize path, etc
+  //   const path = BACKUP_PATH_ROOT
+  //   const fullPath = path + filename
+
+  //   // Testing Stub
+  //   // this.messageService.download(path, filename, true).subscribe(r => {
+  //   //   console.debug('download:', r)
+  //   //   const blob = <Blob>r
+  //   //   if (!blob || (blob && blob.size === 0)) {
+  //   //     const dialog = this.dialog.open(ErrorDialogComponent, {
+  //   //       data: {
+  //   //         title: 'dialog.backupError.title',
+  //   //         content: 'dialog.backupError.content'
+  //   //       }
+  //   //     })
+  //   //   } else {
+  //   //     // Save to file
+  //   //     FileSaver.saveAs(blob, filename)
+  //   //   }
+  //   // })
+
+  //   this.executing = true
+  //   this.messageService.sendMessage(getMessageBody(CoreMessageType.zipdatadir, [fullPath])).subscribe(r => {
+  //     if (r.result === null) { // success case
+  //       this.messageService.download(path, filename, true).subscribe(r => {
+  //         const blob = <Blob>r
+  //         if (!blob || (blob && blob.size === 0)) {
+  //           this.showDownloadError()
+  //         } else {
+  //           // Save to file
+  //           const b = new Blob([blob], {type: "application/zip;charset=utf-8"});
+  //           FileSaver.saveAs(b, filename)
+  //         }
+  //         this.executing = false
+  //       })
+  //     } else {
+  //       this.showDownloadError()
+  //       this.executing = false
+  //     }
+  //   })
+  // }
+
+  private showDownloadError() {
+    const dialog = this.dialog.open(ErrorDialogComponent, {
+      data: {
+        title: 'dialog.backupError.title',
+        content: 'dialog.backupError.content'
+      }
+    })
+  }
+
+  downloadBackup() {
+    console.debug('downloadBackup()')
+
+    const filename = 'bitcoin-s-backup.zip' // 'test.txt.zip'
+
+    this.executing = true
+    this.messageService.downloadBackup(filename).subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBackup blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
     })
   }
 

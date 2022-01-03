@@ -77,7 +77,7 @@ export class NewOfferComponent implements OnInit {
   maturityDate: string
   minDate: Date
 
-  theirCollateral: number|null
+  theirCollateral: number|'' = ''
 
   // enum
   outcomeValues: { [label: string]: number|null } = {}
@@ -172,10 +172,14 @@ export class NewOfferComponent implements OnInit {
     private formBuilder: FormBuilder, private translate: TranslateService) { }
 
   ngOnInit(): void {
+    let totalCollateral = null
+    if (this.contractInfo) {
+      totalCollateral = this.contractInfo.contractInfo.totalCollateral
+    }
     this.form = this.formBuilder.group({
       refundDate: [datePlusDays(new Date(this.event.maturity), DEFAULT_DAYS_UNTIL_REFUND), Validators.required],
       yourCollateral: [null, Validators.required],
-      totalCollateral: [null, Validators.required],
+      totalCollateral: [totalCollateral, Validators.required],
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
     })
@@ -218,7 +222,7 @@ export class NewOfferComponent implements OnInit {
     const v = this.form.value
     const your = v.yourCollateral
     const total = v.totalCollateral
-    let their: number|null = null
+    let their: number|'' = ''
     if (total !== null && your !== null) {
       their = total - your
     }
@@ -260,7 +264,7 @@ export class NewOfferComponent implements OnInit {
               console.warn('CreateDLCOffer()', r)
               if (r.result) {
                 this.newOfferResult = r.result
-                this.walletStateService.refreshDLCStates()
+                // this.walletStateService.refreshDLCStates() // via websocket now
                 this.offerCreated = true
               }
               this.executing = false
@@ -293,7 +297,7 @@ export class NewOfferComponent implements OnInit {
             console.warn('CreateDLCOffer()', r)
             if (r.result) {
               this.newOfferResult = r.result
-              this.walletStateService.refreshDLCStates()
+              // this.walletStateService.refreshDLCStates() // via websocket now
               this.offerCreated = true
             }
             this.executing = false

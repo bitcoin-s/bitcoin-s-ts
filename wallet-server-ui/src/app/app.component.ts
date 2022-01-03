@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { DLCFileService } from '~service/dlc-file.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
+import { WebsocketService } from '~service/websocket.service'
 
 
 const CSS_DARK_MODE = 'CSS_DARK_MODE'
@@ -28,10 +29,13 @@ export class AppComponent implements OnInit {
 
   configurationVisible = false
   advancedVisible = false
+
+  stateLoaded = false
   
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, 
     private overlay: OverlayContainer, private router: Router,
-    public walletStateService: WalletStateService, private dlcFileService: DLCFileService) {
+    public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
+    private websocketService: WebsocketService) {
     
   }
 
@@ -40,6 +44,19 @@ export class AppComponent implements OnInit {
 
     const enableDarkMode = localStorage.getItem(CSS_DARK_MODE) !== null
     this.onRootClassName(enableDarkMode)
+
+    // Check current route and set route based on wallet and dlc state after initialization
+    this.walletStateService.stateLoaded.subscribe(_ => {
+      this.stateLoaded = true
+      // console.warn('stateLoaded:', this.router.url)
+      if (this.router.url === '/') {
+        if (this.walletStateService.dlcs.value.length > 0) {
+          this.router.navigate(['/contracts'])
+        } else { // if (this.walletStateService.balances.total > 0) {
+          this.router.navigate(['/wallet'])
+        }
+      }
+    })
 
     // Route DLC file events
     this.dlcFileService.offer$.subscribe(offer => {
@@ -61,7 +78,6 @@ export class AppComponent implements OnInit {
 
     this.configurationVisible = true
     this.advancedVisible = false
-
     this.rightDrawer.open()
   }
 
@@ -69,7 +85,6 @@ export class AppComponent implements OnInit {
     console.debug('onConfigurationClose()')
 
     this.configurationVisible = false
-
     this.rightDrawer.close()
   }
 
@@ -78,7 +93,6 @@ export class AppComponent implements OnInit {
 
     this.configurationVisible = false
     this.advancedVisible = true
-
     this.rightDrawer.open()
   }
 
@@ -86,7 +100,6 @@ export class AppComponent implements OnInit {
     console.debug('onAdvancedClose()')
 
     this.advancedVisible = false
-
     this.rightDrawer.close()
   }
 
@@ -98,8 +111,6 @@ export class AppComponent implements OnInit {
 
   // Empty string for none
   onRootClassName(darkMode: boolean) {
-    console.debug('onConfigurationClose()')
-
     const darkClassName = 'darkMode'
     this.className = darkMode ? darkClassName : ''
     if (this.className) {

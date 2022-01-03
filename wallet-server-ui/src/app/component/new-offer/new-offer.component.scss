@@ -41,6 +41,7 @@
         flex-direction: row;
         align-items: center;
         min-height: 40px; // Matches remove buttons on inner rows for numeric
+        width: 100%;
       }
       .numeric-payout-group {
         &:first-of-type {
@@ -105,10 +106,6 @@
         margin-left: 0.25rem;
       }
     }
-  }
-
-  .spacer {
-    height: 1rem;
   }
 
   .description {

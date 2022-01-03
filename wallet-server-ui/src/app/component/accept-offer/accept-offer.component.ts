@@ -184,7 +184,7 @@ export class AcceptOfferComponent implements OnInit {
           console.warn('acceptdlcoffer', r)
           // if (r.result) { // Empty response right now
             this.result = 'acceptOffer.tor.success'
-            this.walletStateService.refreshDLCStates()
+            // this.walletStateService.refreshDLCStates() // using websocket now
             this.executing = false
             this.offerAccepted = true
           // }
@@ -207,7 +207,7 @@ export class AcceptOfferComponent implements OnInit {
             const blob = new Blob([r.result], {type: "text/plain;charset=utf-8"});
             FileSaver.saveAs(blob, filename)
 
-            this.walletStateService.refreshDLCStates()
+            // this.walletStateService.refreshDLCStates() // using websocket now
             this.executing = false
             this.offerAccepted = true
           }

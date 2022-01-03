@@ -31,6 +31,11 @@ fieldset {
 .spacer-auto {
   margin-right: auto;
 }
+@for $i from 1 through 6 {
+  .vspacer-#{$i} {
+    height: #{$i}rem;
+  }
+}
 
 /** Text Align */
 .text-center {
@@ -44,6 +49,24 @@ fieldset {
 }
 .text-justify {
   text-align: justify;
+}
+
+.ws-preline {
+  white-space: pre-line;
+}
+.ws-prewrap {
+  white-space: pre-wrap;
+}
+
+.fs-medium {
+  font-size: medium;
+}
+
+.lineheight-13 {
+  line-height: 1.3;
+}
+.lineheight-14 {
+  line-height: 1.4;
 }
 
 /** App sections */
@@ -187,6 +210,9 @@ mat-form-field {
   .mat-flat-button-sm {
     vertical-align: super;
   }
+  .mat-button-toggle-sm {
+    vertical-align: super;
+  }
 }
 
 .mat-form-field-row {
@@ -267,6 +293,21 @@ mat-form-field {
     color: #fff; // mat-color($dark-background-palette, text);
     .mat-icon.mat-icon-no-color {
       color: #fff;
+    }
+  }
+}
+
+/** Header Menu */
+@import './scss/breakpoints';
+.cdk-overlay-container {
+  @include sm {
+    .mat-menu-item.about-menu-button {
+      display: none;
+    }
+  }
+  @include md {
+    .mat-menu-item.network-menu-button {
+      display: none;
     }
   }
 }

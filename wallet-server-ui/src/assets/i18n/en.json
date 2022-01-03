@@ -14,13 +14,23 @@
   "header": {
     "title": "Suredbits",
     "createDLC": "Create DLC",
-    "total": "Total Balance: {{ total }}"
+    "confirmed": "Confirmed",
+    "total": "Total Balance",
+    "network": "Network",
+    "blockHeight": "Block Height",
+    "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
+    "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte"
+  },
+
+  "network": {
+    "heading": "Network"
   },
 
   "about": {
     "heading": "About",
     "serverVersion": "Server Version",
-    "uiVersion": "UI Version"
+    "uiVersion": "UI Version",
+    "links": "Links"
   },
 
   "status": {
@@ -29,7 +39,10 @@
     "disconnected": "Disconnected",
     "networkLabel": "Network: {{ network }}",
     "blockHeightLabel": "Block Height: {{ height }}",
-    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte"
+    "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte",
+    "dataConnection": "Data Connection",
+    "pollingLabel": "Pollling state: {{state}}",
+    "websocketLabel": "Websocket state: {{state}}"
   },
 
   "serverEvent": {
@@ -76,7 +89,8 @@
   "advanced": {
     "heading": "Advanced",
     "rescan": "Rescan",
-    "unreserveAllUTXOs": "Unreserve All UTXOs"
+    "unreserveAllUTXOs": "Unreserve All UTXOs",
+    "backup": "Download Wallet Backup"
   },
 
   "buildAcceptOffer": {
@@ -136,7 +150,7 @@
   "newOfferDescription": {
     "outcomes": "Payout values are to you, in sats, for the outcome",
     "yourCollateral": "Your collateral at stake (sats)",
-    "totalCollateral": "Total collateral at stake (sats)",
+    "totalCollateral": "Total contract collateral (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
     "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
@@ -172,6 +186,7 @@
     "totalCollateral": "Total",
     "potentialOutcome": "Potential Outcome",
     "outcomes": "Outcomes",
+    "payouts": "Payouts",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
     "refundDatePlaceholder": "MM/DD/YYYY",
@@ -242,11 +257,11 @@
     "closingTransactionId": "Closing Transaction Id",
     "oracleAttestations": "Oracle Attestations",
     "rebroadcast": "Rebroadcast",
-    "cancelContract": "Cancel Contract",
+    "cancelContract": "Cancel",
     "cancelContractSuccess": "Successfully canceled contract",
     "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
     "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
-    "refundContract": "Refund Contract",
+    "refundContract": "Refund",
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
     "contractOutcome": "Payout",
@@ -332,6 +347,10 @@
       "content": "A closing transaction with id {{ txId }} was broadcast.",
       "linksContent": "View the transaction on Mempool.space at"
     },
+    "oracleAttestationsInvalid": {
+      "title": "Oracle Attestations Invalid",
+      "content": "The oracleAttestations entered are not valid hex."
+    },
     "sendMessageError": {
       "title": "Error sending message to appServer"
     },
@@ -346,6 +365,10 @@
     "invalidHexError": {
       "title": "Error processing file",
       "content": "The file content is not valid hex"
+    },
+    "backupError": {
+      "title": "Backup error",
+      "content": "There was an error backing up or downloading wallet data"
     }
   },
 

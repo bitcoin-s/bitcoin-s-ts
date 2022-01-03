@@ -82,6 +82,18 @@ export class MessageService {
     return this.http.get<BuildConfig>(environment.proxyApi + '/buildConfig')
   }
 
+  // Generic file download via POST
+  // download(path: string, filename: string, andDelete: boolean) {
+  //   // console.debug('download', path, filename, andDelete)
+  //   // const params = new HttpParams().set('path', path).set('delete', andDelete ? '1' : '0')
+  //   // return this.http.get<Blob>(environment.proxyApi + '/download', { params, /*responseType: 'blob'*/ })
+  //   return this.http.post(environment.proxyApi + '/download', { path, filename, andDelete }, { responseType: 'blob' })
+  // }
+
+  downloadBackup(filename: string) {
+    return this.http.post(environment.proxyApi + '/downloadBackup', { filename }, { responseType: 'blob' })
+  }
+
   // Common bitcoin-s calls
 
   getServerVersion() {

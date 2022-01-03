@@ -1,0 +1,39 @@
+<section class="network-section">
+  <div class="section-header">
+    <h2 translate>network.heading</h2>
+  </div>
+
+  <div *ngIf="walletStateService.info" class="network-content">
+    <div class="network"
+      translate="status.networkLabel" 
+      [translateParams]="{ network: walletStateService.getNetwork() }"></div>
+    <div class="block-height"
+      translate="status.blockHeightLabel" 
+      [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
+    <div class="fee-estimate" 
+      translate="status.feeEstimateLabel"
+      [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
+
+    <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
+      <label translate>torDLCHostAddress</label>
+      <input [value]="walletStateService.torDLCHostAddress" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="data-connection">
+    <label translate>status.dataConnection</label>
+    <div class="server"
+      translate="status.pollingLabel" 
+      [translateParams]="{ state: walletStateService.state }"
+    ></div>
+    <div class="websocket"
+      translate="status.websocketLabel" 
+      [translateParams]="{ state: websocketService.state }"
+    ></div>
+  </div>
+
+</section>

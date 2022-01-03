@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router'
 import { AboutComponent } from './component/about/about.component'
 import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component'
 import { ContractsComponent } from './component/contracts/contracts.component'
+import { NetworkComponent } from './component/network/network.component'
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component'
 
 
@@ -13,7 +14,8 @@ const appRoutes: Routes = [
   { path: 'contracts', component: ContractsComponent },
   { path: 'offers', component: BuildAcceptOfferComponent },
   { path: 'about', component: AboutComponent },
-  { path: '',   redirectTo: '/wallet', pathMatch: 'full' },
+  { path: 'network', component: NetworkComponent },
+  // { path: '',   redirectTo: '/wallet', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];
 

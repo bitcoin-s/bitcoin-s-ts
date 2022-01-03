@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
-import { MatSort, MatSortable } from '@angular/material/sort'
+import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
 import { DLCFileService } from '~service/dlc-file.service'
@@ -37,10 +38,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
 
-  @Input() clearSelection() {
-    console.debug('clearSelection()')
-    this.selectedDLCContract = <DLCContract><unknown>null
-  }
+  // @Input() clearSelection() {
+  //   console.debug('clearSelection()')
+  //   this.selectedDLCContract = <DLCContract><unknown>null
+  // }
   @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
 
   // Grid config
@@ -48,6 +49,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
 
+  private selectedDLCId: string|undefined
   selectedDLCContract: DLCContract|null
   selectedDLCContractInfo: ContractInfo|null
   selectedAccept: AcceptWithHex|null
@@ -65,19 +67,30 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     return null
   }
 
+  private queryParams$: Subscription
   private dlc$: Subscription
-  private acceptSub: Subscription
-  private signSub: Subscription
+  private contractInfo$: Subscription
+  private accept$: Subscription
+  private sign$: Subscription
 
   constructor(public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Keeps state in sync with route changes
+    this.queryParams$ = this.route.queryParams
+      .subscribe((params: Params) => {
+        this.selectedDLCId = params.dlcId
+        // console.debug('queryParams set selectedDLCId', this.selectedDLCId)
+      })
+  }
 
   ngOnDestroy(): void {
+    this.queryParams$.unsubscribe()
     this.dlc$.unsubscribe()
-    this.acceptSub.unsubscribe()
-    this.signSub.unsubscribe()
+    this.contractInfo$.unsubscribe()
+    this.accept$.unsubscribe()
+    this.sign$.unsubscribe()
   }
 
   ngAfterViewInit() {
@@ -86,38 +99,56 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
       this.dataSource.data = this.walletStateService.dlcs.value
       this.table.renderRows()
+      this.loadSelectedDLC()
     })
 
-    this.acceptSub = this.dlcFileService.accept$.subscribe(accept => {
+    this.contractInfo$ = this.walletStateService.contractInfos.subscribe(_ => {
+      this.loadSelectedDLC()
+    })
+
+    this.accept$ = this.dlcFileService.accept$.subscribe(accept => {
       if (accept) {
-        console.debug('contracts on accept', accept)
+        console.debug('contracts on accept', accept.accept)
         const dlc = this.walletStateService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
         if (dlc) {
           this.selectedAccept = accept
           this.onRowClick(dlc)
         } else {
-          this.onDLCNotFound()
+          this.onDLCNotFound(accept.accept.temporaryContractId)
         }
         this.dlcFileService.clearAccept()
       }
     })
-    this.signSub = this.dlcFileService.sign$.subscribe(sign => {
+    this.sign$ = this.dlcFileService.sign$.subscribe(sign => {
       if (sign) {
-        console.debug('contracts on sign', sign)
+        console.debug('contracts on sign', sign.sign)
         const dlc = this.walletStateService.dlcs.value.find(d => d.contractId === sign.sign.contractId)
         if (dlc) {
           this.selectedSign = sign
           this.onRowClick(dlc)
         } else {
-          this.onDLCNotFound()
+          this.onDLCNotFound(sign.sign.contractId)
         }
         this.dlcFileService.clearSign()
       }
     })
   }
 
-  private onDLCNotFound() {
-    console.error('could not find matching dlc contract')
+  private loadSelectedDLC() {
+    if (this.selectedDLCId && 
+      this.walletStateService.dlcs.value.length > 0 && 
+      Object.keys(this.walletStateService.contractInfos.value).length > 0) {
+      console.warn('loadSelectedDLC()', this.selectedDLCId)
+      const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.selectedDLCId)
+      if (dlc) this.onRowClick(dlc)
+      else console.error('Could not find local DLC for id', this.selectedDLCId)
+      // Don't clear initialDLCId so future dlc$ updates will load new DLC states during Tor contract completion
+      // this.initialDLCId = null 
+    }
+  }
+
+  private onDLCNotFound(contractId: string) {
+    console.error('could not find matching dlc contractId:', contractId)
     const dialog = this.dialog.open(ErrorDialogComponent, {
       data: {
         title: 'dialog.dlcNotFound.title',
@@ -126,12 +157,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  // TODO : Reset focused item post-refresh
-  onRefresh() {
-    console.debug('onRefresh()')
-    // Force update DLC list
-    this.walletStateService.refreshDLCStates()
-  }
+  // onRefresh() {
+  //   console.debug('onRefresh()')
+  //   this.walletStateService.loadDLCs()
+  // }
 
   onRowClick(dlcContract: DLCContract) {
     console.debug('onRowClick()', dlcContract, this.walletStateService.contractInfos.value[dlcContract.dlcId])
@@ -145,6 +174,8 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.contractDetailsVisible = true
     this.rightDrawer.open()
+    // Update queryParams and set selectedDLCId via subscription
+    this.router.navigate(['/contracts'], { queryParams: { dlcId: dlcContract.dlcId }})
   }
 
   rightDrawerOpened(opened: boolean) {
@@ -154,6 +185,8 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contractDetailsVisible = false
       this.selectedDLCContract = null
       this.selectedDLCContractInfo = null
+      // Update queryParams and set selectedDLCId via subscription
+      this.router.navigate(['/contracts'])
     }
   }
 

@@ -30,19 +30,10 @@
         </mat-form-field>
       </div>
 
-      <div class="spacer"></div>
+      <div class="vspacer-1"></div>
 
       <label class="mat-form-label" translate>newOffer.collateral</label>
       <div class="mat-form-field-row">
-        <mat-form-field class="narrow">
-          <mat-label translate>newOffer.yourCollateral</mat-label>
-          <input formControlName="yourCollateral" matInput type="number" min="0" (change)="validatePayoutInputs()" (blur)="setTheirCollateral()">
-          <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
-        </mat-form-field>
-        <mat-form-field class="narrow">
-          <mat-label translate>newOffer.theirs</mat-label>
-          <input [value]="theirCollateral" matInput type="number" readonly>
-        </mat-form-field>
         <mat-form-field class="narrow">
           <mat-label translate>newOffer.totalCollateral</mat-label>
           <input formControlName="totalCollateral" matInput type="number" min="0"
@@ -50,9 +41,19 @@
           <span matSuffix translate>unit.sats</span>
           <app-more-info matSuffix tooltip="newOfferDescription.totalCollateral" params="{ unit: unit.sats }"></app-more-info>
         </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>newOffer.yourCollateral</mat-label>
+          <input formControlName="yourCollateral" matInput type="number" min="0" (change)="validatePayoutInputs()" (blur)="setTheirCollateral()">
+          <app-more-info matSuffix tooltip="newOfferDescription.yourCollateral" params="{ unit: unit.sats }"></app-more-info>
+        </mat-form-field>
+        <mat-form-field class="narrow">
+          <mat-label translate>newOffer.theirs</mat-label>
+          <!-- type="number" removed to get rid of numeric stepper for uneditable control on Firefox -->
+          <input [value]="theirCollateral" matInput readonly>
+        </mat-form-field>
       </div>
       
-      <div class="spacer"></div>
+      <div class="vspacer-1"></div>
 
       <label class="mat-form-label" translate>newOffer.payouts</label>
 
@@ -77,6 +78,7 @@
             <label class="outcome-heading text-center" translate>newOffer.outcome</label>
             <label class="payout-heading text-center" translate>newOffer.payout</label>
             <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+            <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
           </div>
           <div *ngFor="let point of points; let i = index" class="field-group numeric-payout-group">
             <!-- min will eventually be allowed negative bound to contract params -->
@@ -139,7 +141,7 @@
         <app-alert [type]="AlertType.error" [message]="payoutValidationError"></app-alert>
       </ng-container>
       
-      <div class="spacer"></div>
+      <div class="vspacer-1"></div>
 
       <div class="mat-form-field-row">
         <mat-form-field class="ellipsis">

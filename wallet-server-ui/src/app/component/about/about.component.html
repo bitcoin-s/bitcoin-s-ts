@@ -4,36 +4,37 @@
   </div>
 
   <div class="about-content">
-    <div class="network"
-      translate="status.networkLabel" 
-      [translateParams]="{ network : walletStateService.getNetwork() }"></div>
-    <div class="block-height"
-      translate="status.blockHeightLabel" 
-      [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
-    <div class="fee-estimate" 
-      translate="status.feeEstimateLabel"
-      [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
 
-    <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
-      <label translate>torDLCHostAddress</label>
-      <input [value]="walletStateService.torDLCHostAddress" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
+    <div class="brand-container">
+      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" 
+        alt="Suredbits">
+      <span translate>header.title</span>
     </div>
 
-    <div class="footer">
-      <div class="footer-section">
+    <div class="version-container">
+      <div class="version-section">
         <span class="label" translate>about.serverVersion</span>
         <span class="server-version">{{ walletStateService.serverVersion }}</span>
       </div>
-      <div *ngIf="walletStateService.buildConfig" class="footer-section">
+      <div *ngIf="walletStateService.buildConfig" class="version-section">
         <span class="label" translate>about.uiVersion</span>
         <span class="version">{{ walletStateService.buildConfig.shortHash }}</span>
         <span class="date">{{ walletStateService.buildConfig.dateString }}</span>
       </div>
     </div>
+
+    <div class="vspacer-2"></div>
+
+    <div class="links-container">
+      <label translate>about.links</label>
+      <ul>
+        <li><a href="https://suredbits.slack.com/">Suredbits Slack</a></li>
+        <li><a href="https://oracle.suredbits.com/">Suredbits Oracle Explorer</a></li>
+        <li><a href="https://suredbits.com/krystalbull">Suredbits Krystal Bull Oracle software</a></li>
+        <li><a href="https://github.com/bitcoin-s/bitcoin-s">Bitcoin-S Code Repository</a></li>
+      </ul>
+    </div>
+
   </div>
 
 </section>

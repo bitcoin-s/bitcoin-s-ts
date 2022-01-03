@@ -1,25 +1,45 @@
 <header>
   <nav class="header">
     <a mat-button class="app-button" routerLink="/">
-      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" alt="Suredbits">
+      <!--
+      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" 
+        alt="Suredbits">
+      -->
+      <div class="app-logo" [ngClass]="walletStateService.state"></div>
       <span translate>header.title</span>
     </a>
-    <a mat-button routerLink="/wallet" routerLinkActive="active">
-      {{ 'walletBalance.heading' | translate }}</a>
     <a mat-button routerLink="/contracts" routerLinkActive="active">
       {{ 'contracts.heading' | translate }}</a>
     <a mat-button routerLink="/offers" routerLinkActive="active">
       {{ 'header.createDLC' | translate }}</a>
+    <a mat-button routerLink="/wallet" routerLinkActive="active">
+      {{ 'walletBalance.heading' | translate }}</a>
+
+    <div class="spacer-2"></div>
+
+    <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
+    <div *ngIf="walletStateService.balances" class="wallet-status"
+      matTooltip="{{ 'header.walletBalance' | translate: { 
+        confirmed: formatNumber(walletStateService.balances.confirmed),
+        unconfirmed: formatNumber(walletStateService.balances.unconfirmed),
+        reserved: formatNumber(walletStateService.balances.reserved),
+        total: formatNumber(walletStateService.balances.total) } }}"
+      matTooltipClass="ws-prewrap fs-medium lineheight-14">
+      <div class="wallet-group">
+        <label class="label" translate>header.total</label>
+        <span class="value">{{formatNumber(walletStateService.balances.total)}}</span>
+      </div>
+      <!-- Show Confirmed if it's non-zero and not the same as Total -->
+      <div *ngIf="walletStateService.balances.confirmed > 0 && walletStateService.balances.total !== walletStateService.balances.confirmed"
+        class="wallet-group">
+        <label class="label" translate>header.confirmed</label>
+        <span class="value">{{formatNumber(walletStateService.balances.confirmed)}}</span>
+      </div>
+    </div>
 
     <div class="spacer-auto"></div>
 
-    <div *ngIf="walletStateService.balances" class="wallet-status">
-      <span translate="header.total"
-        [translateParams]="{ total: formatNumber(walletStateService.balances.total) }"></span>
-    </div>
-
-    <button mat-icon-button class="wallet-icon"
-      matTooltip="{{ 'Wallet' | translate }}"
+    <button *ngIf="walletStateService.balances" mat-icon-button class="wallet-icon"
       [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
       <span class="material-icons-outlined">account_balance_wallet</span>
     </button>
@@ -60,12 +80,26 @@
       </button>
     </mat-menu>
 
+    <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
+      matTooltip="{{ 'about.heading' | translate }}"
+      aria-label="About">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+
     <button mat-icon-button class="more-icon"
       matTooltip="{{ 'More' | translate }}"
       [matMenuTriggerFor]="moreMenu" aria-label="More">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #moreMenu="matMenu">
+      <button class="about-menu-button" mat-menu-item routerLink="/about">
+        <mat-icon class="material-icons-outlined">help_outline</mat-icon>
+        <span translate>about.heading</span>
+      </button>
+      <button class="network-menu-button" mat-menu-item routerLink="/network">
+        <mat-icon class="material-icons-outlined">cloud</mat-icon>
+        <span translate>network.heading</span>
+      </button>
       <button mat-menu-item (click)="onConfiguration()">
         <mat-icon class="material-icons-outlined">settings</mat-icon>
         <span translate>configuration.heading</span>
@@ -76,29 +110,52 @@
       </button>
     </mat-menu>
 
-    <button mat-icon-button routerLink="/about" routerLinkActive="active"
-      matTooltip="{{ 'about.heading' | translate }}"
-      aria-label="About">
-      <mat-icon>help_outline</mat-icon>
-    </button>
+    <!-- walletStateService.state !== WalletServiceState.offline -->
+    <a *ngIf="walletStateService.info"
+      class="network-button" mat-button routerLink="/network" routerLinkActive="active"
+      matTooltip="{{ 'header.networkStatus' | translate : {
+        network: walletStateService.getNetwork(),
+        blockHeight: formatNumber(walletStateService.info.blockHeight), 
+        fee: walletStateService.feeEstimate } }}"
+      matTooltipClass="ws-prewrap fs-medium lineheight-14">
+      <!-- <div 
+        matTooltip="{{ 'header.networkStatus' | translate : {
+          network: walletStateService.getNetwork(),
+          blockHeight: formatNumber(walletStateService.info.blockHeight), 
+          fee: walletStateService.feeEstimate } }}"
+        matTooltipClass="ws-prewrap fs-medium lineheight-14"> -->
+        <!-- <div class="wallet-group">
+          <label class="label" translate>header.blockHeight</label>
+          <span class="value">{{formatNumber(walletStateService.info.blockHeight)}}</span>
+        </div> -->
+        <!-- <div class="wallet-group"> -->
+          <mat-icon class="mat-icon-sm">cloud</mat-icon>
+          <!-- <label class="label" translate>header.network</label> -->
+          <span class="network-name">{{walletStateService.getNetwork()}}</span>
+        <!-- </div> -->
+      <!-- </div> -->
+    </a>
 
+    <!--
     <div class="indicator-padding"></div>
 
     <div class="backend-status">
       <div class="indicator" [ngClass]="walletStateService.state"
         matTooltip="{{ 'WalletServiceState.' + WalletServiceState[walletStateService.state] | translate }}"></div>
-      <!-- <label [translate]="'WalletServiceState.' + WalletServiceState[walletStateService.state]"></label> -->
     </div>
+    -->
 
+    <!--
     <div *ngIf="walletStateService.info && walletStateService.state !== WalletServiceState.offline" 
       class="network-status" 
       matTooltip="{{ 'status.feeEstimateLabel' | translate : { fee: walletStateService.feeEstimate } }}">
       <div class="network" translate="status.networkLabel"
         [translateParams]="{ network : walletStateService.getNetwork() }"></div>
       <div class="block-height" translate="status.blockHeightLabel"
-        [translateParams]="{ height: walletStateService.info.blockHeight }"></div>
+        [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
     </div>
 
     <div class="spacer-1"></div>
+-->
   </nav>
 </header>

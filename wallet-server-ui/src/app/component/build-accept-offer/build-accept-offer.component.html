@@ -15,7 +15,8 @@
           <mat-form-field class="w-100">
             <input matInput type="text"
               placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
-              (paste)="onBuildOfferPaste($event); $event.preventDefault()">
+              (paste)="onBuildOfferPaste($event); $event.preventDefault()"
+              autocomplete="off">
           </mat-form-field>
 
           <div [hidden]="!DEBUG" class="button-group">
@@ -38,7 +39,8 @@
           <mat-form-field class="w-100">
             <input matInput type="text"
               placeholder="{{ 'buildAcceptOffer.pasteHexStringHere' | translate }}"
-              (paste)="onAcceptOfferPaste($event); $event.preventDefault()">
+              (paste)="onAcceptOfferPaste($event); $event.preventDefault()"
+              autocomplete="off">
           </mat-form-field>
 
           <div [hidden]="!DEBUG">

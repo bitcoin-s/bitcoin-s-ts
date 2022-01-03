@@ -8,21 +8,38 @@ $dark-background-palette: map-get($angular-dark-theme, background);
 
 @import '../../../scss/breakpoints';
 
+$appLogoSize: 30px;
+
 .header {
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  padding: 0.5rem; // 1rem 0.5rem 1rem;
+  padding: 0.5rem;
 
   background-color: mat-color($angular-primary, default);
   color: mat-color($dark-foreground-palette, text);
 
   .app-button {
     .app-logo {
-      width: 26px;
-      height: 26px;
-      margin-right: 0.35rem;
+      display: inline-block;
+      width: $appLogoSize;
+      height: $appLogoSize;
+      margin-right: 0.4rem;
+
+      background-size: cover;
+      &.offline {
+        // reddish
+        background-image: url("../../../assets/image/302x302/bitcoin-s.png");
+      }
+      &.online {
+        // green
+        background-image: url("../../../assets/image/302x302/bitcoin-s-testnet.png");
+      }
+      &.polling {
+        // yellow
+        background-image: url("../../../assets/image/302x302/bitcoin-s-signet.png");
+      }
     }
   }
 
@@ -31,15 +48,51 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     background: rgba(0,0,0,.2);
   }
 
-  .wallet-status {
+  .network-button {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    .network-name {
+      margin-left: 0.4rem;
+    }
+  }
+  .network-status {
+    font-size: small;
+    padding-left: 0.8rem;
+
+    > *:not(:last-of-type) {
+      margin-bottom: 0.1rem;
+    }
+  }
+
+  .wallet-status, .network-status2 {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    column-gap: 0.6rem;
 
-    font-size: small;
+    // margin-left: 1rem;
+    margin-right: 0.5rem;
+    font-size: smaller;
+
+    .wallet-group {
+      display: flex;
+      flex-direction: column;
+  
+      .label {
+        padding-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: smaller; // even smaller
+      }
+      .value {
+
+      }
+    }
   }
 
   .indicator-padding {
-    margin-right: 2rem;
+    margin-right: 1rem;
   }
 
   .backend-status {
@@ -49,9 +102,9 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     font-size: small;
 
     .indicator {
-      width: 16px;
-      height: 16px;
-      border-radius: 8px;
+      width: 20px; //16px;
+      height: 20px; //16px;
+      border-radius: 10px; //8px;
       // border: 1px solid black; // TODO : Style
     }
     .offline {
@@ -65,30 +118,29 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     }
   }
 
-  .network-status {
-    font-size: small;
-    padding-left: 1rem;
-
-    > *:not(:last-of-type) {
-      margin-bottom: 0.1rem;
-    }
-  }
-
   // Responsive Sizing and Visibility
+  // Menu button conditional styling has to be in global styles.scss
 
   @include lt-lg {
-    .wallet-status {
-      display: none;
-    }
+    // .wallet-status {
+    //   display: none;
+    // }
   }
   @include lt-md {
-    .indicator-padding {
-      margin-right: 1rem;
+    .network-button {
+      display: none;
     }
     .network-status {
       display: none;
     }
+    .network-status2 {
+      display: none;
+    }
+    .wallet-status {
+      display: none;
+    }
   }
+
   @include lt-sm {
     .wallet-icon {
       display: none;
@@ -96,7 +148,7 @@ $dark-background-palette: map-get($angular-dark-theme, background);
     .upload-icon {
       display: none;
     }
-    .more-icon {
+    .about-icon {
       display: none;
     }
   }
