@@ -45,6 +45,21 @@ export class WalletStateService {
   dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
+  mempoolUrl: string = 'https://mempool.space' // default
+  mempoolTransactionURL(txIdHex: string, network: string) {
+    switch (network) {
+      case BitcoinNetwork.main:
+        return `${this.mempoolUrl}/tx/${txIdHex}`
+      case BitcoinNetwork.test:
+        return `${this.mempoolUrl}/testnet/tx/${txIdHex}`
+      case BitcoinNetwork.signet:
+        return `https://mempool.space/signet/tx/${txIdHex}`
+      default:
+        console.error('mempoolTransactionURL() unknown BitcoinNetwork', network)
+        return ''
+    }
+  }
+
   // Initial State Loaded signal
   stateLoaded: EventEmitter<void> = new EventEmitter()
 
@@ -52,12 +67,15 @@ export class WalletStateService {
   private dlcsInitialized = false
 
   private pollingTimer$: Subscription;
-  private stopPollingTimer() { if (this.pollingTimer$) this.pollingTimer$.unsubscribe() }
+  private stopPollingTimer() {
+    // console.debug('WalletStateService.stopPollingTimer()')
+    if (this.pollingTimer$) this.pollingTimer$.unsubscribe()
+  }
   private startPollingTimer(delay: number, time: number) {
     this.stopPollingTimer()
     this.pollingTimer$ = timer(delay, time).pipe(
       tap(_ => { this.state = WalletServiceState.polling }),
-      concatMap(() => this.messageService.walletHeartbeat().pipe(
+      concatMap(() => this.messageService.serverHeartbeat().pipe(
         catchError(e => of({success: false})),
       )),
     ).subscribe(r => {
@@ -69,12 +87,24 @@ export class WalletStateService {
       }
     })
   }
-
-  constructor(private messageService: MessageService) {
+  // Public interface to polling
+  public startPolling() {
+    // console.debug('WalletStateService.startPolling()')
     this.startPollingTimer(0, OFFLINE_POLLING_TIME)
   }
+  public stopPolling() {
+    // console.debug('WalletStateService.stopPolling()')
+    this.state = WalletServiceState.offline
+    this.initialized = false
+    this.dlcsInitialized = false
+    // Could wipe all state here...
+    this.stopPollingTimer()
+  }
+
+  constructor(private messageService: MessageService) {}
   
   private setOnline() {
+    // console.debug('WalletStateService.setOnline()')
     this.state = WalletServiceState.online
     if (!this.initialized) { // coming online
       this.initializeState()
@@ -84,6 +114,7 @@ export class WalletStateService {
   }
 
   private setOffline() {
+    // console.debug('WalletStateService.setOffline()')
     this.state = WalletServiceState.offline
     if (this.initialized) { // going offline
       this.initialized = false
@@ -93,13 +124,17 @@ export class WalletStateService {
 
   private checkInitialized() {
     if (this.initialized && this.dlcsInitialized) {
+      // console.debug('WalletStateService.checkInitialized() stateLoaded going true', this.state)
       this.stateLoaded.next() // initial state loaded event
     }
   }
 
   private initializeState() {
-    return forkJoin(this.getServerVersion(),
+    // console.debug('initializeState()')
+    return forkJoin(
+      this.getServerVersion(),
       this.getBuildConfig(),
+      this.getMempoolUrl(),
       this.getFeeEstimate(),
       this.getDLCHostAddress(),
       // refreshWalletState()
@@ -124,6 +159,18 @@ export class WalletStateService {
       if (result) {
         result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
         this.buildConfig = result
+      }
+    }))
+  }
+
+  private getMempoolUrl() {
+    return this.messageService.mempoolUrl().pipe(tap(result => {
+      if (result && result.url) {
+        // HACK HACK HACK - This converts api URL to base URL. Should get passed good URL
+        const index = result.url.lastIndexOf('/api')
+        if (index !== -1) {
+          this.mempoolUrl = result.url.substring(0, index)
+        }
       }
     }))
   }

@@ -19,7 +19,7 @@
               autocomplete="off">
           </mat-form-field>
 
-          <div [hidden]="!DEBUG" class="button-group">
+          <div [hidden]="!debug" class="button-group">
             <label>Enum</label>
             <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumAnnouncementHex)">A</button>
             <button mat-stroked-button class="mat-stroked-button-sm" (click)="onBuildOffer(enumContractInfoHex)">CI</button>
@@ -43,7 +43,7 @@
               autocomplete="off">
           </mat-form-field>
 
-          <div [hidden]="!DEBUG">
+          <div [hidden]="!debug">
             <button mat-stroked-button class="mat-stroked-button-sm" (click)="handleAcceptOffer(enumOfferHex)">Enum</button>
             <button mat-stroked-button class="mat-stroked-button-sm" (click)="handleAcceptOffer(numericOfferHex)">Numeric</button>
           </div>

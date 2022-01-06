@@ -1,0 +1,34 @@
+
+$appLogoSize: 100px;
+
+.login-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .app-logo {
+    display: inline-block;
+    width: $appLogoSize;
+    height: $appLogoSize;
+    margin-right: 0.4rem;
+
+    background-size: cover;
+    // reddish
+    background-image: url("../../../assets/image/302x302/bitcoin-s.png");
+  }
+
+  .login-form {
+    
+  }
+
+  .debug-button-group {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    button:not(:last-of-type) {
+      margin-right: 1rem;
+    }
+  }
+}

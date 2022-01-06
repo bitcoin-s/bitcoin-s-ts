@@ -10,6 +10,10 @@ export interface BuildConfig {
   dateString?: string
 }
 
+export interface UrlResponse {
+  url: string
+}
+
 export const CONNECTION_REFUSED_ERROR = /connection refused/
 export const TOR_CONNECTION_REFUSED_ERROR = /tor connection refused/
 

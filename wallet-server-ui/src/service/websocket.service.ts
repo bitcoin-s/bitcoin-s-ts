@@ -1,13 +1,12 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { Subscription, timer } from "rxjs";
-import { tap } from "rxjs/operators";
-import { BlockHeaderResponse, DLCContract, DLCState } from "~type/wallet-server-types";
-import { WalletStateService } from "./wallet-state-service";
+import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
+import { Subscription, timer } from 'rxjs'
 
+import { environment } from '../environments/environment'
 
-// Route to handle websocket traffic at the proxy server
-const WEBSOCKET_ROUTE = 'ws'
+import { BlockHeaderResponse, DLCContract, DLCState } from '~type/wallet-server-types'
+import { WalletStateService } from './wallet-state-service'
+
 
 enum WebsocketMessageType {
   txprocessed = 'txprocessed',
@@ -46,9 +45,7 @@ export class WebsocketService {
 
   private pollingTimer$: Subscription;
 
-  constructor(private walletStateService: WalletStateService, private router: Router) {
-    this.startPollingTimer()
-  }
+  constructor(private walletStateService: WalletStateService, private router: Router) {}
 
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
@@ -56,11 +53,12 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
-    const websocketURL = `${protocol}//${host}/${WEBSOCKET_ROUTE}`
+    const websocketURL = `${protocol}//${host}${environment.wsApi}`
     return websocketURL
   }
 
-  startPollingTimer() {
+  startPolling() {
+    // console.debug('WebsocketService.startPolling()')
     // Use different STARTUP_POLLING_DELAY to allow initial state to load via other channels before listening to Websocket updates
     this.pollingTimer$ = timer(STARTUP_POLLING_DELAY, POLLING_TIME).pipe(
     ).subscribe(_ => {
@@ -71,9 +69,16 @@ export class WebsocketService {
     })
   }
 
+  stopPolling() {
+    // console.debug('WebsocketService.stopPolling()')
+    if (this.pollingTimer$) this.pollingTimer$.unsubscribe()
+    this.stopWebsocket()
+  }
+
   startWebsocket() {
+    this.stopWebsocket()
     const url = this.getWebsocketUrl()
-    console.debug('starting Websocket to', url)
+    console.debug('startWebsocket()', url)
     const ws = new WebSocket(url)
     const self = this
 
@@ -87,7 +92,8 @@ export class WebsocketService {
     ws.addEventListener('close', function (event) {
       console.warn('Websocket closed')
       // Signal reconnect polling
-      self._ws = null
+      // self._ws = null
+      self.stopWebsocket() // this seems like overkill, since the socket just closed, but hunting for whether it's possible there are multiple sockets open at once
     })
     ws.addEventListener('error', function (event) {
       console.error('Websocket error')
@@ -106,6 +112,7 @@ export class WebsocketService {
   }
 
   stopWebsocket() {
+    // console.debug('stopWebsocket()')
     if (this._ws) {
       this._ws.close()
       this._ws = null
@@ -128,7 +135,6 @@ export class WebsocketService {
         }
         break;
       case WebsocketMessageType.dlcstatechange:
-        console.warn('message:', message)
         const dlc = <DLCContract>message.payload
         const obs = this.walletStateService.replaceDLC(dlc)
         // Wait for ContractInfo to load before navigating

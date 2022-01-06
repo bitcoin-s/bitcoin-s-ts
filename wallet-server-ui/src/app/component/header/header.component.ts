@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { Router } from '@angular/router'
+import { AuthService } from '~service/auth.service'
 
 import { BackendService } from '~service/backend.service'
 import { DLCFileService, DLCFileType } from '~service/dlc-file.service'
@@ -22,7 +23,7 @@ export class HeaderComponent implements OnInit {
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()
 
   constructor(public walletStateService: WalletStateService, public backendService: BackendService,
-    public dlcFileService: DLCFileService, private router: Router) { }
+    public dlcFileService: DLCFileService, public authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -35,6 +36,13 @@ export class HeaderComponent implements OnInit {
   onAdvanced() {
     console.debug('onAdvanced()')
     this.showAdvanced.emit()
+  }
+
+  onLogout() {
+    console.debug('onLogout()')
+    this.authService.logout().subscribe(result => {
+      // Nothing to do here
+    })
   }
 
 }

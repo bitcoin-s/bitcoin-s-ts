@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
+import { Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { Observable } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
@@ -9,9 +10,11 @@ import { environment } from 'src/environments/environment'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
+import { AuthService } from './auth.service'
+
 import { WalletServerMessage } from '~type/wallet-server-message'
 import { MessageType, ServerResponse, ServerVersion } from '~type/wallet-server-types'
-import { BuildConfig, SuccessType } from '~type/proxy-server-types'
+import { BuildConfig, SuccessType, UrlResponse } from '~type/proxy-server-types'
 
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -24,7 +27,8 @@ export class MessageService {
   lastMessageType: string|undefined = undefined
   lastMessageResults: string|undefined = undefined
 
-  constructor(private http: HttpClient, private translate: TranslateService, private dialog: MatDialog) { }
+  constructor(private http: HttpClient, private translate: TranslateService, 
+    private dialog: MatDialog, private router: Router, private authService: AuthService) { }
 
   /** Serializes a OracleServerMessage for sending to oracleServer */
   sendMessage(m: WalletServerMessage, errorHandling = true) {
@@ -53,14 +57,18 @@ export class MessageService {
     if (errorHandling) {
       return obs.pipe(catchError((error: any, caught: Observable<unknown>) => {
         console.error('sendMessage error', error)
-        let message = error?.error?.error
+        // Gracefully handle no longer authenticated
+        if (error && error.status === 403) {
+          this.authService.doLogout()
+        }
+        let message = error?.error?.error || error?.error
         const dialog = this.dialog.open(ErrorDialogComponent, {
           data: {
             title: 'dialog.sendMessageError.title',
             content: message,
           }
         })
-        throw(Error('sendMessage error' + error))
+        throw(Error('sendMessage error ' + message))
         return new Observable<any>() // required for type checking...
       }))
     } else {
@@ -74,12 +82,16 @@ export class MessageService {
     return this.http.get<SuccessType>(environment.proxyApi + '/heartbeat')
   }
 
-  walletHeartbeat() {
-    return this.http.get<SuccessType>(environment.proxyApi + '/walletHeartbeat')
+  serverHeartbeat() {
+    return this.http.get<SuccessType>(environment.proxyApi + '/serverHeartbeat')
   }
 
   buildConfig() {
     return this.http.get<BuildConfig>(environment.proxyApi + '/buildConfig')
+  }
+
+  mempoolUrl() {
+    return this.http.get<UrlResponse>(environment.proxyApi + '/mempoolUrl')
   }
 
   // Generic file download via POST

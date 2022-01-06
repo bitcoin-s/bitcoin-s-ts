@@ -6,7 +6,7 @@
 	"wsRoot": "/ws",
 	"torProxyRoot": "/tor",
 	"torProxyUrl": "socks5://127.0.0.1:9050",
-	"proxyRoot": "/proxy",
+	"proxyRoot": "/proxy/v0",
 	"oracleExplorerRoot": "/oracleexplorer",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",

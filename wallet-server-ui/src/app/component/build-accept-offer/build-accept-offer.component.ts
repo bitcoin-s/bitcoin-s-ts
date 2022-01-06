@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable, of, Subscription } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
+import { environment } from '~environments'
+
 import { DLCFileService } from '~service/dlc-file.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
@@ -25,7 +27,8 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 })
 export class BuildAcceptOfferComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  DEBUG = false
+  debug = environment.debug // flag  for debugging buttons
+
   // DO NOT PUBLISH
   EnumOfferHex = ''
   NumericOfferHex = ''

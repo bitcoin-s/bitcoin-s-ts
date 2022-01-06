@@ -1,5 +1,4 @@
-import { analyzeAndValidateNgModules } from '@angular/compiler'
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -16,7 +15,7 @@ import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, mempoolTransactionURL, outcomeDigitsToNumber, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -227,7 +226,7 @@ export class ContractDetailComponent implements OnInit {
                 content: 'dialog.oracleAttestationSuccess.content',
                 params: { txId },
                 linksContent: 'dialog.oracleAttestationSuccess.linksContent',
-                links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                 action: 'action.close',
                 showCancelButton: false,
               }
@@ -272,7 +271,7 @@ export class ContractDetailComponent implements OnInit {
             content: 'dialog.cancelContractSuccess.content',
             params: { contractId, txId },
             linksContent: 'dialog.cancelContractSuccess.linksContent',
-            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+            links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
             action: 'action.close',
             showCancelButton: false,
           }
@@ -297,7 +296,7 @@ export class ContractDetailComponent implements OnInit {
             content: 'dialog.rebroadcastSuccess.content',
             params: { txId },
             linksContent: "dialog.rebroadcastSuccess.linksContent",
-            links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+            links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
             action: 'action.close',
             showCancelButton: false,
           }
@@ -326,7 +325,7 @@ export class ContractDetailComponent implements OnInit {
                   content: 'dialog.rebroadcastSuccess.content',
                   params: { txId },
                   linksContent: "dialog.rebroadcastSuccess.linksContent",
-                  links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                  links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                   action: 'action.close',
                   showCancelButton: false,
                 }
@@ -417,7 +416,7 @@ export class ContractDetailComponent implements OnInit {
               content: 'dialog.broadcastSuccess.content',
               params: { txId },
               linksContent: "dialog.broadcastSuccess.linksContent",
-              links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+              links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
               action: 'action.close',
               showCancelButton: false,
             }

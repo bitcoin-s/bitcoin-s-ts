@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { APP_INITIALIZER, NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -12,8 +12,6 @@ import { AppComponent } from './app.component'
 import { AlertComponent } from './component/alert/alert.component'
 import { MoreInfoComponent } from './component/more-info/more-info.component'
 import { SplashComponent } from './component/splash/splash.component'
-import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
-import { ErrorDialogComponent } from './dialog/error/error.component'
 import { ConfigurationComponent } from './configuration/configuration.component'
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component'
 import { ContractsComponent } from './component/contracts/contracts.component'
@@ -23,16 +21,22 @@ import { EventDetailComponent } from './component/event-detail/event-detail.comp
 import { NewOfferComponent } from './component/new-offer/new-offer.component'
 import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component'
 import { AcceptOfferComponent } from './component/accept-offer/accept-offer.component'
-import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component'
-import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
 import { DlcFileComponent } from './component/dlc-file/dlc-file.component'
 import { DebugComponent } from './component/debug/debug.component'
 import { HeaderComponent } from './component/header/header.component'
-import { RouterModule, Routes } from '@angular/router';
-import { AppRoutingModule } from './app-routing.module';
-import { AboutComponent } from './component/about/about.component';
+import { AppRoutingModule } from './app-routing.module'
+import { AboutComponent } from './component/about/about.component'
 import { NetworkComponent } from './component/network/network.component'
+import { LoginComponent } from './component/login/login.component'
 
+import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
+import { ErrorDialogComponent } from './dialog/error/error.component'
+import { LogoutDialogComponent } from './dialog/logout/logout.component'
+import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component'
+import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
+
+import { AuthInterceptor } from './interceptor/auth-interceptor'
+import { ErrorInterceptor } from './interceptor/error-interceptor'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -72,6 +76,8 @@ export function appInitializerFactory(translate: TranslateService) {
     HeaderComponent,
     AboutComponent,
     NetworkComponent,
+    LoginComponent,
+    LogoutDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,7 +101,17 @@ export function appInitializerFactory(translate: TranslateService) {
     useFactory: appInitializerFactory,
     deps: [TranslateService],
     multi: true
-  }],
-  bootstrap: [AppComponent]
+  }, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ErrorInterceptor,
+    multi: true
+  }
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [LogoutDialogComponent] // so it will work to open from a service
 })
 export class AppModule { }

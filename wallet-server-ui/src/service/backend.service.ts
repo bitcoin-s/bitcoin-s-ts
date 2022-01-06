@@ -6,7 +6,7 @@ import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmati
 import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
 import { SendFundsDialogComponent } from '~app/dialog/send-funds-dialog/send-funds-dialog.component'
 import { WalletMessageType } from '~type/wallet-server-types'
-import { formatNumber, mempoolTransactionURL } from '~util/utils'
+import { formatNumber } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 import { MessageService } from './message.service'
 import { WalletStateService } from './wallet-state-service'
@@ -60,7 +60,7 @@ export class BackendService {
                       content: 'dialog.sendFundsSuccess.content',
                       params: { amount: this.translate.instant('unit.allAvailable'), address: sendObj.address, txId },
                       linksContent: 'dialog.sendFundsSuccess.linksContent',
-                      links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                      links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                       action: 'action.close',
                       showCancelButton: false,
                     }
@@ -84,7 +84,7 @@ export class BackendService {
                       content: 'dialog.sendFundsSuccess.content',
                       params: { amount: formatNumber(sats), address: sendObj.address, txId },
                       linksContent: 'dialog.sendFundsSuccess.linksContent',
-                      links: [mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
+                      links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                       action: 'action.close',
                       showCancelButton: false,
                     }

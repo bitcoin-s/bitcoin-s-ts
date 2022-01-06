@@ -11,6 +11,15 @@
     "dontShowSplashAgain": "Don't show this screen again"
   },
 
+  "login": {
+    "heading": "Login",
+    "user": "User",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout",
+    "refresh": "Refresh"
+  },
+
   "header": {
     "title": "Suredbits",
     "createDLC": "Create DLC",
@@ -63,7 +72,9 @@
     "reload": "Reload",
     "refresh": "Refresh",
     "close": "Close",
-    "send": "Send"
+    "send": "Send",
+    "logout": "Logout",
+    "stay": "Stay"
   },
 
   "unit": {
@@ -369,6 +380,10 @@
     "backupError": {
       "title": "Backup error",
       "content": "There was an error backing up or downloading wallet data"
+    },
+    "logout": {
+      "title": "Logout",
+      "content": "You will be logged out in {{ time }} seconds."
     }
   },
 
