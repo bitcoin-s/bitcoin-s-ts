@@ -1,4 +1,4 @@
-// import path from 'path'
+import path from 'path'
 
 import { ServerConfig } from './server-config'
 
@@ -18,7 +18,7 @@ export class RunConfig {
   // fs
   get rootDirectory() { return '' } // everything on relative path, could run on absolute // { return this.rootDir }
   get uiDirectory() { return Config.uiPath } // return path.join(this.rootDirectory, Config.uiPath) }
-  get backupDirectory() { return this.rootDirectory }
+  get backupDirectory() { return path.resolve(this.rootDirectory) }
   get logFilename() { return 'wallet-server-ui-proxy.log' }
   // routes
   get apiRoot() { return Config.apiRoot }

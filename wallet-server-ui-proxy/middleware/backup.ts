@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 
 import { Response } from 'express'
 
@@ -74,7 +75,7 @@ exports.downloadBackup = (req: BodyRequest<DownloadRequest>, res: Response) => {
   console.debug('/downloadBackup', r)
 
   if (r.filename) {
-    const fullPath = Config.backupDirectory + r.filename
+    const fullPath = path.join(Config.backupDirectory, r.filename)
 
     // Sanity check
     try {
