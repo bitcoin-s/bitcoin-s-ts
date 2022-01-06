@@ -102,8 +102,8 @@ export class MessageService {
   //   return this.http.post(environment.proxyApi + '/download', { path, filename, andDelete }, { responseType: 'blob' })
   // }
 
-  downloadBackup(filename: string) {
-    return this.http.post(environment.proxyApi + '/downloadBackup', { filename }, { responseType: 'blob' })
+  downloadBackup() {
+    return this.http.post(environment.proxyApi + '/downloadBackup', {}, { responseType: 'blob' })
   }
 
   // Common bitcoin-s calls

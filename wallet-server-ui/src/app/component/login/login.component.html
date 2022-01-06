@@ -16,9 +16,19 @@
         <input matInput name="password" formControlName="password" type="password" autocomplete="current-password">
       </mat-form-field>
     </fieldset>
-    <div class="form-buttons">
+    <div class="button-group">
       <button mat-flat-button color="primary" (click)="login()" [disabled]="executing">
         {{ 'login.login' | translate }}
+        <div class="spinner" *ngIf="loginExecuting">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </button>
+      <div class="spacer-auto"></div>
+      <button *ngIf="authService.isLoggedIn" mat-stroked-button (click)="refresh()" [disabled]="executing">
+        {{ 'login.refresh' | translate }}
+      </button>
+      <button *ngIf="authService.isLoggedIn" mat-stroked-button (click)="logout()" [disabled]="executing">
+        {{ 'login.logout' | translate }}
       </button>
     </div>
   </form>
@@ -28,8 +38,6 @@
   <div *ngIf="debug" class="debug-button-group">
     <button (click)="authTest()">auth/test</button>
     <button (click)="getInfoThroughAPI()">getInfoThroughAPI()</button>
-    <button (click)="refresh()" translate>login.refresh</button>
-    <button (click)="logout()" translate>login.logout</button>
   </div>
   
 </section>

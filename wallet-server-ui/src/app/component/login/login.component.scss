@@ -23,9 +23,22 @@ $appLogoSize: 100px;
     
   }
 
+  .button-group {
+    display: flex;
+    flex-direction: row;
+
+    button:not(:last-of-type) {
+      margin-right: 1rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+  }
+
   .debug-button-group {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 2rem;
 
     button:not(:last-of-type) {
       margin-right: 1rem;

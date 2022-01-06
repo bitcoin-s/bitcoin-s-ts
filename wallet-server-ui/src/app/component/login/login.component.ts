@@ -26,10 +26,11 @@ export class LoginComponent implements OnInit {
   form: FormGroup
 
   executing = false
+  loginExecuting = false
 
   error: any
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+  constructor(private fb: FormBuilder, public authService: AuthService, private router: Router,
     private messageService: MessageService) { }
 
   ngOnInit(): void {
@@ -43,18 +44,23 @@ export class LoginComponent implements OnInit {
     // }
   }
 
+  private errorHandler(err: any) {
+    console.error('login error', err)
+    this.executing = false
+    this.loginExecuting = false
+    this.error = err.error
+  }
+
   login() {
     const v = this.form.value
     if (v.user && v.password) {
       this.error = undefined
       this.executing = true
+      this.loginExecuting = true
       this.authService.login(v.user, v.password).subscribe(() => {
         this.executing = false
-      }, err => {
-        console.error('login error', err)
-        this.executing = false
-        this.error = err.error
-      })
+        this.loginExecuting = false
+      }, this.errorHandler.bind(this))
     }
   }
 
@@ -67,16 +73,20 @@ export class LoginComponent implements OnInit {
 
   refresh() {
     console.debug('refresh()')
+    this.executing = true
     this.authService.refresh().subscribe(result => {
       console.debug(' refresh()', result)
-    })
+      this.executing = false
+    }, this.errorHandler.bind(this))
   }
 
   logout() {
     console.debug('logout()')
+    this.executing = true
     this.authService.logout().subscribe(result => {
       console.debug(' logout()', result)
-    })
+      this.executing = false
+    }, this.errorHandler.bind(this))
   }
 
   getInfoThroughAPI() {

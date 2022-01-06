@@ -1,22 +1,14 @@
-import express, { Router } from 'express'
-import winston from 'winston'
+import express from 'express'
 
-const controller = require('../middleware/auth')
-
-// module.exports = (router: Router, logger: winston.Logger) => {
-//   router.route('/login').post(controller.login)
-//   router.route('/logout').post(controller.logout)
-//   router.route('/refresh').post(controller.refresh)
-//   // Test route to validate that auth with restrict/verify access
-//   router.route('/test').post(controller.verify, controller.test)
-//   return router
-// }
 
 const router = express.Router()
 
+const controller = require('../middleware/auth')
+
 router.route('/login').post(controller.login)
-router.route('/logout').post(controller.logout)
 router.route('/refresh').post(controller.refresh)
+router.route('/logout').post(controller.logout)
+
 // Test route to validate that auth with restrict/verify access
 router.route('/test').post(controller.verify, controller.test)
 

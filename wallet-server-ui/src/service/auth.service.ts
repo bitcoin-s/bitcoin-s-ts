@@ -68,6 +68,12 @@ export class AuthService {
         // Nothing to do
       }))
   }
+
+  private doLogin(result: LoginResponse) {
+    this.setSession(result)
+    this.router.navigate(['/'])
+    this.loggedIn.emit()
+  }
         
   private setSession(response: LoginResponse) {
     // console.debug('setSession()', response)
@@ -82,9 +88,12 @@ export class AuthService {
     let time = expiresIn - LOGOUT_DELAY
     console.debug('setLoginTimer()', time, 'ms')
     if (time <= 0) this.showLogoutDialog(Math.floor(expiresIn / 1000))
-    else this.loginTime$ = timer(time).pipe(take(1)).subscribe(_ => {
-      this.showLogoutDialog(LOGOUT_DELAY / 1000)
-    })
+    else {
+      if (this.loginTime$) this.loginTime$.unsubscribe()
+      this.loginTime$ = timer(time).pipe(take(1)).subscribe(_ => {
+        this.showLogoutDialog(LOGOUT_DELAY / 1000)
+      })
+    }
   }
 
   private showLogoutDialog(time: number) {
@@ -106,6 +115,14 @@ export class AuthService {
     })
   }
 
+  // Public to allow error handlers to call
+  doLogout() {
+    this.unsetSession()
+    this.router.navigate(['/login'])
+    // Would be good to close side-drawer if it's open...
+    this.loggedOut.emit()
+  }
+
   private unsetSession() {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
@@ -114,20 +131,6 @@ export class AuthService {
     if (this.loginTime$) {
       this.loginTime$.unsubscribe()
     }
-  }
-
-  private doLogin(result: LoginResponse) {
-    this.setSession(result)
-    this.router.navigate(['/'])
-    this.loggedIn.emit()
-  }
-
-  // Public to allow error handlers to call
-  doLogout() {
-    this.unsetSession()
-    this.router.navigate(['/login'])
-    // Would be good to close side-drawer if it's open...
-    this.loggedOut.emit()
   }
 
   refresh() {

@@ -382,7 +382,7 @@
       "content": "There was an error backing up or downloading wallet data"
     },
     "logout": {
-      "title": "Logout",
+      "title": "Session Expiring",
       "content": "You will be logged out in {{ time }} seconds."
     }
   },

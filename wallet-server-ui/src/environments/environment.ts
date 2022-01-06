@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  debug: false,
+  debug: true,
   walletServerApi: '/api/v0',
   proxyApi: '/proxy/v0',
   wsApi: '/ws',
