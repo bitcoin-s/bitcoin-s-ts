@@ -23,3 +23,7 @@ The development server is configured for the default wallet-server-ui-proxy `htt
 ## Build
 
 Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Login
+
+The default password is "none". It can be overwritten at the proxy by setting the environment variable `DEFAULT_UI_PASSWORD`. Authorization token secrets are randomly generated at each server start and do not persist validity between server runs.
