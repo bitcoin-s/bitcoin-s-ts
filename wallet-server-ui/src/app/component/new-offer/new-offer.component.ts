@@ -183,6 +183,10 @@ export class NewOfferComponent implements OnInit {
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
     })
+    if (this.contractInfo) {
+      this.onTotalCollateral()
+      this.setTheirCollateral()
+    }
   }
 
   onClose() {

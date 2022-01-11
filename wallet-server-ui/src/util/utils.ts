@@ -114,20 +114,6 @@ export function formatShortHex(s: string|null|undefined) {
   return ''
 }
 
-export function mempoolTransactionURL(txIdHex: string, network: string) {
-  switch (network) {
-    case BitcoinNetwork.main:
-      return `https://mempool.space/tx/${txIdHex}`
-    case BitcoinNetwork.test:
-      return `https://mempool.space/testnet/tx/${txIdHex}`
-    case BitcoinNetwork.signet:
-      return `https://mempool.space/signet/tx/${txIdHex}`
-    default:
-      console.error('mempoolTransactionURL() unknown BitcoinNetwork', network)
-      return ''
-  }
-}
-
 const IPV6_ADDRESS = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/
 
 export const TOR_V3_ADDRESS = /^[a-z2-7]{56}.onion\:\d{4,5}$/

@@ -1,0 +1,6 @@
+<h2 mat-dialog-title>{{ 'dialog.logout.title' | translate }}</h2>
+<mat-dialog-content translate="dialog.logout.content" [translateParams]="{ time: time }"></mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button mat-dialog-close>{{ 'action.logout' | translate }}</button>
+  <button mat-stroked-button [mat-dialog-close]="{ refresh: true }">{{ 'action.stay' | translate }}</button>
+</mat-dialog-actions>

@@ -4,8 +4,12 @@
 
 export const environment = {
   production: false,
+  debug: true,
   walletServerApi: '/api/v0',
-  proxyApi: '',
+  proxyApi: '/proxy/v0',
+  wsApi: '/ws',
+  user: 'frontend',
+  password: 'none',
 };
 
 /*
