@@ -12,7 +12,7 @@ This project runs on top of bitcoin-s appServer through wallet-server-ui-proxy. 
 
 Once bitcoin-s is building and configured, run `appServer/run` to start the app-server. Bitcoin-s `bundle/run` can also be used to host the desktop UI and appServer underneath this project.
 
-In the wallet-server-ui-proxy project root after installing packages with `npm i`, run `npm run start` to host the UI (this project) on `http://localhost:3002/`.
+In the wallet-server-ui-proxy project root after installing packages with `npm i`, run `npm run start` to host the UI (this project) on `http://localhost:3002/` or `npm run startlocal` to access the UI with password set to "none".
 
 ## Development server
 
@@ -26,4 +26,4 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 ## Login
 
-The default password is "none". It can be overwritten at the proxy by setting the environment variable `DEFAULT_UI_PASSWORD`. Authorization token secrets are randomly generated at each server start and do not persist validity between server runs.
+The application password is set at the proxy by setting the environment variable `DEFAULT_UI_PASSWORD`. Authorization token secrets are randomly generated at each server start and do not persist validity between server runs.

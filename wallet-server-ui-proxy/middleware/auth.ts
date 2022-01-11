@@ -9,21 +9,20 @@ import { get64randomBytes } from 'common-ts/lib/util/string-util'
 
 const ALGORITHM = 'HS256'
 
-const ACCESS_TOKEN_LIFE = '70s' // process.env.ACCESS_TOKEN_LIFE
-const ACCESS_TOKEN_LIFE_MS = 70000 // must match ACCESS_TOKEN_LIFE, in ms
-const REFRESH_TOKEN_LIFE = '4m' // process.env.REFRESH_TOKEN_LIFE
+const ACCESS_TOKEN_LIFE = '1h' // process.env.ACCESS_TOKEN_LIFE
+const ACCESS_TOKEN_LIFE_MS = 60 * 60 * 1000 // must match ACCESS_TOKEN_LIFE, in ms
+const REFRESH_TOKEN_LIFE = '75m' // process.env.REFRESH_TOKEN_LIFE
 
 // TOKEN_SECRETs don't live past server restarts
 const ACCESS_TOKEN_SECRET = get64randomBytes() // process.env.ACCESS_TOKEN_SECRET
 const REFRESH_TOKEN_SECRET = get64randomBytes() // process.env.REFRESH_TOKEN_SECRET
 
 const DEFAULT_USER = 'frontend'
-const DEFAULT_PASSWORD = 'none'
 
 // Set frontend password - does not persist locally
 const users = [{
   user: DEFAULT_USER,
-  password: process.env.DEFAULT_UI_PASSWORD || DEFAULT_PASSWORD,
+  password: process.env.DEFAULT_UI_PASSWORD,
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);
 
