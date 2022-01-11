@@ -20,6 +20,7 @@ const OFFLINE_POLLING_TIME = 5000 // ms
 const ONLINE_POLLING_TIME = 30000 // ms
 
 const MATCH_LEADING_DIGITS = /^([0-9]+) /
+const DEFAULT_FEE_RATE = '1 sats/vbyte'
 
 @Injectable({ providedIn: 'root' })
 export class WalletStateService {
@@ -176,7 +177,12 @@ export class WalletStateService {
   }
 
   private getFeeEstimate() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(tap(r => {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(
+      catchError(error =>{
+        console.error('fee estimate was not available from the server, setting default')
+        return of({ result: DEFAULT_FEE_RATE })
+      }),
+      tap(r => {
       if (r.result) { // like '1234 sats/vbyte'
         // Rip string to number
         const matches = MATCH_LEADING_DIGITS.exec(r.result)
