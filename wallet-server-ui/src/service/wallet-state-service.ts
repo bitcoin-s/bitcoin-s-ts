@@ -177,7 +177,7 @@ export class WalletStateService {
   }
 
   private getFeeEstimate() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee), false).pipe(
       catchError(error =>{
         console.error('fee estimate was not available from the server, setting default')
         return of({ result: DEFAULT_FEE_RATE })
