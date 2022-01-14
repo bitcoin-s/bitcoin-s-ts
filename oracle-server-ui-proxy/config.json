@@ -7,6 +7,8 @@
 	"torProxyUrl": "socks5://127.0.0.1:9050",
 	"proxyRoot": "/proxy",
 	"oracleExplorerRoot": "/oracleexplorer",
+	"serverUser": "bitcoins",
+	"serverPassword": "",
 	"oracleServerUrl": "http://localhost:9998/",
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",

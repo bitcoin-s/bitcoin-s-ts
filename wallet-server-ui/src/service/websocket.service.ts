@@ -53,6 +53,7 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
+    // const websocketURL = `${protocol}//bitcoins:password@${host}${environment.wsApi}` // this works, but would rather set via proxy server
     const websocketURL = `${protocol}//${host}${environment.wsApi}`
     return websocketURL
   }
@@ -128,7 +129,7 @@ export class WebsocketService {
         // Nothing to do
         break;
       case WebsocketMessageType.blockprocessed:
-        this.walletStateService.refreshWalletState()
+        this.walletStateService.refreshWalletState().subscribe()
         const block = <BlockHeaderResponse>message.payload
         if (this.walletStateService.info) {
           this.walletStateService.info.blockHeight = block.height

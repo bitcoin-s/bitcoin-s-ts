@@ -710,8 +710,8 @@ export function EstimateFee() {
 
   const m = getMessageBody(WalletMessageType.estimatefee)
   return SendServerMessage(m).then(response => {
-    // response like '1 sats/vbyte'
-    return <ServerResponse<string>>response
+    // response like 1, -1 is 'unknown'/'not set'
+    return <ServerResponse<number>>response
   })
 }
 

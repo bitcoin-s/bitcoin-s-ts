@@ -7,7 +7,7 @@ const Config = <ServerConfig>require('../config.json')
 
 const LOG_PATH = process.env.LOG_PATH || ''
 const LOG_FILENAME = 'wallet-server-ui-proxy.log'
-const LOG_FILEPATH = LOG_PATH + LOG_FILENAME
+const LOG_FILEPATH = LOG_PATH + LOG_FILENAME // path.join(LOG_PATH, LOG_FILENAME)
 
 export class RunConfig {
   // constructor(private rootDir: string) {}
@@ -15,11 +15,18 @@ export class RunConfig {
   get stopOnError() { return Config.stopOnError }
   get port() { return Config.port }
   get useHTTPS() { return Config.useHTTPS }
+  // auth
+  get serverUser() { return Config.serverUser }
+  get serverPassword() { return Config.serverPassword }
+  get authHeader() { return 'Basic ' + Buffer.from(this.serverUser + ':' + this.serverPassword).toString('base64') }
   // fs
   get rootDirectory() { return '' } // everything on relative path, could run on absolute // { return this.rootDir }
   get uiDirectory() { return Config.uiPath } // return path.join(this.rootDirectory, Config.uiPath) }
-  get backupDirectory() { return process.env.BACKUP_PATH || path.resolve(this.rootDirectory) }
-  get logFilename() { return LOG_FILEPATH }
+  get backupDirectory() {
+    if (process.env.BACKUP_PATH) return path.resolve(process.env.BACKUP_PATH)
+    return path.resolve(this.rootDirectory)
+  }
+  get logFilepath() { return LOG_FILEPATH }
   // routes
   get apiRoot() { return Config.apiRoot }
   get wsRoot() { return Config.wsRoot }
@@ -34,6 +41,25 @@ export class RunConfig {
   // get torProxyRoot() { return Config.torProxyRoot }
   // ui data
   get mempoolUrl() { return process.env.MEMPOOL_API_URL || Config.mempoolUrl } // BAD env var value incoming, should be updated
+  show(logger) {
+    logger.info(`Config:
+stopOnError: ${this.stopOnError}
+port: ${this.port}
+useHTTPS: ${this.useHTTPS}
+rootDirectory: ${this.rootDirectory}
+uiDirectory: ${this.uiDirectory}
+backupDirectory: ${this.backupDirectory}
+logFilename: ${this.logFilepath}
+serverUser: ${this.serverUser}
+serverPassword: ${this.serverPassword}
+apiRoot: ${this.apiRoot}
+wsRoot: ${this.wsRoot}
+proxyRoot: ${this.proxyRoot}
+walletServerUrl: ${this.walletServerUrl}
+walletServerWs: ${this.walletServerWs}
+mempoolUrl: ${this.mempoolUrl}
+`)
+  }
 }
 
 const instance = new RunConfig()

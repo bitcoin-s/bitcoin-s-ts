@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
-import { of, Subscription, timer } from 'rxjs'
+import { Observable, of, Subscription, timer } from 'rxjs'
 import { shareReplay, tap, take, catchError } from 'rxjs/operators'
 
 import { environment } from '../environments/environment'
@@ -32,14 +32,16 @@ export class AuthService {
 
   // Initialize this service, throwing loggedIn if current login is valid
   initialize() {
+    // console.debug('AuthService.initialize()')
     const expiresAt = localStorage.getItem(EXPIRES_KEY)
     if (expiresAt) {
       const expiration = new Date(parseInt(expiresAt))
       if (expiration.getTime() < new Date().getTime()) {
-        console.debug('Found expired auth token')
+        console.debug('AuthService.initialize() Found expired auth token')
         this.unsetSession()
       } else {
-        console.debug('Found auth token')
+        console.debug('AuthService.initialize() Found auth token')
+        // If the token is from a previous server run, will logout when data loading 403s
         this.expiration = expiration
         this.setLoginTimer(expiration.getTime() - new Date().getTime())
         this.loggedIn.emit()

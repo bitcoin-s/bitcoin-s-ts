@@ -244,6 +244,15 @@ app.use(Config.apiRoot, createProxyMiddleware({
     [`^${Config.apiRoot}`]: '',
   },
   proxyTimeout: PROXY_TIMEOUT,
+  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+    // console.debug('onProxyReq() ws')
+    // If we have a user and password set, add a Basic auth header for them
+    // Backend server will ignore if it does not currently have a password set
+    if (Config.serverUser && Config.serverPassword) {
+      proxyReq.setHeader('Authorization', 
+        'Basic ' + Buffer.from(Config.serverUser + ':' + Config.serverPassword).toString('base64'))
+    }
+  },
   onError: (err: Error, req: Request, res: Response) => {
     // Handle oracleServer is unavailable
     if (err && (<any>err).code === ECONNREFUSED) {

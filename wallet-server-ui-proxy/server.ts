@@ -16,6 +16,7 @@ const Config = <RunConfig>require('./type/run-config')
 
 const logger = require('./middleware/logger')
 logger.info('Starting wallet-server-ui-proxy')
+Config.show(logger)
 
 /** Error Handling  */
 
@@ -45,6 +46,14 @@ app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
     [`^${Config.apiRoot}`]: '',
   },
   proxyTimeout: PROXY_TIMEOUT,
+  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+    // console.debug('onProxyReq() ws')
+    // If we have a user and password set, add a Basic auth header for them
+    // Backend server will ignore if it does not currently have a password set
+    if (Config.serverUser && Config.serverPassword) {
+      proxyReq.setHeader('Authorization', Config.authHeader)
+    }
+  },
   onError: (err: Error, req: Request, res: Response) => {
     // Handle server is unavailable
     if (err && (<any>err).code === ECONNREFUSED) {
@@ -71,9 +80,14 @@ const wsProxy = createProxyMiddleware({
   // onProxyReqWs: () => {
   //   console.debug('onProxyReqWs()')
   // },
-  // onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-  //   console.debug('onProxyReq() ws')
-  // },
+  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+    // console.debug('onProxyReq() ws')
+    // If we have a user and password set, add a Basic auth header for them
+    // Backend server will ignore if it does not currently have a password set
+    if (Config.serverUser && Config.serverPassword) {
+      proxyReq.setHeader('Authorization', Config.authHeader)
+    }
+  },
   onError: (err: Error, req: Request, res: Response) => {
     logger.error('websocket onError', err, res.statusCode, res.statusMessage)
     // (<any>err).code === ECONNRESET

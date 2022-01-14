@@ -8,6 +8,8 @@
 	"torProxyUrl": "socks5://127.0.0.1:9050",
 	"proxyRoot": "/proxy/v0",
 	"oracleExplorerRoot": "/oracleexplorer",
+	"serverUser": "bitcoins",
+	"serverPassword": "",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",
 	"bitcoinsHome": "~/.bitcoin-s/",
