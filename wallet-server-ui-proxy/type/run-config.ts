@@ -17,7 +17,7 @@ export class RunConfig {
   get useHTTPS() { return Config.useHTTPS }
   // auth
   get serverUser() { return Config.serverUser }
-  get serverPassword() { return Config.serverPassword }
+  get serverPassword() { return process.env.BITCOIN_S_SERVER_RPC_PASSWORD || Config.serverPassword }
   get authHeader() { return 'Basic ' + Buffer.from(this.serverUser + ':' + this.serverPassword).toString('base64') }
   // fs
   get rootDirectory() { return '' } // everything on relative path, could run on absolute // { return this.rootDir }

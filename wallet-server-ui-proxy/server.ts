@@ -80,14 +80,16 @@ const wsProxy = createProxyMiddleware({
   // onProxyReqWs: () => {
   //   console.debug('onProxyReqWs()')
   // },
-  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-    // console.debug('onProxyReq() ws')
-    // If we have a user and password set, add a Basic auth header for them
-    // Backend server will ignore if it does not currently have a password set
-    if (Config.serverUser && Config.serverPassword) {
-      proxyReq.setHeader('Authorization', Config.authHeader)
-    }
-  },
+
+  // Currently setting login info at UI
+  // onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+  //   // console.debug('onProxyReq() ws')
+  //   // If we have a user and password set, add a Basic auth header for them
+  //   // Backend server will ignore if it does not currently have a password set
+  //   if (Config.serverUser && Config.serverPassword) {
+  //     proxyReq.setHeader('Authorization', Config.authHeader)
+  //   }
+  // },
   onError: (err: Error, req: Request, res: Response) => {
     logger.error('websocket onError', err, res.statusCode, res.statusMessage)
     // (<any>err).code === ECONNRESET

@@ -4,6 +4,19 @@ import jwt from 'jsonwebtoken'
 import { BodyRequest } from 'common-ts/lib/util/express-util'
 import { get64randomBytes } from 'common-ts/lib/util/string-util'
 
+import { RunConfig } from '../type/run-config'
+
+
+// Server authorization
+
+// const Config = <RunConfig>require('../type/run-config')
+
+// exports.addServerAuthHeader = function(req: Request, res: Response, next) {
+//   res.set('Authorization', Config.authHeader)
+//   next()
+// }
+
+// Client authorization
 
 // Note: Any of this could be externalized to a config file / env vars
 

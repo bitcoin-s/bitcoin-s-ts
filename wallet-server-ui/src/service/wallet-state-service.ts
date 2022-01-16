@@ -125,13 +125,13 @@ export class WalletStateService {
 
   private checkInitialized() {
     if (this.initialized && this.dlcsInitialized) {
-      // console.debug('WalletStateService.checkInitialized() stateLoaded going true', this.state)
+      console.debug('WalletStateService.checkInitialized() stateLoaded going true', this.state)
       this.stateLoaded.next() // initial state loaded event
     }
   }
 
   private initializeState() {
-    // console.debug('initializeState()')
+    console.debug('initializeState()')
 
     return forkJoin([
       this.getServerVersion(),
@@ -142,6 +142,7 @@ export class WalletStateService {
       this.refreshWalletState(),
       this.loadDLCs(),
     ]).subscribe(_ => {
+      console.debug(' initializedState() initialized')
       this.initialized = true
       this.checkInitialized()
       this.startPollingTimer(ONLINE_POLLING_TIME, ONLINE_POLLING_TIME)
@@ -283,9 +284,15 @@ export class WalletStateService {
 
   private loadContractInfos(dlcs: DLCContract[]) {
     const ci = this.contractInfos.value
+    if (dlcs.length === 0) {
+      // No additional data to load
+      this.dlcsInitialized = true
+      this.checkInitialized()
+    }
     return forkJoin(dlcs.map(dlc => 
       this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))))
       .subscribe((results: ServerResponse<ContractInfo>[]) => {
+        console.debug(' loadContractInfos()', results)
         for (let i = 0; i < results.length; i++) {
           ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
         }

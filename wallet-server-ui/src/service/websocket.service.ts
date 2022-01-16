@@ -53,8 +53,8 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
-    // const websocketURL = `${protocol}//bitcoins:password@${host}${environment.wsApi}` // this works, but would rather set via proxy server
-    const websocketURL = `${protocol}//${host}${environment.wsApi}`
+    const websocketURL = `${protocol}//bitcoins:password@${host}${environment.wsApi}` // this works, but would rather set via proxy server
+    // const websocketURL = `${protocol}//${host}${environment.wsApi}`
     return websocketURL
   }
 

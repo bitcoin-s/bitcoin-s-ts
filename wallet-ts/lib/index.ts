@@ -17,14 +17,6 @@ import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress,
 export * from '../../common-ts/lib/index';
 
 
-let WALLET_SERVER_URL = 'http://localhost:9999/'
-
-/** Set Wallet Server endpoint */
-export function ConfigureWalletServerURL(url: string) {
-  console.debug('ConfigureWalletServerURL()', url)
-  WALLET_SERVER_URL = url
-}
-
 /** Blockchain functions */
 
 export function GetBlockCount() {
