@@ -5,6 +5,8 @@ import { Subscription, timer } from 'rxjs'
 import { environment } from '../environments/environment'
 
 import { BlockHeaderResponse, DLCContract, DLCState } from '~type/wallet-server-types'
+
+import { AuthService } from './auth.service'
 import { WalletStateService } from './wallet-state-service'
 
 
@@ -45,7 +47,7 @@ export class WebsocketService {
 
   private pollingTimer$: Subscription;
 
-  constructor(private walletStateService: WalletStateService, private router: Router) {}
+  constructor(private walletStateService: WalletStateService, private router: Router, private authService: AuthService) {}
 
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
@@ -53,16 +55,19 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
-    const websocketURL = `${protocol}//bitcoins:password@${host}${environment.wsApi}` // this works, but would rather set via proxy server
-    // const websocketURL = `${protocol}//${host}${environment.wsApi}`
+    let websocketURL: string = `${protocol}//${host}${environment.wsApi}`
+    const user = environment.user
+    const password = this.authService.password
+    if (password) {
+      websocketURL = `${protocol}//${user}:${password}@${host}${environment.wsApi}` // this works, but would rather set via proxy server
+    }
     return websocketURL
   }
 
   startPolling() {
     // console.debug('WebsocketService.startPolling()')
     // Use different STARTUP_POLLING_DELAY to allow initial state to load via other channels before listening to Websocket updates
-    this.pollingTimer$ = timer(STARTUP_POLLING_DELAY, POLLING_TIME).pipe(
-    ).subscribe(_ => {
+    this.pollingTimer$ = timer(STARTUP_POLLING_DELAY, POLLING_TIME).subscribe(_ => {
       // console.debug('Websocket polling timer', this._ws)
       if (this._ws === null || this._ws.readyState === WebSocket.CLOSED) {
         this.startWebsocket()
@@ -79,7 +84,7 @@ export class WebsocketService {
   startWebsocket() {
     this.stopWebsocket()
     const url = this.getWebsocketUrl()
-    console.debug('startWebsocket()', url)
+    console.debug('startWebsocket()')
     const ws = new WebSocket(url)
     const self = this
 

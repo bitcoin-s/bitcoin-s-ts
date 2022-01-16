@@ -7,7 +7,7 @@ import { getMessageBody } from './util/message-util'
 
 
 let WALLET_SERVER_URL = 'http://localhost:9999/'
-let AUTHORIZATION_HEADER: string = ''
+let AUTHORIZATION_HEADER = ''
 
 /** Set Wallet Server endpoint */
 export function ConfigureWalletServerURL(url: string) {

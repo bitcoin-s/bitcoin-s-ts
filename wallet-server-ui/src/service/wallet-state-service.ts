@@ -125,7 +125,7 @@ export class WalletStateService {
 
   private checkInitialized() {
     if (this.initialized && this.dlcsInitialized) {
-      console.debug('WalletStateService.checkInitialized() stateLoaded going true', this.state)
+      console.debug('WalletStateService.checkInitialized() stateLoaded going', this.state)
       this.stateLoaded.next() // initial state loaded event
     }
   }
@@ -283,6 +283,7 @@ export class WalletStateService {
   /** ContractInfo */
 
   private loadContractInfos(dlcs: DLCContract[]) {
+    console.debug('loadContractInfos()', dlcs.length)
     const ci = this.contractInfos.value
     if (dlcs.length === 0) {
       // No additional data to load
@@ -292,7 +293,7 @@ export class WalletStateService {
     return forkJoin(dlcs.map(dlc => 
       this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))))
       .subscribe((results: ServerResponse<ContractInfo>[]) => {
-        console.debug(' loadContractInfos()', results)
+        // console.debug(' loadContractInfos()', results)
         for (let i = 0; i < results.length; i++) {
           ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
         }

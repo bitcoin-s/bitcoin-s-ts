@@ -35,6 +35,8 @@ const DEFAULT_USER = 'frontend'
 // Set frontend password - does not persist locally
 const users = [{
   user: DEFAULT_USER,
+  // This password must match the BITCOIN_S_SERVER_RPC_PASSWORD since the UI needs a matching password initialize the websocket
+  // May want to explicitly run on the same environment variable
   password: process.env.DEFAULT_UI_PASSWORD,
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);

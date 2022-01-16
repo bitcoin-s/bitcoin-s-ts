@@ -28,6 +28,10 @@ export class AuthService {
   loggedIn: EventEmitter<void> = new EventEmitter()
   loggedOut: EventEmitter<void> = new EventEmitter()
 
+  // Store password for authentication via Websocket
+  private _password: string
+  get password() { return this._password }
+
   constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
 
   // Initialize this service, throwing loggedIn if current login is valid
@@ -50,6 +54,7 @@ export class AuthService {
   }
 
   login(user: string, password: string) {
+    this._password = password
     return this.http.post<LoginResponse>(environment.proxyApi + `/auth/login`, { user, password })
       .pipe(tap(result => {
         this.doLogin(result)
