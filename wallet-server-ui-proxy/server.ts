@@ -98,6 +98,7 @@ const wsProxy = createProxyMiddleware({
     // [HPM] Error occurred while proxying request localhost:4200 to undefined [ECONNRESET] (https://nodejs.org/api/errors.html#errors_common_system_errors)
   }
 })
+// Using verifyAuth here works without actual auth set on local, but not on Docker
 app.use(Config.wsRoot, verifyAuth, wsProxy)
 
 /** Server Instance */

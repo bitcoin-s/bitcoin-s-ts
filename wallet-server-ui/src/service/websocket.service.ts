@@ -55,13 +55,13 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
-    const websocketURL: string = `${protocol}//${host}${environment.wsApi}`
+    let websocketURL: string = `${protocol}//${host}${environment.wsApi}`
     // Now setting this at the proxy
-    // const user = environment.user
-    // const password = this.authService.password
-    // if (password) {
-    //   websocketURL = `${protocol}//${user}:${password}@${host}${environment.wsApi}` // this works, but would rather set via proxy server
-    // }
+    const user = environment.user
+    const password = this.authService.password
+    if (password) {
+      websocketURL = `${protocol}//${user}:${password}@${host}${environment.wsApi}` // this works, but would rather set via proxy server
+    }
     return websocketURL
   }
 
