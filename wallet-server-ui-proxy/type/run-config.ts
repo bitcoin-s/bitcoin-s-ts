@@ -18,7 +18,8 @@ export class RunConfig {
   // auth
   get serverUser() { return Config.serverUser }
   get serverPassword() { return process.env.BITCOIN_S_SERVER_RPC_PASSWORD || Config.serverPassword }
-  get authHeader() { return 'Basic ' + Buffer.from(this.serverUser + ':' + this.serverPassword).toString('base64') }
+  get serverAuthHeader() { return 'Basic ' + Buffer.from(this.serverUser + ':' + this.serverPassword).toString('base64') }
+  get uiPassword() { return process.env.DEFAULT_UI_PASSWORD || Config.uiPassword }
   // fs
   get rootDirectory() { return '' } // everything on relative path, could run on absolute // { return this.rootDir }
   get uiDirectory() { return Config.uiPath } // return path.join(this.rootDirectory, Config.uiPath) }
@@ -52,6 +53,7 @@ backupDirectory: ${this.backupDirectory}
 logFilename: ${this.logFilepath}
 serverUser: ${this.serverUser}
 serverPassword: ${this.serverPassword}
+uiPassword: ${this.uiPassword}
 apiRoot: ${this.apiRoot}
 wsRoot: ${this.wsRoot}
 proxyRoot: ${this.proxyRoot}

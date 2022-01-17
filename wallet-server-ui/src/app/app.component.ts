@@ -56,7 +56,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private onLogin() {
     this.createSubscriptions()
     this.walletStateService.startPolling()
-    this.websocketService.startPolling()
   }
 
   private onLogout() {
@@ -84,14 +83,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private createSubscriptions() {
     if (this.subscriptions) this.destroySubscriptions()
     this.subscriptions = []
-    // Check current route and set route based on wallet and dlc state after initialization
     let sub = this.walletStateService.stateLoaded.subscribe(_ => {
       this.stateLoaded = true
       console.debug('stateLoaded:', this.router.url)
-      if (this.router.url === '/') {
-        if (this.authService.isLoggedOut) {
-          this.router.navigate(['/login'])
-        } else if (this.walletStateService.dlcs.value.length > 0) {
+
+      this.websocketService.startPolling()
+
+      // Check current route and set route based on wallet and dlc state after initialization
+      if (this.router.url === '/login') {
+        if (this.walletStateService.dlcs.value.length > 0) {
           this.router.navigate(['/contracts'])
         } else { // if (this.walletStateService.balances.total > 0) {
           this.router.navigate(['/wallet'])

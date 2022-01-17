@@ -45,13 +45,14 @@ app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
   pathRewrite: {
     [`^${Config.apiRoot}`]: '',
   },
+  // auth: `${Config.serverUser}:${Config.serverPassword}`, // Does not work to get auth set against backend
   proxyTimeout: PROXY_TIMEOUT,
   onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
     // console.debug('onProxyReq() ws')
     // If we have a user and password set, add a Basic auth header for them
     // Backend server will ignore if it does not currently have a password set
     if (Config.serverUser && Config.serverPassword) {
-      proxyReq.setHeader('Authorization', Config.authHeader)
+      proxyReq.setHeader('Authorization', Config.serverAuthHeader)
     }
   },
   onError: (err: Error, req: Request, res: Response) => {
@@ -74,20 +75,20 @@ const wsProxy = createProxyMiddleware({
     [`^${Config.wsRoot}`]: '',
   },
   proxyTimeout: WS_PROXY_TIMEOUT,
+  auth: `${Config.serverUser}:${Config.serverPassword}`,
   // onOpen: () => {
   //   console.debug('onOpen()')
   // },
   // onProxyReqWs: () => {
   //   console.debug('onProxyReqWs()')
   // },
-
   // Currently setting login info at UI
   // onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-  //   // console.debug('onProxyReq() ws')
+  //   console.debug('onProxyReq() ws', proxyReq.getHeader('Authorization'))
   //   // If we have a user and password set, add a Basic auth header for them
   //   // Backend server will ignore if it does not currently have a password set
   //   if (Config.serverUser && Config.serverPassword) {
-  //     proxyReq.setHeader('Authorization', Config.authHeader)
+  //     proxyReq.setHeader('Authorization', Config.serverAuthHeader)
   //   }
   // },
   onError: (err: Error, req: Request, res: Response) => {

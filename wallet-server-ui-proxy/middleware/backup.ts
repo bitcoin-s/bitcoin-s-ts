@@ -12,7 +12,7 @@ const Config = <RunConfig>require('../type/run-config')
 const logger = require('../middleware/logger')
 
 WalletServer.ConfigureWalletServerURL(Config.walletServerUrl)
-WalletServer.ConfigureAuthorizationHeader(Config.authHeader)
+WalletServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
 
 const filename = 'bitcoin-s-backup.zip'
 
@@ -24,7 +24,7 @@ exports.downloadBackup = (req: Request, res: Response) => {
 
   logger.info('fullPath: ' + fullPath + ' walletServerUrl: ' + Config.walletServerUrl)
 
-  logger.info('auth header: ' + res.getHeader('Authorization'))
+  // logger.info('auth header: ' + res.getHeader('Authorization'))
 
   // Sanity check
   try {
@@ -36,7 +36,7 @@ exports.downloadBackup = (req: Request, res: Response) => {
 
   // Use wallet-ts to create backup
   WalletServer.ZipDataDir(fullPath).then(result => {
-    logger.info(' ZipDataDir() complete ' + result)
+    logger.info('ZipDataDir() complete')
     if (result.result === null) { // success case
       // Sanity check
       try {
@@ -59,7 +59,7 @@ exports.downloadBackup = (req: Request, res: Response) => {
       })
       readStream.pipe(res)
     } else {
-      logger.error('downloadBackup ZipDataDir failed ' + result)
+      logger.error('downloadBackup ZipDataDir failed')
       res.end() // Blob size 0 returned
     }
   })

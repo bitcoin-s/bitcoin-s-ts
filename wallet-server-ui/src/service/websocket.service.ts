@@ -55,12 +55,13 @@ export class WebsocketService {
     const protocol = window.location.protocol.replace('http', 'ws');
     // get location host
     const host = window.location.host;
-    let websocketURL: string = `${protocol}//${host}${environment.wsApi}`
-    const user = environment.user
-    const password = this.authService.password
-    if (password) {
-      websocketURL = `${protocol}//${user}:${password}@${host}${environment.wsApi}` // this works, but would rather set via proxy server
-    }
+    const websocketURL: string = `${protocol}//${host}${environment.wsApi}`
+    // Now setting this at the proxy
+    // const user = environment.user
+    // const password = this.authService.password
+    // if (password) {
+    //   websocketURL = `${protocol}//${user}:${password}@${host}${environment.wsApi}` // this works, but would rather set via proxy server
+    // }
     return websocketURL
   }
 
@@ -81,10 +82,10 @@ export class WebsocketService {
     this.stopWebsocket()
   }
 
-  startWebsocket() {
+  private startWebsocket() {
     this.stopWebsocket()
     const url = this.getWebsocketUrl()
-    console.debug('startWebsocket()')
+    console.debug('startWebsocket()', url)
     const ws = new WebSocket(url)
     const self = this
 
@@ -117,7 +118,7 @@ export class WebsocketService {
     this._ws = ws
   }
 
-  stopWebsocket() {
+  private stopWebsocket() {
     // console.debug('stopWebsocket()')
     if (this._ws) {
       this._ws.close()
@@ -125,7 +126,7 @@ export class WebsocketService {
     }
   }
 
-  handleMessage(message: WebsocketMessage) {
+  private handleMessage(message: WebsocketMessage) {
     console.debug('handleMessage() type:', message.type)
     switch (message.type) {
       case WebsocketMessageType.newaddress:

@@ -9,7 +9,7 @@ export const environment = {
   proxyApi: '/proxy/v0',
   wsApi: '/ws',
   user: 'frontend',
-  password: 'password',
+  password: 'none',
 };
 
 /*

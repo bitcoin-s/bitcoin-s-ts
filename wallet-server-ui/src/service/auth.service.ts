@@ -29,8 +29,10 @@ export class AuthService {
   loggedOut: EventEmitter<void> = new EventEmitter()
 
   // Store password for authentication via Websocket
-  private _password: string
-  get password() { return this._password }
+  // private _password: string
+  // get password() { return this._password }
+  // Authorization header for bitcoin-s server
+  // get serverAuthHeader() { return btoa(`Bearer ${environment.user}:${this.password}`) }
 
   constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
 
@@ -54,7 +56,7 @@ export class AuthService {
   }
 
   login(user: string, password: string) {
-    this._password = password
+    // this._password = password
     return this.http.post<LoginResponse>(environment.proxyApi + `/auth/login`, { user, password })
       .pipe(tap(result => {
         this.doLogin(result)
@@ -78,7 +80,6 @@ export class AuthService {
 
   private doLogin(result: LoginResponse) {
     this.setSession(result)
-    this.router.navigate(['/'])
     this.loggedIn.emit()
   }
         

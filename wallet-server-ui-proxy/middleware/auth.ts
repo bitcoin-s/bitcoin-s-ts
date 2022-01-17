@@ -7,14 +7,7 @@ import { get64randomBytes } from 'common-ts/lib/util/string-util'
 import { RunConfig } from '../type/run-config'
 
 
-// Server authorization
-
-// const Config = <RunConfig>require('../type/run-config')
-
-// exports.addServerAuthHeader = function(req: Request, res: Response, next) {
-//   res.set('Authorization', Config.authHeader)
-//   next()
-// }
+const Config = <RunConfig>require('../type/run-config')
 
 // Client authorization
 
@@ -37,7 +30,7 @@ const users = [{
   user: DEFAULT_USER,
   // This password must match the BITCOIN_S_SERVER_RPC_PASSWORD since the UI needs a matching password initialize the websocket
   // May want to explicitly run on the same environment variable
-  password: process.env.DEFAULT_UI_PASSWORD,
+  password: Config.uiPassword,
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);
 

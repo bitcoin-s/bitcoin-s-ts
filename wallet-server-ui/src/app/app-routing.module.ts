@@ -19,7 +19,7 @@ const appRoutes: Routes = [
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'network', component: NetworkComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  // { path: '',   redirectTo: '/login', pathMatch: 'full' },
+  { path: '',   redirectTo: '/login', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];
 

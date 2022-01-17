@@ -9,6 +9,7 @@ export class ServerConfig {
   // auth
   serverUser: string
   serverPassword: string
+  uiPassword: string
   // routes
   apiRoot: string // prefix on local forwarding endpoint paths like '/api/v0'
   wsRoot: string // prefix on local websocket forwarding endpoint paths like '/ws'

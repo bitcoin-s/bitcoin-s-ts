@@ -11,7 +11,7 @@ const heartbeatController = require('../middleware/heartbeat')
 const buildController = require('../middleware/buildConfig')
 const backupController = require('../middleware/backup').downloadBackup
 const verifyAuth = require('../middleware/auth').verify
-// const addServerAuthHeader = require('../middleware/auth').addServerAuthHeader
+const addServerAuthHeader = require('../middleware/auth').addServerAuthHeader
 
 // It's hard to pull a .ts in from another library
 // See https://www.typescriptlang.org/docs/handbook/esm-node.html
