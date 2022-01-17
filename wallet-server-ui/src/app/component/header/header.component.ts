@@ -43,9 +43,7 @@ export class HeaderComponent implements OnInit {
   onLogout() {
     console.debug('onLogout()')
     this.authService.logout().subscribe(result => {
-      // Shut down polling
-      this.websocketService.stopPolling()
-      this.walletStateService.stopPolling()
+      // Nothing to do here
     })
   }
 

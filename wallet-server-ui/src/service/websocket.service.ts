@@ -56,7 +56,6 @@ export class WebsocketService {
     // get location host
     const host = window.location.host;
     let websocketURL: string = `${protocol}//${host}${environment.wsApi}`
-    // Now setting this at the proxy
     const user = environment.user
     const password = this.authService.password
     if (password) {

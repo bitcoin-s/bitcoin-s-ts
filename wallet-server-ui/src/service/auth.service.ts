@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { Router } from '@angular/router'
-import { Observable, of, Subscription, timer } from 'rxjs'
+import { of, Subscription, timer } from 'rxjs'
 import { shareReplay, tap, take, catchError } from 'rxjs/operators'
 
 import { environment } from '../environments/environment'
@@ -31,10 +30,8 @@ export class AuthService {
   // Store password for authentication via Websocket
   private _password: string
   get password() { return this._password }
-  // Authorization header for bitcoin-s server
-  // get serverAuthHeader() { return btoa(`Bearer ${environment.user}:${this.password}`) }
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   // Initialize this service, throwing loggedIn if current login is valid
   initialize() {
@@ -126,8 +123,6 @@ export class AuthService {
   // Public to allow error handlers to call
   doLogout() {
     this.unsetSession()
-    this.router.navigate(['/login'])
-    // Would be good to close side-drawer if it's open...
     this.loggedOut.emit()
   }
 

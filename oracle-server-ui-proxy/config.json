@@ -9,6 +9,7 @@
 	"oracleExplorerRoot": "/oracleexplorer",
 	"serverUser": "bitcoins",
 	"serverPassword": "",
+	"uiPassword": "",
 	"oracleServerUrl": "http://localhost:9998/",
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",
