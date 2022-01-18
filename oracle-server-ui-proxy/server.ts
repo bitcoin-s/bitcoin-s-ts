@@ -1,142 +1,49 @@
 import fs from 'fs'
 import http from 'http'
 import https from 'https'
-import path from 'path'
 
 import express, { Request, Response } from 'express'
-import fetch from 'node-fetch'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { SocksProxyAgent } from 'socks-proxy-agent'
-import winston from 'winston'
-const  { combine, timestamp, label, printf } = winston.format
 
-import { BuildConfig } from './build-config'
-import { ServerConfig } from './server-config'
+import { RunConfig } from './type/run-config'
 
-
-const Config = <ServerConfig>require('./config.json')
-
-// Setup logging
-const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} ${level}: ${message}`
-})
-const LOG_PATH = process.env.LOG_PATH || ''
-const LOG_FILENAME = 'oracle-server-ui-proxy.log'
-const logger = winston.createLogger({
-  exitOnError: Config.stopOnError,
-  level: 'info',
-  format: combine(timestamp(), logFormat),
-  transports: [
-    new winston.transports.Console(), // Log to console
-    new winston.transports.File({ filename: LOG_PATH + LOG_FILENAME }), // Log to file
-  ],
-})
-
-logger.info('Starting oracle-server-ui-proxy')
-
-let Build: BuildConfig
-try {
-  Build = <BuildConfig>require('./build.json')
-} catch (err) {
-  logger.error('did not find BuildConfig')
-}
-
-/** Error Handlers */
-
-process.on('uncaughtException', error => {
-  logger.error('uncaught error', error)
-  if (Config.stopOnError) process.exit(1)
-})
-
-process.on('unhandledRejection', error => {
-  logger.error('uncaught rejection', error)
-  if (Config.stopOnError) process.exit(1)
-})
 
 /** State */
 
-const UI_PATH = path.join(__dirname, Config.uiPath)
-const proxyRoot = Config.proxyRoot
-const oracleServerUrl = process.env.ORACLE_SERVER_API_URL || Config.oracleServerUrl
-const oracleExplorerHost = Config.oracleExplorerHost // overriden by 'host-override' header
-const blockstreamUrl = Config.blockstreamUrl
-const mempoolUrl = process.env.MEMPOOL_API_URL || Config.mempoolUrl
+const Config = <RunConfig>require('./type/run-config')
 
-logger.info('proxyRoot: ' + proxyRoot + ' oracleServerEndpoint: ' + oracleServerUrl + 
-  ' oracleExplorerHost: ' + oracleExplorerHost + ' mempoolUrl: ' + mempoolUrl)
+/** Logging */
+
+const logger = require('./middleware/logger')
+logger.info('Starting wallet-server-ui-proxy')
+Config.show(logger) // TODO : Why is this not working?
+
+/** Error Handling  */
+
+require('./middleware/error').setErrorHandlers()
+
+/** Application */
 
 const app = express()
 
 // Host oracle-server-ui
-app.use(express.static(UI_PATH))
+app.use(express.static(Config.uiDirectory))
 
-/** Heartbeat Routes */
-
-app.get(`/heartbeat`, (req: Request, res: Response) => {
-  res.json({ sucess: true })
-})
-app.get(`/oracleHeartbeat`, async (req: Request, res: Response) => {
-  let success = false
-  await fetch(oracleServerUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ method: 'getpublickey' })
-  }).then(_ => {
-    success = true
-  }).catch(err => {
-    // errno: 'ECONNREFUSED', code: 'ECONNREFUSED' for no oracle present to talk to
-    success = false
-  })
-  res.send({ success })
-})
-app.get('/buildConfig', (req: Request, res: Response) => {
-  res.json(Build)
-})
-
-/** External Proxy Routes */
-
-// Strip unnecessary header from requests through proxy
-function removeFrontendHeaders(proxyReq: http.ClientRequest) {
-  proxyReq.removeHeader('cookie')
-  proxyReq.removeHeader('referer')
-}
-
-// Use the HOST_OVERRIDE_HEADER if present to set the Oracle Explorer host
-const HOST_OVERRIDE_HEADER = 'host-override'
-function hostRouter(req: http.IncomingMessage) {
-  const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost
-  return `https://${host}/v2`
-}
+// Host all proxy routes
+app.use(Config.proxyRoot, require('./routes/index'))
 
 const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 const MEMPOOL_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 
+const removeFrontendHeaders = require('./middleware/proxy').removeFrontendHeaders
+const getProxyErrorHandler = require('./middleware/proxy').getProxyErrorHandler
+const hostRouter = require('./middleware/proxy').hostRouter
+
+// Use the HOST_OVERRIDE_HEADER if present to set the Oracle Explorer host
+const HOST_OVERRIDE_HEADER = 'host-override'
 const ECONNREFUSED = 'ECONNREFUSED'
-const ECONNREFUSED_REGEX = /ECONNREFUSED/
-
-const TOR_CONNECTION_REFUSED = 'tor connection refused'
-const CONNECTION_REFRUSED_ERROR = 'connection refused'
-const CONNECTION_ERROR = 'connection error' // generic error
-
-function getProxyErrorHandler(name: string, agent?: SocksProxyAgent) {
-  return (err: Error, req: Request, res: Response) => {
-    if (err) {
-      // console.error(err, res.statusCode, res.statusMessage)
-      logger.error(`${name}`, { err, statusCode: res.statusCode, statusMessage: res.statusMessage })
-      const connectionRefused = ECONNREFUSED_REGEX.test(err.message)
-      if (connectionRefused) {
-        if (agent) {
-          res.writeHead(500, `${name} ${TOR_CONNECTION_REFUSED}`).end()
-        } else {
-          res.writeHead(500, `${name} ${CONNECTION_REFRUSED_ERROR}`).end()
-        }
-      } else {
-        res.writeHead(500, `${name} ${CONNECTION_ERROR}`).end()
-      }
-    }
-  }
-}
 
 // Proxy calls to this server on to Oracle Explorer
 function createOracleExplorerProxy(agent?: SocksProxyAgent) {
@@ -153,7 +60,7 @@ function createOracleExplorerProxy(agent?: SocksProxyAgent) {
     onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
       if (!agent) { // this throws error with 'agent' set
         // Use HOST_OVERRIDE_HEADER value to set underlying oracle explorer proxyReq host header
-        const host = req.headers[HOST_OVERRIDE_HEADER] || oracleExplorerHost
+        const host = req.headers[HOST_OVERRIDE_HEADER] || Config.oracleExplorerHost
         proxyReq.setHeader('host', host)
         proxyReq.removeHeader(HOST_OVERRIDE_HEADER)
         // Remove unnecessary headers
@@ -174,7 +81,7 @@ function createBlockstreamProxy(agent?: SocksProxyAgent | null) {
   const root = (agent ? Config.torProxyRoot : '') + Config.blockstreamRoot
   app.use(root, createProxyMiddleware({
     agent,
-    target: blockstreamUrl,
+    target: Config.blockstreamUrl,
     changeOrigin: true,
     pathRewrite: {
       [`^${root}`]: '',
@@ -198,7 +105,7 @@ function createMempoolProxy(agent?: SocksProxyAgent | null) {
   const root = (agent ? Config.torProxyRoot : '') + Config.mempoolRoot
   app.use(root, createProxyMiddleware({
     agent,
-    target: mempoolUrl,
+    target: Config.mempoolUrl,
     changeOrigin: true,
     pathRewrite: {
       [`^${root}`]: '',
@@ -238,7 +145,7 @@ if (USE_TOR_PROXY) {
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
 app.use(Config.apiRoot, createProxyMiddleware({
-  target: oracleServerUrl,
+  target: Config.oracleServerUrl,
   changeOrigin: true,
   pathRewrite: {
     [`^${Config.apiRoot}`]: '',

@@ -5,6 +5,7 @@
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "scripts": {
+    "preinstall": "cd ../common-ts && npm i",
     "prepublish": "npm run build",
     "build": "tsc",
     "test": "node test.js",
@@ -12,6 +13,7 @@
     "tests": "npx ts-node tests.ts"
   },
   "dependencies": {
+    "common-ts": "file:../common-ts",
     "needle": "^3.0.0"
   },
   "devDependencies": {

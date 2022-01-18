@@ -7,7 +7,8 @@ import { noinputTests } from './test/noinput-tests'
 
 console.debug('tests.ts')
 
-OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
+OracleServer.ConfigureServerURL('http://localhost:9998/')
+OracleServer.ConfigureAuthorizationHeader('Basic ' + Buffer.from('bitcoins:password').toString('base64'))
 
 export async function runTests() {
   await deleteTests()

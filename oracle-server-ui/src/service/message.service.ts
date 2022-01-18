@@ -69,7 +69,7 @@ export class MessageService {
   }
 
   oracleHeartbeat() {
-    return this.http.get<SuccessType>(environment.proxyApi + '/oracleHeartbeat')
+    return this.http.get<SuccessType>(environment.proxyApi + '/serverHeartbeat')
   }
 
   buildConfig() {

@@ -2,6 +2,7 @@ import needle from 'needle'
 
 import { SendServerMessage } from '../../common-ts/lib/index'
 // import common from '../../common-ts/lib/index'
+
 import { ServerMessage } from '../../common-ts/lib/type/server-message'
 import { MessageType, ServerResponse, VersionResponse } from '../../common-ts/lib/type/server-types'
 import { getMessageBody } from '../../common-ts/lib/util/message-util'
@@ -14,7 +15,7 @@ import { NetworkMessageType } from './type/network-types'
 import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
 
 // Expose all 'common' endpoints
-export * from '../../common-ts/lib/index';
+export * from '../../common-ts/lib/index'
 
 
 /** Blockchain functions */
