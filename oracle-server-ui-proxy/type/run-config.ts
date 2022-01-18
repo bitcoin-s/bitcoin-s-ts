@@ -56,8 +56,6 @@ uiDirectory: ${this.uiDirectory}
 backupDirectory: ${this.backupDirectory}
 logFilename: ${this.logFilepath}
 serverUser: ${this.serverUser}
-serverPassword: ${this.serverPassword}
-uiPassword: ${this.uiPassword}
 apiRoot: ${this.apiRoot}
 proxyRoot: ${this.proxyRoot}
 oracleExplorerRoot: ${this.oracleExplorerRoot}
@@ -70,7 +68,8 @@ mempoolUrl: ${this.mempoolUrl}
 torProxyRoot: ${this.torProxyRoot}
 torProxyUrl: ${this.torProxyUrl}
 `)
-
+// serverPassword: ${this.serverPassword}
+// uiPassword: ${this.uiPassword}
   }
 }
 
