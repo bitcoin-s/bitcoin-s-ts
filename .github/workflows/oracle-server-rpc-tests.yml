@@ -14,7 +14,7 @@ jobs:
       - name: Pull latest oracle server docker image
         run: docker pull bitcoinscala/bitcoin-s-oracle-server:latest
       - name: 'Run oracle server docker image'
-        run: docker run -d -p 9998:9998 bitcoinscala/bitcoin-s-oracle-server:latest
+        run: docker run -d -p 9998:9998 -e BITCOIN_S_ORACLE_RPC_PASSWORD=password bitcoinscala/bitcoin-s-oracle-server:latest
       - name: 'Run tests'
         run: |
           cd oracle-server-ts
