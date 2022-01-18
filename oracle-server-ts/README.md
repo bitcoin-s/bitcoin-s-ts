@@ -20,7 +20,9 @@ Run `npm run test` to start JavaScript invocation test script.
 ```
 import * as OracleServer from '@bitcoin-s-ts/oracle-server-ts'
 
-OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
+OracleServer.ConfigureServerURL('http://localhost:9998/')
+// Optional, if authorization is set on oracleServer
+OracleServer.ConfigureAuthorizationHeader('Basic ' + Buffer.from('bitcoins:password').toString('base64'))
 
 OracleServer.GetPublicKey().then(r => {
   console.debug('GetPublicKey()', r)
@@ -31,7 +33,9 @@ OracleServer.GetPublicKey().then(r => {
 ```
 const OracleServer = require('@bitcoin-s-ts/oracle-server-ts')
 
-OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
+OracleServer.ConfigureServerURL('http://localhost:9998/')
+// Optional, if authorization is set on oracleServer
+OracleServer.ConfigureAuthorizationHeader('Basic ' + Buffer.from('bitcoins:password').toString('base64'))
 
 OracleServer.GetPublicKey().then(r => {
   console.debug('GetPublicKey()', r)
