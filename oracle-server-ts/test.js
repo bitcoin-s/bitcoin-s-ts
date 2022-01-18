@@ -8,6 +8,7 @@ const validationUtil = require('./dist/lib/util/validation-util')
 
 // Set oracleServer URL
 OracleServer.ConfigureOracleServerURL('http://localhost:9998/')
+OracleServer.ConfigureAuthorizationHeader('Basic ' + Buffer.from('bitcoins:password').toString('base64'))
 
 // Test config variables
 
