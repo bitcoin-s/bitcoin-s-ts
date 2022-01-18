@@ -5,7 +5,7 @@
     "preinstall": "cd ../wallet-ts && npm i",
     "build": "node ./build/buildVersion",
     "start": "npx ts-node server.ts",
-    "startlocal": "DEFAULT_UI_PASSWORD=none npx ts-node server.ts",
+    "startlocal": "DEFAULT_UI_PASSWORD=none BITCOIN_S_SERVER_RPC_PASSWORD=password npx ts-node server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": true,

@@ -8,6 +8,9 @@ export class ServerConfig {
 	torProxyUrl: string // like 'socks5://127.0.0.1:9050'
 	proxyRoot: string // prefix on local paths like '/proxy'
 	oracleExplorerRoot: string // prefix on local paths like '/oracleexplorer'
+	serverUser: string
+	serverPassword: string
+	uiPassword: string
 	oracleServerUrl: string // oracle server endpoint like 'http://host:port/'
 	oracleExplorerHost: string // oracle explorer host like 'test.oracle.suredbits.com'
 	blockstreamRoot: string // prefix on local paths like '/blockstream'

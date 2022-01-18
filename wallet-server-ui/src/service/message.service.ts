@@ -52,7 +52,13 @@ export class MessageService {
 
   private sendServerMessage(message: WalletServerMessage, errorHandling: boolean) {
     const url = environment.walletServerApi
-    let obs = this.http.post<ServerResponse<any>>(url, message)
+    const options = {}
+    // Set at server now
+    // if (this.authService.password) {
+    //   let headers = new Headers()
+    //   headers.set('Authorization', this.authService.serverAuthHeader)
+    // }
+    let obs = this.http.post<ServerResponse<any>>(url, message, options)
 
     if (errorHandling) {
       return obs.pipe(catchError((error: any, caught: Observable<unknown>) => {

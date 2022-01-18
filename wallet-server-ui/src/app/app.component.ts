@@ -42,37 +42,37 @@ export class AppComponent implements OnInit, OnDestroy {
     public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
     private websocketService: WebsocketService, public authService: AuthService) {
     
-    // console.debug('AppComponent()')
     this.loggedIn$ = this.authService.loggedIn.subscribe(r => {
       console.debug('loggedIn')
-      this.createSubscriptions()
-      this.walletStateService.startPolling()
-      this.websocketService.startPolling()
+      this.onLogin()
     })
     this.loggedOut$ = this.authService.loggedOut.subscribe(r => {
       console.debug('loggedOut')
-      this.destroySubscriptions()
-      this.walletStateService.stopPolling()
-      this.websocketService.stopPolling()
-      this.stateLoaded = false
-      this.rightDrawer.close()
+      this.onLogout()
     })
     this.authService.initialize()
   }
+  
+  private onLogin() {
+    this.createSubscriptions()
+    this.walletStateService.startPolling()
+  }
+
+  private onLogout() {
+    this.destroySubscriptions()
+    this.walletStateService.stopPolling()
+    this.websocketService.stopPolling()
+    this.stateLoaded = false
+    this.rightDrawer.close()
+    this.router.navigate(['/login'])
+  }
 
   ngOnInit(): void {
-    // console.debug('AppComponent.ngOnInit()')
+    console.debug('AppComponent.ngOnInit() url:', this.router.url, 'isLoggedOut:', this.authService.isLoggedOut)
     this.titleService.setTitle(this.translate.instant('title'))
 
     const enableDarkMode = localStorage.getItem(CSS_DARK_MODE) !== null
     this.onRootClassName(enableDarkMode)
-
-    // If root route is loaded and we're not logged in yet, go to /login
-    if (this.router.url === '/') {
-      if (this.authService.isLoggedOut) {
-        this.router.navigate(['/login'])
-      }
-    }
   }
 
   ngOnDestroy() {
@@ -84,14 +84,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private createSubscriptions() {
     if (this.subscriptions) this.destroySubscriptions()
     this.subscriptions = []
-    // Check current route and set route based on wallet and dlc state after initialization
     let sub = this.walletStateService.stateLoaded.subscribe(_ => {
       this.stateLoaded = true
       console.debug('stateLoaded:', this.router.url)
-      if (this.router.url === '/') {
-        if (this.authService.isLoggedOut) {
-          this.router.navigate(['/login'])
-        } else if (this.walletStateService.dlcs.value.length > 0) {
+
+      this.websocketService.startPolling()
+
+      // Check current route and set route based on wallet and dlc state after initialization
+      if (this.router.url === '/login') {
+        if (this.walletStateService.dlcs.value.length > 0) {
           this.router.navigate(['/contracts'])
         } else { // if (this.walletStateService.balances.total > 0) {
           this.router.navigate(['/wallet'])

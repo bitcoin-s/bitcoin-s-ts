@@ -20,7 +20,7 @@ function createLoggerInstance(): winston.Logger {
         // Log to console
         new winston.transports.Console(),
         // Log to file
-        new winston.transports.File({ filename: Config.logFilename }),
+        new winston.transports.File({ filename: Config.logFilepath }),
       ],
     })
 }

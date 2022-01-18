@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { Router } from '@angular/router'
 import { of, Subscription, timer } from 'rxjs'
 import { shareReplay, tap, take, catchError } from 'rxjs/operators'
 
@@ -28,18 +27,24 @@ export class AuthService {
   loggedIn: EventEmitter<void> = new EventEmitter()
   loggedOut: EventEmitter<void> = new EventEmitter()
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
+  // Store password for authentication via Websocket
+  private _password: string
+  get password() { return this._password }
+
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   // Initialize this service, throwing loggedIn if current login is valid
   initialize() {
+    // console.debug('AuthService.initialize()')
     const expiresAt = localStorage.getItem(EXPIRES_KEY)
     if (expiresAt) {
       const expiration = new Date(parseInt(expiresAt))
       if (expiration.getTime() < new Date().getTime()) {
-        console.debug('Found expired auth token')
+        console.debug('AuthService.initialize() Found expired auth token')
         this.unsetSession()
       } else {
-        console.debug('Found auth token')
+        console.debug('AuthService.initialize() Found auth token')
+        // If the token is from a previous server run, will logout when data loading 403s
         this.expiration = expiration
         this.setLoginTimer(expiration.getTime() - new Date().getTime())
         this.loggedIn.emit()
@@ -48,6 +53,7 @@ export class AuthService {
   }
 
   login(user: string, password: string) {
+    this._password = password
     return this.http.post<LoginResponse>(environment.proxyApi + `/auth/login`, { user, password })
       .pipe(tap(result => {
         this.doLogin(result)
@@ -71,7 +77,6 @@ export class AuthService {
 
   private doLogin(result: LoginResponse) {
     this.setSession(result)
-    this.router.navigate(['/'])
     this.loggedIn.emit()
   }
         
@@ -118,8 +123,6 @@ export class AuthService {
   // Public to allow error handlers to call
   doLogout() {
     this.unsetSession()
-    this.router.navigate(['/login'])
-    // Would be good to close side-drawer if it's open...
     this.loggedOut.emit()
   }
 

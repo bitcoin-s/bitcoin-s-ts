@@ -6,6 +6,10 @@ export class ServerConfig {
   useHTTPS: boolean = false
   // fs
   uiPath: string    // path to UI from local project root
+  // auth
+  serverUser: string
+  serverPassword: string
+  uiPassword: string
   // routes
   apiRoot: string // prefix on local forwarding endpoint paths like '/api/v0'
   wsRoot: string // prefix on local websocket forwarding endpoint paths like '/ws'

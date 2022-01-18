@@ -4,6 +4,12 @@ import jwt from 'jsonwebtoken'
 import { BodyRequest } from 'common-ts/lib/util/express-util'
 import { get64randomBytes } from 'common-ts/lib/util/string-util'
 
+import { RunConfig } from '../type/run-config'
+
+
+const Config = <RunConfig>require('../type/run-config')
+
+// Client authorization
 
 // Note: Any of this could be externalized to a config file / env vars
 
@@ -22,7 +28,7 @@ const DEFAULT_USER = 'frontend'
 // Set frontend password - does not persist locally
 const users = [{
   user: DEFAULT_USER,
-  password: process.env.DEFAULT_UI_PASSWORD,
+  password: Config.uiPassword,
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);
 

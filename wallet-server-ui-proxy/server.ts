@@ -16,6 +16,7 @@ const Config = <RunConfig>require('./type/run-config')
 
 const logger = require('./middleware/logger')
 logger.info('Starting wallet-server-ui-proxy')
+Config.show(logger)
 
 /** Error Handling  */
 
@@ -44,7 +45,16 @@ app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
   pathRewrite: {
     [`^${Config.apiRoot}`]: '',
   },
+  // auth: `${Config.serverUser}:${Config.serverPassword}`, // Does not work to get auth set against backend
   proxyTimeout: PROXY_TIMEOUT,
+  onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
+    // console.debug('onProxyReq() ws')
+    // If we have a user and password set, add a Basic auth header for them
+    // Backend server will ignore if it does not currently have a password set
+    if (Config.serverUser && Config.serverPassword) {
+      proxyReq.setHeader('Authorization', Config.serverAuthHeader)
+    }
+  },
   onError: (err: Error, req: Request, res: Response) => {
     // Handle server is unavailable
     if (err && (<any>err).code === ECONNREFUSED) {
@@ -65,14 +75,21 @@ const wsProxy = createProxyMiddleware({
     [`^${Config.wsRoot}`]: '',
   },
   proxyTimeout: WS_PROXY_TIMEOUT,
+  auth: `${Config.serverUser}:${Config.serverPassword}`,
   // onOpen: () => {
   //   console.debug('onOpen()')
   // },
   // onProxyReqWs: () => {
   //   console.debug('onProxyReqWs()')
   // },
+  // Currently setting login info at UI
   // onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
-  //   console.debug('onProxyReq() ws')
+  //   console.debug('onProxyReq() ws', proxyReq.getHeader('Authorization'))
+  //   // If we have a user and password set, add a Basic auth header for them
+  //   // Backend server will ignore if it does not currently have a password set
+  //   if (Config.serverUser && Config.serverPassword) {
+  //     proxyReq.setHeader('Authorization', Config.serverAuthHeader)
+  //   }
   // },
   onError: (err: Error, req: Request, res: Response) => {
     logger.error('websocket onError', err, res.statusCode, res.statusMessage)
@@ -81,6 +98,7 @@ const wsProxy = createProxyMiddleware({
     // [HPM] Error occurred while proxying request localhost:4200 to undefined [ECONNRESET] (https://nodejs.org/api/errors.html#errors_common_system_errors)
   }
 })
+// Using verifyAuth here works without actual auth set on local, but not on Docker
 app.use(Config.wsRoot, verifyAuth, wsProxy)
 
 /** Server Instance */

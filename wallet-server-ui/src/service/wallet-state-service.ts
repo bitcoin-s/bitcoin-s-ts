@@ -1,13 +1,14 @@
-import { EventEmitter, Injectable } from "@angular/core"
-import { BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, timer } from "rxjs"
-import { catchError, concatMap, filter, first, map, retry, tap } from "rxjs/operators"
-import { BuildConfig } from "~type/proxy-server-types"
+import { EventEmitter, Injectable } from '@angular/core'
+import { BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, timer } from 'rxjs'
+import { catchError, concatMap, filter, first, map, retry, tap } from 'rxjs/operators'
+import { BuildConfig } from '~type/proxy-server-types'
 
-import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from "~type/wallet-server-types"
-import { BitcoinNetwork } from "~util/utils"
-import { getMessageBody } from "~util/wallet-server-util"
+import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from '~type/wallet-server-types'
+import { BitcoinNetwork } from '~util/utils'
+import { getMessageBody } from '~util/wallet-server-util'
+import { AuthService } from './auth.service'
 
-import { MessageService } from "./message.service"
+import { MessageService } from './message.service'
 
 
 export /* const */ enum WalletServiceState {
@@ -19,8 +20,8 @@ export /* const */ enum WalletServiceState {
 const OFFLINE_POLLING_TIME = 5000 // ms
 const ONLINE_POLLING_TIME = 30000 // ms
 
-const MATCH_LEADING_DIGITS = /^([0-9]+) /
-const DEFAULT_FEE_RATE = '1 sats/vbyte'
+const FEE_RATE_NOT_SET = -1
+const DEFAULT_FEE_RATE = 1 // sats/vbyte
 
 @Injectable({ providedIn: 'root' })
 export class WalletStateService {
@@ -68,6 +69,9 @@ export class WalletStateService {
   private dlcsInitialized = false
 
   private pollingTimer$: Subscription;
+
+  constructor(private messageService: MessageService, private authService: AuthService) {}
+
   private stopPollingTimer() {
     // console.debug('WalletStateService.stopPollingTimer()')
     if (this.pollingTimer$) this.pollingTimer$.unsubscribe()
@@ -102,15 +106,11 @@ export class WalletStateService {
     this.stopPollingTimer()
   }
 
-  constructor(private messageService: MessageService) {}
-  
   private setOnline() {
     // console.debug('WalletStateService.setOnline()')
     this.state = WalletServiceState.online
     if (!this.initialized) { // coming online
       this.initializeState()
-      this.loadDLCs() // First time
-      this.startPollingTimer(ONLINE_POLLING_TIME, ONLINE_POLLING_TIME)
     }
   }
 
@@ -125,26 +125,28 @@ export class WalletStateService {
 
   private checkInitialized() {
     if (this.initialized && this.dlcsInitialized) {
-      // console.debug('WalletStateService.checkInitialized() stateLoaded going true', this.state)
+      console.debug('WalletStateService.checkInitialized() stateLoaded going', this.state)
       this.stateLoaded.next() // initial state loaded event
     }
   }
 
   private initializeState() {
-    // console.debug('initializeState()')
-    return forkJoin(
+    console.debug('initializeState()')
+
+    return forkJoin([
       this.getServerVersion(),
       this.getBuildConfig(),
       this.getMempoolUrl(),
       this.getFeeEstimate(),
       this.getDLCHostAddress(),
-      // refreshWalletState()
-      this.refreshWalletInfo(), 
-      this.refreshBalances(),
-      this.refreshDLCWalletAccounting()).subscribe(_ => {
-        this.initialized = true
-        this.checkInitialized()
-      })
+      this.refreshWalletState(),
+      this.loadDLCs(),
+    ]).subscribe(_ => {
+      console.debug(' initializedState() initialized')
+      this.initialized = true
+      this.checkInitialized()
+      this.startPollingTimer(ONLINE_POLLING_TIME, ONLINE_POLLING_TIME)
+    })
   }
 
   private getServerVersion() {
@@ -177,20 +179,11 @@ export class WalletStateService {
   }
 
   private getFeeEstimate() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(
-      catchError(error =>{
-        console.error('fee estimate was not available from the server, setting default')
-        return of({ result: DEFAULT_FEE_RATE })
-      }),
-      tap(r => {
-      if (r.result) { // like '1234 sats/vbyte'
-        // Rip string to number
-        const matches = MATCH_LEADING_DIGITS.exec(r.result)
-        if (matches && matches[0]) {
-          this.feeEstimate = parseInt(matches[0])
-        } else {
-          console.error('failed to process fee estimate string')
-        }
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(tap(r => {
+      if (r.result && r.result !== FEE_RATE_NOT_SET) {
+        this.feeEstimate = r.result
+      } else {
+        this.feeEstimate = DEFAULT_FEE_RATE
       }
     }))
   }
@@ -208,9 +201,6 @@ export class WalletStateService {
     return forkJoin([this.refreshWalletInfo(), 
       this.refreshBalances(),
       this.refreshDLCWalletAccounting()])
-      .subscribe(r => {
-        // Nothing to do
-      })
   }
 
   private refreshWalletInfo() {
@@ -241,13 +231,13 @@ export class WalletStateService {
 
   private loadDLCs() {
     console.debug('loadDLCs()')
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).subscribe(r => {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).pipe(tap(r => {
       if (r.result) {
         const dlcs = <DLCContract[]>r.result
         this.dlcs.next(dlcs)
         this.loadContractInfos(dlcs)
       }
-    })
+    }))
   }
 
   refreshDLC(dlcId: string) {
@@ -293,10 +283,17 @@ export class WalletStateService {
   /** ContractInfo */
 
   private loadContractInfos(dlcs: DLCContract[]) {
+    console.debug('loadContractInfos()', dlcs.length)
     const ci = this.contractInfos.value
+    if (dlcs.length === 0) {
+      // No additional data to load
+      this.dlcsInitialized = true
+      this.checkInitialized()
+    }
     return forkJoin(dlcs.map(dlc => 
       this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))))
       .subscribe((results: ServerResponse<ContractInfo>[]) => {
+        // console.debug(' loadContractInfos()', results)
         for (let i = 0; i < results.length; i++) {
           ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
         }
