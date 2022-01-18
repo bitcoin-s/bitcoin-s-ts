@@ -52,8 +52,6 @@ uiDirectory: ${this.uiDirectory}
 backupDirectory: ${this.backupDirectory}
 logFilename: ${this.logFilepath}
 serverUser: ${this.serverUser}
-serverPassword: ${this.serverPassword}
-uiPassword: ${this.uiPassword}
 apiRoot: ${this.apiRoot}
 wsRoot: ${this.wsRoot}
 proxyRoot: ${this.proxyRoot}
@@ -61,6 +59,8 @@ walletServerUrl: ${this.walletServerUrl}
 walletServerWs: ${this.walletServerWs}
 mempoolUrl: ${this.mempoolUrl}
 `)
+// serverPassword: ${this.serverPassword}
+// uiPassword: ${this.uiPassword}
   }
 }
 

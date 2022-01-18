@@ -10,7 +10,7 @@
 	"oracleExplorerRoot": "/oracleexplorer",
 	"serverUser": "bitcoins",
 	"serverPassword": "",
-	"uiPassword": "",
+	"uiPassword": "none",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",
 	"bitcoinsHome": "~/.bitcoin-s/",
