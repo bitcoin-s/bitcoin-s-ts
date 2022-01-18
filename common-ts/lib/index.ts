@@ -6,13 +6,13 @@ import { MessageType, ServerResponse, VersionResponse } from './type/server-type
 import { getMessageBody } from './util/message-util'
 
 
-let WALLET_SERVER_URL = 'http://localhost:9999/'
+let SERVER_URL = 'http://localhost:9999/'
 let AUTHORIZATION_HEADER = ''
 
 /** Set Wallet Server endpoint */
-export function ConfigureWalletServerURL(url: string) {
-  console.debug('ConfigureWalletServerURL()', url)
-  WALLET_SERVER_URL = url
+export function ConfigureServerURL(url: string) {
+  console.debug('ConfigureServerURL()', url)
+  SERVER_URL = url
 }
 /** Set Wallet Server Authorization header */
 export function ConfigureAuthorizationHeader(header: string) {
@@ -25,7 +25,7 @@ export function SendServerMessage(message: ServerMessage) {
   if (message) {
     const options: any = { json: true }
     if (AUTHORIZATION_HEADER) options.headers = { 'Authorization': AUTHORIZATION_HEADER }
-    return needle('post', `${WALLET_SERVER_URL}`, message, options).then(response => {
+    return needle('post', `${SERVER_URL}`, message, options).then(response => {
       const body = <ServerResponse<any>>response.body
       // Throw backend error to break promise chain for catch handling
       if (body.error) throw(body.error)

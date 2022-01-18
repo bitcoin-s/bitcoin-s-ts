@@ -9,7 +9,8 @@ import { networkTests } from './test/network-tests'
 
 console.debug('tests.ts')
 
-WalletServer.ConfigureWalletServerURL('http://localhost:9999/')
+WalletServer.ConfigureServerURL('http://localhost:9999/')
+// WalletServer.ConfigureAuthorizationHeader('Basic ' + Buffer.from('bitcoins:password').toString('base64'))
 
 export async function runTests() {
   await blockchainTests()

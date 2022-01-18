@@ -12,7 +12,7 @@ const Config = <RunConfig>require('../type/run-config')
 const logger = require('../middleware/logger')
 
 WalletServer.ConfigureWalletServerURL(Config.walletServerUrl)
-WalletServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
+WalletServer.ConfigureServerURL(Config.serverAuthHeader)
 
 const filename = 'bitcoin-s-backup.zip'
 
