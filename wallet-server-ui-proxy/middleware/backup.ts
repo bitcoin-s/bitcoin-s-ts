@@ -11,8 +11,8 @@ import { RunConfig } from '../type/run-config'
 const Config = <RunConfig>require('../type/run-config')
 const logger = require('../middleware/logger')
 
-WalletServer.ConfigureWalletServerURL(Config.walletServerUrl)
-WalletServer.ConfigureServerURL(Config.serverAuthHeader)
+WalletServer.ConfigureServerURL(Config.walletServerUrl)
+WalletServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
 
 const filename = 'bitcoin-s-backup.zip'
 
