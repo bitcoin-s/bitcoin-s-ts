@@ -1,0 +1,55 @@
+<header>
+  <nav class="header">
+    <a mat-button class="app-button" routerLink="/">
+      <div class="app-logo"></div>
+      <span translate>header.title</span>
+    </a>
+
+    <ng-container *ngIf="authService.isLoggedOut">
+      <a mat-button routerLink="/login" routerLinkActive="active">
+        {{ 'login.heading' | translate }}</a>
+    </ng-container>
+
+    <ng-container *ngIf="authService.isLoggedIn">
+
+      <a mat-button routerLink="/oracle" routerLinkActive="active">
+        {{ 'oracle.heading' | translate }}</a>
+
+      <div class="spacer-auto"></div>
+      
+      <button class="sign-message-icon" mat-icon-button
+        matTooltip="{{ 'signMessage.heading' | translate }}"
+        aria-label="Sign Message" (click)="onSignMessage()">
+        <mat-icon>drive_file_rename_outline</mat-icon>
+      </button>
+
+      <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
+        matTooltip="{{ 'about.heading' | translate }}"
+        aria-label="About">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+
+      <button mat-icon-button class="more-icon"
+        matTooltip="{{ 'More' | translate }}"
+        [matMenuTriggerFor]="moreMenu" aria-label="More">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #moreMenu="matMenu">
+        <button mat-menu-item (click)="onConfiguration()">
+          <mat-icon class="material-icons-outlined">settings</mat-icon>
+          <span translate>configuration.heading</span>
+        </button>
+        <button mat-menu-item (click)="onAdvanced()">
+          <mat-icon class="material-icons-outlined">build</mat-icon>
+          <span translate>advanced.heading</span>
+        </button>
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon class="material-icons-outlined">logout</mat-icon>
+          <span translate>action.logout</span>
+        </button>
+      </mat-menu>
+
+    </ng-container>
+
+  </nav>
+</header>

@@ -1,7 +1,8 @@
-import { Injectable, OnInit } from '@angular/core'
+import { EventEmitter, Injectable, OnInit } from '@angular/core'
 import { BehaviorSubject, forkJoin, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
+import { BuildConfig } from '~type/proxy-server-types'
 import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
 import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 
@@ -19,6 +20,9 @@ type OracleExplorerAnnouncementMap = { [eventName: string]: OracleAnnouncementsR
 @Injectable({ providedIn: 'root' })
 export class OracleStateService {
 
+  serverVersion = ''
+  buildConfig: BuildConfig
+
   // oracleName = '' // lives on OracleExpolorer service for now
   publicKey = ''
   stakingAddress = ''
@@ -32,7 +36,13 @@ export class OracleStateService {
   // Oracle Explorer state
   oeAnnouncements: BehaviorSubject<OracleExplorerAnnouncementMap> = new BehaviorSubject({}) // should this index on sha256 id instead?
 
+  // TODO : Remove
   announcementsReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+  // Initial State Loaded signal
+  stateLoaded: EventEmitter<void> = new EventEmitter()
+
+  private initialized = false
 
   private updateFlatAnnouncements() {
     this.flatAnnouncements.next([...this.flatAnnouncements.value])
@@ -44,24 +54,66 @@ export class OracleStateService {
 
   constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService, 
     private blockstreamService: BlockstreamService, private mempoolService: MempoolService) {
+    
+  }
+
+  initialize() {
     this.oracleExplorerService.oracleExplorer.subscribe(oe => {
       this.getAnnouncementsFromOracleExplorer().subscribe() // Check for announcements on new Explorer selection
     })
 
     this.getPublicKeyAndOracleName()
     this.getStakingAddressAndBalance()
+
+    // TODO : Wait for things
+    this.stateLoaded.next()
+
+    this.getServerVersion().subscribe()
+    this.getBuildConfig().subscribe()
   }
 
-  getPublicKeyAndOracleName() {
+  initializeState() {
+    console.debug('initializeState()')
+
+    return forkJoin([
+      this.getServerVersion(),
+      this.getBuildConfig(),
+      this.getPublicKeyAndOracleName(),
+      this.getStakingAddressAndBalance(),
+    ]).subscribe(_ => {
+      console.debug(' initializedState() initialized')
+      this.initialized = true
+      this.stateLoaded.next()
+    })
+  }
+
+  private getServerVersion() {
+    return this.messageService.getServerVersion().pipe(tap(r => {
+      if (r.result) {
+        this.serverVersion = r.result.version;
+      }
+    }))
+  }
+
+  private getBuildConfig() {
+    return this.messageService.buildConfig().pipe(tap(result => {
+      if (result) {
+        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = result
+      }
+    }))
+  }
+
+  private getPublicKeyAndOracleName() {
     console.debug('getPublicKeyAndOracleName()')
-    this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).subscribe(result => {
+    return this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).pipe(tap(result => {
       if (result.result) {
         this.publicKey = result.result
         if (!this.oracleExplorerService.oracleName.value) {
           this.getOracleNameFromOracleExplorer()
         }
       }
-    })
+    }))
   }
 
   getOracleNameFromOracleExplorer() {
@@ -70,58 +122,56 @@ export class OracleStateService {
     })
   }
 
-  getStakingAddressAndBalance() {
+  private getStakingAddressAndBalance() {
     console.debug('getStakingAddressAndBalance()')
-    this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).subscribe(result => {
+    return this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).pipe(tap(result => {
       if (result.result) {
         this.stakingAddress = result.result
-        this.getStakingBalance()
+        this.getStakingBalance().subscribe()
       }
-    })
+    }))
   }
 
   getStakingBalance() {
     console.debug('getStakingBalance()')
     if (this.stakingAddress) {
-      // this.blockstreamService.getBalance(this.stakingAddress).subscribe(result => {
-      //   this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
-      // })
-      this.mempoolService.getBalance(this.stakingAddress).subscribe(result => {
+      return this.mempoolService.getBalance(this.stakingAddress).pipe(tap(result => {
         this.stakedAmount = this.blockstreamService.balanceFromGetBalance(result).toString()
-      })
+      }))
     }
+    return of(null)
   }
 
   getAllAnnouncements() {
     console.debug('getAllAnnouncements()')
     this.announcementsReceived.next(false)
     this.flatAnnouncements.next([])
-    const m = getMessageBody(MessageType.listannouncements)
-    const obs = this.messageService.sendMessage(m)
-    return obs.pipe(tap(result => {
-      if (result.result) {
-        const announcementNames = <string[]>result.result
-        this.announcementNames.next(announcementNames)
-        const announcements = []
-        for (const e of announcementNames) {
-          announcements.push(this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [e])))
-        }
-        if (announcements.length > 0) {
-          forkJoin(announcements).subscribe((results) => {
-            if (results) {
-              for (const e of results) {
-                this.addEventToState(<OracleAnnouncement>e.result)
+    const obs = this.messageService.sendMessage(getMessageBody(MessageType.listannouncements))
+      .pipe(tap(result => {
+        if (result.result) {
+          const announcementNames = <string[]>result.result
+          this.announcementNames.next(announcementNames)
+          const announcements = []
+          for (const e of announcementNames) {
+            announcements.push(this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [e])))
+          }
+          if (announcements.length > 0) {
+            forkJoin(announcements).subscribe((results) => {
+              if (results) {
+                for (const e of results) {
+                  this.addEventToState(<OracleAnnouncement>e.result)
+                }
+                this.updateFlatAnnouncements()
+                this.announcementsReceived.next(true)
               }
-              this.updateFlatAnnouncements()
-              this.announcementsReceived.next(true)
-            }
-            this.getAnnouncementsFromOracleExplorer().subscribe()
-          })
-        } else {
-          this.announcementsReceived.next(true)
+              this.getAnnouncementsFromOracleExplorer().subscribe()
+            })
+          } else {
+            this.announcementsReceived.next(true)
+          }
         }
-      }
-    }))
+      }))
+    return obs
   }
 
   // Reloads an Announcement after signing to update field values
@@ -133,14 +183,15 @@ export class OracleStateService {
       this.flatAnnouncements.value.splice(i, 1)
     }
     const obs = this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [a.eventName]))
-    return obs.pipe(tap(result => {
-      console.debug(' reloadAnnouncement()', result)
-      if (result.result) {
-        this.addEventToState(result.result)
-        this.updateFlatAnnouncements()
-        this.getOEAnnouncement(result.result).subscribe()
-      }
-    }))
+      .pipe(tap(result => {
+        console.debug(' reloadAnnouncement()', result)
+        if (result.result) {
+          this.addEventToState(result.result)
+          this.updateFlatAnnouncements()
+          this.getOEAnnouncement(result.result).subscribe()
+        }
+      }))
+    return obs
   }
 
   private getAnnouncementsFromOracleExplorer() {
@@ -163,14 +214,14 @@ export class OracleStateService {
   getOEAnnouncement(a: OracleAnnouncement) {
     console.debug('getOEAnnouncement()', a)
     const obs = this.oracleExplorerService.getAnnouncement(a.announcementTLVsha256)
-    const pipe = obs.pipe(tap(result => {
-      console.debug('getOEAnnouncement()', a.announcementTLVsha256, result)
-      if (result) {
-        this.oeAnnouncements.value[a.eventName] = result.result // will be null for no result
-        this.updateAnnouncements()
-      }
-    }))
-    return pipe
+      .pipe(tap(result => {
+        console.debug('getOEAnnouncement()', a.announcementTLVsha256, result)
+        if (result) {
+          this.oeAnnouncements.value[a.eventName] = result.result // will be null for no result
+          this.updateAnnouncements()
+        }
+      }))
+    return obs
   }
 
 }

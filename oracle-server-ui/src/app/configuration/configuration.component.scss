@@ -1,18 +1,30 @@
-.configuration-section {
-  padding: 0 1rem;
-  min-width: 350px;
 
+.configuration-section {
   display: flex;
   flex-direction: column;
 
   height: 100%;
+
+  .dark-mode {
+    display: flex;
+    // vertical-align: middle;
+    align-items: center;
+
+    label {
+      margin-right: 1rem;
+      flex: 1;
+    }
+    mat-slide-toggle {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
   
   .form-container > * {
     width: 100%;
   }
 
   .button-container {
-    margin-top: 2rem;
     margin-bottom: 2rem;
 
     button {

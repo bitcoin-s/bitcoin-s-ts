@@ -1,0 +1,16 @@
+<section class="advanced-section">
+  <div class="section-header">
+    <h2 translate>advanced.heading</h2>
+    <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <div class="operations">
+    <button mat-stroked-button (click)="downloadBackup()" [disabled]="executing">
+      {{ 'advanced.backup' | translate }}
+      <div class="spinner" *ngIf="backupExecuting">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+    </button>
+  </div>
+
+</section>

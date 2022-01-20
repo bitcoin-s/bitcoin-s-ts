@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
+import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { NewAnnouncementComponent } from '~app/new-announcement/new-announcement.component'
 
 import { BlockstreamService } from '~service/blockstream-service'
 import { MessageService } from '~service/message.service'
@@ -11,7 +13,6 @@ import { OracleExplorerService } from '~service/oracle-explorer.service'
 import { OracleStateService } from '~service/oracle-state.service'
 
 import { OracleAnnouncement } from '~type/oracle-server-types'
-import { BuildConfig } from '~type/proxy-server-types'
 
 import { formatOutcomes } from '~util/oracle-server-util'
 import { KrystalBullImages } from '~util/ui-util'
@@ -24,18 +25,24 @@ import { KrystalBullImages } from '~util/ui-util'
 })
 export class OracleComponent implements OnInit, AfterViewInit {
 
-  @Output() showCreateAnnouncement: EventEmitter<void> = new EventEmitter();
-  @Output() showAnnouncementDetail: EventEmitter<OracleAnnouncement> = new EventEmitter();
-  @Output() showConfiguration: EventEmitter<void> = new EventEmitter();
-  @Output() showSignMessage: EventEmitter<void> = new EventEmitter();
-
   public KrystalBullImages = KrystalBullImages
   public formatOutcomes = formatOutcomes
 
-  hideRawButtons = true
+  @ViewChild('leftDrawer') leftDrawer: MatDrawer
+  @ViewChild('rightDrawer') rightDrawer: MatDrawer
+  @ViewChild('newAnnouncement') newAnnouncement: NewAnnouncementComponent
 
   @ViewChild(MatTable) table: MatTable<OracleAnnouncement>
   @ViewChild(MatSort) sort: MatSort
+
+  // Left side
+  showNewAnnouncement = false
+  // Right side
+  showAnnouncementDetail = false
+
+  detailAnnouncement: OracleAnnouncement|undefined
+
+  hideRawButtons = true
 
   bullIndex = 0
   bullSrc = KrystalBullImages[0]
@@ -43,9 +50,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
   // Oracle Info
   oracleName = ''
   oracleNameReadOnly = true // don't allow editing until checking for a name
-
-  serverVersion = ''
-  buildConfig: BuildConfig
 
   // Grid config
   dataSource = new MatTableDataSource(<OracleAnnouncement[]>[])
@@ -69,17 +73,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
       this.loading = !received
     })
 
-    this.messageService.getServerVersion().subscribe(result => {
-      if (result && result.result) {
-        this.serverVersion = result.result.version
-      }
-    })
-    this.messageService.buildConfig().subscribe(result => {
-      if (result) {
-        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
-        this.buildConfig = result
-      }
-    })
     this.oracleState.getAllAnnouncements().subscribe(_ => {
       console.debug('initial getAllAnnouncements() complete')
     })
@@ -92,6 +85,59 @@ export class OracleComponent implements OnInit, AfterViewInit {
       this.dataSource.data = this.oracleState.flatAnnouncements.value
       this.table.renderRows()
     })
+  }
+
+  closeLeftDrawer() {
+    console.debug('closeLeftDrawer()')
+    this.leftDrawer.close()
+    this.hideLeftDrawerItems()
+  }
+
+  private hideLeftDrawerItems() {
+    this.showNewAnnouncement = false
+  }
+
+  closeRightDrawer() {
+    console.debug('closeRightDrawer()')
+    this.rightDrawer.close()
+    this.hideRightDrawerItems()
+  }
+
+  private hideRightDrawerItems() {
+    this.showAnnouncementDetail = false
+
+    this.detailAnnouncement = undefined
+  }
+
+  onShowCreateAnnouncement() {
+    console.debug('onShowCreateAnnouncement()')
+    if (this.leftDrawer.opened && this.showNewAnnouncement) {
+      return
+    } else if (this.newAnnouncement) {
+      this.newAnnouncement.reset()
+    }
+    this.hideLeftDrawerItems()
+    this.showNewAnnouncement = true
+    this.leftDrawer.open()
+  }
+
+  onShowAnnouncementDetail(announcement: OracleAnnouncement) {
+    console.debug('onShowAnnouncementDetail()', announcement, 'detailEvent', this.detailAnnouncement)
+
+    if (!announcement || this.detailAnnouncement === announcement) {
+      this.rightDrawer.close()
+      this.detailAnnouncement = undefined
+    } else {
+      this.hideRightDrawerItems()
+      this.detailAnnouncement = announcement
+      this.showAnnouncementDetail = true
+      this.rightDrawer.open()
+    }
+  }
+
+  backdropClick() {
+    console.debug('backdropClick()')
+    this.detailAnnouncement = undefined
   }
 
   /** Oracle Explorer handlers */
@@ -152,25 +198,10 @@ export class OracleComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onShowCreateAnnouncement() {
-    console.debug('onShowCreateAnnouncement()')
-    this.showCreateAnnouncement.next()
-  }
-
   onRefreshAnnouncements() {
     console.debug('onRefreshAnnouncements()')
     this.loading = true
     this.oracleState.getAllAnnouncements().subscribe()
-  }
-
-  onShowConfiguration() {
-    console.debug('onShowConfiguration()')
-    this.showConfiguration.next()
-  }
-
-  onShowSignMessage() {
-    console.debug('onShowSignMessage()')
-    this.showSignMessage.next()
   }
 
   onShowDebug() {
@@ -180,8 +211,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   onRowClick(a: OracleAnnouncement) {
     console.debug('onRowClick()', a)
-    this.selectedAnnouncement = a
-    this.showAnnouncementDetail.next(a)
+    this.onShowAnnouncementDetail(a)
   }
 
   onAnnouncementClick(a: OracleAnnouncement) {

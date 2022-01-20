@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { TranslateService } from '@ngx-translate/core'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from 'src/environments/environment'
@@ -27,8 +27,8 @@ export class MessageService {
   constructor(private http: HttpClient, private translate: TranslateService, private dialog: MatDialog) { }
 
   /** Serializes a OracleServerMessage for sending to oracleServer */
-  sendMessage(m: OracleServerMessage) {
-    let obs = this.sendServerMessage(m).pipe(tap(result => {
+  sendMessage(m: OracleServerMessage, errorHandling = true) {
+    let obs = this.sendServerMessage(m, errorHandling).pipe(tap(result => {
       this.lastMessageType = m.method
       if (result.result) {
         if (typeof result.result === 'object') {
@@ -46,20 +46,32 @@ export class MessageService {
     return obs
   }
 
-  private sendServerMessage(message: OracleServerMessage) {
+  private sendServerMessage(message: OracleServerMessage, errorHandling: boolean) {
     const url = environment.oracleServerApi
-    return this.http.post<OracleResponse<any>>(url, message).pipe(catchError((error: any, caught: Observable<unknown>) => {
-      console.error('sendMessage error', error)
-      let message = error?.error?.error
-      const dialog = this.dialog.open(ErrorDialogComponent, {
-        data: {
-          title: 'dialog.sendMessageError.title',
-          content: message,
-        }
-      })
-      throw(Error('sendMessage error' + error))
-      return new Observable<any>() // required for type checking...
-    }))
+    const options = {}
+    // Set at server now
+    // if (this.authService.password) {
+    //   let headers = new Headers()
+    //   headers.set('Authorization', this.authService.serverAuthHeader)
+    // }
+    let obs = this.http.post<OracleResponse<any>>(url, message, options)
+
+    if (errorHandling) {
+      return obs.pipe(catchError((error: any, caught: Observable<unknown>) => {
+        console.error('sendMessage error', error)
+        let message = error?.error?.error
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.sendMessageError.title',
+            content: message,
+          }
+        })
+        throw(Error('sendMessage error' + error))
+        return new Observable<any>() // required for type checking...
+      }))
+    } else {
+      return obs
+    }
   }
 
   // Proxy server calls
@@ -74,6 +86,14 @@ export class MessageService {
 
   buildConfig() {
     return this.http.get<BuildConfig>(environment.proxyApi + '/buildConfig')
+  }
+
+  downloadBackup() {
+    console.debug('downloadBackup()')
+
+    // TODO
+
+    return of(null)
   }
 
   // Common bitcoin-s calls

@@ -1,0 +1,11 @@
+
+.advanced-section {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  
+  .operations > * {
+    width: 100%;
+  }
+}

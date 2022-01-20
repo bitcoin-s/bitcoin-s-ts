@@ -1,6 +1,40 @@
 {
   "title": "Krystal Bull",
-  
+
+  "splashScreen": {
+    "heading": "Welcome to Krystal Bull",
+    "betaSoftware": "This application is beta software.",
+    "significantValue": "Please do not use it with significant amounts of value at this time.",
+    "caveatEmptor": "caveat emptor",
+    "dontShowSplashAgain": "Don't show this screen again"
+  },
+
+  "login": {
+    "heading": "Login",
+    "user": "User",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout",
+    "refresh": "Refresh"
+  },
+
+  "header": {
+    "title": "Krystal Bull",
+    "login": "Login"
+  },
+
+  "about": {
+    "heading": "About",
+    "serverVersion": "Server Version",
+    "uiVersion": "UI Version",
+    "links": "Links"
+  },
+
+  "advanced": {
+    "heading": "Advanced",
+    "backup": "Download Oracle Backup"
+  },
+
   "eventName": "Event Name",
   "outcome": "Outcome",
   "message": "Message",
@@ -67,6 +101,7 @@
 
   "configuration": {
     "heading": "Configuration",
+    "darkMode": "Dark Mode",
     "useTor": "Use Tor",
     "useTorTooltip": "Use Tor network for external interactions"
   },
@@ -141,7 +176,7 @@
     },
 
     "description": {
-      "enum": "This announcement type has a fixed set of possible outcomes",
+      "enum": "This announcement type has a fixed set of outcomes",
       "numeric": "This announcement type has a numeric range of outcomes"
     },
 
@@ -212,15 +247,8 @@
     "sign": "Sign",
     "ok": "Ok",
     "yes": "Yes",
-    "no": "No"
-  },
-
-  "splashScreen": {
-    "heading": "Welcome to Krystal Bull",
-    "betaSoftware": "This application is beta software.",
-    "significantValue": "Please do not use it with significant amounts of value at this time.",
-    "caveatEmptor": "caveat emptor",
-    "dontShowSplashAgain": "Don't show this screen again"
+    "no": "No",
+    "logout": "Logout"
   }
 
 }

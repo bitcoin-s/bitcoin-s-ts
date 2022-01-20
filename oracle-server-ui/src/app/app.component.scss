@@ -1,4 +1,33 @@
+$spinnerSize: 100px;
 
-.mat-drawer-container {
+.app-root {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; //  FF flexbox overflow
+
+  .mat-sidenav-container {
+    height: 100%;
+    
+    .mat-drawer {
+      
+    }
+    .mat-drawer-content {
+      
+    }
+  }
+
+  // This overlays other route content to show that state is loading
+  .spinner {
+    position: fixed;
+    z-index: 1031; /* High z-index so it is on top of the page */
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: $spinnerSize;
+    height: $spinnerSize;
+    margin: auto;
+  }
+
 }

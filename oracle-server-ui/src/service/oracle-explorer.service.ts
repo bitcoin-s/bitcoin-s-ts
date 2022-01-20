@@ -74,8 +74,8 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse[]
    */
   listAnnouncements() {
-    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse[]>>(this.url + '/announcements', 
-      this.getHeaders()).pipe(catchError(this.errorHandler))
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse[]>>
+      (this.url + '/announcements', this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -83,8 +83,8 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse
    */
   getAnnouncement(announcementHash: string) {
-    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${announcementHash}`,
-      this.getHeaders()).pipe(catchError(this.errorHandler))
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse>>
+      (this.url + `/announcements/${announcementHash}`, this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -104,8 +104,8 @@ export class OracleExplorerService {
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
-    return this.http.post<OracleExplorerResponse<string>>(this.url + '/announcements', body, this.getHeaders())
-      .pipe(catchError(this.errorHandler))
+    return this.http.post<OracleExplorerResponse<string>>
+      (this.url + '/announcements', body, this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -121,7 +121,8 @@ export class OracleExplorerService {
 
     const body = new HttpParams()
       .set('attestations', a.attestations)
-    return this.http.post<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
+    return this.http.post<OracleExplorerResponse<OracleAnnouncementsResponse>>
+      (this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
       .pipe(catchError(this.errorHandler))
   }
 
