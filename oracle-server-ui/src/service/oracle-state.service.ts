@@ -63,7 +63,7 @@ export class OracleStateService {
     console.debug('initializeState()')
 
     return forkJoin([
-      // this.getServerVersion(),
+      this.getServerVersion(),
       // this.getBuildConfig(),
       this.getPublicKeyAndOracleName(),
       this.getStakingAddressAndBalance(),
@@ -93,7 +93,7 @@ export class OracleStateService {
 
   getAboutInfo() {
     return forkJoin([
-      this.getServerVersion(),
+      // this.getServerVersion(),
       this.getBuildConfig(),
     ])
   }
