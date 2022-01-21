@@ -8,8 +8,8 @@ import { AuthService } from '~service/auth.service'
 import { AlertType } from '../component/alert/alert.component'
 
 import { MessageService } from '~service/message.service'
-// import { BlockchainMessageType } from '~type/wallet-server-types'
-// import { getMessageBody } from '~util/oracle-server-util'
+import { MessageType } from '~type/oracle-server-types'
+import { getMessageBody } from '~util/oracle-server-util'
 
 
 @Component({
@@ -89,12 +89,18 @@ export class LoginComponent implements OnInit {
     }, this.errorHandler.bind(this))
   }
 
-  // TODO
-  getInfoThroughAPI() {
-    console.debug('getInfoThroughAPI()')
-    // this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo)).subscribe(r => {
-    //   console.debug('getInfo()', r)
-    // })
+  getVersionThroughAPI() {
+    console.debug('getVersionThroughAPI()')
+    this.messageService.sendMessage(getMessageBody(MessageType.getversion)).subscribe(r => {
+      console.debug(' getVersionThroughAPI()', r)
+    })
+  }
+
+  getOracleNameThroughAPI() {
+    console.debug('getOracleNameThroughAPI()')
+    this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)).subscribe(r => {
+      console.debug(' getOracleNameThroughAPI()', r)
+    })
   }
 
 }

@@ -16,6 +16,7 @@ export class AboutComponent implements OnInit {
   constructor(public oracleState: OracleStateService) { }
 
   ngOnInit(): void {
+    this.oracleState.getAboutInfo().subscribe()
   }
 
 }

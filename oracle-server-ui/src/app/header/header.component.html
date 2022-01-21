@@ -8,6 +8,14 @@
     <ng-container *ngIf="authService.isLoggedOut">
       <a mat-button routerLink="/login" routerLinkActive="active">
         {{ 'login.heading' | translate }}</a>
+
+      <div class="spacer-auto"></div>
+
+      <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
+        matTooltip="{{ 'about.heading' | translate }}"
+        aria-label="About">
+        <mat-icon>help_outline</mat-icon>
+      </button>
     </ng-container>
 
     <ng-container *ngIf="authService.isLoggedIn">

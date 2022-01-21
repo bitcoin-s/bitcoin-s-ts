@@ -11,9 +11,9 @@ import { AuthGuard } from './guard/auth-guard'
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
+  { path: 'about', component: AboutComponent },
   { path: 'oracle', component: OracleComponent, canActivate: [AuthGuard] },
-  // { path: '',   redirectTo: '/login', pathMatch: 'full' },
+  { path: '',   redirectTo: '/login', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];
 
