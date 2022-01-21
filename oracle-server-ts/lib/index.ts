@@ -1,13 +1,13 @@
-import needle from 'needle'
-
 import { SendServerMessage } from '../../common-ts/lib/index'
+import { getMessageBody } from '../../common-ts/lib/util/message-util'
+import { validateISODateString, validateNumber, validateString } from '../../common-ts/lib/util/validation-util'
 
-import { getMessageBody } from './util/message-util'
 import { MessageType, OracleEvent, OracleResponse } from './type/oracle-server-types'
-import { validateEnumOutcomes, validateISODateString, validateNumber, validateString } from './util/validation-util'
+import { validateEnumOutcomes } from './util/validation-util'
 
 // Expose all 'common' endpoints
 export * from '../../common-ts/lib/index'
+
 
 /** Specific Oracle Server message functions */
 
@@ -154,17 +154,5 @@ export function SetOracleName(oracleName: string) {
   const m = getMessageBody(MessageType.setoraclename, [oracleName])
   return SendServerMessage(m).then(response => {
     return <OracleResponse<string>>response
-  })
-}
-
-// This may belong in common-ts - could remove from wallet-ts as well and put common call there
-export function ZipDataDir(path: string) {
-  console.debug('ZipDataDir()')
-  validateString(path, 'ZipDataDir()', 'path')
-
-  const m = getMessageBody(MessageType.zipdatadir, [path])
-  return SendServerMessage(m).then(response => {
-    // result: 'failure' / null
-    return <OracleResponse<string|null>>response
   })
 }

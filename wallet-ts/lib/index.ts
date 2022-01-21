@@ -1,10 +1,5 @@
-import needle from 'needle'
-
 import { SendServerMessage } from '../../common-ts/lib/index'
-// import common from '../../common-ts/lib/index'
-
-import { ServerMessage } from '../../common-ts/lib/type/server-message'
-import { MessageType, ServerResponse, VersionResponse } from '../../common-ts/lib/type/server-types'
+import { ServerResponse } from '../../common-ts/lib/type/server-types'
 import { getMessageBody } from '../../common-ts/lib/util/message-util'
 import { validateBoolean, validateNumber, validateString } from '../../common-ts/lib/util/validation-util'
 

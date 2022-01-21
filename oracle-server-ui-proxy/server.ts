@@ -33,9 +33,9 @@ app.use(express.static(Config.uiDirectory))
 // Host all proxy routes
 app.use(Config.proxyRoot, require('./routes/index'))
 
-const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-const MEMPOOL_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
+const EXPLORER_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
+const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
+const MEMPOOL_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
 
 const removeFrontendHeaders = require('./middleware/proxy').removeFrontendHeaders
 const getProxyErrorHandler = require('./middleware/proxy').getProxyErrorHandler
