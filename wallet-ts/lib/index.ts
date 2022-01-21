@@ -867,15 +867,3 @@ export function CreateMultiSig() {
     return <ServerResponse<unknown>>response
   })
 }
-
-// Full wallet data directory backup less chainstate
-export function ZipDataDir(path: string) {
-  console.debug('ZipDataDir()', path)
-  validateString(path, 'ZipDataDir()', 'path')
-
-  const m = getMessageBody(CoreMessageType.zipdatadir, [path])
-  return SendServerMessage(m).then(response => {
-    // result: 'failure' / null
-    return <ServerResponse<string|null>>response
-  })
-}
