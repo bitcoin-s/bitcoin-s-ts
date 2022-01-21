@@ -140,11 +140,13 @@ if (USE_TOR_PROXY) {
   createProxies(agent)
 }
 
-/** Oracle Server Proxy */
+/** Authenticated Oracle Server Proxy Routes */
+
+const verifyAuth = require('./middleware/auth').verify
 
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-app.use(Config.apiRoot, createProxyMiddleware({
+app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
   target: Config.oracleServerUrl,
   changeOrigin: true,
   pathRewrite: {
