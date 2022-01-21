@@ -38,6 +38,7 @@ import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-
 import { AuthInterceptor } from './interceptor/auth-interceptor'
 import { ErrorInterceptor } from './interceptor/error-interceptor'
 
+
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json')

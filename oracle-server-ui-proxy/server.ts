@@ -65,7 +65,7 @@ function createOracleExplorerProxy(agent?: SocksProxyAgent) {
         proxyReq.removeHeader(HOST_OVERRIDE_HEADER)
         // Remove unnecessary headers
         removeFrontendHeaders(proxyReq)
-        res.removeHeader('x-powered-by') 
+        res.removeHeader('x-powered-by')
       }
       
       // console.debug('onProxyReq() req headers:', req.headers)

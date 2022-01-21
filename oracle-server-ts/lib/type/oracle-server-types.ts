@@ -19,6 +19,8 @@ export const enum MessageType {
   getoraclename = 'getoraclename',
   setoraclename = 'setoraclename',
 
+  zipdatadir = 'zipdatadir',
+
   // Common
   getversion = 'getversion',
 

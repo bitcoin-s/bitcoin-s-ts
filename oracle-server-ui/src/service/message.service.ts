@@ -91,9 +91,7 @@ export class MessageService {
   downloadBackup() {
     console.debug('downloadBackup()')
 
-    // TODO
-
-    return of(null)
+    return this.http.post(environment.proxyApi + '/downloadBackup', {}, { responseType: 'blob' })
   }
 
   // Common bitcoin-s calls

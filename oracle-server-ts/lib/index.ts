@@ -156,3 +156,15 @@ export function SetOracleName(oracleName: string) {
     return <OracleResponse<string>>response
   })
 }
+
+// This may belong in common-ts - could remove from wallet-ts as well and put common call there
+export function ZipDataDir(path: string) {
+  console.debug('ZipDataDir()')
+  validateString(path, 'ZipDataDir()', 'path')
+
+  const m = getMessageBody(MessageType.zipdatadir, [path])
+  return SendServerMessage(m).then(response => {
+    // result: 'failure' / null
+    return <OracleResponse<string|null>>response
+  })
+}

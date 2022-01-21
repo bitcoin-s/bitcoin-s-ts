@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, of } from 'rxjs'
+import { BehaviorSubject, of, zip } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
@@ -133,10 +133,14 @@ export class OracleExplorerService {
   }
 
   getLocalOracleName(pubkey: string) {
-    return this.getOracleName(pubkey).pipe(tap(result => {
-
-      let osOracleName: string // oracleName according to oracleServer
-      this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)).subscribe(result2 => {
+    console.debug('getLocalOracleName()', pubkey)
+    return zip(this.getOracleName(pubkey), 
+      this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)))
+      .pipe(tap(arr => {
+        const result = arr[0]
+        const result2 = arr[1]
+        let osOracleName: string = '' // oracleName according to oracleServer
+        
         if (result2 && result2.result) {
           osOracleName = result2.result
           console.warn('oracleServer OracleName:', osOracleName)
@@ -170,8 +174,7 @@ export class OracleExplorerService {
           this.oracleName.next('')
           this.serverOracleName.next(false)
         }
-      })
-    }))
+      }))
   }
 
   setOracleName(name: string, force = false) {

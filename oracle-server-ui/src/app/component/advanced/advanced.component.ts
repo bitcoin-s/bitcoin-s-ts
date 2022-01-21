@@ -46,18 +46,18 @@ export class AdvancedComponent implements OnInit {
 
     this.executing = true
     this.backupExecuting = true
-    // this.messageService.downloadBackup().subscribe(blob => {
-    //   if (!blob || (blob && blob.size === 0)) {
-    //     console.error('downloadBackup blob was null or empty', blob)
-    //     this.showDownloadError()
-    //   } else {
-    //     FileSaver.saveAs(blob, filename)
-    //   }
-    //   this.executing = false
-    //   this.backupExecuting = false
-    // }, err => {
-    //   this.executing = false
-    //   this.backupExecuting = false
-    // })
+    this.messageService.downloadBackup().subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBackup blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
+      this.backupExecuting = false
+    }, err => {
+      this.executing = false
+      this.backupExecuting = false
+    })
   }
 }

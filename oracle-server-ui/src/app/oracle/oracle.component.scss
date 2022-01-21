@@ -140,6 +140,9 @@
       .focus-row {
         font-weight: bold;
       }
+      .mat-no-data-row {
+        text-align: center;
+      }
 
       .icon-inactive {
         opacity: 0.25;
@@ -160,8 +163,7 @@
   }
 
   .spinner {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    margin: auto;
   }
 
 }

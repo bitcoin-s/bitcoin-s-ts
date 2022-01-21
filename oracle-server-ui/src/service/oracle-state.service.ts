@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, OnInit } from '@angular/core'
 import { BehaviorSubject, forkJoin, of } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { switchMap, tap } from 'rxjs/operators'
 
 import { BuildConfig } from '~type/proxy-server-types'
 import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
@@ -33,16 +33,18 @@ export class OracleStateService {
   announcements: BehaviorSubject<OracleServerAnnouncementMap> = new BehaviorSubject({})
   flatAnnouncements: BehaviorSubject<OracleAnnouncement[]> = new BehaviorSubject<OracleAnnouncement[]>([])
 
+  private addEventToState(a: OracleAnnouncement|null) {
+    if (a) {
+      this.announcements.value[a.eventName] = a
+      this.flatAnnouncements.value.push(a)
+    }
+  }
+
   // Oracle Explorer state
   oeAnnouncements: BehaviorSubject<OracleExplorerAnnouncementMap> = new BehaviorSubject({}) // should this index on sha256 id instead?
 
-  // TODO : Remove
-  announcementsReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
-
   // Initial State Loaded signal
   stateLoaded: EventEmitter<void> = new EventEmitter()
-
-  private initialized = false
 
   private updateFlatAnnouncements() {
     this.flatAnnouncements.next([...this.flatAnnouncements.value])
@@ -57,21 +59,6 @@ export class OracleStateService {
     
   }
 
-  initialize() {
-    this.oracleExplorerService.oracleExplorer.subscribe(oe => {
-      this.getAnnouncementsFromOracleExplorer().subscribe() // Check for announcements on new Explorer selection
-    })
-
-    this.getPublicKeyAndOracleName()
-    this.getStakingAddressAndBalance()
-
-    // TODO : Wait for things
-    this.stateLoaded.next()
-
-    this.getServerVersion().subscribe()
-    this.getBuildConfig().subscribe()
-  }
-
   initializeState() {
     console.debug('initializeState()')
 
@@ -80,9 +67,9 @@ export class OracleStateService {
       this.getBuildConfig(),
       this.getPublicKeyAndOracleName(),
       this.getStakingAddressAndBalance(),
+      // this.getAllAnnouncements(), // pulling in oracle component
     ]).subscribe(_ => {
       console.debug(' initializedState() initialized')
-      this.initialized = true
       this.stateLoaded.next()
     })
   }
@@ -109,17 +96,12 @@ export class OracleStateService {
     return this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).pipe(tap(result => {
       if (result.result) {
         this.publicKey = result.result
-        if (!this.oracleExplorerService.oracleName.value) {
-          this.getOracleNameFromOracleExplorer()
-        }
       }
+    }), switchMap(_ => {
+      if (!this.oracleExplorerService.oracleName.value)
+        return this.oracleExplorerService.getLocalOracleName(this.publicKey)
+      else return of(null)
     }))
-  }
-
-  getOracleNameFromOracleExplorer() {
-    this.oracleExplorerService.getLocalOracleName(this.publicKey).subscribe(result => {
-      console.debug(' getOracleNameFromOracleExplorer()', result)
-    })
   }
 
   private getStakingAddressAndBalance() {
@@ -127,9 +109,8 @@ export class OracleStateService {
     return this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).pipe(tap(result => {
       if (result.result) {
         this.stakingAddress = result.result
-        this.getStakingBalance().subscribe()
       }
-    }))
+    }), switchMap(_ => this.getStakingBalance()))
   }
 
   getStakingBalance() {
@@ -144,34 +125,39 @@ export class OracleStateService {
 
   getAllAnnouncements() {
     console.debug('getAllAnnouncements()')
-    this.announcementsReceived.next(false)
     this.flatAnnouncements.next([])
     const obs = this.messageService.sendMessage(getMessageBody(MessageType.listannouncements))
       .pipe(tap(result => {
         if (result.result) {
-          const announcementNames = <string[]>result.result
-          this.announcementNames.next(announcementNames)
-          const announcements = []
-          for (const e of announcementNames) {
-            announcements.push(this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [e])))
+          this.announcementNames.next(<string[]>result.result)
+        }
+      }), switchMap(_ => this.getAllAnnouncementDetails()),
+      tap(result => {
+        if (result) {
+          for (const e of result) {
+            this.addEventToState(<OracleAnnouncement>e.result)
           }
-          if (announcements.length > 0) {
-            forkJoin(announcements).subscribe((results) => {
-              if (results) {
-                for (const e of results) {
-                  this.addEventToState(<OracleAnnouncement>e.result)
-                }
-                this.updateFlatAnnouncements()
-                this.announcementsReceived.next(true)
-              }
-              this.getAnnouncementsFromOracleExplorer().subscribe()
-            })
-          } else {
-            this.announcementsReceived.next(true)
+          this.updateFlatAnnouncements()
+        }
+      }), switchMap(_ => this.getAnnouncementsFromOracleExplorer()))
+    return obs
+  }
+
+  private getAllAnnouncementDetails() {
+    console.debug('getAllAnnouncementDetails()')
+    if (this.announcementNames.value.length > 0) {
+      const obs = forkJoin(this.announcementNames.value.map(a => this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [a]))))
+      obs.pipe(tap(result => {
+        if (result) {
+          for (const e of result) {
+            this.addEventToState(<OracleAnnouncement>e.result)
           }
+          this.updateFlatAnnouncements()
         }
       }))
-    return obs
+      return obs
+    }
+    return of(null)
   }
 
   // Reloads an Announcement after signing to update field values
@@ -182,32 +168,31 @@ export class OracleStateService {
     if (i !== -1) {
       this.flatAnnouncements.value.splice(i, 1)
     }
+    let announcement: OracleAnnouncement|null = null
     const obs = this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [a.eventName]))
       .pipe(tap(result => {
-        console.debug(' reloadAnnouncement()', result)
         if (result.result) {
-          this.addEventToState(result.result)
+          announcement = result.result
+          this.addEventToState(announcement)
           this.updateFlatAnnouncements()
-          this.getOEAnnouncement(result.result).subscribe()
         }
-      }))
+      }), switchMap(_ => {
+        if (announcement) return this.getOEAnnouncement(announcement)
+        else return of(null)
+      }), switchMap(_ => of(announcement)))
     return obs
   }
 
   private getAnnouncementsFromOracleExplorer() {
     console.debug('getAnnouncementsFromOracleExplorer()', this.flatAnnouncements.value)
     this.oeAnnouncements.next({})
-    // Have seen these 403 against the Production Oracle Server over Tor
-    const obs = forkJoin(this.flatAnnouncements.value.map(e => this.oeAnnouncements.value[e.eventName] ? 
-      of(this.oeAnnouncements.value[e.eventName]) : this.getOEAnnouncement(e)))
-    return obs
-  }
-
-  private addEventToState(a: OracleAnnouncement) {
-    if (a) {
-      this.announcements.value[a.eventName] = a
-      this.flatAnnouncements.value.push(a)
+    if (this.flatAnnouncements.value.length > 0) {
+      // Have seen these 403 against the Production Oracle Server over Tor
+      const obs = forkJoin(this.flatAnnouncements.value.map(e => this.oeAnnouncements.value[e.eventName] ? 
+        of(this.oeAnnouncements.value[e.eventName]) : this.getOEAnnouncement(e)))
+      return obs
     }
+    return of(null)
   }
 
   // Check if the event is published to the oracle explorer

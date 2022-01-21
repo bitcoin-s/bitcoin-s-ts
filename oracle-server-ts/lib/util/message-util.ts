@@ -22,6 +22,7 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
     case MessageType.deleteannouncement:
     case MessageType.deleteattestation:
     case MessageType.setoraclename:
+    case MessageType.zipdatadir:
       return new OracleServerMessageWithParameters(type, params!)
     default:
       throw(Error('getMessageBody() unknown message type: ' + type))

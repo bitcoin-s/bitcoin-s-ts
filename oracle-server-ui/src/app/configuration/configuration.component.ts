@@ -59,8 +59,8 @@ export class ConfigurationComponent implements OnInit {
   // Refresh oracleExplorer / Blockstream data that may not have loaded over tor previously
   onRefreshOracleData() {
     console.debug('onRefreshOracleData()')
-    this.oracleState.getOracleNameFromOracleExplorer()
-    this.oracleState.getStakingBalance()
+    this.oracleExplorerService.getOracleName(this.oracleState.publicKey).subscribe()
+    this.oracleState.getStakingBalance().subscribe()
   }
 
 }

@@ -65,9 +65,10 @@ fieldset {
   }
 }
 
-/** Right drawer */
+/** Drawers */
 .drawer-container {
   padding: 0 1rem;
+  height: 100%;
   min-width: 300px;
 
   .section-header {

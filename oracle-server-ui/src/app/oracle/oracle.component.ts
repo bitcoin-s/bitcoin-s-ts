@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
@@ -56,7 +56,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   displayedColumns = ['eventName','announcement', 'outcomes', 'maturationTime', 'signedOutcome']
   selectedAnnouncement: OracleAnnouncement
 
-  loading = true
+  loading = false
 
   constructor(public dialog: MatDialog, public oracleState: OracleStateService, private messageService: MessageService, 
     public oracleExplorerService: OracleExplorerService, private blockstreamService: BlockstreamService) { }
@@ -68,14 +68,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
-    this.oracleState.announcementsReceived.subscribe(received => {
-      console.debug('announcementsReceived', received)
-      this.loading = !received
-    })
-
-    this.oracleState.getAllAnnouncements().subscribe(_ => {
-      console.debug('initial getAllAnnouncements() complete')
-    })
+    this.onRefreshAnnouncements()
   }
 
   ngAfterViewInit() {
@@ -201,7 +194,9 @@ export class OracleComponent implements OnInit, AfterViewInit {
   onRefreshAnnouncements() {
     console.debug('onRefreshAnnouncements()')
     this.loading = true
-    this.oracleState.getAllAnnouncements().subscribe()
+    this.oracleState.getAllAnnouncements().subscribe(_ => {
+      this.loading = false
+    })
   }
 
   onShowDebug() {

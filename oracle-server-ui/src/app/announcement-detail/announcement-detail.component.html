@@ -74,6 +74,7 @@
 
     <ng-container *ngIf="!oracleState.oeAnnouncements.value[announcement.eventName]; else viewOnExplorer">
       <button mat-stroked-button (click)="onDeleteClick(); $event.stopPropagation()"
+        [disabled]="announcement.signedOutcome !== null"
         matTooltip="{{ 'announcementTable.broadcastAnnouncement' | translate }}">
         <mat-icon class="material-icons-outlined">delete</mat-icon>
         <span class="button-label" translate>announcementDetail.deleteAnnouncement</span>

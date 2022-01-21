@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
       this.error = undefined
       this.executing = true
       this.loginExecuting = true
-      this.authService.login(v.user, v.password).subscribe(() => {
+      this.authService.login(v.user, v.password).subscribe(_ => {
         this.executing = false
         this.loginExecuting = false
       }, this.errorHandler.bind(this))

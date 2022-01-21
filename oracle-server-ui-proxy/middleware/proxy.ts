@@ -7,6 +7,7 @@ import { RunConfig } from '../type/run-config'
 
 
 const Config = <RunConfig>require('../type/run-config')
+const logger = require('../middleware/logger')
 
 /** For proxy routes used in the Oracle that aren't currently used here */
 
@@ -23,8 +24,9 @@ module.exports = {
   removeFrontendHeaders: (proxyReq: http.ClientRequest) => {
     proxyReq.removeHeader('cookie')
     proxyReq.removeHeader('referer')
+    proxyReq.removeHeader('authorization')
   },
-  getProxyErrorHandler: (logger, name: string, agent?: SocksProxyAgent) => 
+  getProxyErrorHandler: (name: string, agent?: SocksProxyAgent) => 
     (err: Error, req: Request, res: Response) => {
       if (err) {
         logger.error(`${name}`, { err, statusCode: res.statusCode, statusMessage: res.statusMessage })

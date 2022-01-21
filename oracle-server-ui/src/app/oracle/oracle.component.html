@@ -121,6 +121,11 @@
           <tr mat-row *matRowDef="let announcement; columns: displayedColumns"
               (click)="onRowClick(announcement)"
               [class.focus-row]="selectedAnnouncement === announcement"></tr>
+          <tr class="mat-row mat-no-data-row" *matNoDataRow>
+            <td class="mat-cell" colspan="9999">
+              {{ 'announcementTable.noAnnouncements' | translate }}
+            </td>
+          </tr>
         </table>
       </div>
     

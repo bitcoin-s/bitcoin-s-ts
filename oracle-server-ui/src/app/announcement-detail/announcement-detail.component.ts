@@ -68,8 +68,8 @@ export class AnnouncementDetailComponent implements OnInit {
       console.debug(' onSignEnum()', result)
       if (result.result) {
         this.oracleState.reloadAnnouncement(this.announcement).subscribe(result => {
-          if (result.result) {
-            this.announcement = result.result
+          if (result) {
+            this.announcement = result
             this.showAttestationDeleted = false
             this.showSigningSuccess = true
           }
@@ -111,8 +111,8 @@ export class AnnouncementDetailComponent implements OnInit {
           }
         } 
         this.oracleState.reloadAnnouncement(this.announcement).subscribe(result => {
-          if (result.result) {
-            this.announcement = result.result
+          if (result) {
+            this.announcement = result
             this.showAttestationDeleted = false
             this.showSigningSuccess = true
           }

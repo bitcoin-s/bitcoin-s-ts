@@ -146,6 +146,10 @@
     "deleteAttestation": {
       "title": "Delete Attestation",
       "content": "Are you sure you want to delete this attestation? If you have shared the previous attestation it can expose your private keys."
+    },
+    "logout": {
+      "title": "Session Expiring",
+      "content": "You will be logged out in {{ time }} seconds."
     }
   },
 
@@ -155,7 +159,8 @@
     "viewOnOracleExplorer": "View on Oracle Explorer",
     "broadcastAnnouncement": "Broadcast Announcement to Oracle Explorer",
     "broadcastOutcome": "Broadcast Outcome to Oracle Explorer",
-    "maturationDate": "Maturation Date"
+    "maturationDate": "Maturation Date",
+    "noAnnouncements": "No Announcements Created"
   },
 
   "announcementType": {
