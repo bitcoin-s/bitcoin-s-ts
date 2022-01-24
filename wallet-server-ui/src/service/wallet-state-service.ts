@@ -135,7 +135,7 @@ export class WalletStateService {
 
     return forkJoin([
       this.getServerVersion(),
-      this.getBuildConfig(),
+      // this.getBuildConfig(), // now done in about
       this.getMempoolUrl(),
       this.getFeeEstimate(),
       this.getDLCHostAddress(),
@@ -158,21 +158,28 @@ export class WalletStateService {
   }
 
   private getBuildConfig() {
-    return this.messageService.buildConfig().pipe(tap(result => {
-      if (result) {
-        result.dateString = new Date(result.committedOn * 1000).toLocaleDateString()
-        this.buildConfig = result
+    return this.messageService.buildConfig().pipe(tap(r => {
+      if (r) {
+        r.dateString = new Date(r.committedOn * 1000).toLocaleDateString()
+        this.buildConfig = r
       }
     }))
   }
 
+  getAboutInfo() {
+    return forkJoin([
+      // this.getServerVersion(), // this is an auth protected route
+      this.getBuildConfig(),
+    ])
+  }
+
   private getMempoolUrl() {
-    return this.messageService.mempoolUrl().pipe(tap(result => {
-      if (result && result.url) {
+    return this.messageService.mempoolUrl().pipe(tap(r => {
+      if (r && r.url) {
         // HACK HACK HACK - This converts api URL to base URL. Should get passed good URL
-        const index = result.url.lastIndexOf('/api')
+        const index = r.url.lastIndexOf('/api')
         if (index !== -1) {
-          this.mempoolUrl = result.url.substring(0, index)
+          this.mempoolUrl = r.url.substring(0, index)
         }
       }
     }))
