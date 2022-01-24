@@ -86,15 +86,15 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onRootClassName(enableDarkMode)
 
     // TODO : Move
-    this.messageService.oracleHeartbeat().subscribe(result => {
-      if (result) {
-        const oracleRunning = result.success
-        const key = oracleRunning ? 'oracleEvent.serverFound' : 'oracleEvent.serverNotFound'
-        const config: any = { verticalPosition: 'top' }
-        if (oracleRunning) config.duration = 3000
-        this.snackBar.open(this.translate.instant(key), this.translate.instant('action.dismiss'), config)
-      }
-    })
+    // this.messageService.oracleHeartbeat().subscribe(result => {
+    //   if (result) {
+    //     const oracleRunning = result.success
+    //     const key = oracleRunning ? 'oracleEvent.serverFound' : 'oracleEvent.serverNotFound'
+    //     const config: any = { verticalPosition: 'top' }
+    //     if (oracleRunning) config.duration = 3000
+    //     this.snackBar.open(this.translate.instant(key), this.translate.instant('action.dismiss'), config)
+    //   }
+    // })
   }
 
   ngOnDestroy(): void {
