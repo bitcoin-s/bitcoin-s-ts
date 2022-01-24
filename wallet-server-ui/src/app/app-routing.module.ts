@@ -13,12 +13,12 @@ import { AuthGuard } from './guard/auth-guard'
 
 
 const appRoutes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'wallet', component: WalletBalanceComponent, canActivate: [AuthGuard] },
   { path: 'contracts', component: ContractsComponent, canActivate: [AuthGuard] },
   { path: 'offers', component: BuildAcceptOfferComponent, canActivate: [AuthGuard] },
-  { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'network', component: NetworkComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];

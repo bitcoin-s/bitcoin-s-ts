@@ -8,7 +8,7 @@ import { AuthService } from '~service/auth.service'
 import { AlertType } from '../alert/alert.component'
 
 import { MessageService } from '~service/message.service'
-import { BlockchainMessageType } from '~type/wallet-server-types'
+import { BlockchainMessageType, WalletMessageType } from '~type/wallet-server-types'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -89,10 +89,17 @@ export class LoginComponent implements OnInit {
     }, this.errorHandler.bind(this))
   }
 
+  getVersionThroughAPI() {
+    console.debug('getVersionThroughAPI()')
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getversion)).subscribe(r => {
+      console.debug(' getVersionThroughAPI()', r)
+    })
+  }
+
   getInfoThroughAPI() {
     console.debug('getInfoThroughAPI()')
     this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo)).subscribe(r => {
-      console.debug('getInfo()', r)
+      console.debug(' getInfoThroughAPI()', r)
     })
   }
 
