@@ -1,0 +1,34 @@
+@import '../../scss/material-theme.scss';
+
+$light-foreground-palette: map-get($angular-default-theme, foreground);
+$light-background-palette: map-get($angular-default-theme, background);
+
+$dark-foreground-palette: map-get($angular-dark-theme, foreground);
+$dark-background-palette: map-get($angular-dark-theme, background);
+
+@import '../../scss/breakpoints';
+
+$appLogoSize: 40px;
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: 0.5rem;
+
+  background-color: mat-color($angular-primary, default);
+  color: mat-color($dark-foreground-palette, text);
+
+  .app-button {
+    .app-logo {
+      display: inline-block;
+      width: $appLogoSize;
+      height: $appLogoSize;
+      margin-right: 0.4rem;
+
+      background-size: cover;
+      background-image: url("../../assets/image/300x300/krystal_bull.png");
+    }
+  }
+}

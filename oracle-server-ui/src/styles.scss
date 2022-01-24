@@ -1,50 +1,59 @@
-/* You can add global styles to this file, and also import other style files */
+@import "./scss/material-theme";
 
-@use '~@angular/material' as mat;
-
-// Include Material Icons
-// @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp");
-
-// Set a theme
-
-@import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; // indigo-pink.css";
-// @import 'https://cdn.rawgit.com/angular/bower-material/master/themes/orange-theme.css';
-
-
-// TODO : Use https://material.angular.io/guide/theming to make custom theme
-// @include mat.core();
-
-// $my-primary: mat.define-palette(mat.$indigo-palette, 500);
-// $my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
-// // The "warn" palette is optional and defaults to red if not specified.
-// $my-warn: mat.define-palette(mat.$red-palette);
-
-// $my-theme: mat.define-light-theme((
-//  color: (
-//    primary: $my-primary,
-//    accent: $my-accent,
-//    warn: $my-warn,
-//  )
-// ));
-
-// $my-palette: mat.$indigo-palette;
-
+/** General HTML */
 
 html, body { height: 100%; }
 body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 body { margin: 0; }
 
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/** Utility Classes */
+
+/** Relative Width */
+@for $i from 1 through 10 {
+  $size: $i * 10;
+  .w-#{$size} {
+    width: percentage($size * .01);
+  }
+}
+
+/** Spacing */
+@for $i from 1 through 6 {
+  .spacer-#{$i} {
+    margin-right: #{$i}rem;
+  }
+}
+.spacer-auto {
+  margin-right: auto;
+}
+@for $i from 1 through 6 {
+  .vspacer-#{$i} {
+    height: #{$i}rem;
+  }
+}
+
+/** App sections */
+
 .section-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  margin: 0 1rem;
 }
 
 .close-button {
   align-self: center;
 }
+
+/** Material Design */
+
+/** Material Design Forms */
 
 // Center checkbox in pseudo-mat-form-field
 .mat-form-field--checkbox {
@@ -53,5 +62,27 @@ body { margin: 0; }
 
   mat-checkbox {
     margin: auto;
+  }
+}
+
+/** Drawers */
+.drawer-container {
+  padding: 0 1rem;
+  height: 100%;
+  min-width: 300px;
+
+  .section-header {
+    margin: 0;
+  }
+}
+
+/** Header darkMode fix */
+// Hack to fix mat-menu icon and text color
+.cdk-overlay-container.darkMode {
+  .mat-menu-item {
+    color: #fff; // mat-color($dark-background-palette, text);
+    .mat-icon.mat-icon-no-color {
+      color: #fff;
+    }
   }
 }

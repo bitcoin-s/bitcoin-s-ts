@@ -1,10 +1,5 @@
-import needle from 'needle'
-
 import { SendServerMessage } from '../../common-ts/lib/index'
-// import common from '../../common-ts/lib/index'
-
-import { ServerMessage } from '../../common-ts/lib/type/server-message'
-import { MessageType, ServerResponse, VersionResponse } from '../../common-ts/lib/type/server-types'
+import { ServerResponse } from '../../common-ts/lib/type/server-types'
 import { getMessageBody } from '../../common-ts/lib/util/message-util'
 import { validateBoolean, validateNumber, validateString } from '../../common-ts/lib/util/validation-util'
 
@@ -870,17 +865,5 @@ export function CreateMultiSig() {
   const m = getMessageBody(CoreMessageType.createmultisig)
   return SendServerMessage(m).then(response => {
     return <ServerResponse<unknown>>response
-  })
-}
-
-// Full wallet data directory backup less chainstate
-export function ZipDataDir(path: string) {
-  console.debug('ZipDataDir()', path)
-  validateString(path, 'ZipDataDir()', 'path')
-
-  const m = getMessageBody(CoreMessageType.zipdatadir, [path])
-  return SendServerMessage(m).then(response => {
-    // result: 'failure' / null
-    return <ServerResponse<string|null>>response
   })
 }

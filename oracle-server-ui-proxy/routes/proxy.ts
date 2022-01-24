@@ -9,8 +9,8 @@ const Config = <RunConfig>require('../type/run-config')
 
 const heartbeatController = require('../middleware/heartbeat')
 const buildController = require('../middleware/buildConfig')
-// const backupController = require('../middleware/backup').downloadBackup
-// const verifyAuth = require('../middleware/auth').verify
+const backupController = require('../middleware/backup').downloadBackup
+const verifyAuth = require('../middleware/auth').verify
 
 // It's hard to pull a .ts in from another library
 // See https://www.typescriptlang.org/docs/handbook/esm-node.html
@@ -30,6 +30,6 @@ router.get('/buildConfig', buildController.get)
 // })
 
 /** Download Route */
-// router.post('/downloadBackup', express.json(), verifyAuth, backupController);
+router.post('/downloadBackup', express.json(), verifyAuth, backupController)
 
 module.exports = router

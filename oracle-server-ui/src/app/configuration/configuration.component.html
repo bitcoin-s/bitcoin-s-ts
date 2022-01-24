@@ -4,6 +4,16 @@
     <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
   </div>
 
+  <!-- Dark Mode Toggle -->
+  <div class="dark-mode">
+    <label translate>configuration.darkMode</label>
+    <mat-icon class="mr-8">brightness_5</mat-icon>
+    <mat-slide-toggle ngDefaultControl [formControl]="toggleControl"></mat-slide-toggle>
+    <mat-icon>bedtime</mat-icon>
+  </div>
+
+  <div class="vspacer-2"></div>
+
   <form class="form-container">
     <mat-form-field>
       <mat-label translate>oracleExplorer.heading</mat-label>
@@ -17,6 +27,8 @@
       <app-more-info matSuffix tooltip="configuration.useTorTooltip"></app-more-info>
     </div>
   </form>
+
+  <div class="vspacer-2"></div>
 
   <div class="button-container">
     <button mat-stroked-button (click)="onRefreshOracleData()">

@@ -33,9 +33,9 @@ app.use(express.static(Config.uiDirectory))
 // Host all proxy routes
 app.use(Config.proxyRoot, require('./routes/index'))
 
-const EXPLORER_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-const MEMPOOL_PROXY_TIMEOUT = 10 * 1000; // 10 seconds
+const EXPLORER_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
+const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
+const MEMPOOL_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
 
 const removeFrontendHeaders = require('./middleware/proxy').removeFrontendHeaders
 const getProxyErrorHandler = require('./middleware/proxy').getProxyErrorHandler
@@ -65,7 +65,7 @@ function createOracleExplorerProxy(agent?: SocksProxyAgent) {
         proxyReq.removeHeader(HOST_OVERRIDE_HEADER)
         // Remove unnecessary headers
         removeFrontendHeaders(proxyReq)
-        res.removeHeader('x-powered-by') 
+        res.removeHeader('x-powered-by')
       }
       
       // console.debug('onProxyReq() req headers:', req.headers)
@@ -140,11 +140,13 @@ if (USE_TOR_PROXY) {
   createProxies(agent)
 }
 
-/** Oracle Server Proxy */
+/** Authenticated Oracle Server Proxy Routes */
+
+const verifyAuth = require('./middleware/auth').verify
 
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
-app.use(Config.apiRoot, createProxyMiddleware({
+app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
   target: Config.oracleServerUrl,
   changeOrigin: true,
   pathRewrite: {

@@ -3,6 +3,7 @@
 export const enum MessageType {
   // Common
   getversion = 'getversion',
+  zipdatadir = 'zipdatadir',
 }
 
 // Serverside message response

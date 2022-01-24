@@ -9,3 +9,18 @@ export const KrystalBullImages: string[] = ['/assets/image/300x300/krystal_bull.
 export function stringToBoolean(s: string | null) {
   return s === 'true'
 }
+
+export function copyToClipboard(s: string|undefined|null) {
+  if (s === undefined || s === null) return
+  const hiddenta = document.createElement('textarea')
+  hiddenta.style.position = 'fixed'
+  hiddenta.style.opacity = '0'
+  hiddenta.style.left = '0'
+  hiddenta.style.top = '0'
+  hiddenta.value = s
+  document.body.appendChild(hiddenta)
+  hiddenta.focus()
+  hiddenta.select()
+  document.execCommand('copy')
+  document.body.removeChild(hiddenta)
+}

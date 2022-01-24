@@ -18,7 +18,6 @@ import { getMessageBody } from '~util/wallet-server-util'
 export class DebugComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
-  @Output() rootClassName: EventEmitter<boolean> = new EventEmitter()
 
   executing = false
   backupExecuting = false

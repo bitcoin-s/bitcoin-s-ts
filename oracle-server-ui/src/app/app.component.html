@@ -1,27 +1,33 @@
-<!-- TODO : Use mat-sidenav-container instead? -->
+<div class="app-root mat-app-background">
+  
+  <splash></splash>
 
-<splash></splash>
+  <app-header
+    (showSignMessage)="onShowSignMessage()"
+    (showConfiguration)="onShowConfiguration()"
+    (showAdvanced)="onShowAdvanced()"
+  ></app-header>
 
-<mat-drawer-container (backdropClick)="onBackdropClick($event)">
+  <mat-sidenav-container>
 
-  <!-- Left Drawer -->
-  <mat-drawer #leftDrawer mode="side">
-    <new-announcement #newAnnouncement *ngIf="showNewAnnouncement" (close)="closeLeftDrawer()"></new-announcement>
-  </mat-drawer>
+    <!-- Main Content -->
+    <mat-sidenav-content>
+      <!-- Shows over the top of any route -->
+      <div class="spinner" *ngIf="authService.isLoggedIn && !stateLoaded">
+        <mat-spinner></mat-spinner>
+      </div>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
 
-  <!-- Main Content -->
-  <mat-drawer-content>
-    <app-oracle (showCreateAnnouncement)="onShowCreateAnnouncement()" (showAnnouncementDetail)="onShowAnnouncementDetail($event)" 
-      (showSignMessage)="onShowSignMessage()" (showConfiguration)="onShowConfiguration()"></app-oracle>
-  </mat-drawer-content>
+    <!-- Right Drawer -->
+    <mat-sidenav #rightDrawer mode="over" position="end">
+      <div class="drawer-container">
+        <app-configuration *ngIf="showConfiguration" (close)="closeRightDrawer()" (rootClassName)="onRootClassName($event)"></app-configuration>
+        <app-advanced *ngIf="showAdvanced" (close)="closeRightDrawer()"></app-advanced>
+        <app-sign-message *ngIf="showSignMessage" (close)="closeRightDrawer()"></app-sign-message>
+      </div>
+    </mat-sidenav>
+    
+  </mat-sidenav-container>
 
-  <!-- Right Drawer -->
-  <mat-drawer #rightDrawer [mode]="showAnnouncementDetail ? 'side' : 'over'" position="end">
-    <announcement-detail *ngIf="showAnnouncementDetail && detailAnnouncement" [announcement]="detailAnnouncement" (close)="closeRightDrawer()"></announcement-detail>
-    <app-configuration *ngIf="showConfiguration" (close)="closeRightDrawer()"></app-configuration>
-    <app-sign-message *ngIf="showSignMessage" (close)="closeRightDrawer()"></app-sign-message>
-  </mat-drawer>
-
-</mat-drawer-container>
-
-<!-- <app-last-result-detail></app-last-result-detail> -->
+</div>

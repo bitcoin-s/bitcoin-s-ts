@@ -22,14 +22,7 @@ export class ConfigurationComponent implements OnInit {
 
   ngOnInit(): void {
     this.toggleControl.valueChanges.subscribe((darkMode: boolean) => {
-      // const darkClassName = 'darkMode'
-      // this.className = darkMode ? darkClassName : ''
       this.rootClassName.next(darkMode)
-      // if (darkMode) {
-      //   this.overlay.getContainerElement().classList.add(darkClassName)
-      // } else {
-      //   this.overlay.getContainerElement().classList.remove(darkClassName)
-      // }
     })
 
     this.toggleControl.setValue(localStorage.getItem(CSS_DARK_MODE) !== null)

@@ -19,7 +19,7 @@ import { BuildConfig, SuccessType, UrlResponse } from '~type/proxy-server-types'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
-/** Service that communicates with underlying oracleServer instance through oracle-server-ui-proxy */
+/** Service that communicates with underlying server instance through wallet-server-ui-proxy */
 @Injectable({ providedIn: 'root' })
 export class MessageService {
 
@@ -30,7 +30,7 @@ export class MessageService {
   constructor(private http: HttpClient, private translate: TranslateService, 
     private dialog: MatDialog, private router: Router, private authService: AuthService) { }
 
-  /** Serializes a OracleServerMessage for sending to oracleServer */
+  /** Serializes a OracleServerMessage for sending to server */
   sendMessage(m: WalletServerMessage, errorHandling = true) {
     let obs = this.sendServerMessage(m, errorHandling).pipe(tap(result => {
       this.lastMessageType = m.method

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, of } from 'rxjs'
+import { BehaviorSubject, of, zip } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { environment } from '~environments'
@@ -74,8 +74,8 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse[]
    */
   listAnnouncements() {
-    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse[]>>(this.url + '/announcements', 
-      this.getHeaders()).pipe(catchError(this.errorHandler))
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse[]>>
+      (this.url + '/announcements', this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -83,8 +83,8 @@ export class OracleExplorerService {
    * @returns OracleAnnouncementsResponse
    */
   getAnnouncement(announcementHash: string) {
-    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${announcementHash}`,
-      this.getHeaders()).pipe(catchError(this.errorHandler))
+    return this.http.get<OracleExplorerResponse<OracleAnnouncementsResponse>>
+      (this.url + `/announcements/${announcementHash}`, this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -104,8 +104,8 @@ export class OracleExplorerService {
       .set('oracleName', this.oracleName.value)
     // TODO : Could allow user to enter URI
     
-    return this.http.post<OracleExplorerResponse<string>>(this.url + '/announcements', body, this.getHeaders())
-      .pipe(catchError(this.errorHandler))
+    return this.http.post<OracleExplorerResponse<string>>
+      (this.url + '/announcements', body, this.getHeaders()).pipe(catchError(this.errorHandler))
   }
 
   /**
@@ -121,7 +121,8 @@ export class OracleExplorerService {
 
     const body = new HttpParams()
       .set('attestations', a.attestations)
-    return this.http.post<OracleExplorerResponse<OracleAnnouncementsResponse>>(this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
+    return this.http.post<OracleExplorerResponse<OracleAnnouncementsResponse>>
+      (this.url + `/announcements/${a.announcementTLVsha256}/attestations`, body, this.getHeaders())
       .pipe(catchError(this.errorHandler))
   }
 
@@ -132,10 +133,14 @@ export class OracleExplorerService {
   }
 
   getLocalOracleName(pubkey: string) {
-    return this.getOracleName(pubkey).pipe(tap(result => {
-
-      let osOracleName: string // oracleName according to oracleServer
-      this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)).subscribe(result2 => {
+    console.debug('getLocalOracleName()', pubkey)
+    return zip(this.getOracleName(pubkey), 
+      this.messageService.sendMessage(getMessageBody(MessageType.getoraclename)))
+      .pipe(tap(arr => {
+        const result = arr[0]
+        const result2 = arr[1]
+        let osOracleName: string = '' // oracleName according to oracleServer
+        
         if (result2 && result2.result) {
           osOracleName = result2.result
           console.warn('oracleServer OracleName:', osOracleName)
@@ -169,8 +174,7 @@ export class OracleExplorerService {
           this.oracleName.next('')
           this.serverOracleName.next(false)
         }
-      })
-    }))
+      }))
   }
 
   setOracleName(name: string, force = false) {

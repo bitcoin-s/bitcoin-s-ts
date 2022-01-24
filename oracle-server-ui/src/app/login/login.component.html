@@ -1,0 +1,44 @@
+<section class="login-section">
+
+  <div class="app-logo"></div>
+  <div class="section-header">
+    <h2 translate>title</h2>
+  </div>
+
+  <form class="login-form" [formGroup]="form" autocomplete="off">
+    <fieldset>
+      <mat-form-field *ngIf="debug" class="w-100">
+        <mat-label translate>login.user</mat-label>
+        <input matInput name="user" formControlName="user" autocomplete="username" readonly>
+      </mat-form-field>
+      <mat-form-field class="w-100">
+        <mat-label translate>login.password</mat-label>
+        <input matInput name="password" formControlName="password" type="password" autocomplete="current-password">
+      </mat-form-field>
+    </fieldset>
+    <div class="button-group">
+      <button mat-flat-button color="primary" (click)="login()" [disabled]="executing">
+        {{ 'login.login' | translate }}
+        <div class="spinner" *ngIf="loginExecuting">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </button>
+      <div class="spacer-auto"></div>
+      <button *ngIf="authService.isLoggedIn" mat-stroked-button (click)="refresh()" [disabled]="executing">
+        {{ 'login.refresh' | translate }}
+      </button>
+      <button *ngIf="authService.isLoggedIn" mat-stroked-button (click)="logout()" [disabled]="executing">
+        {{ 'login.logout' | translate }}
+      </button>
+    </div>
+  </form>
+
+  <app-alert *ngIf="error" [type]="AlertType.error" [message]="error" icon="error_outline"></app-alert>
+  
+  <div *ngIf="debug" class="debug-button-group">
+    <button (click)="authTest()">auth/test</button>
+    <button (click)="getVersionThroughAPI()">getVersionThroughAPI()</button>
+    <button (click)="getOracleNameThroughAPI()">getOracleNameThroughAPI()</button>
+  </div>
+  
+</section>

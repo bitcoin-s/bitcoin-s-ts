@@ -1,0 +1,16 @@
+
+.advanced-section {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  
+  .operations > * {
+    width: 100%;
+  }
+
+  .spinner {
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+}

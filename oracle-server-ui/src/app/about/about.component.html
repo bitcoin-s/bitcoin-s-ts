@@ -1,0 +1,41 @@
+<section class="about-section">
+  <div class="section-header">
+    <h2 translate>about.heading</h2>
+  </div>
+
+  <div class="about-content">
+
+    <div class="brand-container">
+      <img class="app-logo" src="assets/image/300x300/krystal_bull.png" 
+        alt="Suredbits">
+      <span translate>title</span>
+    </div>
+
+    <div class="version-container">
+      <div class="version-section">
+        <span class="label" translate>about.serverVersion</span>
+        <span class="server-version">{{ oracleState.serverVersion }}</span>
+      </div>
+      <div *ngIf="oracleState.buildConfig" class="version-section">
+        <span class="label" translate>about.uiVersion</span>
+        <span class="version">{{ oracleState.buildConfig.shortHash }}</span>
+        <span class="date">{{ oracleState.buildConfig.dateString }}</span>
+      </div>
+    </div>
+
+    <div class="vspacer-2"></div>
+
+    <div class="links-container">
+      <label translate>about.links</label>
+      <ul>
+        <li><a href="https://suredbits.slack.com/" target="_blank">Suredbits Slack</a></li>
+        <li><a href="https://oracle.suredbits.com/" target="_blank">Suredbits Oracle Explorer</a></li>
+        <li><a href="https://suredbits.com/krystalbull" target="_blank">Suredbits Krystal Bull Oracle software</a></li>
+        <li><a href="https://github.com/bitcoin-s/bitcoin-s" target="_blank">Bitcoin-S Code Repository</a></li>
+        <li><a href="https://github.com/bitcoin-s/bitcoin-s-ts/" target="_blank">Bitcoin-S-ts Code Repository</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+</section>
