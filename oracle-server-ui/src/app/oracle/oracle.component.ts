@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { NewAnnouncementComponent } from '~app/new-announcement/new-announcement.component'
@@ -148,9 +150,11 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   onOracleHeartbeat() {
     console.debug('onOracleHeartbeateartbeat')
-    this.messageService.oracleHeartbeat().subscribe(result => {
-      console.debug('oracle heartbeat:', result)
-    })
+    this.messageService.oracleHeartbeat()
+      .pipe(catchError(e => of({success: false})))
+      .subscribe(result => {
+        console.debug('oracle heartbeat:', result)
+      })
   }
 
   /* UI Functions */
