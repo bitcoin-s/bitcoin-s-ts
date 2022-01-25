@@ -6,6 +6,8 @@ import express, { Request, Response } from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 
+import * as CommonServer from 'common-ts/lib/index'
+
 import { RunConfig } from './type/run-config'
 
 
@@ -22,6 +24,11 @@ Config.show(logger) // TODO : Why is this not working?
 /** Error Handling  */
 
 require('./middleware/error').setErrorHandlers()
+
+/** Configure common-ts, oracle-server-ts */
+
+CommonServer.ConfigureServerURL(Config.oracleServerUrl)
+CommonServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
 
 /** Application */
 

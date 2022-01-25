@@ -11,9 +11,6 @@ import { RunConfig } from '../type/run-config'
 const Config = <RunConfig>require('../type/run-config')
 const logger = require('../middleware/logger')
 
-OracleServer.ConfigureServerURL(Config.oracleServerUrl)
-OracleServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
-
 const filename = 'oracle-backup.zip'
 
 exports.downloadBackup = (req: Request, res: Response) => {
