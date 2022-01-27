@@ -6,7 +6,8 @@
 
   <form class="form-container">
     <mat-form-field>
-      <input matInput name="signMessage" type="text" [(ngModel)]="signMessageInput" placeholder="{{ 'message' | translate }}">
+      <input matInput name="signMessage" type="text" autocomplete="off"
+        [(ngModel)]="signMessageInput" placeholder="{{ 'message' | translate }}">
     </mat-form-field>
     <button mat-raised-button color="primary" 
       (click)="onSignMessage()">{{ 'action.sign' | translate }}</button>

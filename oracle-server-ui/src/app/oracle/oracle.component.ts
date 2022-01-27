@@ -108,8 +108,6 @@ export class OracleComponent implements OnInit, AfterViewInit {
     console.debug('onShowCreateAnnouncement()')
     if (this.leftDrawer.opened && this.showNewAnnouncement) {
       return
-    } else if (this.newAnnouncement) {
-      this.newAnnouncement.reset()
     }
     this.hideLeftDrawerItems()
     this.showNewAnnouncement = true
@@ -133,6 +131,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
   backdropClick() {
     console.debug('backdropClick()')
     this.detailAnnouncement = undefined
+    this.newAnnouncement.reset()
   }
 
   /** Oracle Explorer handlers */

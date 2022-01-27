@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn, FormControl } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
 import { MatInput } from '@angular/material/input'
 
@@ -92,12 +92,12 @@ export class NewAnnouncementComponent implements OnInit {
   public AlertType = AlertType
   public AnnouncementType = AnnouncementType
 
-  form: FormGroup
+  enumForm: FormGroup
+  numericForm: FormGroup
+  selectedForm: FormGroup
+
   @ViewChild('announcementNameInput') announcementNameInput: MatInput
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
-
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls }
 
   loading = false // waiting for the server
   announcementCreated = false // a new event has been created
@@ -113,36 +113,26 @@ export class NewAnnouncementComponent implements OnInit {
 
   minDate: Date
 
-  // Values for testing event form state
-  // private setDefaultEventValues() {
-  //   this.form.setValue({
-  //     announcementType: EventType.ENUM,
-  //     maturationTime: null,
-  //     eventName: '',
-  //     outcomes: 'One,Two,Three',
-  //     minValue: 0,
-  //     maxValue: 127,
-  //     unit: 'Unit',
-  //     precision: 0,
-  //     numdigits: 3, // to match maxValue
-  //     base: 2,
-  //     signed: false,
-  //   })
-  // }
   private resetAnnouncementValues() {
-    this.form.setValue({
-      announcementType: AnnouncementType.ENUM,
-      maturationTime: null,
-      eventName: null,
-      outcomes: null,
-      minValue: null,
-      maxValue: null,
-      unit: null,
-      precision: null,
-      // numdigits: null,
-      // base: null,
-      // signed: false,
-    })
+    if (this.enumForm) {
+      this.enumForm.setValue({
+        eventName: null,
+        maturationTime: null,
+        outcomes: null,
+      })
+      this.enumForm.reset()
+    }
+    if (this.numericForm) {
+      this.numericForm.setValue({
+        eventName: null,
+        maturationTime: null,
+        minValue: null,
+        maxValue: null,
+        unit: null,
+        precision: 0,
+      })
+      this.numericForm.reset()
+    }
   }
 
   oracleName: string
@@ -154,24 +144,7 @@ export class NewAnnouncementComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.form = this.formBuilder.group({
-      announcementType: [this.announcementType],
-      eventName: [null, Validators.required], // TODO : maxlength?
-      maturationTime: [null, Validators.required],
-      outcomes: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.ENUM, outcomeValidator())]],
-      minValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
-        Validators.required)]],
-      maxValue: [null, [conditionalValidator(() => this.announcementType === AnnouncementType.NUMERIC,
-        Validators.required)]],
-      unit: [null, Validators.required],
-      precision: [0, conditionalValidator(() => this.announcementType === AnnouncementType.DIGIT_DECOMP || this.announcementType === AnnouncementType.NUMERIC, 
-        Validators.compose([nonNegativeNumberValidator(), Validators.required]))],
-      // base: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
-      //   positiveNumberValidator())]],
-      // numdigits: [null, [conditionalValidator(() => this.eventType === EventType.DIGIT_DECOMP,
-      //   positiveNumberValidator())]],
-      // signed: [false],
-    })
+    this.createForms()
 
     this.oracleName = this.oracleExplorerService.oracleName.value
     this.oracleExplorerService.oracleName.subscribe(oracleName => {
@@ -179,41 +152,34 @@ export class NewAnnouncementComponent implements OnInit {
     })
   }
 
+  private createForms() {
+    this.enumForm = this.formBuilder.group({
+      eventName: [null, Validators.required],
+      maturationTime: [null, Validators.required],
+      outcomes: [null, [Validators.required,outcomeValidator()]],
+    })
+    this.numericForm = this.formBuilder.group({
+      eventName: [null, Validators.required],
+      maturationTime: [null, Validators.required],
+      minValue: [null, Validators.required],
+      maxValue: [null, Validators.required],
+      unit: [null, Validators.required],
+      precision: [0, [Validators.required, nonNegativeNumberValidator()]],
+    })
+    this.announcementTypeChange()
+  }
+
   reset() {
     console.debug('reset()')
+    this.announcementCreated = false
     this.resetAnnouncementValues()
-    this.form.markAsUntouched()
   }
 
   // Clear out invalid state from form items the user can't interact with for EventType selection on change
-  wipeInvalidFormStates() {
-    console.debug('wipeInvalidFormStates()', this.announcementType)
-    
-    // Seeing ExpressionChangedAfterItHasBeenCheckedError in log sometimes on Create button disable binding related to this
-    if (this.announcementType === AnnouncementType.ENUM) {
-      this.f['minValue'].setErrors(null)
-      this.f['maxValue'].setErrors(null)
-      // this.f['base'].setErrors(null)
-      // this.f['numdigits'].setErrors(null)
-      this.f['unit'].setErrors(null)
-      this.f['precision'].setErrors(null)
+  announcementTypeChange() {
+    console.debug('announcementTypeChange()', this.announcementType)
 
-      this.f['outcomes'].updateValueAndValidity()
-    } else if (AnnouncementType.NUMERIC) {
-      this.f['outcomes'].setErrors(null)
-
-      this.f['minValue'].updateValueAndValidity()
-      this.f['maxValue'].updateValueAndValidity()
-      this.f['unit'].updateValueAndValidity()
-      this.f['precision'].updateValueAndValidity()
-    } 
-    // else if (EventType.DIGIT_DECOMP) {
-    //   this.f['outcomes'].setErrors(null)
-      
-    //   this.f['base'].updateValueAndValidity()
-    //   this.f['numdigits'].updateValueAndValidity()
-    //   this.f['precision'].updateValueAndValidity()
-    // }
+    this.selectedForm = this.announcementType === AnnouncementType.ENUM ? this.enumForm : this.numericForm
   }
 
   onMaturationTimeAutofill(event: any) {
@@ -227,24 +193,20 @@ export class NewAnnouncementComponent implements OnInit {
   onCreateAnnouncement() {
     console.debug('onCreateAnnouncement')
 
-    const v = this.form.value
+    const v = this.selectedForm.value
     let m: OracleServerMessage
-    switch (v.announcementType) {
+    switch (this.announcementType) { 
       case AnnouncementType.ENUM:
         // TODO : Process outcomes in component / make a custom component - https://netbasal.com/angular-formatters-and-parsers-8388e2599a0e
-        const outcomes = <string[]>v.outcomes.split(',')
-        outcomes.forEach(o => o.trim())
+        let outcomes = <string[]>v.outcomes.split(',')
+        outcomes = outcomes.map(o => o.trim())
+        console.debug('outcomes', outcomes)
         m = getMessageBody(MessageType.createenumannouncement, [v.eventName, v.maturationTime.toISOString(), outcomes])
         break
       case AnnouncementType.NUMERIC:
         m = getMessageBody(MessageType.createnumericannouncement, [v.eventName, v.maturationTime.toISOString(), 
           v.minValue, v.maxValue, v.unit, v.precision])
         break
-      // case EventType.DIGIT_DECOMP:
-      //   const epochSeconds = Math.round(v.maturationTime.getTime() / 1000)
-      //   m = getMessageBody(MessageType.createdigitdecompevent, [v.eventName, epochSeconds, 
-      //     v.base, v.signed, v.numdigits, v.unit, v.precision])
-      //   break
       default:
         throw Error('onCreateAnnouncement unknown announcementType: ' + v.announcementType)
     }

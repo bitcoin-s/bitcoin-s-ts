@@ -181,8 +181,8 @@
     },
 
     "description": {
-      "enum": "This announcement type has a fixed set of outcomes",
-      "numeric": "This announcement type has a numeric range of outcomes"
+      "enum": "Enum announcements have a fixed set of outcomes",
+      "numeric": "Numeric announcements have a range of outcomes"
     },
 
     "name": "Name",
@@ -253,7 +253,8 @@
     "ok": "Ok",
     "yes": "Yes",
     "no": "No",
-    "logout": "Logout"
+    "logout": "Logout",
+    "stay": "Stay"
   }
 
 }

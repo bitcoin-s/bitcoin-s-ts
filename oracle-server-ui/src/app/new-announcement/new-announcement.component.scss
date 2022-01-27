@@ -1,5 +1,19 @@
 
 .new-announcement-section {
+
+  .mat-radio-button {
+    padding-right: 1rem;
+  }
+
+  .description {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .create-button {
+    width: 100%;
+    margin-top: 0.75rem;
+  }
   
   .form-container {
     fieldset {
@@ -9,27 +23,11 @@
       margin: unset;
       padding: unset;
       border: unset;
-    }
 
-    .announcement-type {
-      margin-bottom: 1.5rem;
-    }
-
-    .description {
-      margin-bottom: 1rem;
-    }
-
-    button {
-      margin-top: 0.75rem;
+      > * {
+        width: 100%;
+      }
     }
   }
-  
-  .form-container > fieldset > * {
-    width: 100%;
-  }
-  
-  .mat-radio-button {
-    padding-right: 1rem;
-  }
-  
+
 }

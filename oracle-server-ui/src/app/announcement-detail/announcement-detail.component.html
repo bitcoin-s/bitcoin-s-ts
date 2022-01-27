@@ -30,7 +30,8 @@
       <ng-container *ngIf="isEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
-          <input matInput name="signEnum" type="text" [(ngModel)]="signEnumInput" 
+          <input matInput name="signEnum" type="text" autocomplete="off"
+            [(ngModel)]="signEnumInput" 
             placeholder="{{ announcement.outcomes.join() }}">
           <mat-hint *ngIf="signEnumInput && !announcement.outcomes.includes(signEnumInput)" align="start" translate [translateParams]="{ outcomes: announcement.outcomes.join() }">announcementDetail.outcomeMustBeInSet</mat-hint>
         </mat-form-field>
@@ -40,7 +41,8 @@
       <ng-container *ngIf="isNotEnum()">
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
-          <input matInput name="signDigits" type="number" [(ngModel)]="signDigitsInput" 
+          <input matInput name="signDigits" type="number" autocomplete="off"
+            [(ngModel)]="signDigitsInput" 
             placeholder="{{ formatOutcomes(announcement.outcomes) }}">
         </mat-form-field>
         <button class="sign-button" mat-raised-button color="primary" (click)="onSignDigits()">
