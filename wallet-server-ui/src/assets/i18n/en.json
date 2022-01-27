@@ -107,6 +107,7 @@
   "buildAcceptOffer": {
     "buildOffer": "Build Offer",
     "acceptOffer": "Accept Offer",
+    "moreInfo": "More Information",
     "pasteHex": "Paste Hex",
     "invalidHex": "The hex string entered is not valid hex",
     "invalidAnnouncementContractInfoHex": "The entered hex string is not an Announcement or ContractInfo",

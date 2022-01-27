@@ -36,6 +36,81 @@
       </ul>
     </div>
 
+    <div class="vspacer-2"></div>
+
+    <div class="faq">
+      <label>FAQ</label>
+      <p class="question">What is going on here?</p>
+      <p>
+        This is a bitcoin wallet that supports DLC Contracts.
+      </p>
+      <p class="question">What is a DLC Contract?</p>
+      <p>
+        A DLC Contract is an agreement between counterparties on what will happen with pooled funds based on the outcome of an event, as attested to by an oracle.
+        DLC Contracts come in two types, enumerated (enum) and numeric.
+      </p>
+      <p class="question">What is an oracle?</p>
+      <p>
+        An oracle is a trusted third party that will announce and attest to the outcome of events.
+        At the maturation time of an event, the oracle is expected to publish the outcome to the event so DLCs based on the event can resolve.
+        An example of an oracle is a cryptocurrency exchange that publishes announcements and attestations to the end-of-day price on bitcoin.
+      </p>
+      <p class="question">What is an oracle announcement?</p>
+      <p>
+        An announcement is a formal declaration of an event that will take place, to be attested to by a given oracle.
+        An announcement has an eventId to specify what event it is attesting to, a maturation time, and validation information for the oracle so the outcome can only be confirmed by that oracle.
+        An announcement includes the potential outcomes or range of potential outcomes depending on whether it is for an enum or numeric contract.
+      </p>
+      <p class="question">What is a contract info?</p>
+      <p>
+        A contract info is an Announcement with additional metadata including collateral and payout amounts.
+        A contract info is essentially a prototype Offer that you can review and change to make your own Offers.
+      </p>
+      <p class="question">How are announcements and contract infos encoded?</p>
+      <p>
+        Announcements and contract infos can be encoded as a hexidecimal string or as JSON, which is human readable.
+        This wallet uses hexidecimal encoding for all input and output.
+      </p>
+      <p class="question">What types of DLC Contracts exist?</p>
+      <p>
+        DLC Contracts come in two types, enumerated (enum) and numeric.
+      </p>
+      <p>
+        Enumerated contracts have a specified set of outcomes.
+        The simplest type of enum contract is a question that can be answered with a "Yes" or "No".
+      </p>
+      <p>
+        Examples of events you could base an enum contract on include:
+      </p>
+      <ul>
+        <li>"Did the temperate get over 90 degrees farenheit in Denver Colorado on day X?"</li>
+        <li>"Did Coinbase go down on day Y?"</li>
+        <li>"Did team Z win the sportsball championship?"</li>
+      </ul>
+      <p>
+        Numeric DLC contracts have a range of potential whole number outcomes.
+        Questions with answers in a continuous range like 0-100 can be encoded as numeric contracts.
+        Additionally, in a numeric contract a payout curve is specified over the range of outcomes.
+        The payout curve allows fine grained control over how funds are distributed across the outcome range.
+        The simplest payout curve would go from all funds to no funds linearly over the entire range of potential outcomes.
+      </p>
+      <p>
+        Examples of events you could base a numeric contract include:
+      </p>
+      <ul>
+        <li>"What was the bitcoin price in dollars at time X?"</li>
+        <li>"What was the fear and greed index reading at time Y?"</li>
+        <li>"How many seats did party X gain/lose in the elections?"</li>
+        <li>"How many inches of rain fell on county X in month Z?"</li>
+      </ul>
+      <p class="question">What is a DLC Offer?</p>
+      <p>
+        An Offer is the first stage of a DLC Contract.
+        It encodes the terms around an oracle announcement/contract info that you would like to offer to a counterparty.
+        If your counterparty accepts your offer, you can continue through steps of signature generation and validation to create a DLC contract.
+      </p>
+    </div>
+
   </div>
 
 </section>
