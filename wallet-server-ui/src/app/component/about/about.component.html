@@ -36,6 +36,119 @@
       </ul>
     </div>
 
-  </div>
+    <div class="vspacer-2"></div>
 
+    <div class="faq">
+      <label>FAQ</label>
+      <p class="question">What is going on here?</p>
+      <p>
+        This is a bitcoin wallet that supports discreet log contracts.
+      </p>
+      <p class="question">What is a discreet log contract?</p>
+      <p>
+        A discreet log contract (DLC) is an agreement between counterparties on what will happen with pooled funds based on the outcome of an event, as attested to by an oracle.
+        DLCs come in two types, enumerated (enum) and numeric.
+      </p>
+      <p class="question">What is an oracle?</p>
+      <p>
+        An oracle is a trusted third party that will announce and attest to the outcome of events.
+        At the maturation time of an event, the oracle is expected to publish the outcome to the event so DLCs based on the event can resolve.
+        An example of an oracle is a cryptocurrency exchange that publishes announcements and attestations to the end-of-day price on bitcoin.
+      </p>
+      <p class="question">What is an oracle announcement?</p>
+      <p>
+        An announcement is a formal declaration of an event that will take place, to be attested to by a given oracle.
+        An announcement has an eventId to specify what event it is attesting to, a maturation time, and validation information for the oracle so the outcome can only be confirmed by that oracle.
+        An announcement includes the potential outcomes or range of potential outcomes depending on whether it is for an enum or numeric contract.
+      </p>
+      <p>
+        Here are some examples of oracle announcements:
+      </p>
+      <ul>
+        <li><a href="https://oracle.suredbits.com/announcement/dd003fef263b2d8cf86d5c42d3d8e968d76920796759187f9591be585319c5f3" target="_blank">Deribit-BTC-27JAN22</a></li>
+        <li><a href="https://oracle.suredbits.com/announcement/cbb9984dee4bf883c0b7fb6e07d48e296bad40816c3c3565a07b6ba4d0df0927" target="_blank">BTC Hashrate - Nov 7 21 20:00 UTC</a></li>
+        <li><a href="https://oracle.suredbits.com/announcement/ccc6d73e2b29c01e9112b8cae2cdf309b3ebffb6ce667a0aceaaf35b3ae4ddcd" target="_blank">US Open Final 2021 (Mens)</a></li>
+      </ul>
+      <p class="question">What is a contract info / contract template?</p>
+      <p>
+        A contract info is an announcement with additional information including collateral and payout amounts.
+        A contract info is essentially a skeleton offer that you can review and change to make your own offers.
+      </p>
+      <p>
+        Here are some examples of contract templates:
+      </p>
+      <ul>
+        <li><a href="https://oracle.suredbits.com/contract/enum/2c46d08387a473a4ed1f5948839bce1c4fd7ad8d241a8cf657934b5002986f9f" target="_blank">Cubs v Phillies 2021-05-31</a></li>
+        <li><a href="https://oracle.suredbits.com/contract/enum/0f68b7960aec0382d81f7d9f4ef67216316c4f163eb23deb978a97ffcac5ab3f" target="_blank">Will Citadel Dispatch on 04/20/21 exceed 2.5 hours?</a></li>
+        <li><a href="https://oracle.suredbits.com/contract/numeric/18fb4638fb2c1b4aaf03bedcbf2c19ce7de2b0de5c0e95db8a04ab3ceeabe9c1" target="_blank">Btc price at 4 August 2021, 0 UTC</a></li>
+        <li><a href="https://oracle.suredbits.com/contract/numeric/3044bdc69d7d912407a5330c330f2e8809a0cc046de2bbbf0184c8d73c79d59c" target="_blank">SF Bitdevs attendance</a></li>
+      </ul>
+      <p class="question">How are announcements and contract infos encoded?</p>
+      <p>
+        Announcements and contract infos can be encoded as a hexidecimal string or as JSON, which is human readable.
+        This wallet uses hexidecimal encoding for all input and output.
+      </p>
+      <p class="question">What is an oracle attestation?</p>
+      <p>
+        An oracle attestation is a set of signatures from the oracle that provide a certification of the event outcome.
+        An oracle can sign for only one outcome - signing for any more can leak their private keys and expose them to attack.
+      </p>
+      <p>
+        To see an example of an attestation, follow <a href="https://oracle.suredbits.com/announcement/ccc6d73e2b29c01e9112b8cae2cdf309b3ebffb6ce667a0aceaaf35b3ae4ddcd" target="_blank">this link</a> to the announcement and click the Json button in the attestations section at the bottom.
+        You will see the decoded attestation including the outcome.
+      </p>
+      <p class="question">What types of DLCs exist and how are they different?</p>
+      <p>
+        Discreet log contracts come in two types, enumerated (enum) and numeric.
+      </p>
+      <p>
+        Enumerated contracts have a specified set of outcomes.
+        The simplest type of enum contract is a question that can be answered with a "Yes" or "No".
+      </p>
+      <p>
+        Examples of events you could base an enum contract on include:
+      </p>
+      <ul>
+        <li>"Did it rain today in Denver Colorado?"</li>
+        <li>"Did Coinbase go down today?"</li>
+        <li>"Did team Z win the sportsball championship?"</li>
+      </ul>
+      <p>
+        Numeric DLC contracts have a range of potential whole number outcomes.
+        Questions with answers in a continuous range like 0-100 can be encoded as numeric contracts.
+        Additionally, in a numeric contract a payout curve is specified over the range of outcomes.
+        The payout curve allows fine grained control over how funds are distributed across the outcome range.
+        The simplest payout curve would go from all funds to no funds linearly over the entire range of potential outcomes.
+      </p>
+      <p>
+        Examples of events you could base a numeric contract include:
+      </p>
+      <ul>
+        <li>"What was the bitcoin price in dollars at time X?"</li>
+        <li>"How many seats did party X gain/lose in the elections?"</li>
+        <li>"How many inches of rain fell on county Y in month Z?"</li>
+      </ul>
+      <p class="question">What is a DLC offer?</p>
+      <p>
+        An offer is the first stage of a discreet log contract.
+        It encodes the terms around an oracle announcement/contract info that you would like to offer to a counterparty.
+        If your counterparty accepts your offer, you can continue through steps of signature generation and validation to create a DLC contract.
+      </p>
+    </div>
+
+    <div class="vspacer-1"></div>
+
+    <div class="links-container">
+      <label translate>More Resources on Discreet Log Contracts</label>
+      <ul>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-1-what-is-a-discreet-log-contract/" target="_blank">Discreet Log Contracts Part 1: What is a Discreet Log Contract?</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-2-how-they-work-adaptor-version/" target="_blank">Discreet Log Contracts Part 2: How They Work [Adaptor Version]</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-3-why-they-are-great/" target="_blank">Discreet Log Contracts Part 3: Why They Are Great</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-4-security-and-trust-model/" target="_blank">Discreet Log Contracts Part 4: Security and Trust Model</a></li>
+        <li><a href="https://suredbits.com/category/discreet-log-contracts/" target="_blank">All Suredbits DLC Blog Posts</a></li>
+        <li><a href="https://adiabat.github.io/dlc.pdf" target="_blank">Discreet Log Contracts whitepaper by Thaddeus Dryja</a></li>
+      </ul>
+    </div>
+  </div>
+  
 </section>

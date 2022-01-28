@@ -10,21 +10,24 @@
     }
   }
 
-  .offers {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 0 1rem;
-
-    .build-offer, .accept-offer {
-      .content {
-        padding: 1rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
+  .offer-container {
+    .offers, .info {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0 1rem;
+  
+      .build-offer, .accept-offer, .more-info, .video {
+        
       }
-      .description {
-        line-height: 1.5;
-      }
+    }
+    .content {
+      padding: 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .description {
+      line-height: 1.5;
     }
   }
   

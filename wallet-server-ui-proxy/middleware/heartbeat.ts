@@ -2,13 +2,6 @@ import { Request, Response } from 'express'
 
 import * as CommonServer from 'common-ts/lib/index'
 
-import { RunConfig } from '../type/run-config'
-
-
-const Config = <RunConfig>require('../type/run-config')
-
-CommonServer.ConfigureServerURL(Config.walletServerUrl)
-CommonServer.ConfigureAuthorizationHeader(Config.serverAuthHeader)
 
 /** 'Is this proxy running' endpoint */
 exports.heartbeat = (req: Request, res: Response) => {
