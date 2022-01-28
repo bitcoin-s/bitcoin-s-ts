@@ -42,12 +42,12 @@
       <label>FAQ</label>
       <p class="question">What is going on here?</p>
       <p>
-        This is a bitcoin wallet that supports DLC Contracts.
+        This is a bitcoin wallet that supports discreet log contracts.
       </p>
-      <p class="question">What is a DLC Contract?</p>
+      <p class="question">What is a discreet log contract?</p>
       <p>
-        A DLC Contract is an agreement between counterparties on what will happen with pooled funds based on the outcome of an event, as attested to by an oracle.
-        DLC Contracts come in two types, enumerated (enum) and numeric.
+        A discreet log contract (DLC) is an agreement between counterparties on what will happen with pooled funds based on the outcome of an event, as attested to by an oracle.
+        DLCs come in two types, enumerated (enum) and numeric.
       </p>
       <p class="question">What is an oracle?</p>
       <p>
@@ -63,17 +63,21 @@
       </p>
       <p class="question">What is a contract info?</p>
       <p>
-        A contract info is an Announcement with additional metadata including collateral and payout amounts.
-        A contract info is essentially a prototype Offer that you can review and change to make your own Offers.
+        A contract info is an announcement with additional information including collateral and payout amounts.
+        A contract info is essentially a skeleton Offer that you can review and change to make your own Offers.
       </p>
       <p class="question">How are announcements and contract infos encoded?</p>
       <p>
         Announcements and contract infos can be encoded as a hexidecimal string or as JSON, which is human readable.
         This wallet uses hexidecimal encoding for all input and output.
       </p>
-      <p class="question">What types of DLC Contracts exist?</p>
+      <p class="question">What is an oracle attestation?</p>
       <p>
-        DLC Contracts come in two types, enumerated (enum) and numeric.
+        An oracle attestation is 
+      </p>
+      <p class="question">What types of DLCs exist and how are they different?</p>
+      <p>
+        Discreet log contracts come in two types, enumerated (enum) and numeric.
       </p>
       <p>
         Enumerated contracts have a specified set of outcomes.
@@ -83,8 +87,8 @@
         Examples of events you could base an enum contract on include:
       </p>
       <ul>
-        <li>"Did the temperate get over 90 degrees farenheit in Denver Colorado on day X?"</li>
-        <li>"Did Coinbase go down on day Y?"</li>
+        <li>"Did it rain today in Denver Colorado?"</li>
+        <li>"Did Coinbase go down today?"</li>
         <li>"Did team Z win the sportsball championship?"</li>
       </ul>
       <p>
@@ -99,18 +103,30 @@
       </p>
       <ul>
         <li>"What was the bitcoin price in dollars at time X?"</li>
-        <li>"What was the fear and greed index reading at time Y?"</li>
         <li>"How many seats did party X gain/lose in the elections?"</li>
-        <li>"How many inches of rain fell on county X in month Z?"</li>
+        <li>"How many inches of rain fell on county Y in month Z?"</li>
       </ul>
-      <p class="question">What is a DLC Offer?</p>
+      <p class="question">What is a DLC offer?</p>
       <p>
-        An Offer is the first stage of a DLC Contract.
+        An offer is the first stage of a discreet log contract.
         It encodes the terms around an oracle announcement/contract info that you would like to offer to a counterparty.
         If your counterparty accepts your offer, you can continue through steps of signature generation and validation to create a DLC contract.
       </p>
     </div>
 
-  </div>
+    <div class="vspacer-1"></div>
 
+    <div class="links-container">
+      <label translate>More Resources on Discreet Log Contracts</label>
+      <ul>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-1-what-is-a-discreet-log-contract/" target="_blank">Discreet Log Contracts Part 1: What is a Discreet Log Contract?</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-2-how-they-work-adaptor-version/" target="_blank">Discreet Log Contracts Part 2: How They Work [Adaptor Version]</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-3-why-they-are-great/" target="_blank">Discreet Log Contracts Part 3: Why They Are Great</a></li>
+        <li><a href="https://suredbits.com/discreet-log-contracts-part-4-security-and-trust-model/" target="_blank">Discreet Log Contracts Part 4: Security and Trust Model</a></li>
+        <li><a href="https://suredbits.com/category/discreet-log-contracts/" target="_blank">All Suredbits DLC Blog Posts</a></li>
+        <li><a href="https://adiabat.github.io/dlc.pdf" target="_blank">Discreet Log Contracts whitepaper by Thaddeus Dryja</a></li>
+      </ul>
+    </div>
+  </div>
+  
 </section>
