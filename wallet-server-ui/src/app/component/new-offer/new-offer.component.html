@@ -135,6 +135,14 @@
           </mat-expansion-panel>
         </mat-accordion>
         -->
+
+        <div class="vspacer-1"></div>
+
+        <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="'scatter'">
+        </canvas>
       </div>
 
       <ng-container *ngIf="payoutInputsInvalid">
