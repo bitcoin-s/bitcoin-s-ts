@@ -52,25 +52,22 @@ export class ContractDetailComponent implements OnInit {
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) {
     this._contractInfo = e
-    this.setOutcome(e)
-    this.updateChartData()
   }
 
   private setOutcome(contractInfo: ContractInfo) {
     let outcome = ''
     if (contractInfo && this.dlc.outcomes) {
-      if ((<EnumContractDescriptor>contractInfo.contractDescriptor).outcomes !== undefined) { // this.isEnum()
+      if (this.isEnum()) {
         outcome = <string>this.dlc.outcomes
       } else { // this.isNumeric()
-        if (this.dlc.outcomes.length > 0 && this.dlc.outcomes[0]) {
-          const digits = <number[]>this.dlc.outcomes[0]
-          const numericOutcome = outcomeDigitsToNumber(digits)
+        if (this.dlc.outcomes.length > 0 && Array.isArray(this.dlc.outcomes[0])) {
+          const numericOutcome = outcomeDigitsToNumber(<number[]>[...this.dlc.outcomes[0]])
           outcome = numericOutcome.toString()
           this.outcomePoint = { x: numericOutcome, y: this.dlc.myPayout }
         }
       }
     }
-    console.debug('getOutcome()', outcome)
+    console.debug('setOutcome()', outcome)
     this.outcome = outcome
   }
 
@@ -169,8 +166,9 @@ export class ContractDetailComponent implements OnInit {
       this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
       this.oracleAttestations = this.dlc.oracleSigs?.toString() || ''
     } else {
-      this.oracleAttestations = ''
+      this.contractMaturity = ''
       this.contractTimeout = ''
+      this.oracleAttestations = ''
     }
     this.outcome = ''
   }
@@ -195,6 +193,9 @@ export class ContractDetailComponent implements OnInit {
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
     })
+    // These need to occur after dlc and contractInfo have both set
+    this.setOutcome(this.contractInfo)
+    this.updateChartData()
   }
 
   onClose() {
