@@ -121,15 +121,17 @@ export class AcceptOfferComponent implements OnInit {
     }
   }
   updateChartData() {
-    const data = []
-    for (const p of this.numericContractDescriptor.payoutFunction.points) {
-      // Inverting payout values
-      data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
-    }
-    this.chartData.datasets[0].data = data
-    const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
-    if (unit) {
-      (<any>this.chartOptions.scales).x.title.text = unit
+    if (this.isNumeric()) {
+      const data = []
+      for (const p of this.numericContractDescriptor.payoutFunction.points) {
+        // Inverting payout values
+        data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
+      }
+      this.chartData.datasets[0].data = data
+      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+      if (unit) {
+        (<any>this.chartOptions.scales).x.title.text = unit
+      }
     }
   }
 
