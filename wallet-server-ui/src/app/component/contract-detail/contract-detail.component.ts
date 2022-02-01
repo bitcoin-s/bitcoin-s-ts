@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
+import { TranslateService } from '@ngx-translate/core'
+import { BaseChartDirective } from 'ng2-charts'
 import { of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
@@ -17,6 +18,7 @@ import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContr
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
+import { ChartData, ChartOptions } from 'chart.js'
 
 
 @Component({
@@ -37,6 +39,8 @@ export class ContractDetailComponent implements OnInit {
   public isExecutable = isExecutable
   public isFundingTxRebroadcastable = isFundingTxRebroadcastable
 
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective
+
   _dlc!: DLCContract
   get dlc(): DLCContract { return this._dlc }
   @Input() set dlc(e: DLCContract) { 
@@ -48,22 +52,22 @@ export class ContractDetailComponent implements OnInit {
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) {
     this._contractInfo = e
-    this.setOutcome(e)
   }
 
   private setOutcome(contractInfo: ContractInfo) {
     let outcome = ''
     if (contractInfo && this.dlc.outcomes) {
-      if ((<EnumContractDescriptor>contractInfo.contractDescriptor).outcomes !== undefined) { // this.isEnum()
+      if (this.isEnum()) {
         outcome = <string>this.dlc.outcomes
       } else { // this.isNumeric()
-        if (this.dlc.outcomes.length > 0 && this.dlc.outcomes[0]) {
-          const digits = <number[]>this.dlc.outcomes[0]
-          outcome = outcomeDigitsToNumber(digits).toString()
+        if (this.dlc.outcomes.length > 0 && Array.isArray(this.dlc.outcomes[0])) {
+          const numericOutcome = outcomeDigitsToNumber(<number[]>[...this.dlc.outcomes[0]])
+          outcome = numericOutcome.toString()
+          this.outcomePoint = { x: numericOutcome, y: this.dlc.myPayout }
         }
       }
     }
-    console.debug('getOutcome()', outcome)
+    console.debug('setOutcome()', outcome)
     this.outcome = outcome
   }
 
@@ -98,6 +102,63 @@ export class ContractDetailComponent implements OnInit {
   contractMaturity: string
   contractTimeout: string
   outcome: string
+  outcomePoint: any
+
+  chartData: ChartData<'scatter'> = {
+    datasets: [{
+      data: [],
+      label: 'Payout',
+      // Purple
+      backgroundColor: 'rgb(125,79,194)',
+      borderColor: 'rgb(125,79,194)',
+      // Suredbits blue offset
+      pointHoverBackgroundColor: 'rgb(131,147,156)',
+      pointHoverBorderColor: 'rgb(131,147,156)',
+      pointHoverRadius: 8,
+      fill: false,
+      tension: 0,
+      showLine: true,
+    }, ]
+  }
+  chartOptions: ChartOptions = {
+    responsive: true
+  }
+  chartDataOutcome: any = {
+    data: [],
+    label: 'Outcome',
+    // Suredbits Orange
+    backgroundColor: 'rgb(236,73,58)',
+    borderColor: 'rgb(236,73,58)',
+    // Suredbits Orange offset
+    pointHoverBackgroundColor: 'rgb(244,154,140)',
+    pointHoverBorderColor: 'rgb(244,154,140)',
+    fill: false,
+    tension: 0,
+    showLine: false,
+    pointRadius: 5,
+    pointHoverRadius: 8,
+  }
+  updateChartData() {
+    if (this.isNumeric()) {
+      const data = []
+      for (const p of this.getNumericContractDescriptor().payoutFunction.points) {
+        if (this.dlc.isInitiator) {
+          data.push({ x: p.outcome, y: p.payout })
+        } else {
+          data.push({ x: p.outcome, y: this.dlc.totalCollateral - p.payout })
+        }
+      }
+      this.chartData.datasets[0].data = data
+      // TODO : Label the outcome differently
+      if (this.outcomePoint) {
+        this.chartDataOutcome.data = [this.outcomePoint]
+        this.chartData.datasets[1] = this.chartDataOutcome
+      }
+      if (this.chart) {
+        this.chart.chart?.update()
+      }
+    }
+  }
 
   private reset() {
     if (this.dlc) {
@@ -105,8 +166,9 @@ export class ContractDetailComponent implements OnInit {
       this.contractTimeout = formatDateTime(this.dlc.contractTimeout)
       this.oracleAttestations = this.dlc.oracleSigs?.toString() || ''
     } else {
-      this.oracleAttestations = ''
+      this.contractMaturity = ''
       this.contractTimeout = ''
+      this.oracleAttestations = ''
     }
     this.outcome = ''
   }
@@ -131,6 +193,9 @@ export class ContractDetailComponent implements OnInit {
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
     })
+    // These need to occur after dlc and contractInfo have both set
+    this.setOutcome(this.contractInfo)
+    this.updateChartData()
   }
 
   onClose() {

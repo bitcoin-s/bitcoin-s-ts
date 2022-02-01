@@ -5,7 +5,7 @@
 
   "splashScreen": {
     "heading": "Welcome to the Suredbits Wallet",
-    "betaSoftware": "This application is beta software.",
+    "betaSoftware": "This application is alpha software.",
     "significantValue": "Please do not use it with significant amounts of value at this time.",
     "caveatEmptor": "caveat emptor",
     "dontShowSplashAgain": "Don't show this screen again"

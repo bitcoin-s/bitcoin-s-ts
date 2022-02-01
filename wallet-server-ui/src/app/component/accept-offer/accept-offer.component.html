@@ -77,6 +77,15 @@
             <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint" disabled>
           </div>
         </div>
+
+        <div class="vspacer-1"></div>
+
+        <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="'scatter'">
+        </canvas>
+       
       </div>
 
       <div class="vspacer-2"></div>

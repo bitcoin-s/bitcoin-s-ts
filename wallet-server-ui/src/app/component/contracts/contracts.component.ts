@@ -42,7 +42,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   //   console.debug('clearSelection()')
   //   this.selectedDLCContract = <DLCContract><unknown>null
   // }
-  @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
+  // @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
 
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
@@ -167,10 +167,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.selectedDLCContract = dlcContract
     this.selectedDLCContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
-    this.selectedDLC.emit(<DLCContractInfo>{
-      dlc: dlcContract,
-      contractInfo: this.selectedDLCContractInfo,
-    })
+    // this.selectedDLC.emit(<DLCContractInfo>{
+    //   dlc: dlcContract,
+    //   contractInfo: this.selectedDLCContractInfo,
+    // })
 
     this.contractDetailsVisible = true
     this.rightDrawer.open()

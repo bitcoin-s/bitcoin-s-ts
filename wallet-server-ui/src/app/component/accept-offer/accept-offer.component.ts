@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatRadioChange } from '@angular/material/radio'
+import { ChartData, ChartOptions } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
+import { BaseChartDirective } from 'ng2-charts'
 import * as FileSaver from 'file-saver'
 
 import { MessageService } from '~service/message.service'
@@ -45,6 +47,8 @@ export class AcceptOfferComponent implements OnInit {
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
 
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective
+
   private _offer: OfferWithHex
   @Input() set offer (offer: OfferWithHex) {
     this._offer = offer
@@ -83,6 +87,34 @@ export class AcceptOfferComponent implements OnInit {
   maturityDate: string
   refundDate: string
 
+  chartData: ChartData<'scatter'> = {
+    datasets: [{
+      data: [],
+      label: 'Payout',
+      // Purple
+      backgroundColor: 'rgb(125,79,194)',
+      borderColor: 'rgb(125,79,194)',
+      // Suredbits blue offset
+      pointHoverBackgroundColor: 'rgb(131,147,156)',
+      pointHoverBorderColor: 'rgb(131,147,156)',
+      pointHoverRadius: 8,
+      fill: false,
+      tension: 0,
+      showLine: true,
+    }]
+  }
+  chartOptions: ChartOptions = {
+    responsive: true
+  }
+  updateChartData() {
+    const data = []
+    for (const p of this.numericContractDescriptor.payoutFunction.points) {
+      // Inverting payout values
+      data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
+    }
+    this.chartData.datasets[0].data = data
+  }
+
   acceptOfferTypes = [AcceptOfferType.TOR, AcceptOfferType.FILES]
   acceptOfferType = AcceptOfferType.TOR
   updateAcceptOfferType(event: MatRadioChange) {
@@ -111,6 +143,10 @@ export class AcceptOfferComponent implements OnInit {
         filename: this.defaultFilename
       })
       this.form.markAsUntouched()
+    }
+
+    if (this.numericContractDescriptor) {
+      this.updateChartData()
     }
   }
 

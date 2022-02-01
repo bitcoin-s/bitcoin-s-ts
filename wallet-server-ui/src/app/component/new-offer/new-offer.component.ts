@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
+import { ChartData, ChartDataset, ChartOptions, ChartType } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
+import { BaseChartDirective } from 'ng2-charts'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
@@ -24,6 +26,8 @@ export class NewOfferComponent implements OnInit {
 
   public AlertType = AlertType
   public copyToClipboard = copyToClipboard
+
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
   private _announcement!: AnnouncementWithHex
   @Input() set announcement (announcement: AnnouncementWithHex) {
@@ -98,6 +102,7 @@ export class NewOfferComponent implements OnInit {
     if (isNaN(v) || v < 0) v = null
     p.outcome = v
     this.validatePayoutInputs()
+    this.updateChartData()
   }
   updatePointPayout(p: PayoutFunctionPoint, event: any) {
     console.debug('updatePointPayout()', p, event)
@@ -106,11 +111,42 @@ export class NewOfferComponent implements OnInit {
     if (isNaN(v) || v < 0) v = null
     p.payout = v
     this.validatePayoutInputs()
+    this.updateChartData()
   }
   // roundingIntervals: any[] = []
 
   payoutInputsInvalid = false
   payoutValidationError: string = ''
+
+  chartData: ChartData<'scatter'> = {
+    datasets: [{
+      data: [],
+      label: 'Payout',
+      // Purple
+      backgroundColor: 'rgb(125,79,194)',
+      borderColor: 'rgb(125,79,194)',
+      // Suredbits blue offset
+      pointHoverBackgroundColor: 'rgb(131,147,156)',
+      pointHoverBorderColor: 'rgb(131,147,156)',
+      pointHoverRadius: 8,
+      fill: false,
+      tension: 0,
+      showLine: true,
+    }]
+  }
+  chartOptions: ChartOptions = {
+    responsive: true
+  }
+  updateChartData() {
+    const data = []
+    for (const p of this.points) {
+      data.push({ x: p.outcome, y: p.payout })
+    }
+    this.chartData.datasets[0].data = data
+    if (this.chart) {
+      this.chart.chart?.update()
+    }
+  }
 
   executing = false
   offerCreated = false
@@ -145,6 +181,7 @@ export class NewOfferComponent implements OnInit {
         this.points.push(this.getPoint(<number><unknown>maxValue, <number><unknown>null, 0, true))
       } else if (this.contractInfo) {
         this.points = this.numericContractDescriptor.payoutFunction.points
+        this.updateChartData()
       }
     }
 

@@ -3,6 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BrowserModule } from '@angular/platform-browser'
+import { NgChartsModule } from 'ng2-charts'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 
@@ -95,6 +96,7 @@ export function appInitializerFactory(translate: TranslateService) {
       }
     }),
     MaterialModule,
+    NgChartsModule,
     AppRoutingModule,
   ],
   providers: [{
