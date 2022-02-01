@@ -14,7 +14,7 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { AlertType } from '~component/alert/alert.component'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, WalletMessageType } from '~type/wallet-server-types'
+import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -107,7 +107,7 @@ export class ContractDetailComponent implements OnInit {
   chartData: ChartData<'scatter'> = {
     datasets: [{
       data: [],
-      label: 'Payout',
+      label: this.translate.instant('newOffer.payout'),
       // Purple
       backgroundColor: 'rgb(125,79,194)',
       borderColor: 'rgb(125,79,194)',
@@ -121,11 +121,25 @@ export class ContractDetailComponent implements OnInit {
     }, ]
   }
   chartOptions: ChartOptions = {
-    responsive: true
+    responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          // text will fill programmatically
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: this.translate.instant('unit.satoshis'),
+        }
+      }
+    }
   }
   chartDataOutcome: any = {
     data: [],
-    label: 'Outcome',
+    label: this.translate.instant('newOffer.outcome'),
     // Suredbits Orange
     backgroundColor: 'rgb(236,73,58)',
     borderColor: 'rgb(236,73,58)',
@@ -153,6 +167,10 @@ export class ContractDetailComponent implements OnInit {
       if (this.outcomePoint) {
         this.chartDataOutcome.data = [this.outcomePoint]
         this.chartData.datasets[1] = this.chartDataOutcome
+      }
+      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+      if (unit) {
+        (<any>this.chartOptions.scales).x.title.text = unit
       }
       if (this.chart) {
         this.chart.chart?.update()

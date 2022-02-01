@@ -9,7 +9,7 @@ import * as FileSaver from 'file-saver'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType } from '~type/wallet-server-types'
+import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatDateTime, formatISODate, formatISODateTime, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -90,7 +90,7 @@ export class AcceptOfferComponent implements OnInit {
   chartData: ChartData<'scatter'> = {
     datasets: [{
       data: [],
-      label: 'Payout',
+      label: this.translate.instant('newOffer.payout'),
       // Purple
       backgroundColor: 'rgb(125,79,194)',
       borderColor: 'rgb(125,79,194)',
@@ -104,15 +104,35 @@ export class AcceptOfferComponent implements OnInit {
     }]
   }
   chartOptions: ChartOptions = {
-    responsive: true
+    responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          // text will fill programmatically
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: this.translate.instant('unit.satoshis'),
+        }
+      }
+    }
   }
   updateChartData() {
-    const data = []
-    for (const p of this.numericContractDescriptor.payoutFunction.points) {
-      // Inverting payout values
-      data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
+    if (this.isNumeric()) {
+      const data = []
+      for (const p of this.numericContractDescriptor.payoutFunction.points) {
+        // Inverting payout values
+        data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
+      }
+      this.chartData.datasets[0].data = data
+      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+      if (unit) {
+        (<any>this.chartOptions.scales).x.title.text = unit
+      }
     }
-    this.chartData.datasets[0].data = data
   }
 
   acceptOfferTypes = [AcceptOfferType.TOR, AcceptOfferType.FILES]
