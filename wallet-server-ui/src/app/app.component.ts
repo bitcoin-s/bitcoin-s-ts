@@ -5,16 +5,16 @@ import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { Subscription } from 'rxjs'
-import { AuthService } from '~service/auth.service'
 
+import { AuthService } from '~service/auth.service'
+import { DarkModeService } from '~service/dark-mode.service'
 import { DLCFileService } from '~service/dlc-file.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { WebsocketService } from '~service/websocket.service'
 
 
-const CSS_DARK_MODE = 'CSS_DARK_MODE'
-const SET = 'SET'
+const DARK_MODE_CLASS_NAME = 'darkMode'
 
 @Component({
   selector: 'app-root',
@@ -40,7 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, 
     private overlay: OverlayContainer, private router: Router,
     public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
-    private websocketService: WebsocketService, public authService: AuthService) {
+    private websocketService: WebsocketService, public authService: AuthService,
+    private darkModeService: DarkModeService) {
     
     this.loggedIn$ = this.authService.loggedIn.subscribe(r => {
       console.debug('loggedIn')
@@ -71,8 +72,8 @@ export class AppComponent implements OnInit, OnDestroy {
     console.debug('AppComponent.ngOnInit() url:', this.router.url, 'isLoggedOut:', this.authService.isLoggedOut)
     this.titleService.setTitle(this.translate.instant('title'))
 
-    const enableDarkMode = localStorage.getItem(CSS_DARK_MODE) !== null
-    this.onRootClassName(enableDarkMode)
+    this.darkModeService.darkModeChanged.subscribe(set => this.onDarkModeChanged(set))
+    this.onDarkModeChanged(this.darkModeService.isDarkMode)
   }
 
   ngOnDestroy() {
@@ -126,6 +127,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  private onDarkModeChanged(darkMode: boolean) {
+    // Empty string for not set
+    this.className = darkMode ? DARK_MODE_CLASS_NAME : ''
+    if (this.className) {
+      this.overlay.getContainerElement().classList.add(DARK_MODE_CLASS_NAME)
+    } else {
+      this.overlay.getContainerElement().classList.remove(DARK_MODE_CLASS_NAME)
+    }
+  }
+
   showConfiguration() {
     console.debug('showConfiguration()')
 
@@ -160,19 +171,6 @@ export class AppComponent implements OnInit, OnDestroy {
   hideConfigDebug() {
     this.configurationVisible = false
     this.advancedVisible = false
-  }
-
-  // Empty string for none
-  onRootClassName(darkMode: boolean) {
-    const darkClassName = 'darkMode'
-    this.className = darkMode ? darkClassName : ''
-    if (this.className) {
-      this.overlay.getContainerElement().classList.add(darkClassName)
-      localStorage.setItem(CSS_DARK_MODE, SET)
-    } else {
-      this.overlay.getContainerElement().classList.remove(darkClassName)
-      localStorage.removeItem(CSS_DARK_MODE)
-    }
   }
 
   rightDrawerOpened(opened: boolean) {

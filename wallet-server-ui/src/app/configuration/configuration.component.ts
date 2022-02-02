@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { FormControl } from '@angular/forms'
 
+import { DarkModeService } from '~service/dark-mode.service'
 
-const CSS_DARK_MODE = 'CSS_DARK_MODE'
 
 @Component({
   selector: 'app-configuration',
@@ -12,20 +12,17 @@ const CSS_DARK_MODE = 'CSS_DARK_MODE'
 export class ConfigurationComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
-  @Output() rootClassName: EventEmitter<boolean> = new EventEmitter()
 
   toggleControl: FormControl = new FormControl(false)
 
-  private className = ''
 
-  constructor() { }
+  constructor(private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {
+    this.toggleControl.setValue(this.darkModeService.isDarkMode)
     this.toggleControl.valueChanges.subscribe((darkMode: boolean) => {
-      this.rootClassName.next(darkMode)
+      this.darkModeService.setDarkMode(darkMode)
     })
-
-    this.toggleControl.setValue(localStorage.getItem(CSS_DARK_MODE) !== null)
   }
 
   onClose() {

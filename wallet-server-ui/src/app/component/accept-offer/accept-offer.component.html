@@ -45,8 +45,8 @@
 
       <div class="vspacer-1"></div>
 
-      <label class="mat-form-label" translate>acceptOffer.payouts</label>
       <div *ngIf="isEnum()" class="enum-offer">
+        <label class="mat-form-label" translate>acceptOffer.payouts</label>
         <div class="outcome-group">
           <div class="enum-payout-group">
             <div class="icon-spacer"></div>
@@ -61,6 +61,7 @@
         </div>
       </div>
       <div *ngIf="isNumeric()" class="numeric-offer">
+        <label class="mat-form-label" translate>acceptOffer.payoutCurve</label>
         <div class="outcome-group">
           <div class="numeric-payout-group">
             <div class="icon-spacer"></div>

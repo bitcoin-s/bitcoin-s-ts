@@ -1,15 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
-import { ChartData, ChartDataset, ChartOptions, ChartType } from 'chart.js'
+import { ChartData, ChartOptions } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
 
+import { ChartService } from '~service/chart.service'
+import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
+
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDatePlusDays, formatDateTime } from '~util/utils'
+
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '../alert/alert.component'
@@ -50,6 +54,26 @@ export class NewOfferComponent implements OnInit {
   }
   get numericContractDescriptor() {
     return <NumericContractDescriptor>this.contractInfo.contractInfo.contractDescriptor
+  }
+
+  isEnum() {
+    let cd: EnumEventDescriptor
+    if (this.announcement) {
+      cd = <EnumEventDescriptor>this.announcement.announcement.event.descriptor
+    } else { // contractInfo
+      cd = <EnumEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
+    }
+    return cd.outcomes !== undefined
+  }
+
+  isNumeric() {
+    let cd: NumericEventDescriptor
+    if (this.announcement) {
+      cd = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
+    } else { // contractInfo
+      cd = <NumericEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
+    }
+    return cd.base !== undefined
   }
 
   get hex() {
@@ -118,37 +142,14 @@ export class NewOfferComponent implements OnInit {
   payoutInputsInvalid = false
   payoutValidationError: string = ''
 
-  chartData: ChartData<'scatter'> = {
-    datasets: [{
-      data: [],
-      label: this.translate.instant('newOffer.payout'),
-      // Purple
-      backgroundColor: 'rgb(125,79,194)',
-      borderColor: 'rgb(125,79,194)',
-      // Suredbits blue offset
-      pointHoverBackgroundColor: 'rgb(131,147,156)',
-      pointHoverBorderColor: 'rgb(131,147,156)',
-      pointHoverRadius: 8,
-      fill: false,
-      tension: 0,
-      showLine: true,
-    }]
-  }
-  chartOptions: ChartOptions = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          // text will fill programmatically
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: this.translate.instant('unit.satoshis'),
-        }
-      }
+  chartData: ChartData<'scatter'>
+  chartOptions: ChartOptions
+
+  buildChart() {
+    if (this.isNumeric()) {
+      this.chartData = this.chartService.getChartData()
+      this.chartOptions = this.chartService.getChartOptions(this.numericEventDescriptor.unit)
+      this.updateChartData()
     }
   }
   updateChartData() {
@@ -157,10 +158,6 @@ export class NewOfferComponent implements OnInit {
       data.push({ x: p.outcome, y: p.payout })
     }
     this.chartData.datasets[0].data = data
-    const unit = (<NumericEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor).unit
-    if (unit) {
-      (<any>this.chartOptions.scales).x.title.text = unit
-    }
     if (this.chart) {
       this.chart.chart?.update()
     }
@@ -190,7 +187,7 @@ export class NewOfferComponent implements OnInit {
       }
     } else if (this.isNumeric()) {
       if (this.announcement) {
-        const ed = <NumericEventDescriptor>this.numericEventDescriptor
+        const ed = this.numericEventDescriptor
         const nounceCount = this.event.nonces.length // numDigits
         const maxValue = Math.pow(ed.base, nounceCount) -1
         const minValue = ed.isSigned ? -maxValue : 0
@@ -199,8 +196,8 @@ export class NewOfferComponent implements OnInit {
         this.points.push(this.getPoint(<number><unknown>maxValue, <number><unknown>null, 0, true))
       } else if (this.contractInfo) {
         this.points = this.numericContractDescriptor.payoutFunction.points
-        this.updateChartData()
       }
+      this.buildChart()
     }
 
     this.newOfferResult = ''
@@ -224,7 +221,8 @@ export class NewOfferComponent implements OnInit {
   }
 
   constructor(private messageService: MessageService, public walletStateService: WalletStateService,
-    private formBuilder: FormBuilder, private translate: TranslateService) { }
+    private formBuilder: FormBuilder, private translate: TranslateService,
+    private chartService: ChartService, private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {
     let totalCollateral = null
@@ -242,30 +240,11 @@ export class NewOfferComponent implements OnInit {
       this.onTotalCollateral()
       this.setTheirCollateral()
     }
+    this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
   }
 
   onClose() {
     this.close.next()
-  }
-
-  isEnum() {
-    let cd: EnumEventDescriptor
-    if (this.announcement) {
-      cd = <EnumEventDescriptor>this.announcement.announcement.event.descriptor
-    } else { // contractInfo
-      cd = <EnumEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
-    }
-    return cd.outcomes !== undefined
-  }
-
-  isNumeric() {
-    let cd: NumericEventDescriptor
-    if (this.announcement) {
-      cd = <NumericEventDescriptor>this.announcement.announcement.event.descriptor
-    } else { // contractInfo
-      cd = <NumericEventDescriptor>this.contractInfo.contractInfo.oracleInfo.announcement.event.descriptor
-    }
-    return cd.base !== undefined
   }
 
   onRefundDateAutofill(event: any) {

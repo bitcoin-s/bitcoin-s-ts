@@ -46,7 +46,7 @@ export class AuthService {
         console.debug('AuthService.initialize() Found auth token')
         // If the token is from a previous server run, will logout when data loading 403s
         this.expiration = expiration
-        this.setLoginTimer(expiration.getTime() - new Date().getTime())
+        this.setLoginTimer(expiration.getTime() - new Date().getTime() - LOGOUT_DELAY)
         this.loggedIn.emit()
       }
     }

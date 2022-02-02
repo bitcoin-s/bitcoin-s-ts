@@ -2,23 +2,27 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { ChartData, ChartDataset, ChartOptions } from 'chart.js'
 import * as FileSaver from 'file-saver'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
 import { of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
-import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
-import { ErrorDialogComponent } from '~app/dialog/error/error.component'
-
-import { AlertType } from '~component/alert/alert.component'
+import { ChartService } from '~service/chart.service'
+import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { Attestment, ContractDescriptor, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
+
+import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
+
+import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
-import { ChartData, ChartOptions } from 'chart.js'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+import { AlertType } from '~component/alert/alert.component'
 
 
 @Component({
@@ -54,6 +58,31 @@ export class ContractDetailComponent implements OnInit {
     this._contractInfo = e
   }
 
+  isEnum() {
+    const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    return cd.outcomes !== undefined
+  }
+
+  isNumeric() {
+    const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    return cd.numDigits !== undefined
+  }
+
+  getEnumContractDescriptor() {
+    return <EnumContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
+  getNumericContractDescriptor() {
+    return <NumericContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
+  getContractDescriptor() {
+    if (this.isEnum())
+      return <EnumContractDescriptor>this.contractInfo.contractDescriptor
+    else // if (this.isNumeric())
+      return <NumericContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
   private setOutcome(contractInfo: ContractInfo) {
     let outcome = ''
     if (contractInfo && this.dlc.outcomes) {
@@ -81,100 +110,46 @@ export class ContractDetailComponent implements OnInit {
   get sign(): SignWithHex|null { return this._sign }
   @Input() set sign(s: SignWithHex|null) { this._sign = s }
 
-  getEnumContractDescriptor() {
-    return <EnumContractDescriptor>this.contractInfo.contractDescriptor
-  }
-
-  getNumericContractDescriptor() {
-    return <NumericContractDescriptor>this.contractInfo.contractDescriptor
-  }
-
-  getContractDescriptor() {
-    if (this.isEnum())
-      return <EnumContractDescriptor>this.contractInfo.contractDescriptor
-    else // if (this.isNumeric())
-      return <NumericContractDescriptor>this.contractInfo.contractDescriptor
-  }
-
   @Output() close: EventEmitter<void> = new EventEmitter()
 
   oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
+
   outcome: string
   outcomePoint: any
 
-  chartData: ChartData<'scatter'> = {
-    datasets: [{
-      data: [],
-      label: this.translate.instant('newOffer.payout'),
-      // Purple
-      backgroundColor: 'rgb(125,79,194)',
-      borderColor: 'rgb(125,79,194)',
-      // Suredbits blue offset
-      pointHoverBackgroundColor: 'rgb(131,147,156)',
-      pointHoverBorderColor: 'rgb(131,147,156)',
-      pointHoverRadius: 8,
-      fill: false,
-      tension: 0,
-      showLine: true,
-    }, ]
-  }
-  chartOptions: ChartOptions = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          // text will fill programmatically
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: this.translate.instant('unit.satoshis'),
-        }
-      }
+  chartData: ChartData<'scatter'>
+  chartOptions: ChartOptions
+  chartDataOutcome: ChartDataset
+
+  buildChart() {
+    if (this.isNumeric()) {
+      this.chartData = this.chartService.getChartData()
+      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+      this.chartOptions = this.chartService.getChartOptions(unit)
+      this.setOutcome(this.contractInfo)
+      this.updateChartData()
     }
   }
-  chartDataOutcome: any = {
-    data: [],
-    label: this.translate.instant('newOffer.outcome'),
-    // Suredbits Orange
-    backgroundColor: 'rgb(236,73,58)',
-    borderColor: 'rgb(236,73,58)',
-    // Suredbits Orange offset
-    pointHoverBackgroundColor: 'rgb(244,154,140)',
-    pointHoverBorderColor: 'rgb(244,154,140)',
-    fill: false,
-    tension: 0,
-    showLine: false,
-    pointRadius: 5,
-    pointHoverRadius: 8,
-  }
+
   updateChartData() {
-    if (this.isNumeric()) {
-      const data = []
-      for (const p of this.getNumericContractDescriptor().payoutFunction.points) {
-        if (this.dlc.isInitiator) {
-          data.push({ x: p.outcome, y: p.payout })
-        } else {
-          data.push({ x: p.outcome, y: this.dlc.totalCollateral - p.payout })
-        }
+    const data = []
+    for (const p of this.getNumericContractDescriptor().payoutFunction.points) {
+      if (this.dlc.isInitiator) {
+        data.push({ x: p.outcome, y: p.payout })
+      } else {
+        data.push({ x: p.outcome, y: this.dlc.totalCollateral - p.payout })
       }
-      this.chartData.datasets[0].data = data
-      // TODO : Label the outcome differently
-      if (this.outcomePoint) {
-        this.chartDataOutcome.data = [this.outcomePoint]
-        this.chartData.datasets[1] = this.chartDataOutcome
-      }
-      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
-      if (unit) {
-        (<any>this.chartOptions.scales).x.title.text = unit
-      }
-      if (this.chart) {
-        this.chart.chart?.update()
-      }
+    }
+    this.chartData.datasets[0].data = data
+    if (this.outcomePoint) {
+      this.chartDataOutcome = this.chartService.getOutcomeChartDataset()
+      this.chartDataOutcome.data = [this.outcomePoint]
+      this.chartData.datasets.push(this.chartDataOutcome)
+    }
+    if (this.chart) {
+      this.chart.chart?.update()
     }
   }
 
@@ -204,30 +179,20 @@ export class ContractDetailComponent implements OnInit {
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
     private messsageService: MessageService, private walletStateService: WalletStateService, 
-    private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService) { }
+    private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService,
+    private chartService: ChartService, private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {
     this.defaultFilename = this.translate.instant('contractDetail.defaultSignFilename')
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
     })
-    // These need to occur after dlc and contractInfo have both set
-    this.setOutcome(this.contractInfo)
-    this.updateChartData()
+    this.buildChart()
+    this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
   }
 
   onClose() {
     this.close.next()
-  }
-
-  isEnum() {
-    const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
-    return cd.outcomes !== undefined
-  }
-
-  isNumeric() {
-    const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
-    return cd.numDigits !== undefined
   }
 
   showTransactionIds() {
