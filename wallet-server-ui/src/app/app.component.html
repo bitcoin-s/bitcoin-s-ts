@@ -19,7 +19,7 @@
     <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
       <div class="drawer-container">
         <app-configuration *ngIf="configurationVisible"
-          (close)="onConfigurationClose()" (rootClassName)="onRootClassName($event)"></app-configuration>
+          (close)="onConfigurationClose()"></app-configuration>
 
         <!-- Advanced -->
         <app-debug *ngIf="advancedVisible"

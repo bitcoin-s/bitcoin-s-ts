@@ -3,12 +3,13 @@ import { BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, timer
 import { catchError, concatMap, filter, first, map, retry, tap } from 'rxjs/operators'
 import { BuildConfig } from '~type/proxy-server-types'
 
+import { AuthService } from './auth.service'
+import { MessageService } from './message.service'
+
 import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from '~type/wallet-server-types'
+
 import { BitcoinNetwork } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
-import { AuthService } from './auth.service'
-
-import { MessageService } from './message.service'
 
 
 export /* const */ enum WalletServiceState {

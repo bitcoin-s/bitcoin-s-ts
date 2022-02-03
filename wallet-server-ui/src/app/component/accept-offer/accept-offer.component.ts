@@ -7,11 +7,15 @@ import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
 import * as FileSaver from 'file-saver'
 
+import { ChartService } from '~service/chart.service'
+import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
+
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
-import { copyToClipboard, formatDateTime, formatISODate, formatISODateTime, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+
+import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -87,39 +91,18 @@ export class AcceptOfferComponent implements OnInit {
   maturityDate: string
   refundDate: string
 
-  chartData: ChartData<'scatter'> = {
-    datasets: [{
-      data: [],
-      label: this.translate.instant('newOffer.payout'),
-      // Purple
-      backgroundColor: 'rgb(125,79,194)',
-      borderColor: 'rgb(125,79,194)',
-      // Suredbits blue offset
-      pointHoverBackgroundColor: 'rgb(131,147,156)',
-      pointHoverBorderColor: 'rgb(131,147,156)',
-      pointHoverRadius: 8,
-      fill: false,
-      tension: 0,
-      showLine: true,
-    }]
-  }
-  chartOptions: ChartOptions = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          // text will fill programmatically
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: this.translate.instant('unit.satoshis'),
-        }
-      }
+  chartData: ChartData<'scatter'>
+  chartOptions: ChartOptions
+
+  buildChart() {
+    if (this.isNumeric()) {
+      this.chartData = this.chartService.getChartData()
+      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+      this.chartOptions = this.chartService.getChartOptions(unit)
+      this.updateChartData()
     }
   }
+
   updateChartData() {
     if (this.isNumeric()) {
       const data = []
@@ -128,9 +111,8 @@ export class AcceptOfferComponent implements OnInit {
         data.push({ x: p.outcome, y: this.contractInfo.totalCollateral - p.payout })
       }
       this.chartData.datasets[0].data = data
-      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
-      if (unit) {
-        (<any>this.chartOptions.scales).x.title.text = unit
+      if (this.chart) {
+        this.chart.chart?.update()
       }
     }
   }
@@ -165,9 +147,7 @@ export class AcceptOfferComponent implements OnInit {
       this.form.markAsUntouched()
     }
 
-    if (this.numericContractDescriptor) {
-      this.updateChartData()
-    }
+    this.buildChart()
   }
 
   wipeInvalidFormStates() {
@@ -184,9 +164,9 @@ export class AcceptOfferComponent implements OnInit {
     }
   }
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
-    private translate: TranslateService,
-    private formBuilder: FormBuilder, private dialog: MatDialog) { }
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog,
+    private messageService: MessageService, private walletStateService: WalletStateService,
+    private translate: TranslateService, private chartService: ChartService, private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {
     this.defaultFilename = this.translate.instant('acceptOffer.defaultFilename')
@@ -196,6 +176,7 @@ export class AcceptOfferComponent implements OnInit {
         // [conditionalValidator(torV3AddressValidator(TOR_V3_ADDRESS), Validators.required)]],
       filename: [this.defaultFilename, Validators.required],
   })
+  this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
 }
 
   onClose() {
