@@ -120,7 +120,7 @@
         <mat-form-field>
           <mat-label translate>contractDetail.outcome</mat-label>
           <input matInput [value]="outcome" readonly>
-          <span matSuffix translate>unit.sats</span>
+          <span *ngIf="isNumeric()" matSuffix>{{ units }}</span>
         </mat-form-field>
       </ng-container>
 

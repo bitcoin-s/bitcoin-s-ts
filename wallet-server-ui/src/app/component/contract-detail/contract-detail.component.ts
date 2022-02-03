@@ -92,9 +92,9 @@ export class ContractDetailComponent implements OnInit {
     }
   }
 
-  private setOutcome(contractInfo: ContractInfo) {
+  private setOutcome() {
     let outcome = ''
-    if (contractInfo && this.dlc.outcomes) {
+    if (this.contractInfo && this.dlc.outcomes) {
       if (this.isEnum()) {
         outcome = <string>this.dlc.outcomes
       } else { // this.isNumeric()
@@ -138,7 +138,6 @@ export class ContractDetailComponent implements OnInit {
       this.chartData = this.chartService.getChartData()
       const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
       this.chartOptions = this.chartService.getChartOptions(unit)
-      this.setOutcome(this.contractInfo)
       this.updateChartData()
     }
   }
@@ -197,6 +196,7 @@ export class ContractDetailComponent implements OnInit {
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
     })
+    this.setOutcome()
     this.buildChart()
     this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
   }
