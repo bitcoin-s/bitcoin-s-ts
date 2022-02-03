@@ -15,6 +15,7 @@
         width: 100%;
 
         margin-bottom: 0.25rem;
+        
         &:first-of-type {
           min-height: 40px;
           margin-bottom: 0.5rem;
@@ -22,6 +23,9 @@
 
         .icon-spacer {
           width: 24px;
+        }
+        .rem4-spacer {
+          width: 4rem;
         }
         label {
           display: inline-block;
@@ -47,6 +51,9 @@
         }
         .outcome-value {
           width: 8rem;
+        }
+        .unit {
+          margin-left: 0.25rem;
         }
       }
 

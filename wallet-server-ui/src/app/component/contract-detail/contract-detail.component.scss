@@ -72,7 +72,11 @@
       }
     }
     .heading-group {
-      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      min-height: 40px;
     }
   }
 

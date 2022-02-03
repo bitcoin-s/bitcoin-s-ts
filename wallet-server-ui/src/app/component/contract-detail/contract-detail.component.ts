@@ -56,15 +56,16 @@ export class ContractDetailComponent implements OnInit {
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) {
     this._contractInfo = e
+    this.setUnits()
   }
 
   isEnum() {
-    const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    const cd = <EnumContractDescriptor>this.contractInfo.contractDescriptor
     return cd.outcomes !== undefined
   }
 
   isNumeric() {
-    const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    const cd = <NumericContractDescriptor>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
   }
 
@@ -81,6 +82,14 @@ export class ContractDetailComponent implements OnInit {
       return <EnumContractDescriptor>this.contractInfo.contractDescriptor
     else // if (this.isNumeric())
       return <NumericContractDescriptor>this.contractInfo.contractDescriptor
+  }
+
+  private setUnits() {
+    if (this.isNumeric()) {
+      this.units = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+    } else {
+      this.units = ''
+    }
   }
 
   private setOutcome(contractInfo: ContractInfo) {
@@ -112,9 +121,10 @@ export class ContractDetailComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
+  units: string
+  oracleAttestations: string // OracleAttestmentTLV
 
   outcome: string
   outcomePoint: any
