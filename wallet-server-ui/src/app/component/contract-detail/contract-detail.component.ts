@@ -105,7 +105,7 @@ export class ContractDetailComponent implements OnInit {
           // Exact outcome case
           if (outcomes.length === numDigits) {
             const numericOutcome = outcomeDigitsToNumber(outcomes)
-            outcome = numericOutcome.toString()
+            outcome = formatNumber(numericOutcome).toString()
             this.outcomePoint = { x: numericOutcome, y: this.dlc.myPayout }
           } else { // Range case
             const range = outcomeDigitsToRange(outcomes, numDigits)
