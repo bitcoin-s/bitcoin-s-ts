@@ -104,6 +104,7 @@ export class NewOfferComponent implements OnInit {
 
   maturityDate: string
   minDate: Date
+  units: string
 
   theirCollateral: number|'' = ''
 
@@ -148,7 +149,7 @@ export class NewOfferComponent implements OnInit {
   buildChart() {
     if (this.isNumeric()) {
       this.chartData = this.chartService.getChartData()
-      this.chartOptions = this.chartService.getChartOptions(this.numericEventDescriptor.unit)
+      this.chartOptions = this.chartService.getChartOptions(this.units)
       this.updateChartData()
     }
   }
@@ -171,6 +172,11 @@ export class NewOfferComponent implements OnInit {
   private reset() {
     this.maturityDate = formatDateTime(dateToSecondsSinceEpoch(new Date(this.event.maturity)))
     this.minDate = new Date(this.event.maturity)
+    if (this.isNumeric()) {
+      this.units = this.numericEventDescriptor.unit
+    } else {
+      this.units = ''
+    }
     this.outcomeValues = {}
     this.points = []
 

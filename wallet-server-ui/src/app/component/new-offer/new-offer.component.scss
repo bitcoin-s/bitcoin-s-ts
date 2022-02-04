@@ -32,19 +32,23 @@
         .outcome-label {
           margin-right: 1rem;
         }
-        .payout-label {
+        .payout-input {
           
+        }
+        .unit {
+          margin-left: 0.25rem;
         }
       }
       .enum-payout-group, .numeric-payout-group {
         display: flex;
         flex-direction: row;
         align-items: center;
-        min-height: 40px; // Matches remove buttons on inner rows for numeric
         width: 100%;
+        margin-bottom: 0.25rem;
       }
       .numeric-payout-group {
         &:first-of-type {
+          min-height: 40px; // Matches remove buttons on inner rows for numeric
           margin-bottom: 0.5rem;
         }
 

@@ -90,6 +90,7 @@ export class AcceptOfferComponent implements OnInit {
 
   maturityDate: string
   refundDate: string
+  units: string
 
   chartData: ChartData<'scatter'>
   chartOptions: ChartOptions
@@ -97,8 +98,8 @@ export class AcceptOfferComponent implements OnInit {
   buildChart() {
     if (this.isNumeric()) {
       this.chartData = this.chartService.getChartData()
-      const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
-      this.chartOptions = this.chartService.getChartOptions(unit)
+      
+      this.chartOptions = this.chartService.getChartOptions(this.units)
       this.updateChartData()
     }
   }
@@ -134,6 +135,11 @@ export class AcceptOfferComponent implements OnInit {
   private reset() {
     this.maturityDate = formatISODateTime(this.event.maturity)
     this.refundDate = formatDateTime(this.offer.offer.refundLocktime)
+    if (this.isNumeric()) {
+      this.units = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+    } else {
+      this.units = ''
+    }
     this.acceptOfferType = AcceptOfferType.TOR
     this.result = ''
     this.executing = false

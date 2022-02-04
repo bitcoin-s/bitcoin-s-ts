@@ -47,6 +47,7 @@
 
       <div *ngIf="isEnum()" class="enum-offer">
         <label class="mat-form-label" translate>acceptOffer.payouts</label>
+        <!-- TODO : Use grid -->
         <div class="outcome-group">
           <div class="enum-payout-group">
             <div class="icon-spacer"></div>
@@ -57,11 +58,13 @@
           <div *ngFor="let label of Object.keys(enumContractDescriptor.outcomes)" class="enum-payout-group">
             <label class="outcome-label text-right">{{ label }}</label>
             <input class="outcome-value text-right" type="number" [value]="contractInfo.totalCollateral - enumContractDescriptor.outcomes[label]" readonly>
+            <span class="unit" translate>unit.sats</span>
           </div>
         </div>
       </div>
       <div *ngIf="isNumeric()" class="numeric-offer">
         <label class="mat-form-label" translate>acceptOffer.payoutCurve</label>
+        <!-- TODO : Use grid -->
         <div class="outcome-group">
           <div class="numeric-payout-group">
             <div class="icon-spacer"></div>
@@ -69,6 +72,11 @@
             <label class="payout-heading text-center" translate>newOffer.payout</label>
             <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
             <app-more-info matSuffix tooltip="newOfferDescription.outcomes"></app-more-info>
+          </div>
+          <div class="numeric-payout-group">
+            <label class="outcome-heading text-center">{{ units }}</label>
+            <label class="payout-heading text-center" translate>unit.satoshis</label>
+            <div class="rem4-spacer"></div>
           </div>
           <div *ngFor="let point of numericContractDescriptor.payoutFunction.points; let i = index"
             class="numeric-payout-group">

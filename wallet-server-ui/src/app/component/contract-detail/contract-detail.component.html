@@ -82,6 +82,7 @@
       <!-- Enum / Numeric Outcomes -->
       <div *ngIf="isEnum()" class="enum-outcomes">
         <label class="mat-form-label" translate>contractDetail.outcomePayouts</label>
+        <!-- TODO : Use grid -->
         <div class="enum-group" *ngFor="let l of Object.keys(getEnumContractDescriptor().outcomes)">
           <label class="outcome-label">{{ l }}</label>
           <input class="outcome-payout text-right" [value]="getOutcomeValue( getEnumContractDescriptor().outcomes[l] )" disabled>
@@ -90,10 +91,15 @@
       </div>
       <div *ngIf="isNumeric()" class="numeric-outcomes">
         <label class="mat-form-label" translate>contractDetail.payoutCurve</label>
+        <!-- TODO : Use grid -->
         <div class="numeric-group heading-group">
           <label class="outcome-heading text-center" translate>newOffer.outcome</label>
           <label class="payout-heading text-center" translate>newOffer.payout</label>
           <label class="endpoint-heading text-center" translate>newOffer.endpoint</label>
+        </div>
+        <div class="numeric-group">
+          <label class="outcome-heading text-center">{{ units }}</label>
+          <label class="payout-heading text-center" translate>unit.satoshis</label>
         </div>
         <div class="numeric-group" *ngFor="let p of getNumericContractDescriptor().payoutFunction.points">
           <label class="outcome-label">{{ p.outcome }}</label>
@@ -111,9 +117,10 @@
 
       </div>
       <ng-container *ngIf="outcome">
-        <mat-form-field class="w-100">
+        <mat-form-field>
           <mat-label translate>contractDetail.outcome</mat-label>
           <input matInput [value]="outcome" readonly>
+          <span *ngIf="isNumeric()" matSuffix>{{ units }}</span>
         </mat-form-field>
       </ng-container>
 

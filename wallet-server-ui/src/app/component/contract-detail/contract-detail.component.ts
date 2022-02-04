@@ -56,15 +56,16 @@ export class ContractDetailComponent implements OnInit {
   get contractInfo(): ContractInfo { return this._contractInfo }
   @Input() set contractInfo(e: ContractInfo) {
     this._contractInfo = e
+    this.setUnits()
   }
 
   isEnum() {
-    const cd = <EnumContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    const cd = <EnumContractDescriptor>this.contractInfo.contractDescriptor
     return cd.outcomes !== undefined
   }
 
   isNumeric() {
-    const cd = <NumericContractDescriptor><unknown>this.contractInfo.contractDescriptor
+    const cd = <NumericContractDescriptor>this.contractInfo.contractDescriptor
     return cd.numDigits !== undefined
   }
 
@@ -83,9 +84,17 @@ export class ContractDetailComponent implements OnInit {
       return <NumericContractDescriptor>this.contractInfo.contractDescriptor
   }
 
-  private setOutcome(contractInfo: ContractInfo) {
+  private setUnits() {
+    if (this.isNumeric()) {
+      this.units = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
+    } else {
+      this.units = ''
+    }
+  }
+
+  private setOutcome() {
     let outcome = ''
-    if (contractInfo && this.dlc.outcomes) {
+    if (this.contractInfo && this.dlc.outcomes) {
       if (this.isEnum()) {
         outcome = <string>this.dlc.outcomes
       } else { // this.isNumeric()
@@ -112,9 +121,10 @@ export class ContractDetailComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  oracleAttestations: string // OracleAttestmentTLV
   contractMaturity: string
   contractTimeout: string
+  units: string
+  oracleAttestations: string // OracleAttestmentTLV
 
   outcome: string
   outcomePoint: any
@@ -128,7 +138,6 @@ export class ContractDetailComponent implements OnInit {
       this.chartData = this.chartService.getChartData()
       const unit = (<NumericEventDescriptor>this.contractInfo.oracleInfo.announcement.event.descriptor).unit
       this.chartOptions = this.chartService.getChartOptions(unit)
-      this.setOutcome(this.contractInfo)
       this.updateChartData()
     }
   }
@@ -187,6 +196,7 @@ export class ContractDetailComponent implements OnInit {
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
     })
+    this.setOutcome()
     this.buildChart()
     this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
   }
