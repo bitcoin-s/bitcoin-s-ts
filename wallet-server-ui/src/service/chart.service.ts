@@ -87,12 +87,14 @@ export class ChartService {
           callbacks: {
             label: (context) => {
               // console.debug('label context:', context)
-              let label = ' ' + this.outcomeLabel + ' : ' + context.label + ' ' + units
+              // Handle potential 'range' in outcome values
+              const outcomeValue = (<any>context.raw).range ? (<any>context.raw).range : context.label
+              const label = ' ' + this.outcomeLabel + ' : ' + outcomeValue + ' ' + units
               return label
             },
             afterLabel: (context) => {
               // console.debug('afterLabel context:', context)
-              let text = ' ' + this.payoutLabel + ' : ' + formatNumber((<any>context).raw.y) + ' ' + this.satoshisLabel
+              const text = ' ' + this.payoutLabel + ' : ' + formatNumber((<any>context).raw.y) + ' ' + this.satoshisLabel
               return text
             }
           }

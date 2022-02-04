@@ -17,7 +17,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
@@ -99,9 +99,23 @@ export class ContractDetailComponent implements OnInit {
         outcome = <string>this.dlc.outcomes
       } else { // this.isNumeric()
         if (this.dlc.outcomes.length > 0 && Array.isArray(this.dlc.outcomes[0])) {
-          const numericOutcome = outcomeDigitsToNumber(<number[]>[...this.dlc.outcomes[0]])
-          outcome = numericOutcome.toString()
-          this.outcomePoint = { x: numericOutcome, y: this.dlc.myPayout }
+          const outcomes = <number[]>[...this.dlc.outcomes[0]] // make a copy
+          const numDigits = this.getNumericContractDescriptor().numDigits
+          // console.debug('outcomes:', outcomes, 'numDigits:', numDigits)
+          // Exact outcome case
+          if (outcomes.length === numDigits) {
+            const numericOutcome = outcomeDigitsToNumber(outcomes)
+            outcome = numericOutcome.toString()
+            this.outcomePoint = { x: numericOutcome, y: this.dlc.myPayout }
+          } else { // Range case
+            const range = outcomeDigitsToRange(outcomes, numDigits)
+            if (range) {
+              outcome = range.low + ' - ' + range.high
+              // Place point at midpoint of range and label with full range
+              const x = (range.high - range.low) / 2 + range.low
+              this.outcomePoint = { x: x, y: this.dlc.myPayout, range: outcome }
+            }
+          }
         }
       }
     }

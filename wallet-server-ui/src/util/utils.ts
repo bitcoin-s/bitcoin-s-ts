@@ -152,3 +152,26 @@ export function outcomeDigitsToNumber(digits: number[]) {
   }
   return sum
 }
+
+function startPadArray(arr: any[], length: number, padding: any) {
+  return Array(length - arr.length).fill(padding).concat(arr)
+}
+
+function endPadArray(arr: any[], length: number, padding: any) {
+  return arr.concat(Array(length - arr.length).fill(padding))
+}
+
+export interface OutcomeRange {
+  high: number,
+  low: number,
+}
+
+// Pad outcomes with 0s or 1s to find range
+export function outcomeDigitsToRange(digits: number[], numDigits: number): OutcomeRange|null {
+  if (digits.length < numDigits) {
+    const high = endPadArray(digits, numDigits, 1)
+    const low = endPadArray(digits, numDigits, 0)
+    return { high: outcomeDigitsToNumber(high), low: outcomeDigitsToNumber(low) }
+  }
+  return null
+}
