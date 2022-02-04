@@ -11,8 +11,17 @@
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </button>
-    <button mat-stroked-button (click)="rescan()" [disabled]="executing">
-      {{ 'advanced.rescan' | translate }}</button>
+    
+    <app-alert *ngIf="fullRescan" [type]="AlertType.warn" message="advanced.fullRescanWarning" icon="warning_amber"></app-alert>
+
+    <div class="row">
+      <label>
+        <input type="checkbox" [(ngModel)]="fullRescan">
+        {{ 'advanced.fullBlockchainRescan' | translate }}
+      </label>
+      <button mat-stroked-button (click)="rescan()" [disabled]="executing">{{ 'advanced.rescan' | translate }}</button>
+    </div>
+
     <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
       {{ 'advanced.unreserveAllUTXOs' | translate }}</button>
   </div>

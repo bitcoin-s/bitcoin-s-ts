@@ -99,6 +99,8 @@
 
   "advanced": {
     "heading": "Advanced",
+    "fullBlockchainRescan": "Full Blockchain Rescan",
+    "fullRescanWarning": "Full Blockchain Rescan can take 8 hours on a Raspberry Pi",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs",
     "backup": "Download Wallet Backup"
