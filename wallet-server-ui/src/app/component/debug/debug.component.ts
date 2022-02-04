@@ -19,6 +19,8 @@ export class DebugComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
+  fullRescan = false
+
   executing = false
   backupExecuting = false
 
@@ -51,7 +53,7 @@ export class DebugComponent implements OnInit {
   }
 
   rescan() {
-    console.debug('rescan()')
+    console.debug('rescan() fullRescan:', this.fullRescan)
 
     // Could expose these to the user, but would need to validate
     // [0,0,0,true,true] results in infinite loop in backend
@@ -59,7 +61,7 @@ export class DebugComponent implements OnInit {
     const startBlock = null // 0
     const endBlock = null // this.walletStateService.info.blockHeight
     const force = true
-    const ignoreCreationTime = false // forces full rescan regardless of wallet creation time
+    const ignoreCreationTime = this.fullRescan // false // forces full rescan regardless of wallet creation time
 
     this.executing = true
     this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).subscribe(r => {

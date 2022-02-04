@@ -11,8 +11,15 @@
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </button>
-    <button mat-stroked-button (click)="rescan()" [disabled]="executing">
-      {{ 'advanced.rescan' | translate }}</button>
+    
+    <div class="row">
+      <label>
+        <input type="checkbox" [(ngModel)]="fullRescan">
+        {{ 'advanced.fullBlockchain' | translate }}
+      </label>
+      <button mat-stroked-button (click)="rescan()" [disabled]="executing">{{ 'advanced.rescan' | translate }}</button>
+    </div>
+
     <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
       {{ 'advanced.unreserveAllUTXOs' | translate }}</button>
   </div>
