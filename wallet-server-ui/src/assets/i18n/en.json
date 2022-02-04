@@ -99,6 +99,7 @@
 
   "advanced": {
     "heading": "Advanced",
+    "fullBlockchain": "Full Blockchain Rescan",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs",
     "backup": "Download Wallet Backup"
