@@ -2,12 +2,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
-import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { WalletMessageType } from '~type/wallet-server-types'
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { AlertType } from '../alert/alert.component'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 
 @Component({
@@ -16,6 +18,8 @@ import { getMessageBody } from '~util/wallet-server-util'
   styleUrls: ['./debug.component.scss']
 })
 export class DebugComponent implements OnInit {
+
+  public AlertType = AlertType
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 

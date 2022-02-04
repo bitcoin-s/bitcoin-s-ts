@@ -12,10 +12,12 @@
       </div>
     </button>
     
+    <app-alert *ngIf="fullRescan" [type]="AlertType.warn" message="advanced.fullRescanWarning" icon="warning_amber"></app-alert>
+
     <div class="row">
       <label>
         <input type="checkbox" [(ngModel)]="fullRescan">
-        {{ 'advanced.fullBlockchain' | translate }}
+        {{ 'advanced.fullBlockchainRescan' | translate }}
       </label>
       <button mat-stroked-button (click)="rescan()" [disabled]="executing">{{ 'advanced.rescan' | translate }}</button>
     </div>
