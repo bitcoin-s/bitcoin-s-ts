@@ -152,7 +152,7 @@ export class WebsocketService {
         })
         break;
       case WebsocketMessageType.reservedutxos:
-        this.walletStateService.refreshBalances()
+        this.walletStateService.refreshBalances().subscribe()
         break;
       default:
         console.error('handleMessage() unknown message.type', message)
