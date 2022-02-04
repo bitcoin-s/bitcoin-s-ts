@@ -110,7 +110,7 @@ export class ContractDetailComponent implements OnInit {
           } else { // Range case
             const range = outcomeDigitsToRange(outcomes, numDigits)
             if (range) {
-              outcome = range.low + ' - ' + range.high
+              outcome = formatNumber(range.low) + ' - ' + formatNumber(range.high)
               // Place point at midpoint of range and label with full range
               const x = (range.high - range.low) / 2 + range.low
               this.outcomePoint = { x: x, y: this.dlc.myPayout, range: outcome }
