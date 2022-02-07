@@ -17,6 +17,7 @@ const EXPIRES_KEY = 'expires_at'
 interface LoginResponse { accessToken: string, refreshToken: string, expiresIn: number }
 
 const LOGOUT_DELAY = 60000 // ms
+const LOGOUT_FUDGE_FACTOR = 15000 // ms, extra padding on logout to make sure async actions don't trigger 400 errors close to logout
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -46,7 +47,7 @@ export class AuthService {
         console.debug('AuthService.initialize() Found auth token')
         // If the token is from a previous server run, will logout when data loading 403s
         this.expiration = expiration
-        this.setLoginTimer(expiration.getTime() - new Date().getTime() - LOGOUT_DELAY)
+        this.setLoginTimer(expiration.getTime() - new Date().getTime() - LOGOUT_FUDGE_FACTOR)
         this.loggedIn.emit()
       }
     }
@@ -86,7 +87,7 @@ export class AuthService {
     localStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken)
     this.expiration = new Date(Date.now() + response.expiresIn)
     localStorage.setItem(EXPIRES_KEY, this.expiration.getTime().toString())
-    this.setLoginTimer(response.expiresIn)
+    this.setLoginTimer(response.expiresIn - LOGOUT_FUDGE_FACTOR)
   }
   
   private setLoginTimer(expiresIn: number) {
