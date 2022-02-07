@@ -212,6 +212,7 @@ export class NewAnnouncementComponent implements OnInit {
     }
     if (m !== undefined) {
       console.debug('form.value:', v, 'message:', m)
+      this.loading = true
       this.messageService.sendMessage(m).subscribe(result => {
         if (result) {
           this.announcementCreated = true
