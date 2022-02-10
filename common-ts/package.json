@@ -1,6 +1,6 @@
 {
   "name": "common-ts",
-  "version": "1.9.0",
+  "version": "0.0.1",
   "description": "NodeJS package for common bitcoin-s-ts functionality",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
