@@ -146,7 +146,8 @@ export class WebsocketService {
         // Wait for ContractInfo to load before navigating
         obs.subscribe(_ => {
           // If someone just accepted a DLC Offer
-          if (dlc.state === DLCState.accepted && dlc.isInitiator === false) {
+          // Using both accept states because accepted usually comes in too quickly to have transitioned
+          if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && dlc.isInitiator === false) {
             this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
           }
         })

@@ -148,7 +148,9 @@ export interface DLCContract {
 export enum DLCState {
   // InProgressState
   offered = 'Offered',
+  accepting = 'AcceptedComputingAdaptorSigs', // Transitioning
   accepted = 'Accepted',
+  signing = 'SignComputingAdaptorSigs', // Transitioning
   signed = 'Signed',
   broadcast = 'Broadcasted',
   confirmed = 'Confirmed',

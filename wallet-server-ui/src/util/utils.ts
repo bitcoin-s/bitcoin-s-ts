@@ -125,7 +125,7 @@ export function validateTorAddress(address: string) {
 // DLCState of DLCContract allow operation functions
 
 export function isCancelable(state: DLCState) {
-  return [DLCState.offered, DLCState.accepted, DLCState.signed].includes(state)
+  return [DLCState.offered, DLCState.accepting, DLCState.accepted, DLCState.signing, DLCState.signed].includes(state)
 }
 
 export function isRefundable(state: DLCState) {

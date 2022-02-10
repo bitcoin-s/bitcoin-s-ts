@@ -18,7 +18,7 @@
       </div>
       <div *ngIf="oracleState.buildConfig" class="version-section">
         <span class="label" translate>about.uiVersion</span>
-        <span class="version">{{ oracleState.buildConfig.shortHash }}</span>
+        <span class="version">{{ oracleState.buildConfig.version }} {{ oracleState.buildConfig.shortHash }}</span>
         <span class="date">{{ oracleState.buildConfig.dateString }}</span>
       </div>
     </div>

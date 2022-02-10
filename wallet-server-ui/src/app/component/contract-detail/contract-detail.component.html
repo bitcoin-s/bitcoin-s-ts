@@ -27,6 +27,7 @@
         <mat-form-field>
           <mat-label translate>contractDetail.state</mat-label>
           <input matInput [value]="dlc.state" readonly>
+          <!-- TODO : Add logic to prevent click during tor negotiation once signals for such exist -->
           <button *ngIf="isCancelable(dlc.state)" [disabled]="executing"
             class="mat-flat-button-sm" mat-flat-button color="warn" matSuffix
             (click)="onCancelContract()">
@@ -196,6 +197,9 @@
               (click)="onRebroadcastFundingTransaction()" [disabled]="executing">
               <span translate>contractDetail.rebroadcast</span>
             </button>
+            <div *ngIf="isFundingTxRebroadcastable(dlc.state) && executing && rebroadcasting" matSuffix class="spinner">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
             <!-- TODO : Link -->
           </mat-form-field>
           <mat-form-field class="ellipsis">
@@ -206,6 +210,9 @@
               (click)="onRebroadcastClosingTransaction()" [disabled]="executing">
               <span translate>contractDetail.rebroadcast</span>
             </button>
+            <div *ngIf="executing && rebroadcasting" matSuffix class="spinner">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
             <!-- TODO : Link -->
           </mat-form-field>
         </div>
@@ -220,6 +227,9 @@
               [disabled]="!oracleAttestations || executing">
               <span translate>action.execute</span>
             </button>
+            <div *ngIf="executing && attesting" matSuffix class="spinner">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
           </mat-form-field>
         </div>
       </ng-container>
@@ -267,7 +277,7 @@
           <mat-icon class="material-icons-outlined">file_download</mat-icon>
           <span translate>action.execute</span>
         </button>
-        <div class="spinner" [hidden]="!executing">
+        <div *ngIf="executing" class="spinner">
           <mat-spinner diameter="20"></mat-spinner>
         </div>
       </div>
@@ -289,7 +299,7 @@
           [disabled]="dlc.isInitiator || executing || signBroadcast">
           <span translate>action.execute</span>
         </button>
-        <div class="spinner" [hidden]="!executing">
+        <div *ngIf="executing" class="spinner">
           <mat-spinner diameter="20"></mat-spinner>
         </div>
       </div>
