@@ -306,6 +306,9 @@ export class ContractDetailComponent implements OnInit {
                 showCancelButton: false,
               }
             })
+            // We receive a state transition to Claimed async on the websocket, can now show outcome
+            this.setOutcome()
+            this.buildChart()
           }
           this.executing = false
           this.attesting = false
