@@ -230,8 +230,9 @@ export class AcceptOfferComponent implements OnInit {
           // Unlock the view so the user can edit and try again
           return of({ result: undefined }) // undefined is special case
         })).subscribe(r => {
-          console.warn('acceptdlcoffer', r)
-          if (r.result !== undefined) { // Right now a success response is { result: null, error: null }
+          // Right now a success response is { result: null, error: null }
+          // console.warn('acceptdlcoffer', r)
+          if (r.result !== undefined) { 
             this.result = 'acceptOffer.tor.success'
             // this.walletStateService.refreshDLCStates() // using websocket now
             this.offerAccepted = true
