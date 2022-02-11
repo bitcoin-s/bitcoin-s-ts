@@ -17,5 +17,6 @@ export class ServerConfig {
 	blockstreamUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'
 	mempoolRoot: string // prefix on local paths like '/blockstream'
 	mempoolUrl: string // Blockstream API endpoint like 'https://blockstream.info/api'
-	uiPath: string    // path to UI from local project root
+	uiPath: string // path to UI from local project root
+	bitcoinsPath: string // path to .bitcoin-s
 }

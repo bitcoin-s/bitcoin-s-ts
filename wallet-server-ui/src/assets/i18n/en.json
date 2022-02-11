@@ -103,7 +103,9 @@
     "fullRescanWarning": "Full Blockchain Rescan can take 8 hours on a Raspberry Pi",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs",
-    "backup": "Download Wallet Backup"
+    "backup": "Download Wallet Backup",
+    "downloadBitcoinsLog": "Download Bitcoin-s Log",
+    "downloadProxyLog": "Download Proxy Log"
   },
 
   "buildAcceptOffer": {

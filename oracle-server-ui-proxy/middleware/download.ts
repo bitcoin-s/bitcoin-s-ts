@@ -14,20 +14,18 @@ const logger = require('../middleware/logger')
 const filename = 'oracle-backup.zip'
 
 exports.downloadBackup = (req: Request, res: Response) => {
-  // const r = req.body // don't currently care about request
-  logger.info('downloadBackup ' + Config.backupDirectory)
+  logger.info('downloadBackup ' + Config.bitcoinsDirectory)
 
-  const fullPath = path.join(Config.backupDirectory, filename)
-
-  logger.info('fullPath: ' + fullPath + ' oracleServerUrl: ' + Config.oracleServerUrl)
+  const fullPath = path.join(Config.bitcoinsDirectory, filename)
+  logger.info('fullPath: ' + fullPath)
 
   // logger.info('auth header: ' + res.getHeader('Authorization'))
 
   // Sanity check
   try {
-    fs.accessSync(Config.backupDirectory) // Will throw error if directory does not exist
+    fs.accessSync(Config.bitcoinsDirectory) // Will throw error if directory does not exist
   } catch (err) {
-    logger.error('downloadBackup backupDirectory is not accessible ' + Config.backupDirectory)
+    logger.error('downloadBackup backupDirectory is not accessible ' + Config.bitcoinsDirectory)
     res.end() // Blob size 0 returned
   }
 
@@ -60,4 +58,47 @@ exports.downloadBackup = (req: Request, res: Response) => {
       res.end() // Blob size 0 returned
     }
   })
+}
+
+// Read and return a plaintext file
+function sendPlainText(res: Response, filePath: string) {
+  const readStream = fs.createReadStream(filePath)
+  readStream.on('open', () =>
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8'))
+  readStream.on('error',
+    (err) => { logger.error('readStream error ' + err) })
+  readStream.pipe(res)
+}
+
+exports.downloadOracleServerLog = (req: Request, res: Response) => {
+  logger.info('downloadOracleServerLog')
+
+  const oracleFolderName = 'oracle'
+  const logFileName = 'bitcoin-s.log'
+  const logPath = path.join(Config.bitcoinsDirectory, oracleFolderName, logFileName)
+  console.debug('logPath:', logPath)
+
+  try {
+    fs.accessSync(logPath)
+  } catch (err) {
+    logger.error('downloadOracleServerLog log is not accessible ' + logPath)
+    res.end() // Blob size 0 returned
+  }
+
+  sendPlainText(res, logPath)
+}
+
+exports.downloadProxyLog = (req: Request, res: Response) => {
+  logger.info('downloadProxyLog')
+
+  const logPath = Config.logFilepath
+
+  try {
+    fs.accessSync(logPath)
+  } catch (err) {
+    logger.error('downloadProxyLog log is not accessible ' + logPath)
+    res.end() // Blob size 0 returned
+  }
+
+  sendPlainText(res, logPath)
 }

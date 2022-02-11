@@ -60,4 +60,38 @@ export class AdvancedComponent implements OnInit {
       this.backupExecuting = false
     })
   }
+
+  downloadOracleServerLog() {
+    console.debug('downloadOracleServerLog()')
+
+    const filename = 'bitcoin-s.log'
+
+    this.executing = true
+    this.messageService.downloadOracleServerLog().subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBackup blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
+    })
+  }
+
+  downloadProxyLog() {
+    console.debug('downloadProxyLog()')
+
+    const filename = 'oracle-server-ui-proxy.log'
+
+    this.executing = true
+    this.messageService.downloadProxyLog().subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBackup blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
+    })
+  }
 }

@@ -16,5 +16,6 @@
 	"blockstreamUrl": "https://blockstream.info/api",
 	"mempoolRoot": "/mempool",
 	"mempoolUrl": "https://mempool.space/api",
-	"uiPath": "../oracle-server-ui/dist/oracle-server-ui"
+	"uiPath": "../oracle-server-ui/dist/oracle-server-ui",
+	"bitcoinsPath": "~/.bitcoin-s/"
 }

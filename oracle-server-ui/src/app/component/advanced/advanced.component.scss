@@ -1,12 +1,13 @@
 
 .advanced-section {
-  display: flex;
-  flex-direction: column;
-
-  height: 100%;
   
-  .operations > * {
-    width: 100%;
+  .operations {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button {
+    margin-bottom: 0.5rem;
   }
 
   .spinner {

@@ -23,7 +23,16 @@
     </div>
 
     <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
-      {{ 'advanced.unreserveAllUTXOs' | translate }}</button>
+      {{ 'advanced.unreserveAllUTXOs' | translate }}
+    </button>
+
+    <button mat-stroked-button (click)="downloadBitcoinsLog()" [disabled]="executing">
+      {{ 'advanced.downloadBitcoinsLog' | translate }}
+    </button>
+
+    <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
+      {{ 'advanced.downloadProxyLog' | translate }}
+    </button>
   </div>
 
 </section>

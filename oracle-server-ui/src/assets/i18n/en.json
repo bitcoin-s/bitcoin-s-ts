@@ -32,7 +32,9 @@
 
   "advanced": {
     "heading": "Advanced",
-    "backup": "Download Oracle Backup"
+    "backup": "Download Oracle Backup",
+    "downloadOracleServerLog": "Download Oracle Server Log",
+    "downloadProxyLog": "Download Proxy Log"
   },
 
   "eventName": "Event Name",

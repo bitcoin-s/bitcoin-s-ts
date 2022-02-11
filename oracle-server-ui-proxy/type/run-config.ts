@@ -1,16 +1,15 @@
 import path from 'path'
 
+import { resolveHome } from 'common-ts/lib/util/fs-util'
+
 import { ServerConfig } from './server-config'
 
 
 const Config = <ServerConfig>require('../config.json')
 
-const LOG_PATH = process.env.LOG_PATH || ''
 const LOG_FILENAME = 'oracle-server-ui-proxy.log'
-const LOG_FILEPATH = LOG_PATH + LOG_FILENAME // path.join(LOG_PATH, LOG_FILENAME)
 
 export class RunConfig {
-  // constructor(private rootDir: string) {}
   // server
   get stopOnError() { return Config.stopOnError }
   get port() { return Config.port }
@@ -21,13 +20,18 @@ export class RunConfig {
   get serverAuthHeader() { return 'Basic ' + Buffer.from(this.serverUser + ':' + this.serverPassword).toString('base64') }
   get uiPassword() { return process.env.DEFAULT_UI_PASSWORD || Config.uiPassword }
   // fs
-  get rootDirectory() { return '' } // everything on relative path, could run on absolute // { return this.rootDir }
-  get uiDirectory() { return Config.uiPath } // return path.join(this.rootDirectory, Config.uiPath) }
-  get backupDirectory() {
-    if (process.env.BACKUP_PATH) return path.resolve(process.env.BACKUP_PATH)
-    return path.resolve(this.rootDirectory)
+  private _rootDirectory // must be set after initialization
+  get rootDirectory() { return this._rootDirectory }
+  set rootDirectory(directory: string) { this._rootDirectory = path.resolve(directory) }
+  get uiDirectory() { return Config.uiPath }
+  get bitcoinsDirectory() {
+    if (process.env.BACKUP_PATH) return path.resolve(process.env.BACKUP_PATH) // TODO : Change env var to BITCOIN_S_PATH
+    return resolveHome(Config.bitcoinsPath)
   }
-  get logFilepath() { return LOG_FILEPATH }
+  get logFilepath() {
+    const basePath = process.env.LOG_PATH || this.rootDirectory
+    return path.join(basePath, LOG_FILENAME)
+  }
   // routes
   get apiRoot() { return Config.apiRoot }
   // get wsRoot() { return Config.wsRoot }
@@ -53,7 +57,7 @@ port: ${this.port}
 useHTTPS: ${this.useHTTPS}
 rootDirectory: ${this.rootDirectory}
 uiDirectory: ${this.uiDirectory}
-backupDirectory: ${this.backupDirectory}
+bitcoinsDirectory: ${this.bitcoinsDirectory}
 logFilename: ${this.logFilepath}
 serverUser: ${this.serverUser}
 apiRoot: ${this.apiRoot}

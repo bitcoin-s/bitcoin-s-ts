@@ -94,6 +94,20 @@ export class MessageService {
     return this.http.post(environment.proxyApi + '/downloadBackup', {}, { responseType: 'blob' })
   }
 
+  // Downloads oracleServer logs
+  downloadOracleServerLog() {
+    console.debug('downloadOracleServerLog()')
+
+    return this.http.post(environment.proxyApi + '/downloadOracleServerLog', {}, { responseType: 'blob' })
+  }
+
+  // Downloads proxy server logs
+  downloadProxyLog() {
+    console.debug('downloadProxyLog()')
+
+    return this.http.post(environment.proxyApi + '/downloadProxyLog', {}, { responseType: 'blob' })
+  }
+
   // Common bitcoin-s calls
 
   getServerVersion() {

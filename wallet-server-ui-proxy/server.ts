@@ -13,6 +13,7 @@ import { RunConfig } from './type/run-config'
 /** State */
 
 const Config = <RunConfig>require('./type/run-config')
+Config.rootDirectory = __dirname
 
 /** Logging */
 
