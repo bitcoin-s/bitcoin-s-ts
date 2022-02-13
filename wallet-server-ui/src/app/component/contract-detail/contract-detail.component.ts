@@ -197,6 +197,8 @@ export class ContractDetailComponent implements OnInit {
   private defaultFilename: string
 
   executing = false
+  rebroadcasting = false
+  attesting = false
   acceptSigned = false
   signBroadcast = false
 
@@ -220,7 +222,7 @@ export class ContractDetailComponent implements OnInit {
   }
 
   showTransactionIds() {
-    return !([DLCState.offered,DLCState.accepted].includes(this.dlc.state))
+    return !([DLCState.offered,DLCState.accepting,DLCState.accepted].includes(this.dlc.state))
   }
 
   onCancelContract() {
@@ -272,6 +274,7 @@ export class ContractDetailComponent implements OnInit {
     console.debug('oracleAttestations:', attestations)
 
     this.executing = true
+    this.attesting = true
     this.messsageService.sendMessage(getMessageBody(CoreMessageType.decodeattestments, [attestations])).subscribe(r => {
       console.debug('decodeattestments', r)
 
@@ -303,8 +306,12 @@ export class ContractDetailComponent implements OnInit {
                 showCancelButton: false,
               }
             })
+            // We receive a state transition to Claimed async on the websocket, can now show outcome
+            this.setOutcome()
+            this.buildChart()
           }
           this.executing = false
+          this.attesting = false
         })
       }
     })
@@ -360,6 +367,7 @@ export class ContractDetailComponent implements OnInit {
     const txId = <string>this.dlc.fundingTxId
 
     this.executing = true
+    this.rebroadcasting = true
     this.messsageService.sendMessage(getMessageBody(WalletMessageType.broadcastdlcfundingtx, [contractId])).subscribe(r => {
       if (r.result) {
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
@@ -375,6 +383,7 @@ export class ContractDetailComponent implements OnInit {
         })
       }
       this.executing = false
+      this.rebroadcasting = false
     })
   }
 
@@ -385,6 +394,7 @@ export class ContractDetailComponent implements OnInit {
 
     if (txId) {
       this.executing = true
+      this.rebroadcasting = true
       this.messsageService.sendMessage(getMessageBody(WalletMessageType.gettransaction, [txId])).subscribe(r => {
         if (r.result) {
           const rawTransactionHex = r.result
@@ -404,6 +414,7 @@ export class ContractDetailComponent implements OnInit {
               })
             }
             this.executing = false
+            this.rebroadcasting = false
           })
         }
       })

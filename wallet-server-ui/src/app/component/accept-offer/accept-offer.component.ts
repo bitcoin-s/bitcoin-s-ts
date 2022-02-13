@@ -3,9 +3,11 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn,
 import { MatDialog } from '@angular/material/dialog'
 import { MatRadioChange } from '@angular/material/radio'
 import { ChartData, ChartOptions } from 'chart.js'
+import * as FileSaver from 'file-saver'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
-import * as FileSaver from 'file-saver'
+import { catchError } from 'rxjs/operators'
+import { of } from 'rxjs'
 
 import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
@@ -223,14 +225,19 @@ export class AcceptOfferComponent implements OnInit {
     if (peerAddress) {
       console.debug('acceptdlc over Tor')
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
-        [this.offer.hex, peerAddress])).subscribe(r => {
-          console.warn('acceptdlcoffer', r)
-          // if (r.result) { // Empty response right now
+        [this.offer.hex, peerAddress])).pipe(catchError(error => {
+          // Popup error will come from messageService
+          // Unlock the view so the user can edit and try again
+          return of({ result: undefined }) // undefined is special case
+        })).subscribe(r => {
+          // Right now a success response is { result: null, error: null }
+          // console.warn('acceptdlcoffer', r)
+          if (r.result !== undefined) { 
             this.result = 'acceptOffer.tor.success'
             // this.walletStateService.refreshDLCStates() // using websocket now
-            this.executing = false
             this.offerAccepted = true
-          // }
+          }
+          this.executing = false
         })
     } else {
       console.debug('acceptdlcoffer to hex')

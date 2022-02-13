@@ -4,6 +4,7 @@ import { Observable } from 'rxjs'
 export type SuccessType = { success: boolean }
 
 export interface BuildConfig {
+  version: string // package.json version
   shortHash: string
   hash: string
   committedOn: number

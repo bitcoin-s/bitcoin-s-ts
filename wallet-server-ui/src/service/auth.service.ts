@@ -17,7 +17,7 @@ const EXPIRES_KEY = 'expires_at'
 interface LoginResponse { accessToken: string, refreshToken: string, expiresIn: number }
 
 const LOGOUT_DELAY = 60000 // ms
-const LOGOUT_FUDGE_FACTOR = 15000 // ms, extra padding on logout to make sure async actions don't trigger 400 errors close to logout
+const LOGOUT_FUDGE_FACTOR = 45000 // ms, extra padding on logout to make sure async actions don't trigger 400 errors close to logout
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
