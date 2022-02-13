@@ -5,7 +5,8 @@ export class ServerConfig {
   stopOnError: boolean = false
   useHTTPS: boolean = false
   // fs
-  uiPath: string    // path to UI from local project root
+  uiPath: string // path to UI from local project root
+  bitcoinsPath: string // path to .bitcoin-s
   // auth
   serverUser: string
   serverPassword: string

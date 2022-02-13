@@ -112,4 +112,38 @@ export class DebugComponent implements OnInit {
     })
   }
 
+  downloadBitcoinsLog() {
+    console.debug('downloadBitcoinsLog()')
+
+    const filename = 'bitcoin-s.log'
+
+    this.executing = true
+    this.messageService.downloadBitcoinsLog(this.walletStateService.getNetwork()).subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadBitcoinsLog blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
+    })
+  }
+
+  downloadProxyLog() {
+    console.debug('downloadProxyLog()')
+
+    const filename = 'wallet-server-ui-proxy.log'
+
+    this.executing = true
+    this.messageService.downloadProxyLog().subscribe(blob => {
+      if (!blob || (blob && blob.size === 0)) {
+        console.error('downloadProxyLog blob was null or empty', blob)
+        this.showDownloadError()
+      } else {
+        FileSaver.saveAs(blob, filename)
+      }
+      this.executing = false
+    })
+  }
+
 }

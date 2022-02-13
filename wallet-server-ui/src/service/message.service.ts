@@ -112,6 +112,16 @@ export class MessageService {
     return this.http.post(environment.proxyApi + '/downloadBackup', {}, { responseType: 'blob' })
   }
 
+  // Downloads bitcoin-s server logs
+  downloadBitcoinsLog(network: string) {
+    return this.http.post(environment.proxyApi + '/downloadBitcoinsLog', { network }, { responseType: 'blob' })
+  }
+
+  // Downloads proxy server logs
+  downloadProxyLog() {
+    return this.http.post(environment.proxyApi + '/downloadProxyLog', {}, { responseType: 'blob' })
+  }
+
   // Common bitcoin-s calls
 
   getServerVersion() {

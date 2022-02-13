@@ -11,6 +11,14 @@
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </button>
+
+    <button mat-stroked-button (click)="downloadOracleServerLog()" [disabled]="executing">
+      {{ 'advanced.downloadOracleServerLog' | translate }}
+    </button>
+
+    <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
+      {{ 'advanced.downloadProxyLog' | translate }}
+    </button>
   </div>
 
 </section>

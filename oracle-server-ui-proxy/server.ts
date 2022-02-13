@@ -14,12 +14,13 @@ import { RunConfig } from './type/run-config'
 /** State */
 
 const Config = <RunConfig>require('./type/run-config')
+Config.rootDirectory = __dirname
 
 /** Logging */
 
 const logger = require('./middleware/logger')
 logger.info('Starting wallet-server-ui-proxy')
-Config.show(logger) // TODO : Why is this not working?
+Config.show(logger)
 
 /** Error Handling  */
 

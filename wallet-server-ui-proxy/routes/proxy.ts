@@ -9,7 +9,7 @@ const Config = <RunConfig>require('../type/run-config')
 
 const heartbeatController = require('../middleware/heartbeat')
 const buildController = require('../middleware/buildConfig')
-const backupController = require('../middleware/backup').downloadBackup
+const downloadController = require('../middleware/download')
 const verifyAuth = require('../middleware/auth').verify
 
 // It's hard to pull a .ts in from another library
@@ -29,7 +29,9 @@ router.get('/mempoolUrl', (req: Request, res: Response) => {
   res.json({ url: Config.mempoolUrl })
 })
 
-/** Download Route */
-router.post('/downloadBackup', express.json(), verifyAuth, backupController);
+/** Download Routes */
+router.post('/downloadBackup', express.json(), verifyAuth, downloadController.downloadBackup)
+router.post('/downloadBitcoinsLog', express.json(), verifyAuth, downloadController.downloadBitcoinsLog)
+router.post('/downloadProxyLog', express.json(), verifyAuth, downloadController.downloadProxyLog)
 
 module.exports = router

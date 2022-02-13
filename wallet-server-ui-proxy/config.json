@@ -19,5 +19,6 @@
 	"blockstreamUrl": "https://blockstream.info/api",
 	"mempoolRoot": "/mempool",
 	"mempoolUrl": "https://mempool.space/api",
-	"uiPath": "../wallet-server-ui/dist/wallet-server-ui"
+	"uiPath": "../wallet-server-ui/dist/wallet-server-ui",
+	"bitcoinsPath": "~/.bitcoin-s/"
 }
