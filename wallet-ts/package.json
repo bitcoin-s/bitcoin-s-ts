@@ -1,5 +1,5 @@
 {
-  "name": "wallet-ts",
+  "name": "@bitcoin-s-ts/wallet-ts",
   "version": "0.0.1",
   "description": "NodeJS package for accessing bitcoin-s wallet",
   "main": "dist/index.js",
