@@ -26,11 +26,13 @@ jobs:
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
           package: ./oracle-server-ts/package.json
+          access: "public"
           #tag: "${{steps.vars.outputs.sha_short}}"
           check-version: true # will not publish unless version is changed
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
           package: ./wallet-ts/package.json
+          access: "public"
           #tag: "${{steps.vars.outputs.sha_short}}"
           check-version: true # will not publish unless version is changed
