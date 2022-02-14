@@ -3,7 +3,7 @@ name: npm-publish
 on:
   push:
     branches:
-      [master, main, 2021-10-11-npm-publish-bug] # Change this to your default branch
+      [master, main] # Change this to your default branch
 jobs:
   publish:
     runs-on: ubuntu-latest
