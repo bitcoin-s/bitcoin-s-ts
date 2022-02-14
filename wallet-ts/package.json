@@ -10,7 +10,6 @@
     "build": "tsc",
     "tests": "npx ts-node tests.ts"
   },
-  "private": true,
   "dependencies": {
     "common-ts": "file:../common-ts",
     "needle": "^3.0.0"
