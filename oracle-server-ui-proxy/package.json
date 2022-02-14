@@ -1,6 +1,6 @@
 {
   "name": "oracle-server-ui-proxy",
-  "version": "0.0.3",
+  "version": "1.9.0",
   "scripts": {
     "build": "node ./build/buildVersion",
     "start": "npx ts-node server.ts",
