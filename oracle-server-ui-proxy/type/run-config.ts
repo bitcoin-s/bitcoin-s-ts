@@ -25,7 +25,7 @@ export class RunConfig {
   set rootDirectory(directory: string) { this._rootDirectory = path.resolve(directory) }
   get uiDirectory() { return Config.uiPath }
   get bitcoinsDirectory() {
-    if (process.env.BACKUP_PATH) return path.resolve(process.env.BACKUP_PATH) // TODO : Change env var to BITCOIN_S_PATH
+    if (process.env.BITCOIN_S_HOME) return path.resolve(process.env.BITCOIN_S_HOME)
     return resolveHome(Config.bitcoinsPath)
   }
   get logFilepath() {
