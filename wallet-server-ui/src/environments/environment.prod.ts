@@ -3,7 +3,7 @@ export const environment = {
   debug: false,
   walletServerApi: '/api/v0',
   proxyApi: '/proxy/v0',
-  wsApi: '/ws',
+  wsApi: '/websocket',
   user: 'frontend',
   password: '',
 };
