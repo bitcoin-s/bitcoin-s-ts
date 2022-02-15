@@ -3,7 +3,7 @@
 	"stopOnError": false,
 	"useHTTPS": false,
 	"apiRoot": "/api/v0",
-	"wsRoot": "/ws",
+	"wsRoot": "/websocket",
 	"torProxyRoot": "/tor",
 	"torProxyUrl": "socks5://127.0.0.1:9050",
 	"proxyRoot": "/proxy/v0",
