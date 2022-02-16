@@ -27,3 +27,7 @@ jobs:
          cd oracle-server-ui
          npm i
          tsc -p tsconfig.json
+         cd ../wallet-server-ui
+         npm i
+         tsc -p tsconfig.json
+
