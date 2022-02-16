@@ -22,11 +22,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
+      - name: Install oracle-server-ui dependencies
         run: |
          cd oracle-server-ui
          npm i
          tsc -p tsconfig.json
+      - name: Install wallet-server-ui dependencies
+        run: |
          cd ../wallet-server-ui
          npm i
          tsc -p tsconfig.json
