@@ -338,7 +338,9 @@
       "title": "Send Funds",
       "address": "Address",
       "amount": "Amount",
-      "feeRate": "Fee Rate"
+      "feeRate": "Fee Rate",
+      "addressValid": "Address is Valid",
+      "addressInvalid": "Address is Invalid"
     },
     "sendFundsSuccess": {
       "title": "Funds Sent",

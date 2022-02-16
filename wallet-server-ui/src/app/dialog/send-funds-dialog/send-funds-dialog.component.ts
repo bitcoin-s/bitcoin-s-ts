@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 import { WalletStateService } from '~service/wallet-state-service'
-import { getValidationRegexForNetwork } from '~util/utils'
-import { conditionalValidator, nonNegativeNumberValidator, regexValidator } from '~util/validators'
+import { networkToValidationNetwork } from '~util/utils'
+import { bitcoinAddressValidator, conditionalValidator, nonNegativeNumberValidator } from '~util/validators'
 
 
 @Component({
@@ -16,6 +16,8 @@ export class SendFundsDialogComponent implements OnInit {
   form: FormGroup
   get f() { return this.form.controls }
 
+  get address() { return this.form.get('address') }
+
   sendMax = false
 
   action = 'action.send'
@@ -26,9 +28,8 @@ export class SendFundsDialogComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       address: [null, Validators.compose([
-        regexValidator(getValidationRegexForNetwork(this.walletStateService.getNetwork())),
-        // I think this is failing because it requires Buffer
-        // bitcoinAddressValidator(getValidationNetworkName(this.walletStateService.getNetwork())),
+        bitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined)),
+        // regexValidator(getValidationRegexForNetwork(this.walletStateService.getNetwork())), // old RegEx validator
         Validators.required])],
       amount: [null, conditionalValidator(() => !this.sendMax, 
         Validators.compose([nonNegativeNumberValidator(), Validators.required]))],

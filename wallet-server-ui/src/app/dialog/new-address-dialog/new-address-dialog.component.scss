@@ -1,3 +1,13 @@
-.address {
-  margin-right: 0.5rem;
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  qr-code {
+    margin-right: 1rem;
+  }
+  .address {
+    margin-right: 0.5rem;
+  }
 }

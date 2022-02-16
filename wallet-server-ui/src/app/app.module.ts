@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { NgChartsModule } from 'ng2-charts'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { QrCodeModule } from 'ng-qrcode'
 
 import { MaterialModule } from './shared/modules/material/material.module'
 
@@ -96,6 +97,7 @@ export function appInitializerFactory(translate: TranslateService) {
     }),
     MaterialModule,
     NgChartsModule,
+    QrCodeModule,
     AppRoutingModule,
   ],
   providers: [{
