@@ -57,7 +57,6 @@ export function appInitializerFactory(translate: TranslateService) {
   declarations: [
     AppComponent,
     SplashComponent,
-
     AlertComponent,
     MoreInfoComponent,
     ConfirmationDialogComponent,
@@ -90,9 +89,9 @@ export function appInitializerFactory(translate: TranslateService) {
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {
-          provide: TranslateLoader,
-          useFactory: (createTranslateLoader),
-          deps: [HttpClient]
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
       }
     }),
     MaterialModule,
@@ -100,21 +99,20 @@ export function appInitializerFactory(translate: TranslateService) {
     AppRoutingModule,
   ],
   providers: [{
-    provide: APP_INITIALIZER,
-    useFactory: appInitializerFactory,
-    deps: [TranslateService],
-    multi: true
-  }, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: ErrorInterceptor,
-    multi: true
-  }
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [TranslateService],
+      multi: true
+    }, {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }, {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    }
   ],
-  bootstrap: [AppComponent],
-  entryComponents: [LogoutDialogComponent] // so it will work to open from a service
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

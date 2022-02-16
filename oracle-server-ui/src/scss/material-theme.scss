@@ -1,7 +1,7 @@
 // Setup material theme
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @include mat.core();
-@import "~@angular/material/theming";
+@import "@angular/material/theming";
 
 // Include Material Icons // TODO : Offline this
 // @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
