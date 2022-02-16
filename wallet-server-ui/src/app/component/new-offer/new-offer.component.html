@@ -156,9 +156,8 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="payoutInputsInvalid">
-        <app-alert [type]="AlertType.error" [message]="payoutValidationError"></app-alert>
-      </ng-container>
+      <app-alert *ngIf="payoutInputsInvalid" [type]="AlertType.error" [message]="payoutValidationError"></app-alert>
+      <app-alert *ngIf="payoutValidationWarning" [type]="AlertType.warn" [message]="payoutValidationWarning"></app-alert>
       
       <div class="vspacer-1"></div>
 

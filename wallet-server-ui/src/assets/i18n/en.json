@@ -185,7 +185,8 @@
     "yourCollateral": "Your Collateral must be positive",
     "yourCollateralMoreThanTotal": "Your Collateral must be less than Total Collateral",
     "feeRate": "Fee Rate must be positive",
-    "maxCollateral": "Your Collateral is greater than the maximum payout"
+    "maxCollateral": "Your Collateral is greater than the maximum payout",
+    "noTotalPayout": "No payout pays you the Total Collateral"
   },
 
   "acceptOffer": {

@@ -142,6 +142,7 @@ export class NewOfferComponent implements OnInit {
 
   payoutInputsInvalid = false
   payoutValidationError: string = ''
+  payoutValidationWarning: string = ''
 
   chartData: ChartData<'scatter'>
   chartOptions: ChartOptions
@@ -385,6 +386,7 @@ export class NewOfferComponent implements OnInit {
 
     // TODO : May want to produce compound error messages, currently stop at first
     let errorString = ''
+    let warningString = ''
 
     if (this.isEnum()) {
       // Values must exist and be non-negative
@@ -412,6 +414,8 @@ export class NewOfferComponent implements OnInit {
           { totalCollateral: v.totalCollateral || 0, 
             maxCollateral: maxCollateral || 0,
           })
+        } else if (maxCollateral < v.totalCollateral) {
+          warningString = this.translate.instant('newOfferValidation.noTotalPayout')
         }
       }
     } else if (this.isNumeric()) {
@@ -466,6 +470,8 @@ export class NewOfferComponent implements OnInit {
     // This is causing binding issues
     if (errorString) this.payoutValidationError = errorString
     else this.payoutValidationError = ''
+    if (warningString) this.payoutValidationWarning = warningString
+    else this.payoutValidationWarning = ''
 
     this.payoutInputsInvalid = !validInputs
   }
