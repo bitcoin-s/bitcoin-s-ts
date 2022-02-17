@@ -13,7 +13,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '../alert/alert.component'
@@ -142,6 +142,7 @@ export class NewOfferComponent implements OnInit {
 
   payoutInputsInvalid = false
   payoutValidationError: string = ''
+  payoutValidationWarning: string = ''
 
   chartData: ChartData<'scatter'>
   chartOptions: ChartOptions
@@ -385,6 +386,7 @@ export class NewOfferComponent implements OnInit {
 
     // TODO : May want to produce compound error messages, currently stop at first
     let errorString = ''
+    let warningString = ''
 
     if (this.isEnum()) {
       // Values must exist and be non-negative
@@ -409,8 +411,12 @@ export class NewOfferComponent implements OnInit {
         if (v.totalCollateral < maxCollateral) {
           validInputs = false
           errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal', 
-          { totalCollateral: v.totalCollateral || 0, 
-            maxCollateral: maxCollateral || 0,
+          { totalCollateral: formatNumber(v.totalCollateral || 0), 
+            maxCollateral: formatNumber(maxCollateral || 0),
+          })
+        } else if (maxCollateral < v.totalCollateral) {
+          warningString = this.translate.instant('newOfferValidation.noTotalPayout', {
+            totalCollateral: formatNumber(v.totalCollateral || 0),
           })
         }
       }
@@ -449,8 +455,8 @@ export class NewOfferComponent implements OnInit {
         if (v.totalCollateral < maxCollateral) {
           validInputs = false
           errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal',
-          { totalCollateral: v.totalCollateral || 0, 
-            maxCollateral: maxCollateral || 0
+          { totalCollateral: formatNumber(v.totalCollateral || 0), 
+            maxCollateral: formatNumber(maxCollateral || 0),
           })
         }
       }
@@ -466,6 +472,8 @@ export class NewOfferComponent implements OnInit {
     // This is causing binding issues
     if (errorString) this.payoutValidationError = errorString
     else this.payoutValidationError = ''
+    if (warningString) this.payoutValidationWarning = warningString
+    else this.payoutValidationWarning = ''
 
     this.payoutInputsInvalid = !validInputs
   }
