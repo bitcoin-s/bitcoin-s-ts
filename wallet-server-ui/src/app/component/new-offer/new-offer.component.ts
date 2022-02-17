@@ -13,7 +13,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '../alert/alert.component'
@@ -411,11 +411,13 @@ export class NewOfferComponent implements OnInit {
         if (v.totalCollateral < maxCollateral) {
           validInputs = false
           errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal', 
-          { totalCollateral: v.totalCollateral || 0, 
-            maxCollateral: maxCollateral || 0,
+          { totalCollateral: formatNumber(v.totalCollateral || 0), 
+            maxCollateral: formatNumber(maxCollateral || 0),
           })
         } else if (maxCollateral < v.totalCollateral) {
-          warningString = this.translate.instant('newOfferValidation.noTotalPayout')
+          warningString = this.translate.instant('newOfferValidation.noTotalPayout', {
+            totalCollateral: formatNumber(v.totalCollateral || 0),
+          })
         }
       }
     } else if (this.isNumeric()) {
@@ -453,8 +455,8 @@ export class NewOfferComponent implements OnInit {
         if (v.totalCollateral < maxCollateral) {
           validInputs = false
           errorString = this.translate.instant('newOfferValidation.maxCollateralMustBeLessThanTotal',
-          { totalCollateral: v.totalCollateral || 0, 
-            maxCollateral: maxCollateral || 0
+          { totalCollateral: formatNumber(v.totalCollateral || 0), 
+            maxCollateral: formatNumber(maxCollateral || 0),
           })
         }
       }
