@@ -1,4 +1,5 @@
-import { DLCState } from "~type/wallet-server-types"
+import { Network } from 'bitcoin-address-validation'
+import { DLCState } from '~type/wallet-server-types'
 
 export function copyToClipboard(s: string|undefined|null) {
   if (s === undefined || s === null) return
@@ -20,6 +21,19 @@ export enum BitcoinNetwork {
   test = 'test',
   signet = 'signet', // NOT VALIDATED AGAINST BACKEND
   regnet = 'regnet', // NOT VALIDATED AGAINST BACKEND
+}
+
+// Convert BitcoinNetwork to bitcoin-address-validation Network
+export function networkToValidationNetwork(network: BitcoinNetwork | undefined) {
+  switch (network) {
+    case BitcoinNetwork.main:
+      return Network.mainnet
+    case BitcoinNetwork.test:
+      return Network.testnet
+    case BitcoinNetwork.regnet:
+      return Network.regtest
+  }
+  return undefined
 }
 
 // Network Regex Validators

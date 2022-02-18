@@ -1,10 +1,13 @@
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 
-<!-- <div class="qr-code">TODO : QR Code</div> -->
 <mat-dialog-content>
-  <span class="address" [translate]="data.content" [translateParams]="data.params"></span>
-  <button mat-icon-button (click)="copyToClipboard()"
-    matTooltip="{{ 'action.copyToClipboard' | translate }}"><mat-icon>content_copy</mat-icon></button>
+  <div class="content-container">
+    <qr-code [value]="data.params.address"
+      size="150" [margin]="0" errorCorrectionLevel="M"></qr-code>
+    <span class="address" [translate]="data.content" [translateParams]="data.params"></span>
+    <button mat-icon-button (click)="copyToClipboard()"
+      matTooltip="{{ 'action.copyToClipboard' | translate }}"><mat-icon>content_copy</mat-icon></button>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>

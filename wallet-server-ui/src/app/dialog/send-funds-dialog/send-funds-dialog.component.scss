@@ -20,6 +20,9 @@
     display: flex;
     flex-direction: column;
     
+    .validation {
+      vertical-align: sub;
+    }
     span, mat-button-toggle {
       margin-left: 0.5rem;
     }

@@ -5,11 +5,13 @@
     <fieldset>
       <mat-form-field>
         <mat-label translate>dialog.sendFunds.address</mat-label>
-        <input formControlName="address" matInput type="text">
-        <!-- <span matSuffix class="validation">
-          <mat-icon class="material-icons-outlined">check_circle</mat-icon>
-          <mat-icon class="material-icons-outlined">cancel</mat-icon>
-        </span> -->
+        <input formControlName="address" matInput type="text" spellcheck="false">
+        <span matSuffix class="validation">
+          <mat-icon *ngIf="address?.valid" class="material-icons-outlined"
+            matTooltip="{{ 'dialog.sendFunds.addressValid' | translate }}">check_circle</mat-icon>
+          <mat-icon *ngIf="address?.invalid && (address?.dirty || address?.touched)" class="material-icons-outlined"
+            matTooltip="{{ 'dialog.sendFunds.addressInvalid' | translate }}">cancel</mat-icon>
+        </span>
       </mat-form-field>
       <mat-form-field>
         <mat-label [translate]="sendMax ? 'unit.allFunds' : 'dialog.sendFunds.amount'"></mat-label>
