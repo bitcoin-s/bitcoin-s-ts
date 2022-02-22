@@ -1,17 +1,6 @@
 
-.field-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  label {
-    display: inline-block;
-    width: 12rem;
-  }
-  input {
-    width: 20rem;
-    margin-right: 0.5rem;
-  }
+:host zxing-scanner::ng-deep video {
+  max-height: 300px;
 }
 
 .form-container {

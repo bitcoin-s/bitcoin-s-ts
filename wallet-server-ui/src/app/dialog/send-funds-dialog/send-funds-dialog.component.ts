@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Result } from '@zxing/library'
 
 import { WalletStateService } from '~service/wallet-state-service'
 import { networkToValidationNetwork } from '~util/utils'
@@ -22,6 +23,9 @@ export class SendFundsDialogComponent implements OnInit {
 
   action = 'action.send'
   actionColor = 'primary'
+
+  qrScanNoCamera = false
+  qrScanEnabled = false
 
   constructor(private walletStateService: WalletStateService, private formBuilder: FormBuilder) { }
 
@@ -57,6 +61,46 @@ export class SendFundsDialogComponent implements OnInit {
       amount: v.amount,
       feeRate: v.feeRate,
       sendMax: this.sendMax,
+    }
+  }
+
+  /** QR Code Scanning */
+
+  scanQRCode() {
+    console.debug('scanQRCode()')
+
+    this.qrScanEnabled = !this.qrScanEnabled
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]) {
+    console.debug('camerasFoundHandler()', devices)
+
+    if (!devices || devices.length === 0) {
+      this.qrScanNoCamera = true
+      this.qrScanEnabled = false
+    }
+  }
+
+  camerasNotFoundHandler(event: any) {
+    console.debug('camerasNotFoundHandler()', event)
+
+    this.qrScanNoCamera = true
+    this.qrScanEnabled = false
+  }
+
+  scanErrorHandler(event: Error) {
+    console.debug('scanErrorHandler()', event)
+  }
+
+  scanCompleteHandler(result: Result) {
+    console.debug('scanCompleteHandler()', result)
+    if (result !== undefined) {
+      this.qrScanEnabled = false
+      const text = result.getText()
+      this.form.patchValue({
+        address: text,
+      })
+      this.address?.markAsDirty() // Trigger validation
     }
   }
 
