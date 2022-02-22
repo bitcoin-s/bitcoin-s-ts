@@ -41,6 +41,7 @@ export class WalletStateService {
   }
   balances: Balances
   fundedAddresses: FundedAddress[]
+  unfundedAddresses: string[]
   dlcWalletAccounting: DLCWalletAccounting
   feeEstimate: number
   torDLCHostAddress: string
@@ -206,9 +207,13 @@ export class WalletStateService {
   }
 
   refreshWalletState() {
-    return forkJoin([this.refreshWalletInfo(), 
+    return forkJoin([
+      this.refreshWalletInfo(), 
       this.refreshBalances(),
-      this.refreshDLCWalletAccounting()])
+      this.refreshDLCWalletAccounting(),
+      this.refreshFundedAddresses(),
+      this.refreshUnfundedAddresses(),
+    ])
   }
 
   private refreshWalletInfo() {
@@ -231,6 +236,22 @@ export class WalletStateService {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).pipe(tap(r => {
       if (r.result) {
         this.dlcWalletAccounting = r.result
+      }
+    }))
+  }
+
+  private refreshFundedAddresses() {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getfundedaddresses)).pipe(tap(r => {
+      if (r.result) {
+        this.fundedAddresses = r.result
+      }
+    }))
+  }
+
+  private refreshUnfundedAddresses() {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getunusedaddresses)).pipe(tap(r => {
+      if (r.result) {
+        this.unfundedAddresses = r.result
       }
     }))
   }
