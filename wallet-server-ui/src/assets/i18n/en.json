@@ -135,7 +135,12 @@
     "profitAndLoss": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
     "getNewAddress": "Get New Address",
-    "sendFunds": "Send Funds"
+    "sendFunds": "Send Funds",
+    "fundedAddresses": "Funded Addresses",
+    "unfundedAddresses": "Unfunded Addresses",
+    "openQRCode": "Show QR Code",
+    "address": "Address",
+    "value": "Value"
   },
 
   "newOffer": {

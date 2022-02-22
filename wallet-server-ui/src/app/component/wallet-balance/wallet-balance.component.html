@@ -57,4 +57,38 @@
     </div>
   </div>
 
+  <div class="utxos-container horizontal-pane">
+    <div *ngIf="walletStateService.fundedAddresses" class="pane utxos">
+      <label translate>walletBalance.fundedAddresses</label>
+      <div class="funded-grid">
+        <div class="utxo-address-header" translate>walletBalance.address</div>
+        <div class="utxo-value-header" translate>walletBalance.value</div>
+        <div class="unit"></div>
+        <ng-container *ngFor="let address of walletStateService.fundedAddresses">
+          <div class="address">{{ address.address }}</div>
+          <div class="value">{{ formatNumber(address.value) }}</div>
+          <div class="unit" translate>unit.sats</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="utxos-container horizontal-pane">
+    <div *ngIf="walletStateService.unfundedAddresses" class="pane utxos">
+      <label translate>walletBalance.unfundedAddresses</label>
+      <div class="unfunded-grid">
+        <div class="utxo-address-header" translate>walletBalance.address</div>
+        <div class="qr"></div>
+        <ng-container *ngFor="let address of walletStateService.unfundedAddresses">
+          <div class="address">{{ address }}</div>
+          <button mat-icon-button class="mat-icon-button-sm qr"
+            matTooltip="{{ 'walletBalance.openQRCode' | translate }}"
+            (click)="onQRCodeClick(address)">
+            <mat-icon>qr_code_2</mat-icon>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
 </section>

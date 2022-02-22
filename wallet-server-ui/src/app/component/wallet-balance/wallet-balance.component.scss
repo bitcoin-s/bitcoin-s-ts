@@ -1,11 +1,11 @@
 .wallet-balance {
 
-  .wallet-state {
+  .wallet-state, .utxos-container {
     flex-wrap: wrap;
     gap: 1rem;
-    margin: 0 1rem;
+    margin: 0 1rem 1rem 1rem;
     
-    .balances, .pnl, .buttons {
+    .balances, .pnl, .buttons, .utxos {
       border: 1px solid rgba(0,0,0,.2);
       padding: 1rem;
 
@@ -70,4 +70,47 @@
       margin-right: 1rem;
     }
   }
+
+  .funded-grid {
+    display: grid;
+    row-gap: 0.5rem;
+    column-gap: 1rem;
+
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      "address-header value-header ."
+      "address value unit";
+
+    .utxo-address-header {
+      grid-area: address-header;
+      place-self: center;
+    }
+    .utxo-value-header {
+      grid-area: value-header;
+      place-self: center;
+    }
+    .value {
+      text-align: right;
+    }
+  }
+
+  .unfunded-grid {
+    display: grid;
+    row-gap: 0.5rem;
+    column-gap: 1rem;
+
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "address-header ."
+      "address qr";
+
+    .utxo-address-header {
+      grid-area: address-header;
+      place-self: center;
+    }
+    .address {
+      align-self: center;
+    }
+  }
+  
 }
