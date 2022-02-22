@@ -343,6 +343,7 @@
     "sendFunds": {
       "title": "Send Funds",
       "address": "Address",
+      "scanQRCode": "Scan QR Code",
       "amount": "Amount",
       "feeRate": "Fee Rate",
       "addressValid": "Address is Valid",
