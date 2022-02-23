@@ -14,7 +14,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { CoreMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex, OfferWithHex } from '~type/wallet-ui-types'
 
-import { validateHexString } from '~util/utils'
+import { trimOnPaste, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -26,6 +26,8 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
   styleUrls: ['./build-accept-offer.component.scss']
 })
 export class BuildAcceptOfferComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  public trimOnPaste = trimOnPaste
 
   debug = environment.debug // flag  for debugging buttons
 
@@ -82,15 +84,6 @@ export class BuildAcceptOfferComponent implements OnInit, OnDestroy, AfterViewIn
     })
   }
 
-  onBuildOfferPaste(event: ClipboardEvent) {
-    console.debug('onBuildOfferPaste()', event)
-    const clipboardData = event.clipboardData
-    if (clipboardData) {
-      const trimmedPastedText = clipboardData.getData('text').trim()
-      this.onBuildOffer(trimmedPastedText)
-    }
-  }
-
   // TODO : May want to pass in input reference and mark invalid/valid
   validateHex(hex: string) {
     let valid = validateHexString(hex)
@@ -136,15 +129,6 @@ export class BuildAcceptOfferComponent implements OnInit, OnDestroy, AfterViewIn
           this.onAnnouncement(<AnnouncementWithHex>{ announcement: r.result, hex })
         }
       })
-    }
-  }
-
-  onAcceptOfferPaste(event: ClipboardEvent) {
-    console.debug('onAcceptOfferPaste()', event)
-    const clipboardData = event.clipboardData
-    if (clipboardData) {
-      const trimmedPastedText = clipboardData.getData('text').trim()
-      this.handleAcceptOffer(trimmedPastedText)
     }
   }
 

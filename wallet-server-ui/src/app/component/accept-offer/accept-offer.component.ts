@@ -18,7 +18,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste, validateTorAddress } from '~util/utils'
 import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -43,6 +43,7 @@ export class AcceptOfferComponent implements OnInit {
   public AlertType = AlertType
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
+  public trimOnPaste = trimOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
@@ -91,6 +92,9 @@ export class AcceptOfferComponent implements OnInit {
   form: FormGroup
   get f() { return this.form.controls }
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
+  set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
+  set peerAddressValue(peerAddress: string) { this.form.patchValue({ peerAddress }) }
+  set filenameValue(filename: string) { this.form.patchValue({ filename }) }
 
   maturityDate: string
   refundDate: string

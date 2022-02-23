@@ -17,7 +17,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, trimOnPaste, validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
@@ -42,6 +42,7 @@ export class ContractDetailComponent implements OnInit {
   public isRefundable = isRefundable
   public isExecutable = isExecutable
   public isFundingTxRebroadcastable = isFundingTxRebroadcastable
+  public trimOnPaste = trimOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
@@ -243,15 +244,6 @@ export class ContractDetailComponent implements OnInit {
       }
       this.executing = false
     })
-  }
-
-  onAttestationsPaste(event: ClipboardEvent) {
-    console.debug('onAttestationsPaste()', event)
-    const clipboardData = event.clipboardData
-    if (clipboardData) {
-      const trimmedPastedText = clipboardData.getData('text').trim()
-      this.oracleAttestations = trimmedPastedText
-    }
   }
 
   onOracleAttestations() {

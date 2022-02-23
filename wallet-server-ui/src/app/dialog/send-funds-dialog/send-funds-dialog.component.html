@@ -12,7 +12,8 @@
     <fieldset>
       <mat-form-field>
         <mat-label translate>dialog.sendFunds.address</mat-label>
-        <input formControlName="address" matInput type="text" spellcheck="false">
+        <input formControlName="address" matInput type="text" spellcheck="false"
+          (paste)="this.addressValue = trimOnPaste($event)">
         <span matSuffix class="validation">
           <mat-icon *ngIf="address?.valid" class="material-icons-outlined"
             matTooltip="{{ 'dialog.sendFunds.addressValid' | translate }}">check_circle</mat-icon>

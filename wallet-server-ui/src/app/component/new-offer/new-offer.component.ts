@@ -14,7 +14,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, trimOnPaste } from '~util/utils'
 import { allowEmptybitcoinAddressValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -32,6 +32,7 @@ export class NewOfferComponent implements OnInit {
 
   public AlertType = AlertType
   public copyToClipboard = copyToClipboard
+  public trimOnPaste = trimOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
@@ -102,6 +103,7 @@ export class NewOfferComponent implements OnInit {
   form: FormGroup
   get f() { return this.form.controls }
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
+  set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
 
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 

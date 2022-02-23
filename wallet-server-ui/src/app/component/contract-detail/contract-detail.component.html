@@ -220,7 +220,7 @@
           <mat-form-field class="ellipsis">
             <mat-label translate>contractDetail.oracleAttestations</mat-label>
             <input matInput [value]="oracleAttestations" [readonly]="!isExecutable(dlc.state)"
-              (paste)="onAttestationsPaste($event)">
+              (paste)="oracleAttestations = trimOnPaste($event)">
             <button *ngIf="isExecutable(dlc.state)" matSuffix
               mat-flat-button color="primary" class="mat-flat-button-sm"
               (click)="onOracleAttestations()"

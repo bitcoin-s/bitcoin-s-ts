@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Result } from '@zxing/library'
 
 import { WalletStateService } from '~service/wallet-state-service'
-import { networkToValidationNetwork } from '~util/utils'
+import { networkToValidationNetwork, trimOnPaste } from '~util/utils'
 import { bitcoinAddressValidator, conditionalValidator, nonNegativeNumberValidator } from '~util/validators'
 
 
@@ -14,10 +14,12 @@ import { bitcoinAddressValidator, conditionalValidator, nonNegativeNumberValidat
 })
 export class SendFundsDialogComponent implements OnInit {
 
+  public trimOnPaste = trimOnPaste
+
   form: FormGroup
   get f() { return this.form.controls }
-
   get address() { return this.form.get('address') }
+  set addressValue(address: string) { this.form.patchValue({ address }) }
 
   sendMax = false
 
