@@ -157,7 +157,7 @@ export class AcceptOfferComponent implements OnInit {
       this.form.patchValue({
         peerAddress: null,
         filename: this.defaultFilename,
-        externalPayoutAddress: null,
+        externalPayoutAddress: '',
       })
       this.form.markAsUntouched()
     }
@@ -189,7 +189,7 @@ export class AcceptOfferComponent implements OnInit {
       // acceptOfferType: [this.acceptOfferType], // don't know how to conditionally validate with this here yet
       peerAddress: [null, regexValidator(TOR_V3_ADDRESS)],
       filename: [this.defaultFilename, Validators.required],
-      externalPayoutAddress: [null, 
+      externalPayoutAddress: ['', 
         allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
     })
     this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
