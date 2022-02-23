@@ -94,6 +94,14 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.dataSource.sortingDataAccessor = (dlc: DLCContract, property: string) => {
+      switch (property) {
+        case 'eventId':
+          return this.getContractInfo(dlc.dlcId)?.oracleInfo?.announcement?.event?.eventId;
+        default:
+          return (<any>dlc)[property];
+      }
+    }
     this.dataSource.sort = this.sort
 
     this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
