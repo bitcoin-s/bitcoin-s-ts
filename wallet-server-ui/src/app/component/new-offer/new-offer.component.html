@@ -179,6 +179,35 @@
         </mat-form-field>
       </div>
 
+      <!-- Advanced -->
+      <mat-expansion-panel *ngIf="advancedVisible">
+        <mat-expansion-panel-header>
+          <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+        </mat-expansion-panel-header>
+        <zxing-scanner *ngIf="qrScanEnabled"
+          [enable]="qrScanEnabled"
+          (camerasFound)="camerasFoundHandler($event)"
+          (camerasNotFound)="camerasNotFoundHandler($event)"
+          (scanError)="scanErrorHandler($event)"
+          (scanComplete)="scanCompleteHandler($event)"
+        ></zxing-scanner>
+        <mat-form-field class="w-100">
+          <mat-label translate>newOffer.externalPayoutAddress</mat-label>
+          <input formControlName="externalPayoutAddress" matInput type="text" spellcheck="false">
+          <span matSuffix class="validation">
+            <mat-icon *ngIf="externalPayoutAddress?.valid && !externalPayoutAddress?.pristine" class="material-icons-outlined"
+              matTooltip="{{ 'dialog.sendFunds.addressValid' | translate }}">check_circle</mat-icon>
+            <mat-icon *ngIf="externalPayoutAddress?.invalid && (externalPayoutAddress?.dirty || externalPayoutAddress?.touched)" class="material-icons-outlined"
+              matTooltip="{{ 'dialog.sendFunds.addressInvalid' | translate }}">cancel</mat-icon>
+          </span>
+          <button *ngIf="!qrScanNoCamera" class="mat-stroked-icon-button-sm" mat-stroked-button matSuffix
+            matTooltip="{{ 'dialog.sendFunds.scanQRCode' | translate }}"
+            (click)="scanQRCode()">
+            <mat-icon>qr_code_scanner</mat-icon>
+          </button>
+          <app-more-info matSuffix tooltip="newOfferDescription.externalPayoutAddress"></app-more-info>
+        </mat-form-field>
+      </mat-expansion-panel>
     </fieldset>
   </form>
 

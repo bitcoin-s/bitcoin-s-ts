@@ -116,6 +116,13 @@ fieldset {
 
 /** Material Design */
 
+// Suppress side drawer horizontal scroll
+mat-sidenav {
+  .mat-drawer-inner-container {
+    overflow-x: hidden;
+  }
+}
+
 /** Buttons */
 
 .mat-flat-button.mat-flat-button-sm,
@@ -206,12 +213,18 @@ mat-form-field {
   }
 }
 
+
 .mat-form-field-suffix {
   .mat-flat-button-sm {
     vertical-align: super;
   }
   .mat-button-toggle-sm {
     vertical-align: super;
+  }
+  .mat-stroked-button.mat-stroked-icon-button-sm {
+    min-width: unset;
+    vertical-align: super;
+    padding: 0 8px;
   }
 }
 

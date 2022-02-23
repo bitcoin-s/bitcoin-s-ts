@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
 import { catchError } from 'rxjs/operators'
 import { of } from 'rxjs'
+import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
@@ -17,27 +18,17 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, validateTorAddress } from '~util/utils'
+import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
-import { AlertType } from '../alert/alert.component'
+import { AlertType } from '~component/alert/alert.component'
 
 
 enum AcceptOfferType {
   TOR = 'tor',
   FILES = 'files'
-}
-
-/** Validators */
-
-function addressValidator(regex: RegExp): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    // console.debug('addressValidator()', control)
-    const allowed = regex.test(control.value)
-    // console.debug('addressValidator() allowed:', allowed)
-    return allowed ? null : { regexInvalid: { value: control.value }}
-  }
 }
 
 @Component({
@@ -69,6 +60,16 @@ export class AcceptOfferComponent implements OnInit {
     return this.offer.offer.contractInfo.contractDescriptor
   }
 
+  isEnum() {
+    const cd = <EnumContractDescriptor>this.contractDescriptor
+    return cd.outcomes !== undefined
+  }
+
+  isNumeric() {
+    const cd = <NumericContractDescriptor>this.contractDescriptor
+    return cd.numDigits !== undefined
+  }
+
   get enumContractDescriptor() {
     return <EnumContractDescriptor>this.offer.offer.contractInfo.contractDescriptor
   }
@@ -89,6 +90,7 @@ export class AcceptOfferComponent implements OnInit {
 
   form: FormGroup
   get f() { return this.form.controls }
+  get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
 
   maturityDate: string
   refundDate: string
@@ -128,6 +130,10 @@ export class AcceptOfferComponent implements OnInit {
     this.wipeInvalidFormStates()
   }
 
+  advancedVisible = false // Angular hack
+  qrScanNoCamera = false
+  qrScanEnabled = false
+
   executing = false
   offerAccepted = false
   result: string
@@ -150,7 +156,8 @@ export class AcceptOfferComponent implements OnInit {
     if (this.form) {
       this.form.patchValue({
         peerAddress: null,
-        filename: this.defaultFilename
+        filename: this.defaultFilename,
+        externalPayoutAddress: null,
       })
       this.form.markAsUntouched()
     }
@@ -180,25 +187,21 @@ export class AcceptOfferComponent implements OnInit {
     this.defaultFilename = this.translate.instant('acceptOffer.defaultFilename')
     this.form = this.formBuilder.group({
       // acceptOfferType: [this.acceptOfferType], // don't know how to conditionally validate with this here yet
-      peerAddress: [null, addressValidator(TOR_V3_ADDRESS)],
-        // [conditionalValidator(torV3AddressValidator(TOR_V3_ADDRESS), Validators.required)]],
+      peerAddress: [null, regexValidator(TOR_V3_ADDRESS)],
       filename: [this.defaultFilename, Validators.required],
-  })
-  this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
-}
+      externalPayoutAddress: [null, 
+        allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
+    })
+    this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
+
+    // Hack to avoid showing expanded panel on first render. Issue with Angular
+    setTimeout(() => {
+      this.advancedVisible = true
+    }, 0)
+  }
 
   onClose() {
     this.close.next()
-  }
-
-  isEnum() {
-    const cd = <EnumContractDescriptor>this.contractDescriptor
-    return cd.outcomes !== undefined
-  }
-
-  isNumeric() {
-    const cd = <NumericContractDescriptor>this.contractDescriptor
-    return cd.numDigits !== undefined
   }
 
   onExecute() {
@@ -220,19 +223,22 @@ export class AcceptOfferComponent implements OnInit {
       }
     }
 
+    const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
+    const changeAddress = null
+
     // TODO : Catch error on either of these and unset executing
     this.executing = true
     if (peerAddress) {
       console.debug('acceptdlc over Tor')
+
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
-        [this.offer.hex, peerAddress])).pipe(catchError(error => {
+        [this.offer.hex, peerAddress, payoutAddress, changeAddress])).pipe(catchError(error => {
           // Popup error will come from messageService
           // Unlock the view so the user can edit and try again
           return of({ result: undefined }) // undefined is special case
         })).subscribe(r => {
-          // Right now a success response is { result: null, error: null }
-          // console.warn('acceptdlcoffer', r)
-          if (r.result !== undefined) { 
+          console.warn('acceptdlcoffer', r)
+          if (r.result) { 
             this.result = 'acceptOffer.tor.success'
             // this.walletStateService.refreshDLCStates() // using websocket now
             this.offerAccepted = true
@@ -248,7 +254,7 @@ export class AcceptOfferComponent implements OnInit {
       const filename = v.filename
 
       this.messageService.sendMessage(getMessageBody(WalletMessageType.acceptdlcoffer,
-        [this.offer.hex])).subscribe(r => {
+        [this.offer.hex, payoutAddress, changeAddress])).subscribe(r => {
           console.warn('acceptdlcoffer', r)
           if (r.result) { // result is very large
             this.result = 'acceptOffer.files.success'
@@ -262,6 +268,46 @@ export class AcceptOfferComponent implements OnInit {
             this.offerAccepted = true
           }
         })
+    }
+  }
+
+  /** QR Code Scanning */
+
+  scanQRCode() {
+    console.debug('scanQRCode()')
+
+    this.qrScanEnabled = !this.qrScanEnabled
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]) {
+    console.debug('camerasFoundHandler()', devices)
+
+    if (!devices || devices.length === 0) {
+      this.qrScanNoCamera = true
+      this.qrScanEnabled = false
+    }
+  }
+
+  camerasNotFoundHandler(event: any) {
+    console.debug('camerasNotFoundHandler()', event)
+
+    this.qrScanNoCamera = true
+    this.qrScanEnabled = false
+  }
+
+  scanErrorHandler(event: Error) {
+    console.debug('scanErrorHandler()', event)
+  }
+
+  scanCompleteHandler(result: Result) {
+    console.debug('scanCompleteHandler()', result)
+    if (result !== undefined) {
+      this.qrScanEnabled = false
+      const text = result.getText()
+      this.form.patchValue({
+        externalPayoutAddress: text,
+      })
+      this.externalPayoutAddress?.markAsDirty() // Trigger validation
     }
   }
 

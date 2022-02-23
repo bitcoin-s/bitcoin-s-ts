@@ -29,6 +29,19 @@ export function bitcoinAddressValidator(network: string | undefined): ValidatorF
   }
 }
 
+export function allowEmptybitcoinAddressValidator(network: string | undefined): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value === '') {
+      console.debug('allowEmptybitcoinAddressValidator() control.value:', control.value)
+      // control.markAsUntouched()
+      control.markAsPristine()
+      return null
+    }
+    const allowed = validate(control.value, <Network>network)
+    return allowed ? null : { addressInvalid: { value: control.value } }
+  }
+}
+
 
 // Get network name to use with bitcoin-address-validation
 // export function getValidationNetworkName(network: BitcoinNetwork) {

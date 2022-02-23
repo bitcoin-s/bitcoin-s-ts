@@ -165,6 +165,8 @@
     "totalCollateral": "Total",
     "feeRate": "Fee Rate",
     "refundDate": "Refund Date",
+    "advanced": "Advanced",
+    "externalPayoutAddress": "External Payout Address",
     "createOffer": "Create Offer",
     "offerCreated": "Offer Created"
   },
@@ -176,7 +178,8 @@
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
     "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
-    "createOffer2": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
+    "createOffer2": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract.",
+    "externalPayoutAddress": "Use Payout Address outside of the Suredbits Wallet"
   },
 
   "newOfferValidation": {

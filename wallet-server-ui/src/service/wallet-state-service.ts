@@ -248,7 +248,7 @@ export class WalletStateService {
     }))
   }
 
-  private refreshUnfundedAddresses() {
+  refreshUnfundedAddresses() {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.getunusedaddresses)).pipe(tap(r => {
       if (r.result) {
         this.unfundedAddresses = r.result
