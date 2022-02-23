@@ -222,7 +222,7 @@ export class NewOfferComponent implements OnInit {
         yourCollateral: null,
         totalCollateral: null,
         feeRate: this.walletStateService.feeEstimate,
-        externalPayoutAddress: null,
+        externalPayoutAddress: '',
       })
     }
   }
@@ -250,7 +250,7 @@ export class NewOfferComponent implements OnInit {
       totalCollateral: [totalCollateral, Validators.required],
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
-      externalPayoutAddress: [null, 
+      externalPayoutAddress: ['',
         allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
     })
     if (this.contractInfo) {
