@@ -193,7 +193,8 @@
         ></zxing-scanner>
         <mat-form-field class="w-100">
           <mat-label translate>newOffer.externalPayoutAddress</mat-label>
-          <input formControlName="externalPayoutAddress" matInput type="text" spellcheck="false">
+          <input formControlName="externalPayoutAddress" matInput type="text" spellcheck="false"
+            (paste)="externalPayoutAddressValue = trimOnPaste($event)">
           <span matSuffix class="validation">
             <mat-icon *ngIf="externalPayoutAddress?.valid && !externalPayoutAddress?.pristine" class="material-icons-outlined"
               matTooltip="{{ 'dialog.sendFunds.addressValid' | translate }}">check_circle</mat-icon>

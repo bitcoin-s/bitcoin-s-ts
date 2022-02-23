@@ -200,3 +200,15 @@ export function outcomeDigitsToRange(digits: number[], numDigits: number): Outco
   }
   return null
 }
+
+// Trim text that is pasted into a input field and fire callback function if present
+export function trimOnPaste(event: ClipboardEvent, callback?: (value: string) => void): string {
+  event.preventDefault()
+  const clipboardData = event.clipboardData
+  if (clipboardData) {
+    const trimmedPastedText = clipboardData.getData('text').trim()
+    if (callback) callback(trimmedPastedText)
+    return trimmedPastedText
+  }
+  return ''
+}

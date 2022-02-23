@@ -134,7 +134,8 @@
         ></zxing-scanner>
         <mat-form-field class="w-100">
           <mat-label translate>newOffer.externalPayoutAddress</mat-label>
-          <input formControlName="externalPayoutAddress" matInput type="text" spellcheck="false">
+          <input formControlName="externalPayoutAddress" matInput type="text" spellcheck="false"
+            (paste)="externalPayoutAddressValue = trimOnPaste($event)">
           <span matSuffix class="validation">
             <mat-icon *ngIf="externalPayoutAddress?.valid && !externalPayoutAddress?.pristine" class="material-icons-outlined"
               matTooltip="{{ 'dialog.sendFunds.addressValid' | translate }}">check_circle</mat-icon>
@@ -170,15 +171,17 @@
 
       <mat-form-field *ngIf="acceptOfferType === AcceptOfferType.TOR" class="w-100">
         <mat-label translate>acceptOffer.peerAddress</mat-label>
-        <input matInput formControlName="peerAddress" type="text"
-          placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}">
+        <input matInput formControlName="peerAddress" type="text" spellcheck="false"
+          placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
+          (paste)="peerAddressValue = trimOnPaste($event)">
         <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
       </mat-form-field>
 
       <mat-form-field *ngIf="acceptOfferType === AcceptOfferType.FILES" class="w-100">
         <mat-label translate>acceptOffer.filename</mat-label>
-        <input matInput formControlName="filename" type="text"
-          placeholder="{{ 'acceptOffer.defaultFilename' | translate }}">
+        <input matInput formControlName="filename" type="text" spellcheck="false"
+          placeholder="{{ 'acceptOffer.defaultFilename' | translate }}"
+          (paste)="filenameValue = trimOnPaste($event)">
         <app-more-info matSuffix tooltip="acceptOfferDescription.filename"></app-more-info>
       </mat-form-field>
     </fieldset>
