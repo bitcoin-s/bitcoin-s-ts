@@ -8,9 +8,12 @@
   fieldset {
     display: flex;
     flex-direction: column;
-    
+
     .validation {
       vertical-align: sub;
+    }
+    button[matSuffix] {
+      margin-left: 0.5rem;
     }
     span, mat-button-toggle {
       margin-left: 0.5rem;

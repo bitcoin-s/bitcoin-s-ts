@@ -97,9 +97,20 @@ export function datePlusDays(date: Date, days: number) {
   return date
 }
 
-export function formatNumber(n: number): string {
+export function formatNumber(n: number | undefined | null): string {
   if (n === undefined || n === null) return ''
   return n.toLocaleString()
+}
+
+export function formatNumberString(s: string | undefined | null): string {
+  if (s === undefined || s === null) return ''
+  try {
+    const n = parseFloat(s)
+    return n.toLocaleString()
+  } catch (err) {
+    // Ignore error
+  }
+  return ''
 }
 
 export function formatPercent(num: number, fractionalDigits = 2, addPercentSign = true): string {

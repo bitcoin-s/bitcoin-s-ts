@@ -19,7 +19,7 @@
           <mat-icon *ngIf="address?.invalid && (address?.dirty || address?.touched)" class="material-icons-outlined"
             matTooltip="{{ 'dialog.sendFunds.addressInvalid' | translate }}">cancel</mat-icon>
         </span>
-        <button *ngIf="!qrScanNoCamera" mat-icon-button matSuffix
+        <button *ngIf="!qrScanNoCamera" class="mat-stroked-icon-button-sm" mat-stroked-button matSuffix
           matTooltip="{{ 'dialog.sendFunds.scanQRCode' | translate }}"
           (click)="scanQRCode()">
           <mat-icon>qr_code_scanner</mat-icon>

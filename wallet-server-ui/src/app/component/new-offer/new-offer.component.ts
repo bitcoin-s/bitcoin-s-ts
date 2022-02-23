@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
 import { ChartData, ChartOptions } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
+import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
@@ -13,10 +14,11 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork } from '~util/utils'
+import { allowEmptybitcoinAddressValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
-import { AlertType } from '../alert/alert.component'
+import { AlertType } from '~component/alert/alert.component'
 
 
 const DEFAULT_DAYS_UNTIL_REFUND = 7
@@ -99,6 +101,7 @@ export class NewOfferComponent implements OnInit {
 
   form: FormGroup
   get f() { return this.form.controls }
+  get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
 
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 
@@ -165,6 +168,10 @@ export class NewOfferComponent implements OnInit {
     }
   }
 
+  advancedVisible = false // Angular hack
+  qrScanNoCamera = false
+  qrScanEnabled = false
+
   executing = false
   offerCreated = false
 
@@ -215,6 +222,7 @@ export class NewOfferComponent implements OnInit {
         yourCollateral: null,
         totalCollateral: null,
         feeRate: this.walletStateService.feeEstimate,
+        externalPayoutAddress: null,
       })
     }
   }
@@ -242,12 +250,19 @@ export class NewOfferComponent implements OnInit {
       totalCollateral: [totalCollateral, Validators.required],
       feeRate: [this.walletStateService.feeEstimate, Validators.required],
       // outcomes?
+      externalPayoutAddress: [null, 
+        allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
     })
     if (this.contractInfo) {
       this.onTotalCollateral()
       this.setTheirCollateral()
     }
     this.darkModeService.darkModeChanged.subscribe(() => this.buildChart()) // this doesn't always seem to be necessary, but here to protect us
+  
+    // Hack to avoid showing expanded panel on first render. Issue with Angular
+    setTimeout(() => {
+      this.advancedVisible = true
+    }, 0)
   }
 
   onClose() {
@@ -301,11 +316,13 @@ export class NewOfferComponent implements OnInit {
             const feeRate = v.feeRate
             const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
             const refundLT = dateToSecondsSinceEpoch(v.refundDate)
+            const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
+            const changeAddress = null
 
             // console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
 
             this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
-              [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
+              [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
               console.warn('CreateDLCOffer()', r)
               if (r.result) {
                 this.newOfferResult = r.result
@@ -334,11 +351,13 @@ export class NewOfferComponent implements OnInit {
           const feeRate = v.feeRate
           const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
           const refundLT = dateToSecondsSinceEpoch(v.refundDate)
+          const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
+          const changeAddress = null
 
           console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
 
           this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
-            [contractInfoTLV, collateral, feeRate, locktime, refundLT])).subscribe(r => {
+            [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
             console.warn('CreateDLCOffer()', r)
             if (r.result) {
               this.newOfferResult = r.result
@@ -484,7 +503,7 @@ export class NewOfferComponent implements OnInit {
     console.debug('onTotalCollateral()', tc, yc)
     // If Total Collateral is being populated and Your Collateral is not yet set, set it to half of total
     if (tc && yc === null) {
-      const half = Math.floor(this.form.value.totalCollateral / 2)
+      const half = Math.ceil(this.form.value.totalCollateral / 2)
       this.form.patchValue({ yourCollateral: half })
     }
   }
@@ -514,6 +533,46 @@ export class NewOfferComponent implements OnInit {
     // https://github.com/bitcoin-s/bitcoin-s/blob/aa748c012fc03e6bde6435092505e3c17a70437a/app-commons/src/main/scala/org/bitcoins/commons/serializers/Picklers.scala#L287
     // Structure like
     // { "intervals" : [{"beginInterval": 123 , "roundingMod" :456 }, ...]}
+  }
+
+  /** QR Code Scanning */
+
+  scanQRCode() {
+    console.debug('scanQRCode()')
+
+    this.qrScanEnabled = !this.qrScanEnabled
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]) {
+    console.debug('camerasFoundHandler()', devices)
+
+    if (!devices || devices.length === 0) {
+      this.qrScanNoCamera = true
+      this.qrScanEnabled = false
+    }
+  }
+
+  camerasNotFoundHandler(event: any) {
+    console.debug('camerasNotFoundHandler()', event)
+
+    this.qrScanNoCamera = true
+    this.qrScanEnabled = false
+  }
+
+  scanErrorHandler(event: Error) {
+    console.debug('scanErrorHandler()', event)
+  }
+
+  scanCompleteHandler(result: Result) {
+    console.debug('scanCompleteHandler()', result)
+    if (result !== undefined) {
+      this.qrScanEnabled = false
+      const text = result.getText()
+      this.form.patchValue({
+        externalPayoutAddress: text,
+      })
+      this.externalPayoutAddress?.markAsDirty() // Trigger validation
+    }
   }
 
 }

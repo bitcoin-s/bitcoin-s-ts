@@ -128,7 +128,6 @@ export class WebsocketService {
   private handleMessage(message: WebsocketMessage) {
     console.debug('handleMessage() type:', message.type)
     switch (message.type) {
-      case WebsocketMessageType.newaddress:
       case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
         // Nothing to do
@@ -154,6 +153,9 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.reservedutxos:
         this.walletStateService.refreshBalances().subscribe()
+        break;
+      case WebsocketMessageType.newaddress:
+        this.walletStateService.refreshUnfundedAddresses().subscribe()
         break;
       default:
         console.error('handleMessage() unknown message.type', message)
