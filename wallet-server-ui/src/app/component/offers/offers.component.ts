@@ -130,9 +130,10 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.offer.nativeElement.value = ''
 
         this.offerService.addIncomingOffer(offerTLV, peer, message).subscribe(r => {
-          console.debug('saveIncomingOffer()', r)
+          console.debug('addIncomingOffer()', r)
           if (r.result) {
-            this.offerService.loadIncomingOffers().subscribe()
+            // Using websocket message now
+            // this.offerService.loadIncomingOffers().subscribe()
           }
         })
       }
@@ -186,8 +187,9 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   onDelete(offer: IncomingOffer) {
     console.debug('onDelete()', offer)
     this.offerService.removeIncomingOffer(offer.hash).subscribe(r => {
-      console.debug('onDelete()', r)
-      this.offerService.loadIncomingOffers().subscribe()
+      console.debug('removeIncomingOffer()', r)
+      // Using websocket message now
+      // this.offerService.loadIncomingOffers().subscribe()
     })
   }
 

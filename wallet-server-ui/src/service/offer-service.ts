@@ -112,4 +112,25 @@ export class OfferService {
     }))
   }
 
+  incomingOfferReceived(offer: IncomingOffer) {
+    this.offers.value.push(offer)
+    this.offers.next(this.offers.value)
+    return this.decodeOffer(offer.offerTLV).subscribe(r => {
+      if (r) {
+        this.decodedOffers.value[offer.hash] = <OfferWithHex>r
+        this.decodedOffers.next(this.decodedOffers.value)
+      }
+    })
+  }
+
+  incomingOfferRemoved(hash: string) {
+    const index = this.offers.value.findIndex(o => o.hash === hash)
+    if (index !== -1) {
+      this.offers.value.splice(index, 1)
+      this.offers.next(this.offers.value)
+    }
+    delete this.decodedOffers.value[hash]
+    this.decodedOffers.next(this.decodedOffers.value)
+  }
+
 }
