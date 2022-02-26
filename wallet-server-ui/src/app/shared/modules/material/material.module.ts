@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
+import { MatBadgeModule } from '@angular/material/badge'
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatButtonModule } from '@angular/material/button'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
@@ -25,6 +26,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
 const materialModules = [
+  MatBadgeModule,
   MatBottomSheetModule,
   MatButtonModule,
   MatButtonToggleModule,

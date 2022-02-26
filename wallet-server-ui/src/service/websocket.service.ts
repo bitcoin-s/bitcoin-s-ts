@@ -4,10 +4,11 @@ import { Subscription, timer } from 'rxjs'
 
 import { environment } from '../environments/environment'
 
-import { BlockHeaderResponse, DLCContract, DLCState } from '~type/wallet-server-types'
+import { AuthService } from '~service/auth.service'
+import { WalletStateService } from '~service/wallet-state-service'
+import { DLCService } from '~service/dlc-service'
 
-import { AuthService } from './auth.service'
-import { WalletStateService } from './wallet-state-service'
+import { BlockHeaderResponse, DLCContract, DLCState } from '~type/wallet-server-types'
 
 
 enum WebsocketMessageType {
@@ -47,7 +48,8 @@ export class WebsocketService {
 
   private pollingTimer$: Subscription;
 
-  constructor(private walletStateService: WalletStateService, private router: Router, private authService: AuthService) {}
+  constructor(private walletStateService: WalletStateService, private dlcService: DLCService,
+    private router: Router, private authService: AuthService) {}
 
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
@@ -141,7 +143,7 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.dlcstatechange:
         const dlc = <DLCContract>message.payload
-        const obs = this.walletStateService.replaceDLC(dlc)
+        const obs = this.dlcService.replaceDLC(dlc)
         // Wait for ContractInfo to load before navigating
         obs.subscribe(_ => {
           // If someone just accepted a DLC Offer

@@ -81,7 +81,7 @@
         <div class="qr"></div>
         <ng-container *ngFor="let address of walletStateService.unfundedAddresses">
           <div class="address">{{ address }}</div>
-          <button mat-icon-button class="mat-icon-button-sm qr"
+          <button mat-stroked-button class="mat-stroked-icon-button-sm qr"
             matTooltip="{{ 'walletBalance.openQRCode' | translate }}"
             (click)="onQRCodeClick(address)">
             <mat-icon>qr_code_2</mat-icon>

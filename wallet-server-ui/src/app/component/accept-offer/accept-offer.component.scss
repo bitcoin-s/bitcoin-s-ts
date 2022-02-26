@@ -2,6 +2,20 @@
 .accept-offer {
   max-width: 450px;
 
+  .message-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    .message-label {
+      font-weight: bold;
+      padding-bottom: 0.5rem;
+    }
+    .message {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  }
+
   .enum-offer, .numeric-offer {
     .outcome-group {
       margin-bottom: 1rem;

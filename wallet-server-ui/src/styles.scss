@@ -213,7 +213,6 @@ mat-form-field {
   }
 }
 
-
 .mat-form-field-suffix {
   .mat-flat-button-sm {
     vertical-align: super;
@@ -221,11 +220,16 @@ mat-form-field {
   .mat-button-toggle-sm {
     vertical-align: super;
   }
-  .mat-stroked-button.mat-stroked-icon-button-sm {
-    min-width: unset;
-    vertical-align: super;
-    padding: 0 8px;
+
+  button ~ button {
+    margin-left: 0.25rem;
   }
+}
+
+.mat-stroked-button.mat-stroked-icon-button-sm {
+  min-width: unset;
+  vertical-align: super;
+  padding: 0 8px;
 }
 
 .mat-form-field-row {

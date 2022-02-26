@@ -76,7 +76,7 @@ export function formatISODate(isoDate: string) {
   return new Date(isoDate).toLocaleDateString()
 }
 
-export function formatISODateTime(isoDate: string) {
+export function formatISODateTime(isoDate: string|number) {
   return new Date(isoDate).toLocaleString()
 }
 

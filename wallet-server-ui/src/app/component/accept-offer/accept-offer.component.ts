@@ -22,8 +22,8 @@ import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, netwo
 import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
-import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { AlertType } from '~component/alert/alert.component'
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 
 enum AcceptOfferType {
@@ -86,6 +86,16 @@ export class AcceptOfferComponent implements OnInit {
   get event() {
     return this.offer.offer.contractInfo.oracleInfo.announcement.event
   }
+
+
+  // Optional
+  private _message: string|null = null
+  get message(): string|null { return this._message }
+  @Input() set message(message: string|null) { this._message = message }
+
+  // Optional
+  private _peerAddress: string|null = null
+  @Input() set peerAddress(peerAddress: string|null) { this._peerAddress = peerAddress }
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
@@ -191,7 +201,7 @@ export class AcceptOfferComponent implements OnInit {
     this.defaultFilename = this.translate.instant('acceptOffer.defaultFilename')
     this.form = this.formBuilder.group({
       // acceptOfferType: [this.acceptOfferType], // don't know how to conditionally validate with this here yet
-      peerAddress: [null, regexValidator(TOR_V3_ADDRESS)],
+      peerAddress: [this._peerAddress, regexValidator(TOR_V3_ADDRESS)],
       filename: [this.defaultFilename, Validators.required],
       externalPayoutAddress: ['',
         allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
@@ -241,7 +251,7 @@ export class AcceptOfferComponent implements OnInit {
           // Unlock the view so the user can edit and try again
           return of({ result: undefined }) // undefined is special case
         })).subscribe(r => {
-          console.warn('acceptdlcoffer', r)
+          console.warn('acceptdlc', r)
           if (r.result) { 
             this.result = 'acceptOffer.tor.success'
             // this.walletStateService.refreshDLCStates() // using websocket now
