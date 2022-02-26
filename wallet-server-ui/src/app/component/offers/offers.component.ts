@@ -5,13 +5,16 @@ import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
-import { IncomingOffer, Offer } from '~type/wallet-server-types'
+import { OfferService } from '~service/offer-service'
+
+import { IncomingOffer } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, trimOnPaste } from '~util/utils'
+import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, TOR_V3_ADDRESS, trimOnPaste, UPPERLOWER_CASE_HEX } from '~util/utils'
 
 import { environment } from '~environments'
-import { OfferService } from '~service/offer-service'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { regexValidator } from '~util/validators'
 
 
 @Component({
@@ -27,9 +30,12 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   public formatShortHex = formatShortHex
   public trimOnPaste = trimOnPaste
 
-  @ViewChild('peer') peer: ElementRef
-  @ViewChild('message') message: ElementRef
-  @ViewChild('offer') offer: ElementRef
+  // New Incoming Offer
+  form: FormGroup
+  get f() { return this.form.controls }
+  set messageValue(message: string) { this.form.patchValue({ message }) }
+  set peerValue(peer: string) { this.form.patchValue({ peer }) }
+  set offerTLVValue(offerTLV: string) { this.form.patchValue({ offerTLV }) }
 
   @ViewChild(MatTable) table: MatTable<IncomingOffer>
   @ViewChild(MatSort) sort: MatSort
@@ -45,15 +51,13 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private selectedOfferHash: string
   selectedIncomingOffer: IncomingOffer|null
-  selectedOffer: Offer|null
   selectedOfferWithHex: OfferWithHex|null
-
-  offerDetailVisible = false
 
   private queryParams$: Subscription
   private offers$: Subscription
+  private decodedOffer$: Subscription
 
-  constructor(private route: ActivatedRoute, private router: Router, 
+  constructor(private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder,
     public offerService: OfferService) { }
 
   ngOnInit(): void {
@@ -63,20 +67,20 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedOfferHash = params.offerHash
         console.debug('queryParams set selectedOfferHash', this.selectedOfferHash)
       })
-
-    // Probably should happen after getIncomingOffers() clears decodes
-    setTimeout(() => {
-      this.loadSelectedOffer()
-    }, 1000)
+    this.form = this.formBuilder.group({
+      message: [''],
+      peer: ['', Validators.compose([regexValidator(TOR_V3_ADDRESS), Validators.required])],
+      offerTLV: ['', Validators.compose([regexValidator(UPPERLOWER_CASE_HEX), Validators.required])],
+    })
   }
 
   ngOnDestroy(): void {
     this.queryParams$.unsubscribe()
     this.offers$.unsubscribe()
+    this.decodedOffer$.unsubscribe()
   }
 
   ngAfterViewInit() {
-    // TODO : Sort on all decoded offer columns
     this.dataSource.sortingDataAccessor = (offer: IncomingOffer, property: string) => {
       switch (property) {
         case 'eventId':
@@ -89,8 +93,8 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
           return this.yourCollateral(offer)
         case 'counterpartyCollateral':
           return this.getOffer(offer.hash)?.offer?.offerCollateralSatoshis
-        case 'feeRate':
-          return this.getOffer(offer.hash)?.offer?.feeRatePerVb
+        // case 'feeRate':
+        //   return this.getOffer(offer.hash)?.offer?.feeRatePerVb
         default:
           return (<any>offer)[property];
       }
@@ -100,6 +104,8 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.offers$ = this.offerService.offers.subscribe(_ => {
       this.dataSource.data = this.offerService.offers.value
       this.table.renderRows()
+    })
+    this.decodedOffer$ = this.offerService.decodedOffers.subscribe(_ => {
       this.loadSelectedOffer()
     })
   }
@@ -118,26 +124,36 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addManualOffer() {
-    const peer = this.peer.nativeElement.value
-    const message = this.message.nativeElement.value
-    const offerTLV = this.offer.nativeElement.value
+    const v = this.form.value
+    const message = v.message
+    const peer = v.peer
+    const offerTLV = v.offerTLV
 
-    this.offerService.decodeOffer(offerTLV).subscribe(r => {
-      console.debug('decodeOffer()', r)
-      if (r) {
-        this.peer.nativeElement.value = ''
-        this.message.nativeElement.value = ''
-        this.offer.nativeElement.value = ''
+    console.debug('addManualOffer()', message, peer, offerTLV)
 
-        this.offerService.addIncomingOffer(offerTLV, peer, message).subscribe(r => {
-          console.debug('addIncomingOffer()', r)
-          if (r.result) {
-            // Using websocket message now
-            // this.offerService.loadIncomingOffers().subscribe()
-          }
-        })
-      }
+    this.offerService.addIncomingOffer(offerTLV, peer, message).subscribe()
+    this.clearOfferForm()
+  }
+
+  sendManualOffer() {
+    const v = this.form.value
+    const message = v.message
+    const peer = v.peer
+    const offerTLV = v.offerTLV
+
+    console.debug('sendManualOffer()', message, peer, offerTLV)
+
+    this.offerService.sendIncomingOffer(offerTLV, peer, message).subscribe()
+    this.clearOfferForm()
+  }
+
+  private clearOfferForm() {
+    this.form.patchValue({
+      message: '',
+      peer: '',
+      offerTLV: ''
     })
+    this.form.reset()
   }
 
   private loadSelectedOffer() {
@@ -158,9 +174,8 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
     console.debug('onRowClick()', offer, this.selectedOfferWithHex)
     console.warn('equal?', offer.offerTLV === this.selectedOfferWithHex.hex)
 
-    this.offerDetailVisible = true
     this.rightDrawer.open()
-    // Update queryParams and set selectedDLCId via subscription
+    // Update queryParams
     this.router.navigate(['/offers'], { queryParams: { offerHash: offer.hash }})
   }
 
@@ -168,11 +183,9 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
     console.debug('rightDrawerOpened()', opened)
     // Clean up state on close
     if (!opened) {
-      this.offerDetailVisible = false
       this.selectedIncomingOffer = null
-      this.selectedOffer = null
       this.selectedOfferWithHex = null
-      // Update queryParams and set selectedDLCId via subscription
+      // Update queryParams
       this.router.navigate(['/offers'])
     }
   }
@@ -180,17 +193,12 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   clearSelection() {
     this.rightDrawer.close()
     this.selectedIncomingOffer = null
-    this.selectedOffer = null
     this.selectedOfferWithHex = null
   }
 
   onDelete(offer: IncomingOffer) {
     console.debug('onDelete()', offer)
-    this.offerService.removeIncomingOffer(offer.hash).subscribe(r => {
-      console.debug('removeIncomingOffer()', r)
-      // Using websocket message now
-      // this.offerService.loadIncomingOffers().subscribe()
-    })
+    this.offerService.removeIncomingOffer(offer.hash).subscribe()
   }
 
 }

@@ -320,8 +320,10 @@
   "offers": {
     "heading": "Offers",
     "addOffer": "Add Offer",
+    "sendOffer": "Send Offer",
     "peer": "Peer",
     "message": "Message",
+    "offer": "Offer",
     "hash": "Hash",
     "receivedAt": "Received",
     "offerTLV": "Offer TLV",

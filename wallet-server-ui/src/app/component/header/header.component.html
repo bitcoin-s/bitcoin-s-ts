@@ -35,8 +35,6 @@
       <a mat-button routerLink="/wallet" routerLinkActive="active">
         {{ 'walletBalance.heading' | translate }}</a>
   
-      <div class="spacer-2"></div>
-  
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
       <div *ngIf="walletStateService.balances" class="wallet-status"
         matTooltip="{{ 'header.walletBalance' | translate: { 

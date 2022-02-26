@@ -79,6 +79,10 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.rateOfReturn' | translate }}</th>
           <td mat-cell class="percent-cell" *matCellDef="let contract">{{ contract.rateOfReturn ? formatPercent(contract.rateOfReturn, 0) : '' }}</td>
         </ng-container>
+        <ng-container matColumnDef="totalCollateral">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.totalCollateral' | translate }}</th>
+          <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.totalCollateral) }}</td>
+        </ng-container>
         <ng-container matColumnDef="collateral">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.yours' | translate }}</th>
           <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.localCollateral) }}</td>
@@ -86,10 +90,6 @@
         <ng-container matColumnDef="counterpartyCollateral">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.theirs' | translate }}</th>
           <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.remoteCollateral) }}</td>
-        </ng-container>
-        <ng-container matColumnDef="totalCollateral">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.totalCollateral' | translate }}</th>
-          <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.totalCollateral) }}</td>
         </ng-container>
         <ng-container matColumnDef="lastUpdated">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.lastUpdated' | translate }}</th>
@@ -112,10 +112,10 @@
     <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
       <div class="drawer-container">
         <app-contract-detail *ngIf="contractDetailsVisible && selectedDLCContract && selectedDLCContractInfo" 
-            [dlc]="selectedDLCContract" [contractInfo]="selectedDLCContractInfo"
-            [accept]="selectedAccept" [sign]="selectedSign"
-            (close)="rightDrawer.close()"
-          ></app-contract-detail>
+          [dlc]="selectedDLCContract" [contractInfo]="selectedDLCContractInfo"
+          [accept]="selectedAccept" [sign]="selectedSign"
+          (close)="rightDrawer.close()"
+        ></app-contract-detail>
       </div>
     </mat-sidenav>
   </mat-sidenav-container>

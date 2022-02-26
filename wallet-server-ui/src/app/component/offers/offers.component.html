@@ -5,23 +5,28 @@
         <h2 translate>offers.heading</h2>
       </div>
 
-      <div *ngIf="debug" class="manual-offer">
-        <mat-form-field>
-          <textarea matInput cdkTextareaAutosize #message 
-            placeholder="Message" type="text" maxlength="1024" autocomplete="off"
-            (paste)="message.value = trimOnPaste($event)"></textarea>
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput #peer
-            placeholder="Peer" type="text" maxlength="1024" autocomplete="off"
-            (paste)="peer.value = trimOnPaste($event)">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput #offer placeholder="Offer" type="text" autocomplete="off"
-            (paste)="offer.value = trimOnPaste($event)">
-        </mat-form-field>
-        <button mat-stroked-button (click)="addManualOffer()">{{ 'offers.addOffer' | translate }}</button>
-      </div>
+      <form *ngIf="debug" class="form-container" [formGroup]="form" autocomplete="off">
+        <fieldset>
+          <mat-form-field>
+            <textarea matInput formControlName="message" cdkTextareaAutosize
+              placeholder="{{ 'offers.message' | translate }}" type="text" maxlength="1024" autocomplete="off"
+              (paste)="messageValue = trimOnPaste($event)">
+            </textarea>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput formControlName="peer"
+              placeholder="{{ 'offers.peer' | translate }}" type="text" maxlength="1024" autocomplete="off" spellcheck="false"
+              (paste)="peerValue = trimOnPaste($event)">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput formControlName="offerTLV"
+              placeholder="{{ 'offers.offer' | translate }}" type="text" autocomplete="off" spellcheck="false"
+              (paste)="offerTLVValue = trimOnPaste($event)">
+          </mat-form-field>
+          <button mat-stroked-button (click)="addManualOffer()" [disabled]="form.invalid">{{ 'offers.addOffer' | translate }}</button>
+          <button mat-stroked-button (click)="sendManualOffer()" disabled>{{ 'offers.sendOffer' | translate }}</button>
+        </fieldset>
+      </form>
 
       <table class="offer-table mat-elevation-z8"
         mat-table #table [dataSource]="dataSource"
@@ -142,13 +147,12 @@
 
     <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
       <div class="drawer-container">
-        <ng-container *ngIf="offerDetailVisible">
-          <app-accept-offer #acceptOffer *ngIf="selectedOfferWithHex"
-            [offer]="selectedOfferWithHex"
-            [message]="selectedIncomingOffer?.message || null"
-            [peerAddress]="selectedIncomingOffer?.peer || null"
-            (close)="clearSelection()"></app-accept-offer>
-        </ng-container>
+        <app-accept-offer #acceptOffer *ngIf="selectedOfferWithHex"
+          [offer]="selectedOfferWithHex"
+          [message]="selectedIncomingOffer?.message || null"
+          [peerAddress]="selectedIncomingOffer?.peer || null"
+          (close)="clearSelection()"
+        ></app-accept-offer>
       </div>
     </mat-sidenav>
   </mat-sidenav-container>

@@ -59,18 +59,8 @@ export class OfferService {
       })
   }
 
-  decodeOffer(offerTLV: string) {
+  private decodeOffer(offerTLV: string) {
     console.debug('decodeOffer()')
-    if (!validateHexString(offerTLV)) {
-      console.error('addManualOffer() validate offer hex failed')
-      const dialog = this.dialog.open(ErrorDialogComponent, {
-        data: {
-          title: 'dialog.invalidHexError.title',
-          content: 'dialog.invalidHexError.content',
-        }
-      })
-      return of(null)
-    }
     return this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeoffer, [offerTLV]), false)
     .pipe(catchError(error => of({ result: null })), map(r => {
       console.debug('decodeoffer', r)
@@ -108,6 +98,16 @@ export class OfferService {
         const hash = r.result
         delete this.decodedOffers.value[hash]
         this.decodedOffers.next(this.decodedOffers.value)
+      }
+    }))
+  }
+
+  sendIncomingOffer(offerTLV: string, peer: string, message: string) {
+    return this.messageService.sendMessage(getMessageBody('offer-send', [offerTLV, peer, message]))
+    .pipe(tap(r => {
+      console.debug('offer-send', r)
+      if (r.result) { // hash.hex
+        
       }
     }))
   }
