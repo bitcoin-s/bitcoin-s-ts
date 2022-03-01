@@ -177,11 +177,11 @@
             <mat-icon>content_copy</mat-icon>
           </button>
         </mat-form-field>
-        <!-- Only show tempContractId when there is not a final contractId -->
+        <!-- Only show temporaryContractId when there is not a final contractId -->
         <mat-form-field *ngIf="!dlc.contractId" class="medium ellipsis">
-          <mat-label translate>contractDetail.tempContractId</mat-label>
-          <input matInput [value]="dlc.tempContractId" readonly>
-          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.tempContractId)">
+          <mat-label translate>contractDetail.temporaryContractId</mat-label>
+          <input matInput [value]="dlc.temporaryContractId" readonly>
+          <button mat-icon-button matSuffix (click)="copyToClipboard(dlc.temporaryContractId)">
             <mat-icon>content_copy</mat-icon>
           </button>
         </mat-form-field>

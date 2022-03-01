@@ -118,7 +118,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.accept$ = this.dlcFileService.accept$.subscribe(accept => {
       if (accept) {
         console.debug('contracts on accept', accept.accept)
-        const dlc = this.dlcService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
+        const dlc = this.dlcService.dlcs.value.find(d => d.temporaryContractId === accept.accept.temporaryContractId)
         if (dlc) {
           this.selectedAccept = accept
           this.onRowClick(dlc)

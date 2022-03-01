@@ -270,7 +270,7 @@
     "initiator": "Initiator",
     "state": "State",
     "contractId": "Contract Id",
-    "tempContractId": "Temporary Contract Id",
+    "temporaryContractId": "Temporary Contract Id",
     "contractInfo": "Contract Info",
     "feeRate": "Fee Rate",
     "contractMaturity": "Contract Maturity",
