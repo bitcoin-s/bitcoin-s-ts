@@ -11,6 +11,7 @@ import { catchError } from 'rxjs/operators'
 
 import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
+import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
@@ -204,7 +205,8 @@ export class ContractDetailComponent implements OnInit {
   signBroadcast = false
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
-    private messsageService: MessageService, private walletStateService: WalletStateService, 
+    private messsageService: MessageService, private walletStateService: WalletStateService,
+    private dlcService: DLCService, 
     private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
@@ -239,7 +241,7 @@ export class ContractDetailComponent implements OnInit {
         const config: any = { verticalPosition: 'top', duration: 3000 }
         this.snackBar.open(this.translate.instant('contractDetail.cancelContractSuccess'),
           this.translate.instant('action.dismiss'), config)
-        this.walletStateService.removeDLC(dlcId) // DLCState change does not come through Websocket yet
+        this.dlcService.removeDLC(dlcId) // DLCState change does not come through Websocket yet
         this.close.next()
       }
       this.executing = false
@@ -311,7 +313,7 @@ export class ContractDetailComponent implements OnInit {
 
   // Refresh the state of the visible DLC in the wallet and refresh object bound in this view
   private refreshDLCState() {
-    this.walletStateService.refreshDLC(this.dlc.dlcId).subscribe(r => {
+    this.dlcService.refreshDLC(this.dlc.dlcId).subscribe(r => {
       console.debug('dlc:', r)
       if (r.result) {
         this.dlc = <DLCContract>r.result

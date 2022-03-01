@@ -76,7 +76,7 @@ export function formatISODate(isoDate: string) {
   return new Date(isoDate).toLocaleDateString()
 }
 
-export function formatISODateTime(isoDate: string) {
+export function formatISODateTime(isoDate: string|number) {
   return new Date(isoDate).toLocaleString()
 }
 
@@ -123,7 +123,7 @@ export function formatPercent(num: number, fractionalDigits = 2, addPercentSign 
 }
 
 // Matches upper and lower case hex strings
-const UPPERLOWER_CASE_HEX = /[0-9A-Fa-f]{6}/g;
+export const UPPERLOWER_CASE_HEX = /^[0-9A-Fa-f]+$/g;
 
 export function validateHexString(s: string) {
   return UPPERLOWER_CASE_HEX.test(s)

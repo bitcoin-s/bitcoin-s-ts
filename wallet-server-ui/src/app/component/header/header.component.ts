@@ -1,11 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { Router } from '@angular/router'
-import { AuthService } from '~service/auth.service'
 
+import { AuthService } from '~service/auth.service'
 import { BackendService } from '~service/backend.service'
 import { DLCFileService, DLCFileType } from '~service/dlc-file.service'
+import { OfferService } from '~service/offer-service'
 import { WalletServiceState, WalletStateService } from '~service/wallet-state-service'
-import { WebsocketService } from '~service/websocket.service'
+
 import { formatNumber } from '~util/utils'
 
 
@@ -24,8 +24,8 @@ export class HeaderComponent implements OnInit {
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()
 
   constructor(public walletStateService: WalletStateService, public backendService: BackendService,
-    public dlcFileService: DLCFileService, public authService: AuthService, private router: Router,
-    private websocketService: WebsocketService) { }
+    public dlcFileService: DLCFileService, public authService: AuthService,
+    public offerService: OfferService) { }
 
   ngOnInit(): void {
   }

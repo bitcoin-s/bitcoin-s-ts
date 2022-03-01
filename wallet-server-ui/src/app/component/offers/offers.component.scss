@@ -1,0 +1,115 @@
+@import '../../../scss/breakpoints';
+
+$padding: 0.5rem;
+
+.form-container {
+  padding: 0 1rem;
+  .mat-form-field {
+    margin-right: 0.5rem;
+  }
+  button ~ button {
+    margin-left: 0.5rem;
+  }
+}
+
+.offers {
+  height: 100%;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  // min-width: 0; //  FF flexbox overflow
+
+  .mat-drawer-container {
+    height: 100%;
+
+    .mat-drawer-content {
+      // overflow: hidden;
+      // padding: 0 1rem; // works, won't apply to bottom
+
+      .section-header {
+
+      }
+    }
+  }
+
+  .offer-table {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    width: 100%;
+    // margin: 0 1rem;
+
+    .header-row-group {
+      height: 24px; // original 56px
+    }
+    .header-row-columns {
+      height: 40px; // original 56px
+    }
+
+    .mat-column-header-row-spacer-group {
+      border: 0;
+    }
+
+    // Column padding
+    .mat-header-cell, .mat-cell, .mat-footer-cell {
+      padding-left: $padding;
+      padding-right: $padding;
+      &:first-of-type {
+        padding-left: $padding * 2;
+      }
+      &:last-of-type {
+        padding-right: $padding * 2;
+      }
+    }
+
+    .numeric-cell {
+      text-align: right;
+    }
+    .percent-cell {
+      text-align: center;
+    }
+
+    .focus-row {
+      font-weight: bold;
+    }
+    .mat-no-data-row {
+      text-align: center;
+    }
+
+    .mat-cell.mat-column-message {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-width: 300px;
+    }
+
+    // Hide Outcomes and Attestations on narrow screens
+    @include lt-md {
+      .mat-column-collateral {
+        display: none;
+      }
+      .mat-column-counterpartyCollateral {
+        display: none;
+      }
+      .mat-column-header-row-collateral-group {
+        tr {
+          // TODO : Would be nice to adjust colspan in this case
+          // Probably need https://github.com/angular/flex-layout
+        }
+      }
+    }
+    @include lt-lg {
+      .mat-column-feeRate {
+        display: none;
+      }
+    }
+    @include lt-xl {
+      .mat-column-offerTLV {
+        display: none;
+      }
+      .mat-column-hash {
+        display: none;
+      }
+    }
+  }
+}

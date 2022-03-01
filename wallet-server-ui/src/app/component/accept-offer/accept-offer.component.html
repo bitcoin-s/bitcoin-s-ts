@@ -6,6 +6,11 @@
     </button>
   </div>
 
+  <div *ngIf="message" class="message-container">
+    <label class="message-label" translate>acceptOffer.offerMessage</label>
+    <div class="message">{{ message }}</div>
+  </div>
+
   <form class="form-container" [formGroup]="form" autocomplete="off">
     <fieldset>
       <mat-form-field class="w-100">
@@ -152,6 +157,8 @@
       </mat-expansion-panel>
       
     </fieldset>
+
+    <div class="vspacer-1"></div>
 
     <h2 translate>acceptOffer.acceptOffer</h2>
     <div class="description text-justify">

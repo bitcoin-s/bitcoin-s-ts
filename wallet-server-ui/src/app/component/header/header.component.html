@@ -25,12 +25,15 @@
     <ng-container *ngIf="authService.isLoggedIn">
       <a mat-button routerLink="/contracts" routerLinkActive="active">
         {{ 'contracts.heading' | translate }}</a>
-      <a mat-button routerLink="/offers" routerLinkActive="active">
+      <a mat-button routerLink="/offers" routerLinkActive="active"
+        matBadgePosition="after" matBadgeColor="accent"
+        [matBadge]="offerService.offers.value.length"
+        [matBadgeHidden]="offerService.offers.value.length === 0">
+        {{ 'offers.heading' | translate }}</a>
+      <a mat-button routerLink="/create" routerLinkActive="active">
         {{ 'header.createDLC' | translate }}</a>
       <a mat-button routerLink="/wallet" routerLinkActive="active">
         {{ 'walletBalance.heading' | translate }}</a>
-  
-      <div class="spacer-2"></div>
   
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
       <div *ngIf="walletStateService.balances" class="wallet-status"

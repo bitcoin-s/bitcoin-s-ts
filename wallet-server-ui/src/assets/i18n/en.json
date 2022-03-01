@@ -74,7 +74,8 @@
     "close": "Close",
     "send": "Send",
     "logout": "Logout",
-    "stay": "Stay"
+    "stay": "Stay",
+    "delete": "Delete"
   },
 
   "unit": {
@@ -199,6 +200,7 @@
 
   "acceptOffer": {
     "heading": "Offer Details",
+    "offerMessage": "Offer Message",
     "dlcOffer": "DLC Offer",
     "peerAddress": "Peer Address",
     "optional": "optional",
@@ -283,6 +285,7 @@
     "fundingTransactionId": "Funding Transaction Id",
     "closingTransactionId": "Closing Transaction Id",
     "oracleAttestations": "Oracle Attestations",
+    "bumpFee": "Bump Fee",
     "rebroadcast": "Rebroadcast",
     "cancelContract": "Cancel",
     "cancelContractSuccess": "Successfully canceled contract",
@@ -312,6 +315,21 @@
     "filename": "Filename to save Signed DLC Accept into",
     "cannotSignOwnAccept": "You cannot sign your own Accepted DLC. You must give it to your counterparty to sign.",
     "cannotBroadcastOwnSign": "You cannot broadcast your own Signed DLC. You must give it to your counterparty for broadcast."
+  },
+
+  "offers": {
+    "heading": "Offers",
+    "addOffer": "Add Offer",
+    "sendOffer": "Send Offer",
+    "peer": "Peer",
+    "message": "Message",
+    "offer": "Offer",
+    "hash": "Hash",
+    "receivedAt": "Received",
+    "offerTLV": "Offer TLV",
+    "noOffers": "No Offers",
+    "collateralHeader": "Collateral",
+    "feeRate": "Fee Rate"
   },
 
   "events": {
@@ -356,6 +374,11 @@
       "title": "Funds Sent",
       "content": "{{ amount }} sats sent to {{ address }}. The transactionId is {{ txId }} and should appear in the mempool shortly.",
       "linksContent": "View the transaction on Mempool.space at"
+    },
+    "feeRate": {
+      "title": "Adjust Fee Rate",
+      "txId": "Transaction Id",
+      "feeRate": "Fee Rate"
     },
     "cancelContractSuccess": {
       "title": "Contract Canceled",

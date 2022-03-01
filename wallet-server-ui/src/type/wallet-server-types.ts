@@ -217,6 +217,14 @@ export enum DLCState {
   refunded = 'Refunded',
 }
 
+export interface IncomingOffer {
+  hash: string
+  receivedAt: number
+  peer: string
+  message: string
+  offerTLV: string
+}
+
 // EO wallet-types.ts
 
 // core-types.ts

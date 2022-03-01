@@ -19,6 +19,7 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component'
 import { ContractsComponent } from './component/contracts/contracts.component'
 import { EventsComponent } from './component/events/events.component'
+import { OffersComponent } from './component/offers/offers.component'
 import { ContractDetailComponent } from './component/contract-detail/contract-detail.component'
 import { EventDetailComponent } from './component/event-detail/event-detail.component'
 import { NewOfferComponent } from './component/new-offer/new-offer.component'
@@ -67,6 +68,7 @@ export function appInitializerFactory(translate: TranslateService) {
     WalletBalanceComponent,
     ContractsComponent,
     EventsComponent,
+    OffersComponent,
     ContractDetailComponent,
     EventDetailComponent,
     NewOfferComponent,

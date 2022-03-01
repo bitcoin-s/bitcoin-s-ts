@@ -1,14 +1,18 @@
 import { EventEmitter, Injectable } from '@angular/core'
-import { BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, timer } from 'rxjs'
-import { catchError, concatMap, filter, first, map, retry, tap } from 'rxjs/operators'
+import { MatDialog } from '@angular/material/dialog'
+import { BehaviorSubject, forkJoin, of, Subscription, timer } from 'rxjs'
+import { catchError, concatMap, map, tap } from 'rxjs/operators'
+
+
+import { AuthService } from '~service/auth.service'
+import { DLCService } from '~service/dlc-service'
+import { MessageService } from '~service/message.service'
+import { OfferService } from '~service/offer-service'
+
 import { BuildConfig } from '~type/proxy-server-types'
+import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, DLCWalletAccounting, FundedAddress, GetInfoResponse, IncomingOffer, Offer, ServerResponse, ServerVersion, WalletMessageType } from '~type/wallet-server-types'
 
-import { AuthService } from './auth.service'
-import { MessageService } from './message.service'
-
-import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCWalletAccounting, FundedAddress, GetInfoResponse, ServerResponse, ServerVersion, WalletMessageType } from '~type/wallet-server-types'
-
-import { BitcoinNetwork } from '~util/utils'
+import { BitcoinNetwork, } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
@@ -46,9 +50,6 @@ export class WalletStateService {
   feeEstimate: number
   torDLCHostAddress: string
 
-  dlcs: BehaviorSubject<DLCContract[]> = new BehaviorSubject<DLCContract[]>([])
-  contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
-
   mempoolUrl: string = 'https://mempool.space' // default
   mempoolTransactionURL(txIdHex: string, network: string) {
     switch (network) {
@@ -68,11 +69,18 @@ export class WalletStateService {
   stateLoaded: EventEmitter<void> = new EventEmitter()
 
   private initialized = false
-  private dlcsInitialized = false
 
   private pollingTimer$: Subscription;
 
-  constructor(private messageService: MessageService, private authService: AuthService) {}
+  constructor(private dialog: MatDialog, private messageService: MessageService, private authService: AuthService,
+    private dlcService: DLCService, private offerService: OfferService) {
+      this.dlcService.initialized.subscribe(v => {
+        if (v) this.checkInitialized()
+      })
+      this.offerService.initialized.subscribe(v => {
+        if (v) this.checkInitialized()
+      })
+    }
 
   private stopPollingTimer() {
     // console.debug('WalletStateService.stopPollingTimer()')
@@ -103,7 +111,8 @@ export class WalletStateService {
     // console.debug('WalletStateService.stopPolling()')
     this.state = WalletServiceState.offline
     this.initialized = false
-    this.dlcsInitialized = false
+    this.dlcService.uninitialize()
+    this.offerService.uninitialize()
     // Could wipe all state here...
     this.stopPollingTimer()
   }
@@ -126,7 +135,7 @@ export class WalletStateService {
   }
 
   private checkInitialized() {
-    if (this.initialized && this.dlcsInitialized) {
+    if (this.initialized && this.dlcService.initialized.value && this.offerService.initialized.value) {
       console.debug('WalletStateService.checkInitialized() stateLoaded going', this.state)
       this.stateLoaded.next() // initial state loaded event
     }
@@ -142,7 +151,8 @@ export class WalletStateService {
       this.getFeeEstimate(),
       this.getDLCHostAddress(),
       this.refreshWalletState(),
-      this.loadDLCs(),
+      this.dlcService.loadDLCs(),
+      this.offerService.loadIncomingOffers(),
     ]).subscribe(_ => {
       console.debug(' initializedState() initialized')
       this.initialized = true
@@ -254,100 +264,6 @@ export class WalletStateService {
         this.unfundedAddresses = r.result
       }
     }))
-  }
-
-  /** DLCs */
-
-  private loadDLCs() {
-    console.debug('loadDLCs()')
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcs)).pipe(tap(r => {
-      if (r.result) {
-        const dlcs = <DLCContract[]>r.result
-        this.dlcs.next(dlcs)
-        this.loadContractInfos(dlcs)
-      }
-    }))
-  }
-
-  refreshDLC(dlcId: string) {
-    console.debug('refreshDLCState()', dlcId)
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlc, [dlcId])).pipe(tap(r => {
-      console.debug('getdlc', r)
-      if (r.result) {
-        const dlc = <DLCContract>r.result
-        this.replaceDLC(dlc).subscribe()
-        return dlc
-      }
-      return null
-    }))
-  }
-
-  // Caller must subscribe to returned Observable to get new Contract Info loaded
-  replaceDLC(dlc: DLCContract) {
-    // Inject in dlcs
-    const i = this.dlcs.value.findIndex(d => d.dlcId === dlc.dlcId)
-    if (i !== -1) {
-      const removed = this.dlcs.value.splice(i, 1, dlc)
-      // console.debug('removed:', removed)
-      this.dlcs.next(this.dlcs.value)
-      return of(null)
-    } else {
-      console.warn('replaceDLC() did not find dlcId', dlc.dlcId, 'in existing dlcs')
-      // Loading Contract Info before updating dlcs so data will be present for anything binding both
-      this.dlcs.value.push(dlc)
-      this.dlcs.next(this.dlcs.value)
-      const obs = this.loadContractInfo(dlc)
-      return obs
-    }
-  }
-
-  removeDLC(dlcId: string) {
-    const i = this.dlcs.value.findIndex(d => d.dlcId === dlcId)
-    if (i !== -1) {
-      const removed = this.dlcs.value.splice(i, 1)
-      this.dlcs.next(this.dlcs.value)
-    }
-  }
-
-  /** ContractInfo */
-
-  private loadContractInfos(dlcs: DLCContract[]) {
-    console.debug('loadContractInfos()', dlcs.length)
-    const ci = this.contractInfos.value
-    if (dlcs.length === 0) {
-      // No additional data to load
-      this.dlcsInitialized = true
-      this.checkInitialized()
-    }
-    return forkJoin(dlcs.map(dlc => 
-      this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))))
-      .subscribe((results: ServerResponse<ContractInfo>[]) => {
-        // console.debug(' loadContractInfos()', results)
-        for (let i = 0; i < results.length; i++) {
-          ci[dlcs[i].dlcId] = <ContractInfo>results[i].result
-        }
-        this.contractInfos.next(this.contractInfos.value)
-        this.dlcsInitialized = true
-        this.checkInitialized()
-      })
-  }
-
-  private loadContractInfo(dlc: DLCContract) {
-    const ci = this.contractInfos.value
-    if (!ci[dlc.dlcId]) { // Don't bother reloading ContractInfo we already have
-      const obs = this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))
-      .pipe(tap(r => {
-        console.warn(' loadContractInfo()', r)
-        if (r.result) {
-          ci[dlc.dlcId] = r.result
-          this.contractInfos.next(this.contractInfos.value)
-        }
-      }))
-      return obs
-    } else {
-      console.warn('loadContractInfo() already have Contract Info for', dlc.dlcId)
-      return of(null)
-    }
   }
 
 }

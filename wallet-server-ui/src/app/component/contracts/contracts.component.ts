@@ -7,6 +7,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
 import { DLCFileService } from '~service/dlc-file.service'
+import { DLCService } from '~service/dlc-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { ContractInfo, DLCContract } from '~type/wallet-server-types'
@@ -47,7 +48,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
   displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
-    'collateral', 'counterpartyCollateral', 'totalCollateral', 'lastUpdated']
+    'totalCollateral', 'collateral', 'counterpartyCollateral', 'lastUpdated']
 
   private selectedDLCId: string|undefined
   selectedDLCContract: DLCContract|null
@@ -58,11 +59,11 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   contractDetailsVisible = false
 
   getContractInfo(dlcId: string) {
-    return this.walletStateService.contractInfos.value[dlcId]
+    return this.dlcService.contractInfos.value[dlcId]
   }
 
   getContractId(dlcId: string) {
-    const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === dlcId)
+    const dlc = this.dlcService.dlcs.value.find(d => d.dlcId === dlcId)
     if (dlc) return dlc.contractId
     return null
   }
@@ -73,7 +74,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   private accept$: Subscription
   private sign$: Subscription
 
-  constructor(public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
+  constructor(public walletStateService: WalletStateService, private dlcService: DLCService, private dlcFileService: DLCFileService,
     private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
@@ -104,20 +105,20 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.dataSource.sort = this.sort
 
-    this.dlc$ = this.walletStateService.dlcs.subscribe(_ => {
-      this.dataSource.data = this.walletStateService.dlcs.value
+    this.dlc$ = this.dlcService.dlcs.subscribe(_ => {
+      this.dataSource.data = this.dlcService.dlcs.value
       this.table.renderRows()
       this.loadSelectedDLC()
     })
 
-    this.contractInfo$ = this.walletStateService.contractInfos.subscribe(_ => {
+    this.contractInfo$ = this.dlcService.contractInfos.subscribe(_ => {
       this.loadSelectedDLC()
     })
 
     this.accept$ = this.dlcFileService.accept$.subscribe(accept => {
       if (accept) {
         console.debug('contracts on accept', accept.accept)
-        const dlc = this.walletStateService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
+        const dlc = this.dlcService.dlcs.value.find(d => d.tempContractId === accept.accept.temporaryContractId)
         if (dlc) {
           this.selectedAccept = accept
           this.onRowClick(dlc)
@@ -130,7 +131,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sign$ = this.dlcFileService.sign$.subscribe(sign => {
       if (sign) {
         console.debug('contracts on sign', sign.sign)
-        const dlc = this.walletStateService.dlcs.value.find(d => d.contractId === sign.sign.contractId)
+        const dlc = this.dlcService.dlcs.value.find(d => d.contractId === sign.sign.contractId)
         if (dlc) {
           this.selectedSign = sign
           this.onRowClick(dlc)
@@ -144,10 +145,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private loadSelectedDLC() {
     if (this.selectedDLCId && 
-      this.walletStateService.dlcs.value.length > 0 && 
-      Object.keys(this.walletStateService.contractInfos.value).length > 0) {
+      this.dlcService.dlcs.value.length > 0 && 
+      Object.keys(this.dlcService.contractInfos.value).length > 0) {
       console.warn('loadSelectedDLC()', this.selectedDLCId)
-      const dlc = this.walletStateService.dlcs.value.find(d => d.dlcId === this.selectedDLCId)
+      const dlc = this.dlcService.dlcs.value.find(d => d.dlcId === this.selectedDLCId)
       if (dlc) this.onRowClick(dlc)
       else console.error('Could not find local DLC for id', this.selectedDLCId)
       // Don't clear initialDLCId so future dlc$ updates will load new DLC states during Tor contract completion
@@ -171,10 +172,10 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   onRowClick(dlcContract: DLCContract) {
-    console.debug('onRowClick()', dlcContract, this.walletStateService.contractInfos.value[dlcContract.dlcId])
+    console.debug('onRowClick()', dlcContract, this.dlcService.contractInfos.value[dlcContract.dlcId])
 
     this.selectedDLCContract = dlcContract
-    this.selectedDLCContractInfo = this.walletStateService.contractInfos.value[dlcContract.dlcId]
+    this.selectedDLCContractInfo = this.dlcService.contractInfos.value[dlcContract.dlcId]
     // this.selectedDLC.emit(<DLCContractInfo>{
     //   dlc: dlcContract,
     //   contractInfo: this.selectedDLCContractInfo,

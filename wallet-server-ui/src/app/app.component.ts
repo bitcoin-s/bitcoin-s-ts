@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs'
 import { AuthService } from '~service/auth.service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { DLCFileService } from '~service/dlc-file.service'
+import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { WebsocketService } from '~service/websocket.service'
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, 
     private overlay: OverlayContainer, private router: Router,
-    public walletStateService: WalletStateService, private dlcFileService: DLCFileService,
+    public walletStateService: WalletStateService, private dlcService: DLCService, private dlcFileService: DLCFileService,
     private websocketService: WebsocketService, public authService: AuthService,
     private darkModeService: DarkModeService) {
     
@@ -93,7 +94,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // Check current route and set route based on wallet and dlc state after initialization
       if (this.router.url === '/login') {
-        if (this.walletStateService.dlcs.value.length > 0) {
+        if (this.dlcService.dlcs.value.length > 0) {
           this.router.navigate(['/contracts'])
         } else { // if (this.walletStateService.balances.total > 0) {
           this.router.navigate(['/wallet'])
