@@ -35,6 +35,7 @@ import { LoginComponent } from './component/login/login.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component'
+import { FeeRateDialogComponent } from './dialog/fee-rate-dialog/fee-rate-dialog.component'
 import { LogoutDialogComponent } from './dialog/logout/logout.component'
 import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component'
 import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
@@ -76,6 +77,7 @@ export function appInitializerFactory(translate: TranslateService) {
     AcceptOfferComponent,
     NewAddressDialogComponent,
     SendFundsDialogComponent,
+    FeeRateDialogComponent,
     DlcFileComponent,
     DebugComponent,
     HeaderComponent,

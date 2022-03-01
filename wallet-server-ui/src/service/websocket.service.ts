@@ -88,7 +88,7 @@ export class WebsocketService {
   private startWebsocket() {
     this.stopWebsocket()
     const url = this.getWebsocketUrl()
-    console.debug('startWebsocket()', url)
+    console.debug('startWebsocket()') //, url)
     const ws = new WebSocket(url)
     const self = this
 

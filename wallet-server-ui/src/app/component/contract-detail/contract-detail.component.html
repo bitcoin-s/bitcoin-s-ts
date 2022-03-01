@@ -197,6 +197,12 @@
               (click)="onRebroadcastFundingTransaction()" [disabled]="executing">
               <span translate>contractDetail.rebroadcast</span>
             </button>
+            <button *ngIf="isFundingTxRebroadcastable(dlc.state)" matSuffix
+              mat-flat-button color="primary" class="mat-flat-button-sm"
+              (click)="onBumpFundingFee()"
+              [disabled]="executing">
+              <span translate>contractDetail.bumpFee</span>
+            </button>
             <div *ngIf="isFundingTxRebroadcastable(dlc.state) && executing && rebroadcasting" matSuffix class="spinner">
               <mat-spinner diameter="20"></mat-spinner>
             </div>

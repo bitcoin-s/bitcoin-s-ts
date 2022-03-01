@@ -1,0 +1,22 @@
+
+:host zxing-scanner::ng-deep video {
+  max-height: 300px;
+}
+
+.form-container {
+  min-width: 450px; // to see a full address
+  fieldset {
+    display: flex;
+    flex-direction: column;
+
+    .validation {
+      vertical-align: sub;
+    }
+    button[matSuffix] {
+      margin-left: 0.5rem;
+    }
+    span, mat-button-toggle {
+      margin-left: 0.5rem;
+    }
+  }
+}
