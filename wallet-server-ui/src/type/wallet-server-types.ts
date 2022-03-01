@@ -319,6 +319,7 @@ export interface Offer {
   feeRatePerVb: number // 1,
   cetLocktime: number // 0,
   refundLocktime: number // 1622505600
+  temporaryContractId: string // "ae51b65d7f9a8d6fc76dadda9d315bab1a96c7aa2c7c9a851b764a1907036450"
 }
 
 export interface ContractInfo {

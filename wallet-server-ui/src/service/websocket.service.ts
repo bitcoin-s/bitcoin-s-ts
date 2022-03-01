@@ -151,6 +151,8 @@ export class WebsocketService {
           // If someone just accepted a DLC Offer
           // Using both accept states because accepted usually comes in too quickly to have transitioned
           if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && dlc.isInitiator === false) {
+            // Remove IncomingOffer if it exists
+            this.offerService.removeIncomingOfferByTemporaryContractId(dlc.temporaryContractId)
             this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
           }
         })
