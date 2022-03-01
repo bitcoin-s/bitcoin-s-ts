@@ -23,6 +23,15 @@ export class OfferService {
   decodedOffers: BehaviorSubject<{ [offerHash: string]: OfferWithHex }> = 
     new BehaviorSubject<{ [offerHash: string]: OfferWithHex }>({})
 
+  private getOfferHashByTemporaryContractId(temporaryContractId: string): string|undefined {
+    for (const hash of Object.keys(this.decodedOffers.value)) {
+      if (this.decodedOffers.value[hash].offer.temporaryContractId === temporaryContractId) {
+        return hash
+      }
+    }
+    return undefined
+  }
+
   constructor(private dialog: MatDialog, private messageService: MessageService) {}
 
   uninitialize() {
@@ -100,6 +109,13 @@ export class OfferService {
         this.decodedOffers.next(this.decodedOffers.value)
       }
     }))
+  }
+
+  removeIncomingOfferByTemporaryContractId(temporaryContractId: string) {
+    const hash = this.getOfferHashByTemporaryContractId(temporaryContractId)
+    if (hash) {
+      this.removeIncomingOffer(hash).subscribe()
+    }
   }
 
   sendIncomingOffer(offerTLV: string, peer: string, message: string) {

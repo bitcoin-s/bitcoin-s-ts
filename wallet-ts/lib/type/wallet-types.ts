@@ -127,7 +127,7 @@ export interface DLCContract {
   localCollateral: number // 100000
   remoteCollateral: number // 100001
   state: string // DLCState //  "Offered"
-  tempContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
+  temporaryContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
   totalCollateral: number // 200001
 
   // not present initially
