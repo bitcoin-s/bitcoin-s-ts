@@ -40,11 +40,11 @@
         </mat-form-field>
         <mat-form-field class="narrow">
           <mat-label translate>acceptOffer.yourCollateral</mat-label>
-          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis)" readonly>
+          <input matInput [value]="formatNumber(contractInfo.totalCollateral - offer.offer.offerCollateral)" readonly>
         </mat-form-field>
         <mat-form-field class="narrow">
           <mat-label translate>acceptOffer.counterpartyCollateral</mat-label>
-          <input matInput [value]="formatNumber(offer.offer.offerCollateralSatoshis)" readonly>
+          <input matInput [value]="formatNumber(offer.offer.offerCollateral)" readonly>
         </mat-form-field>
       </div>
 

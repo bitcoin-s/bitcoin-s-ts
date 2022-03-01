@@ -311,7 +311,7 @@ export interface Offer {
   fundingPubKey: string // '0384ff93088a11a6348b1a62068dec6fbde06c27cdd13343fe8799064b0c729a2d',
   payoutSPK: string // '160014a6ddd2eaa6a442c89bd1b3d9121fb63c535dd79a',
   payoutSerialId: number // 5529711572335517000,
-  offerCollateralSatoshis: number // 1,
+  offerCollateral: number // 1,
   fundingInputs: FundingInput[],
   changeSPK: string // '160014232606c0cb287c1a5f130281ba52eff5ef20d443',
   changeSerialId: number // 1987381072106030600,

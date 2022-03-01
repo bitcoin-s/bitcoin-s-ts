@@ -86,7 +86,7 @@
         <ng-container matColumnDef="counterpartyCollateral">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.theirs' | translate }}</th>
           <td mat-cell class="numeric-cell" *matCellDef="let offer">
-            {{ formatNumber(getOffer(offer.hash)?.offer?.offerCollateralSatoshis) }}</td>
+            {{ formatNumber(getOffer(offer.hash)?.offer?.offerCollateral) }}</td>
         </ng-container>
         <!--
         <ng-container matColumnDef="feeRate">

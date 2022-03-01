@@ -92,7 +92,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
         case 'collateral':
           return this.yourCollateral(offer)
         case 'counterpartyCollateral':
-          return this.getOffer(offer.hash)?.offer?.offerCollateralSatoshis
+          return this.getOffer(offer.hash)?.offer?.offerCollateral
         // case 'feeRate':
         //   return this.getOffer(offer.hash)?.offer?.feeRatePerVb
         default:
@@ -118,7 +118,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
     const offer = this.getOffer(incomingOffer.hash)
     // These load async, so they might not be defined yet
     if (offer) {
-      return offer.offer.contractInfo.totalCollateral - offer.offer.offerCollateralSatoshis
+      return offer.offer.contractInfo.totalCollateral - offer.offer.offerCollateral
     }
     return undefined
   }
