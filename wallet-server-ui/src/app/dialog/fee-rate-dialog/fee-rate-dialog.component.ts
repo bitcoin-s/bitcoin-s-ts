@@ -40,10 +40,6 @@ export class FeeRateDialogComponent implements OnInit {
     })
   }
 
-  // ngAfterViewInit() {
-  //   this.feeRate.nativeElement.focus()
-  // }
-
   getFormState() {
     const v = this.form.value
     return {
