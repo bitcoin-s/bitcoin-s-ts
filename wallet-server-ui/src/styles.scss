@@ -85,11 +85,7 @@ fieldset {
 
     .spinner {
       width: 40px; // to match icon button
-      // height: 40px;
-
-      display: flex; 
-      justify-content: center; 
-      align-items: center;
+      align-self: center;
     }
   }
 }
