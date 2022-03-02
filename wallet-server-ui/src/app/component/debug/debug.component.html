@@ -41,7 +41,7 @@
     <div class="row">
       <mat-form-field class="paste-input">
         <input #txId matInput type="text" autocomplete="off" spellcheck="false"
-          placeholder="{{ 'advanced.pasteTransaction' | translate }}">
+          placeholder="{{ 'advanced.transactionHex' | translate }}">
       </mat-form-field>
       <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
         {{ 'advanced.getTransaction' | translate }}
