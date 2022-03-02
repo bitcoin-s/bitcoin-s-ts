@@ -123,7 +123,7 @@ export function formatPercent(num: number, fractionalDigits = 2, addPercentSign 
 }
 
 // Matches upper and lower case hex strings
-export const UPPERLOWER_CASE_HEX = /^[0-9A-Fa-f]+$/g;
+export const UPPERLOWER_CASE_HEX = /^[0-9A-F]+$/i;
 
 export function validateHexString(s: string) {
   return UPPERLOWER_CASE_HEX.test(s)
