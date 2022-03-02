@@ -22,9 +22,6 @@
       label {
         margin-right: 0.5rem;
       }
-      input {
-        margin-right: 0.5rem;
-      }
       button {
         flex: 1;
         margin-bottom: 0;
@@ -38,6 +35,10 @@
       label {
         margin-bottom: 0.25rem;
       }
+    }
+
+    .paste-input {
+      margin-right: 0.25rem;
     }
 
     .raw-tx-textarea {

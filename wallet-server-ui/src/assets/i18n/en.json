@@ -107,6 +107,7 @@
     "backup": "Download Wallet Backup",
     "downloadBitcoinsLog": "Download Bitcoin-s Log",
     "downloadProxyLog": "Download Proxy Log",
+    "pasteTransaction": "Paste Transaction",
     "getTransaction": "Get Transaction",
     "raw": "Raw",
     "decoded": "Decoded"

@@ -39,7 +39,10 @@
     <div class="vspacer-2"></div>
 
     <div class="row">
-      <input #txId type="text" autocomplete="off" spellcheck="false">
+      <mat-form-field class="paste-input">
+        <input #txId matInput type="text" autocomplete="off" spellcheck="false"
+          placeholder="{{ 'advanced.pasteTransaction' | translate }}">
+      </mat-form-field>
       <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
         {{ 'advanced.getTransaction' | translate }}
       </button>
