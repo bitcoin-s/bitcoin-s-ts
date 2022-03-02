@@ -11,6 +11,16 @@
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </button>
+
+    <button mat-stroked-button (click)="downloadBitcoinsLog()" [disabled]="executing">
+      {{ 'advanced.downloadBitcoinsLog' | translate }}
+    </button>
+
+    <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
+      {{ 'advanced.downloadProxyLog' | translate }}
+    </button>
+
+    <div class="vspacer-2"></div>
     
     <app-alert *ngIf="fullRescan" [type]="AlertType.warn" message="advanced.fullRescanWarning" icon="warning_amber"></app-alert>
 
@@ -26,13 +36,21 @@
       {{ 'advanced.unreserveAllUTXOs' | translate }}
     </button>
 
-    <button mat-stroked-button (click)="downloadBitcoinsLog()" [disabled]="executing">
-      {{ 'advanced.downloadBitcoinsLog' | translate }}
-    </button>
+    <div class="vspacer-2"></div>
 
-    <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
-      {{ 'advanced.downloadProxyLog' | translate }}
-    </button>
+    <div class="row">
+      <input #txId type="text" autocomplete="off" spellcheck="false">
+      <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
+        {{ 'advanced.getTransaction' | translate }}
+      </button>
+    </div>
+    <div *ngIf="rawTransaction || decodedTransaction" class="column">
+      <label translate>advanced.raw</label>
+      <textarea class="raw-tx-textarea" rows="2" [(ngModel)]="rawTransaction"></textarea>
+      <label translate>advanced.decoded</label>
+      <textarea class="decoded-tx-textarea" [(ngModel)]="decodedTransaction"></textarea>
+    </div>
+    
   </div>
 
 </section>

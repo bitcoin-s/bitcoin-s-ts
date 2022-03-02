@@ -106,7 +106,10 @@
     "unreserveAllUTXOs": "Unreserve All UTXOs",
     "backup": "Download Wallet Backup",
     "downloadBitcoinsLog": "Download Bitcoin-s Log",
-    "downloadProxyLog": "Download Proxy Log"
+    "downloadProxyLog": "Download Proxy Log",
+    "getTransaction": "Get Transaction",
+    "raw": "Raw",
+    "decoded": "Decoded"
   },
 
   "buildAcceptOffer": {
