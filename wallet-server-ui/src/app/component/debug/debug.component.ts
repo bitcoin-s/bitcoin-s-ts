@@ -30,6 +30,7 @@ export class DebugComponent implements OnInit {
 
   fullRescan = false
 
+  transactionNotFound = false
   rawTransaction: string
   decodedTransaction: string
 
@@ -169,6 +170,9 @@ export class DebugComponent implements OnInit {
       })
     }
 
+    this.transactionNotFound = false
+    this.rawTransaction = ''
+    this.decodedTransaction = ''
     this.executing = true
     this.messageService.sendMessage(getMessageBody(WalletMessageType.gettransaction, [sha256hash])).subscribe(r => {
       console.debug(' gettransaction:', r)
@@ -182,6 +186,8 @@ export class DebugComponent implements OnInit {
             this.decodedTransaction = JSON.stringify(r.result, null, 2)
           }
         }, err => { this.executing = false })
+      } else {
+        this.transactionNotFound = true
       }
       this.executing = false
     }, err => { this.executing = false })

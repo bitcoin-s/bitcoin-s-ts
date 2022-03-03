@@ -41,7 +41,7 @@
     <div class="row">
       <mat-form-field class="paste-input">
         <input #txId matInput type="text" autocomplete="off" spellcheck="false"
-          placeholder="{{ 'advanced.transactionHex' | translate }}">
+          placeholder="{{ 'advanced.transactionId' | translate }}">
       </mat-form-field>
       <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
         {{ 'advanced.getTransaction' | translate }}
@@ -53,7 +53,7 @@
       <label translate>advanced.decoded</label>
       <textarea class="decoded-tx-textarea" [(ngModel)]="decodedTransaction"></textarea>
     </div>
-    
+    <app-alert *ngIf="transactionNotFound" [type]="AlertType.warn" message="advanced.transactionNotFoundInWallet"></app-alert>
   </div>
 
 </section>
