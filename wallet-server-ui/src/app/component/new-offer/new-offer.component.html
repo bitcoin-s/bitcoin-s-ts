@@ -216,18 +216,50 @@
 
   <h2 translate>newOffer.createOffer</h2>
   <div class="description text-justify" translate>newOfferDescription.createOffer</div>
-  <div class="description text-justify" translate>newOfferDescription.createOffer2</div>
+
+  <form [formGroup]="typeForm" class="form-container">
+    <fieldset [disabled]="executing || offerCreated">
+      <mat-radio-group class="offer-type"
+        [value]="offerType" (change)="updateOfferType($event)">
+        <mat-radio-button *ngFor="let e of offerTypes"
+          [value]="e">{{ 'newOffer.offerType.' + e | translate }}</mat-radio-button>
+      </mat-radio-group>
+  
+      <div class="description">
+        {{ 'newOfferDescription.offerType.' + offerType | translate }}
+      </div>
+
+      <ng-container *ngIf="offerType === OfferType.TOR">
+        <mat-form-field class="w-100">
+          <mat-label translate>newOffer.message</mat-label>
+          <textarea matInput formControlName="message" type="text"
+            cdkTextareaAutosize cdkAutosizeMinRows="2"
+            autocomplete="off" spellcheck="false" maxlength="1024"
+            (paste)="messageValue = trimOnPaste($event)"></textarea>
+          <app-more-info matSuffix tooltip="newOfferDescription.message"></app-more-info>
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <mat-label translate>acceptOffer.peerAddress</mat-label>
+          <input matInput formControlName="peerAddress" type="text"
+            autocomplete="off" spellcheck="false" maxlength="1024"
+            placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
+            (paste)="peerAddressValue = trimOnPaste($event)">
+          <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
+        </mat-form-field>
+      </ng-container>
+    </fieldset>
+  </form>
 
   <div class="execute-container">
     <div class="button-group">
-      <button mat-stroked-button class="tor-dlc-host-address-button"
+      <button [hidden]="offerType === OfferType.TOR" mat-stroked-button class="tor-dlc-host-address-button"
         matTooltip="{{ 'action.copyToClipboard' | translate }}"
         (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
         <mat-icon>content_copy</mat-icon>
         <span translate>torDLCHostAddress</span>
       </button>
       <button mat-flat-button color="primary" (click)="onExecute()"
-        [disabled]="form.invalid || payoutInputsInvalid || offerCreated">
+        [disabled]="form.invalid || typeForm.invalid || payoutInputsInvalid || offerCreated">
         {{ 'action.execute' | translate }}
       </button>
       <div class="spinner" [hidden]="!executing">
@@ -242,7 +274,7 @@
   
   <!-- Could have button to open new contract or auto-open new contract detail -->
 
-  <div class="result-footer">
+  <div class="result-footer" [hidden]="offerType === OfferType.TOR">
     <!-- <div class="button-group">
       <button mat-stroked-button matTooltip="{{ 'action.copyToClipboard' | translate }}">
         <mat-icon>content_copy</mat-icon>

@@ -169,7 +169,12 @@
     "advanced": "Advanced",
     "externalPayoutAddress": "External Payout Address",
     "createOffer": "Create Offer",
-    "offerCreated": "Offer Created"
+    "offerCreated": "Offer Created",
+    "offerType": {
+      "tor": "Tor",
+      "text": "Text"
+    },
+    "message": "Message"
   },
 
   "newOfferDescription": {
@@ -178,9 +183,14 @@
     "totalCollateral": "Total contract collateral (sats)",
     "feeRate": "Fee Rate built into contract (sats/vbyte)",
     "refundDate": "When the contract can be refunded",
-    "createOffer": "Create this DLC Offer in your wallet and reserve funds.",
-    "createOffer2": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract.",
-    "externalPayoutAddress": "Use Payout Address outside of the Suredbits Wallet"
+    "createOffer": "Create this DLC offer in your wallet and reserve funds. You'll exchange this offer with your counterparty over Tor or with saved text.",
+    "externalPayoutAddress": "Use Payout Address outside of the Suredbits Wallet",
+    "offerType": {
+      "tor": "Use Tor to pass messages. Your counterparty needs to be online and share their Tor DLC Host Address with you. Your counterparty will receive this offer in their Offers list.",
+      "text": "You will send the hex string representing your offer in Result below to your counterparty along with your Tor DLC Host Address to complete the contract."
+    },
+    "message": "Message to your counterparty",
+    "peerAddress": "Tor DLC Host Address of the person you'd like to complete the contract with. Putting an address in here will attempt to complete the remaining contract steps online."
   },
 
   "newOfferValidation": {

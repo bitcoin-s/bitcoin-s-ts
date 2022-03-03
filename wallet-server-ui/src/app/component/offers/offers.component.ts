@@ -69,8 +69,8 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     this.form = this.formBuilder.group({
       message: [''],
-      peer: ['', Validators.compose([regexValidator(TOR_V3_ADDRESS), Validators.required])],
-      offerTLV: ['', Validators.compose([regexValidator(UPPERLOWER_CASE_HEX), Validators.required])],
+      peer: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
+      offerTLV: ['', [Validators.required, regexValidator(UPPERLOWER_CASE_HEX)]],
     })
   }
 

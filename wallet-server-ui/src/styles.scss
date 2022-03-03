@@ -37,6 +37,10 @@ fieldset {
   }
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /** Text Align */
 .text-center {
   text-align: center;
