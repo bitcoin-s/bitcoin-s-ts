@@ -311,6 +311,8 @@
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
 
+    "sendToCounterparty": "Send to Counterparty",
+
     "signAcceptOffer": "Sign Accepted Offer",
     "filename": "Filename",
     "defaultSignFilename": "Signed DLC Accept.txt",

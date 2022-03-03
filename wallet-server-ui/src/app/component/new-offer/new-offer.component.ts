@@ -5,6 +5,8 @@ import { MatRadioChange } from '@angular/material/radio'
 import { ChartData, ChartOptions } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
@@ -396,8 +398,8 @@ export class NewOfferComponent implements OnInit {
 
         if (this.offerType === OfferType.TOR) {
           const v = this.typeForm.value
-          // TODO : This needs to run on offer.temporaryContractId
-          this.offerService.sendIncomingOffer(this.newOfferResult, v.peerAddress, v.message).subscribe(r => {
+          this.offerService.sendIncomingOffer(this.newOfferResult, v.peerAddress, v.message)
+          .pipe(catchError(error => of({ result: null }))).subscribe(r => {
             console.warn(' sendIncomingOffer', r)
             if (r.result) {
               this.offerSent = true
