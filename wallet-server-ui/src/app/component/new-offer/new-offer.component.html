@@ -235,7 +235,7 @@
           <textarea matInput formControlName="message" type="text"
             cdkTextareaAutosize cdkAutosizeMinRows="2"
             autocomplete="off" spellcheck="false" maxlength="1024"
-            (paste)="messageValue = trimOnPaste($event)"></textarea>
+            (paste)="onMessagePaste($event)"></textarea>
           <app-more-info matSuffix tooltip="newOfferDescription.message"></app-more-info>
         </mat-form-field>
         <mat-form-field class="w-100">

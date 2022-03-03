@@ -10,7 +10,7 @@
           <mat-form-field>
             <textarea matInput formControlName="message" cdkTextareaAutosize
               placeholder="{{ 'offers.message' | translate }}" type="text" maxlength="1024" autocomplete="off"
-              (paste)="messageValue = trimOnPaste($event)">
+              (paste)="onMessagePaste($event)">
             </textarea>
           </mat-form-field>
           <mat-form-field>

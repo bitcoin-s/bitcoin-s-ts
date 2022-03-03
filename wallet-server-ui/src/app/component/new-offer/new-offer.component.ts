@@ -115,6 +115,7 @@ export class NewOfferComponent implements OnInit {
 
   typeForm: FormGroup
   get tf() { return this.typeForm.controls }
+  get messageValue() { return this.typeForm.get('message')?.value }
   set messageValue(message: string) { this.typeForm.patchValue({ message }) }
   set peerAddressValue(peerAddress: string) { this.typeForm.patchValue({ peerAddress }) }
 
@@ -608,4 +609,9 @@ export class NewOfferComponent implements OnInit {
     }
   }
 
+  onMessagePaste(event: ClipboardEvent) {
+    // Only trimOnPaste() if there is no value in the field already
+    if (!this.messageValue) this.messageValue = trimOnPaste(event)
+  }
+  
 }
