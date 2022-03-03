@@ -198,6 +198,7 @@ export class NewOfferComponent implements OnInit {
 
   executing = false
   offerCreated = false
+  offerSent = false
 
   newOfferResult: string = ''
 
@@ -395,10 +396,11 @@ export class NewOfferComponent implements OnInit {
 
         if (this.offerType === OfferType.TOR) {
           const v = this.typeForm.value
+          // TODO : This needs to run on offer.temporaryContractId
           this.offerService.sendIncomingOffer(this.newOfferResult, v.peerAddress, v.message).subscribe(r => {
             console.warn(' sendIncomingOffer', r)
             if (r.result) {
-
+              this.offerSent = true
             }
           })
         }

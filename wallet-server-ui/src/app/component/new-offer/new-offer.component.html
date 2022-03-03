@@ -260,7 +260,9 @@
       </button>
       <button mat-flat-button color="primary" (click)="onExecute()"
         [disabled]="form.invalid || typeForm.invalid || payoutInputsInvalid || offerCreated">
-        {{ 'action.execute' | translate }}
+        <mat-icon *ngIf="offerType === OfferType.TOR" class="material-icons-outlined">cloud_sync</mat-icon>
+        <mat-icon *ngIf="offerType === OfferType.TEXT" class="material-icons-outlined">text_snippet</mat-icon>
+        <span translate>action.execute</span>
       </button>
       <div class="spinner" [hidden]="!executing">
         <mat-spinner diameter="20"></mat-spinner>
@@ -268,9 +270,8 @@
     </div>
   </div>
 
-  <ng-container *ngIf="offerCreated">
-    <app-alert [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
-  </ng-container>
+  <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
+  <app-alert *ngIf="offerSent" [type]="AlertType.success" message="newOffer.offerSent" icon="check_circle"></app-alert>
   
   <!-- Could have button to open new contract or auto-open new contract detail -->
 

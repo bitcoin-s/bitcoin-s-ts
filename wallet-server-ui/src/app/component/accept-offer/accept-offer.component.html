@@ -178,7 +178,8 @@
 
       <mat-form-field *ngIf="acceptOfferType === AcceptOfferType.TOR" class="w-100">
         <mat-label translate>acceptOffer.peerAddress</mat-label>
-        <input matInput formControlName="peerAddress" type="text" spellcheck="false"
+        <input matInput formControlName="peerAddress" type="text"
+          autocomplete="off" spellcheck="false" maxlength="1024"
           placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
           (paste)="peerAddressValue = trimOnPaste($event)">
         <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>

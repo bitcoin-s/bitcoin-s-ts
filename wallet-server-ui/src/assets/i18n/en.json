@@ -170,6 +170,7 @@
     "externalPayoutAddress": "External Payout Address",
     "createOffer": "Create Offer",
     "offerCreated": "Offer Created",
+    "offerSent": "Offer Sent",
     "offerType": {
       "tor": "Tor",
       "text": "Text"
