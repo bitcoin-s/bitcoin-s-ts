@@ -259,7 +259,7 @@
     <div class="description text-justify" translate>newOfferDescription.offerType.tor</div>
 
     <form class="form-container" [formGroup]="offerForm" autocomplete="off">
-      <fieldset>
+      <fieldset [disabled]="executing || offerSent">
         <mat-form-field class="w-100">
           <mat-label translate>newOffer.message</mat-label>
           <textarea matInput formControlName="message" type="text"
