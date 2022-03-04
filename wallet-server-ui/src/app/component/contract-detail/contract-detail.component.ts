@@ -13,12 +13,14 @@ import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
+import { OfferService } from '~service/offer-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, trimOnPaste, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, TOR_V3_ADDRESS, trimOnPaste, validateHexString } from '~util/utils'
+import { regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
@@ -189,6 +191,12 @@ export class ContractDetailComponent implements OnInit {
       this.oracleAttestations = ''
     }
     this.outcome = ''
+    if (this.offerForm) {
+      this.offerForm.patchValue({
+        message: '',
+        peerAddress: '',
+      })
+    }
   }
 
   // For Completing DLC Contracts
@@ -196,17 +204,24 @@ export class ContractDetailComponent implements OnInit {
   form: FormGroup
   get f() { return this.form.controls }
 
+  offerForm: FormGroup
+  get tf() { return this.offerForm.controls }
+  get messageValue() { return this.offerForm.get('message')?.value }
+  set messageValue(message: string) { this.offerForm.patchValue({ message }) }
+  set peerAddressValue(peerAddress: string) { this.offerForm.patchValue({ peerAddress }) }
+
   private defaultFilename: string
 
   executing = false
   rebroadcasting = false
   attesting = false
+  offerSent = false
   acceptSigned = false
   signBroadcast = false
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
     private messsageService: MessageService, private walletStateService: WalletStateService,
-    private dlcService: DLCService, 
+    private dlcService: DLCService, private offerService: OfferService,
     private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
@@ -214,6 +229,10 @@ export class ContractDetailComponent implements OnInit {
     this.defaultFilename = this.translate.instant('contractDetail.defaultSignFilename')
     this.form = this.formBuilder.group({
       filename: [this.defaultFilename, Validators.required],
+    })
+    this.offerForm = this.formBuilder.group({
+      message: [''],
+      peerAddress: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
     })
     this.setOutcome()
     this.buildChart()
@@ -443,6 +462,29 @@ export class ContractDetailComponent implements OnInit {
     } else {
       return this.dlc.totalCollateral - outcomeValue
     }
+  }
+
+  // Send Offer
+
+  onMessagePaste(event: ClipboardEvent) {
+    // Only trimOnPaste() if there is no value in the field already
+    if (!this.messageValue) this.messageValue = trimOnPaste(event)
+  }
+
+  onSendOffer() {
+    console.debug('onSendOffer()')
+
+    const v = this.offerForm.value
+
+    this.executing = true
+    this.offerService.sendIncomingOffer(this.dlc.temporaryContractId, v.peerAddress, v.message)
+    .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+      console.warn(' sendIncomingOffer', r)
+      if (r.result) {
+        this.offerSent = true
+      }
+      this.executing = false
+    })
   }
 
   // Sign Accepted

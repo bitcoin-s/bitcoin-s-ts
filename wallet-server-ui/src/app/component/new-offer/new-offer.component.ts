@@ -1,27 +1,36 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
+import { MatRadioChange } from '@angular/material/radio'
 import { ChartData, ChartOptions } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
 import { BaseChartDirective } from 'ng2-charts'
+import { of } from 'rxjs'
+import { catchError } from 'rxjs/operators'
 import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
+import { OfferService } from '~service/offer-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, trimOnPaste } from '~util/utils'
-import { allowEmptybitcoinAddressValidator } from '~util/validators'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste } from '~util/utils'
+import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '~component/alert/alert.component'
 
 
 const DEFAULT_DAYS_UNTIL_REFUND = 7
+
+enum OfferType {
+  TOR = 'tor',
+  TEXT = 'text'
+}
 
 @Component({
   selector: 'app-new-offer',
@@ -31,6 +40,7 @@ const DEFAULT_DAYS_UNTIL_REFUND = 7
 export class NewOfferComponent implements OnInit {
 
   public AlertType = AlertType
+  public OfferType = OfferType
   public copyToClipboard = copyToClipboard
   public trimOnPaste = trimOnPaste
 
@@ -105,6 +115,12 @@ export class NewOfferComponent implements OnInit {
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
   set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
 
+  typeForm: FormGroup
+  get tf() { return this.typeForm.controls }
+  get messageValue() { return this.typeForm.get('message')?.value }
+  set messageValue(message: string) { this.typeForm.patchValue({ message }) }
+  set peerAddressValue(peerAddress: string) { this.typeForm.patchValue({ peerAddress }) }
+
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
 
   maturityDate: string
@@ -170,12 +186,21 @@ export class NewOfferComponent implements OnInit {
     }
   }
 
+  offerTypes = [OfferType.TOR, OfferType.TEXT]
+  offerType = OfferType.TOR
+  updateOfferType(event: MatRadioChange) {
+    // console.debug('updateAcceptOfferType()', event)
+    this.offerType = event.value
+    this.wipeInvalidFormStates()
+  }
+
   advancedVisible = false // Angular hack
   qrScanNoCamera = false
   qrScanEnabled = false
 
   executing = false
   offerCreated = false
+  offerSent = false
 
   newOfferResult: string = ''
 
@@ -227,6 +252,21 @@ export class NewOfferComponent implements OnInit {
         externalPayoutAddress: '',
       })
     }
+    if (this.typeForm) {
+      this.typeForm.patchValue({
+        message: '',
+        peerAddress: '',
+      })
+    }
+  }
+
+  wipeInvalidFormStates() {
+    console.debug('wipeInvalidFormStates()', this.offerType)
+    if (this.offerType === OfferType.TOR) {
+      this.tf['peerAddress'].updateValueAndValidity()
+    } else if (this.offerType === OfferType.TEXT) {
+      this.tf['peerAddress'].setErrors(null)
+    }
   }
 
   getPoint(outcome: number, payout: number, extraPrecision: number, isEndpoint: boolean) {
@@ -238,6 +278,7 @@ export class NewOfferComponent implements OnInit {
   }
 
   constructor(private messageService: MessageService, public walletStateService: WalletStateService,
+    private offerService: OfferService,
     private formBuilder: FormBuilder, private translate: TranslateService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
@@ -254,6 +295,10 @@ export class NewOfferComponent implements OnInit {
       // outcomes?
       externalPayoutAddress: ['',
         allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],
+    })
+    this.typeForm = this.formBuilder.group({
+      message: [''],
+      peerAddress: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
     })
     if (this.contractInfo) {
       this.onTotalCollateral()
@@ -297,13 +342,13 @@ export class NewOfferComponent implements OnInit {
     // this.contractInfo.hex is no good, need announcement hex from this.contractInfo
     const hex = this.announcement ? this.announcement.hex : this.contractInfo.contractInfo.oracleInfo.announcement.hex
     const v = this.form.value
+    const totalCollateral = v.totalCollateral
 
     this.executing = true
     // TODO : Error handlers to unset executing in failure cases
 
     if (this.isEnum()) {
       const payoutVals = this.buildPayoutVals()
-      const totalCollateral = v.totalCollateral
       // const maxCollateral = this.computeMaxCollateral(payoutVals)
   
       console.debug('payoutVals:', payoutVals, 'totalCollateral:', totalCollateral)
@@ -311,68 +356,59 @@ export class NewOfferComponent implements OnInit {
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
         [hex, totalCollateral, payoutVals])).subscribe(r => {
           console.debug('createcontractinfo', r)
-  
           if (r.result) {
-            const contractInfoTLV = <string>r.result
-            const collateral = v.yourCollateral
-            const feeRate = v.feeRate
-            const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
-            const refundLT = dateToSecondsSinceEpoch(v.refundDate)
-            const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
-            const changeAddress = null
-
-            // console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
-
-            this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
-              [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
-              console.warn('CreateDLCOffer()', r)
-              if (r.result) {
-                this.newOfferResult = r.result
-                // this.walletStateService.refreshDLCStates() // via websocket now
-                this.offerCreated = true
-              }
-              this.executing = false
-            })
+            this.handleContractInfo(r.result)
           }
         })
     } else if (this.isNumeric()) {
       const numericPayoutVals = this.points
-      const totalCollateral = v.totalCollateral
       // const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
 
       console.warn('numericPayoutVals:', numericPayoutVals, 'totalCollateral:', totalCollateral, 'yourCollateral:', v.yourCollateral)
       
-      // console.debug('numericAnnouncementHex:', numericAnnouncementHex, 'totalCollateral:', totalCollateral, 'numericPayoutVals:', numericPayoutVals)
       this.messageService.sendMessage(getMessageBody(DLCMessageType.createcontractinfo, 
         [hex, totalCollateral, numericPayoutVals])).subscribe(r => {
         console.warn('createcontractinfo', r)
-
         if (r.result) {
-          const contractInfoTLV = <string>r.result
-          const collateral = v.yourCollateral
-          const feeRate = v.feeRate
-          const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
-          const refundLT = dateToSecondsSinceEpoch(v.refundDate)
-          const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
-          const changeAddress = null
-
-          console.debug('collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 'refundLT:', refundLT)
-
-          this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
-            [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
-            console.warn('CreateDLCOffer()', r)
-            if (r.result) {
-              this.newOfferResult = r.result
-              // this.walletStateService.refreshDLCStates() // via websocket now
-              this.offerCreated = true
-            }
-            this.executing = false
-          })
+          this.handleContractInfo(r.result)
         }
-        
       })
     }
-    
+  }
+
+  private handleContractInfo(contractInfoTLV: string) {
+    const v = this.form.value
+    const collateral = v.yourCollateral
+    const feeRate = v.feeRate
+    const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
+    const refundLT = dateToSecondsSinceEpoch(v.refundDate)
+    const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
+    const changeAddress = null
+
+    console.debug('handleContractInfo() collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 
+      'refundLT:', refundLT, 'payoutAddress:', payoutAddress, 'changeAddress:', changeAddress)
+
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
+      [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
+      console.warn(' createdlcoffer', r)
+      if (r.result) {
+        this.newOfferResult = r.result
+        // this.walletStateService.refreshDLCStates() // via websocket now
+        this.offerCreated = true
+
+        if (this.offerType === OfferType.TOR) {
+          const v = this.typeForm.value
+          this.offerService.sendIncomingOffer(this.newOfferResult, v.peerAddress, v.message)
+          .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+            console.warn(' sendIncomingOffer', r)
+            if (r.result) {
+              this.offerSent = true
+            }
+          })
+        }
+      }
+      this.executing = false // Not exactly right
+    })
   }
 
   private buildPayoutVals() {
@@ -577,4 +613,9 @@ export class NewOfferComponent implements OnInit {
     }
   }
 
+  onMessagePaste(event: ClipboardEvent) {
+    // Only trimOnPaste() if there is no value in the field already
+    if (!this.messageValue) this.messageValue = trimOnPaste(event)
+  }
+  
 }

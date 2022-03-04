@@ -118,8 +118,8 @@ export class OfferService {
     }
   }
 
-  sendIncomingOffer(offerTLV: string, peer: string, message: string) {
-    return this.messageService.sendMessage(getMessageBody('offer-send', [offerTLV, peer, message]))
+  sendIncomingOffer(offerTLVorTempId: string, peer: string, message: string) {
+    return this.messageService.sendMessage(getMessageBody('offer-send', [offerTLVorTempId, peer, message]))
     .pipe(tap(r => {
       console.debug('offer-send', r)
       if (r.result) { // hash.hex

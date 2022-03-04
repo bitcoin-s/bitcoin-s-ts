@@ -254,6 +254,48 @@
     </button>
   </div>
 
+  <div *ngIf="dlc.state === DLCState.offered">
+    <h2 translate>contractDetail.sendToCounterparty</h2>
+    <div class="description text-justify" translate>newOfferDescription.offerType.tor</div>
+
+    <form class="form-container" [formGroup]="offerForm" autocomplete="off">
+      <fieldset [disabled]="executing || offerSent">
+        <mat-form-field class="w-100">
+          <mat-label translate>newOffer.message</mat-label>
+          <textarea matInput formControlName="message" type="text"
+            cdkTextareaAutosize cdkAutosizeMinRows="2"
+            autocomplete="off" spellcheck="false" maxlength="1024"
+            (paste)="onMessagePaste($event)"></textarea>
+          <app-more-info matSuffix tooltip="newOfferDescription.message"></app-more-info>
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <mat-label translate>acceptOffer.peerAddress</mat-label>
+          <input matInput formControlName="peerAddress" type="text"
+            autocomplete="off" spellcheck="false" maxlength="1024"
+            placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
+            (paste)="peerAddressValue = trimOnPaste($event)">
+          <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
+        </mat-form-field>
+      </fieldset>
+    </form>
+
+    <div class="execute-container">
+      <div class="button-group">
+        <button mat-flat-button color="primary" (click)="onSendOffer()"
+          [disabled]="offerForm.invalid || executing || offerSent">
+          <mat-icon class="material-icons-outlined">cloud_sync</mat-icon>
+          <span translate>action.execute</span>
+        </button>
+        <div *ngIf="executing" class="spinner">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </div>
+    </div>
+
+    <app-alert *ngIf="offerSent" [type]="AlertType.success" icon="check_circle"
+      message="newOffer.offerSent"></app-alert>
+  </div>
+
   <!-- Signing Accept -->
   <div *ngIf="accept" class="accept-group">
     <h2 translate>contractDetail.signAcceptOffer</h2>

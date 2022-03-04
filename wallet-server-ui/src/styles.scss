@@ -37,6 +37,10 @@ fieldset {
   }
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /** Text Align */
 .text-center {
   text-align: center;
@@ -257,6 +261,7 @@ mat-form-field {
 
 .execute-container {
   margin-top: 2rem;
+  margin-bottom: 0.5rem;
   
   .button-group {
     display: flex;

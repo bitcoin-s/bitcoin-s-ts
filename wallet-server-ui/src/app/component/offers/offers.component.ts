@@ -33,6 +33,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   // New Incoming Offer
   form: FormGroup
   get f() { return this.form.controls }
+  get messageValue() { return this.form.get('message')?.value }
   set messageValue(message: string) { this.form.patchValue({ message }) }
   set peerValue(peer: string) { this.form.patchValue({ peer }) }
   set offerTLVValue(offerTLV: string) { this.form.patchValue({ offerTLV }) }
@@ -69,8 +70,8 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     this.form = this.formBuilder.group({
       message: [''],
-      peer: ['', Validators.compose([regexValidator(TOR_V3_ADDRESS), Validators.required])],
-      offerTLV: ['', Validators.compose([regexValidator(UPPERLOWER_CASE_HEX), Validators.required])],
+      peer: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
+      offerTLV: ['', [Validators.required, regexValidator(UPPERLOWER_CASE_HEX)]],
     })
   }
 
@@ -121,6 +122,11 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
       return offer.offer.contractInfo.totalCollateral - offer.offer.offerCollateral
     }
     return undefined
+  }
+
+  onMessagePaste(event: ClipboardEvent) {
+    // Only trimOnPaste() if there is no value in the field already
+    if (!this.messageValue) this.messageValue = trimOnPaste(event)
   }
 
   addManualOffer() {

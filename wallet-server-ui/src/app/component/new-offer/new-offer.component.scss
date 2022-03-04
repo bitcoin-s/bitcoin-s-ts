@@ -1,6 +1,7 @@
 
 .new-offer {
   max-width: 450px;
+  padding-bottom: 0.5rem;
 
   .enum-offer, .numeric-offer {
     .field-group {
@@ -109,6 +110,15 @@
       span {
         margin-left: 0.25rem;
       }
+    }
+    .offer-type {
+      mat-radio-button {
+        margin-right: 1rem;
+      }
+    }
+    .description {
+      margin: 1rem 0 1rem 0;
+      line-height: 1.3;
     }
   }
 
