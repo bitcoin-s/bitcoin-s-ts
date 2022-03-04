@@ -1,12 +1,15 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
 
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
-import { WalletMessageType } from '~type/wallet-server-types'
+
+import { CoreMessageType, WalletMessageType } from '~type/wallet-server-types'
+
 import { getMessageBody } from '~util/wallet-server-util'
+import { validateHexString } from '~util/utils'
 
 import { AlertType } from '../alert/alert.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -23,7 +26,13 @@ export class DebugComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
+  @ViewChild('txId') txId: ElementRef
+
   fullRescan = false
+
+  transactionNotFound = false
+  rawTransaction: string
+  decodedTransaction: string
 
   executing = false
   backupExecuting = false
@@ -144,6 +153,44 @@ export class DebugComponent implements OnInit {
       }
       this.executing = false
     })
+  }
+
+  getTransaction(sha256hash: string) {
+    console.debug('getTransaction()', sha256hash)
+
+    sha256hash = sha256hash.trim()
+    const valid = validateHexString(sha256hash)
+    // Could check for 32 byte length
+    if (!valid) {
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.error',
+          content: 'buildAcceptOffer.invalidHex',
+        }
+      })
+    }
+
+    this.transactionNotFound = false
+    this.rawTransaction = ''
+    this.decodedTransaction = ''
+    this.executing = true
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.gettransaction, [sha256hash])).subscribe(r => {
+      console.debug(' gettransaction:', r)
+
+      if (r.result) {
+        this.rawTransaction = r.result
+        
+        this.messageService.sendMessage(getMessageBody(CoreMessageType.decoderawtransaction, [this.rawTransaction])).subscribe(r => {
+          console.debug(' decoderawtransaction:', r)
+          if (r.result) {
+            this.decodedTransaction = JSON.stringify(r.result, null, 2)
+          }
+        }, err => { this.executing = false })
+      } else {
+        this.transactionNotFound = true
+      }
+      this.executing = false
+    }, err => { this.executing = false })
   }
 
 }
