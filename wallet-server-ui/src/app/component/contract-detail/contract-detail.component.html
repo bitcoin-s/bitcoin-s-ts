@@ -254,6 +254,25 @@
     </button>
   </div>
 
+  <ng-container *ngIf="dlc.state === DLCState.offered">
+    <div *ngIf="!offerHex" class="button-group">
+      <button mat-flat-button color="primary" (click)="getOfferHex()"
+        [disabled]="executing">
+        <mat-icon class="material-icons-outlined">text_snippet</mat-icon>
+        <span translate>contractDetail.getOfferHex</span>
+      </button>
+    </div>
+    <fieldset *ngIf="offerHex" class="result-group">
+      <label translate>contractDetail.offerHex</label>
+      <textarea class="result-textarea" [(ngModel)]="offerHex" readonly></textarea>
+      <button mat-icon-button class="copy-button" 
+        matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(offerHex)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </fieldset>
+  </ng-container>
+
   <div *ngIf="dlc.state === DLCState.offered">
     <h2 translate>contractDetail.sendToCounterparty</h2>
     <div class="description text-justify" translate>newOfferDescription.offerType.tor</div>

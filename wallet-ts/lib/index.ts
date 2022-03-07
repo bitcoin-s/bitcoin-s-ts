@@ -313,6 +313,17 @@ export function CreateDLCOffer(contractInfoTLV: string, collateral: number, feeR
   })
 }
 
+export function GetDLCOffer(temporaryContractId: string) {
+  console.debug('GetDLCOffer()', temporaryContractId)
+  validateString(temporaryContractId, 'GetDLCOffer()', 'temporaryContractId')
+
+  const m = getMessageBody(WalletMessageType.getdlcoffer, [temporaryContractId])
+  return SendServerMessage(m).then(response => {
+    // response is DLC offer message in hex
+    return <ServerResponse<string>>response
+  })
+}
+
 export function AcceptDLCOffer(offerHex: string) {
   console.debug('AcceptDLCOffer()', offerHex)
   validateString(offerHex, 'AcceptDLCOffer()', 'offerHex')

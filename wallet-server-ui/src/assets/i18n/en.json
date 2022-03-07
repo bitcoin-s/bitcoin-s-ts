@@ -316,6 +316,8 @@
     "pnl": "Profit or Loss",
     "rateOfReturn": "Rate of Return",
 
+    "getOfferHex": "Get Offer Hex",
+    "offerHex": "Offer Hex",
     "sendToCounterparty": "Send to Counterparty",
 
     "signAcceptOffer": "Sign Accepted Offer",
