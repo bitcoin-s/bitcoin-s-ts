@@ -98,7 +98,8 @@
                 [readonly]="first || last">
               <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
                 [value]="point.payout" (change)="updatePointPayout(point, $event)" min="0">
-              <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint">
+              <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint"
+                [disabled]="first || last">
               <button *ngIf="!(i === 0 || i === points.length-1)"
                 mat-mini-fab class="mat-fab-sm" (click)="removePoint(point)">
                 <mat-icon>remove</mat-icon>
