@@ -36,7 +36,7 @@
         {{ 'walletBalance.heading' | translate }}</a>
   
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
-      <div *ngIf="walletStateService.balances" class="wallet-status"
+      <div *ngIf="!hideWalletBalances && walletStateService.balances" class="wallet-status"
         matTooltip="{{ 'header.walletBalance' | translate: { 
           confirmed: formatNumber(walletStateService.balances.confirmed),
           unconfirmed: formatNumber(walletStateService.balances.unconfirmed),

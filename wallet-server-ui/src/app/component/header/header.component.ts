@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 
+import { environment } from '~environments'
+
 import { AuthService } from '~service/auth.service'
 import { BackendService } from '~service/backend.service'
 import { DLCFileService, DLCFileType } from '~service/dlc-file.service'
@@ -19,6 +21,8 @@ export class HeaderComponent implements OnInit {
   public DLCFileType = DLCFileType
   public WalletServiceState = WalletServiceState
   public formatNumber = formatNumber
+
+  public hideWalletBalances = environment.hideWalletBalances
 
   @Output() showConfiguration: EventEmitter<void> = new EventEmitter()
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()

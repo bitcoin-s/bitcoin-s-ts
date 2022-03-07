@@ -10,6 +10,7 @@ export const environment = {
   wsApi: '/websocket',
   user: 'frontend',
   password: 'none',
+  hideWalletBalances: false,
 };
 
 /*
