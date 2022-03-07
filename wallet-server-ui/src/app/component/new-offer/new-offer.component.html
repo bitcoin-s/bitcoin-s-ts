@@ -90,13 +90,16 @@
               <label class="outcome-heading text-center">{{ units }}</label>
               <label class="payout-heading text-center" translate>unit.satoshis</label>
             </div>
-            <div *ngFor="let point of points; let i = index" class="field-group numeric-payout-group">
+            <div *ngFor="let point of points; let i = index; let first = first; let last = last"
+              class="field-group numeric-payout-group">
               <!-- min will eventually be allowed negative bound to contract params -->
-              <input class="text-right" type="number"
-                [value]="point.outcome" (change)="updatePointOutcome(point, $event)" min="0">
+              <input class="outcome-input text-right" type="number"
+                [value]="point.outcome" (change)="updatePointOutcome(point, $event)" min="0"
+                [readonly]="first || last">
               <input class="text-right" type="number" placeholder="{{ 'unit.satoshis' | translate }}"
                 [value]="point.payout" (change)="updatePointPayout(point, $event)" min="0">
-              <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint">
+              <input class="endpoint-checkbox" type="checkbox" [checked]="point.isEndpoint"
+                [disabled]="first || last">
               <button *ngIf="!(i === 0 || i === points.length-1)"
                 mat-mini-fab class="mat-fab-sm" (click)="removePoint(point)">
                 <mat-icon>remove</mat-icon>
