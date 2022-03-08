@@ -61,7 +61,7 @@ export class DLCService {
       this.dlcs.next(this.dlcs.value)
       return of(null)
     } else {
-      console.warn('replaceDLC() did not find dlcId', dlc.dlcId, 'in existing dlcs')
+      console.warn('replaceDLC() did not find dlcId', dlc.dlcId, 'in existing dlcs', dlc)
       // Loading Contract Info before updating dlcs so data will be present for anything binding both
       this.dlcs.value.push(dlc)
       this.dlcs.next(this.dlcs.value)
@@ -104,7 +104,7 @@ export class DLCService {
     if (!ci[dlc.dlcId]) { // Don't bother reloading ContractInfo we already have
       const obs = this.messageService.sendMessage(getMessageBody(CoreMessageType.decodecontractinfo, [dlc.contractInfo]))
       .pipe(tap(r => {
-        console.warn(' loadContractInfo()', r)
+        console.debug(' loadContractInfo()', r)
         if (r.result) {
           ci[dlc.dlcId] = r.result
           this.contractInfos.next(this.contractInfos.value)

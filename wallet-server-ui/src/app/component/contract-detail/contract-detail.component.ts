@@ -23,9 +23,10 @@ import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancela
 import { regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
+import { AlertType } from '~component/alert/alert.component'
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
-import { AlertType } from '~component/alert/alert.component'
+import { FeeRateDialogComponent } from '~app/dialog/fee-rate-dialog/fee-rate-dialog.component'
 
 
 @Component({
@@ -400,6 +401,34 @@ export class ContractDetailComponent implements OnInit {
       }
       this.executing = false
       this.rebroadcasting = false
+    })
+  }
+
+  onBumpFundingFee() {
+    console.debug('onBumpFee()')
+
+    const txId = this.dlc.fundingTxId
+
+    const dialog = this.dialog.open(FeeRateDialogComponent, {
+      data: {
+        txId,
+        minimumFeeRate: this.dlc.feeRate,
+      }
+    }).afterClosed().subscribe(result => {
+      console.debug('FeeRateDialogComponent', result)
+      if (result) {
+        const feeRate = result.feeRate // sats / vbyte
+
+        this.executing = true
+        this.messsageService.sendMessage(getMessageBody(WalletMessageType.bumpfeecpfp,
+          [txId, feeRate])).pipe(catchError(error => of({ result: null }))).subscribe(r => {
+            console.debug('bumpfeecpfp', r)
+            if (r.result) {
+              this.refreshDLCState()
+            }
+            this.executing = false
+          })
+      }
     })
   }
 
