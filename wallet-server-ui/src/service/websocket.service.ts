@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
 import { Subscription, timer } from 'rxjs'
 
@@ -10,6 +11,8 @@ import { OfferService } from '~service/offer-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { BlockHeaderResponse, DLCContract, DLCState, IncomingOffer } from '~type/wallet-server-types'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 
 enum WebsocketMessageType {
@@ -51,7 +54,8 @@ export class WebsocketService {
   private pollingTimer$: Subscription;
 
   constructor(private walletStateService: WalletStateService, private dlcService: DLCService,
-    private offerService: OfferService, private router: Router, private authService: AuthService) {}
+    private offerService: OfferService, private router: Router, private authService: AuthService,
+    private dialog: MatDialog) {}
 
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
@@ -145,14 +149,34 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.dlcstatechange:
         const dlc = <DLCContract>message.payload
+        console.debug(' dlc:', dlc)
         const obs = this.dlcService.replaceDLC(dlc)
+        let goToContract = false
         // Wait for ContractInfo to load before navigating
         obs.subscribe(_ => {
-          // If someone just accepted a DLC Offer
-          // Using both accept states because accepted usually comes in too quickly to have transitioned
-          if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && dlc.isInitiator === false) {
+          // If someone just accepted a DLC Offer or signed a DLC Accept, move to Contract Detail view
+          // Using both states because accepted/signed usually comes in too quickly to have transitioned
+          // TODO : May only want to do this when user is in specific views, but doing it for any UI state right now
+          if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && !dlc.isInitiator) {
             // Remove IncomingOffer if it exists
             this.offerService.removeIncomingOfferByTemporaryContractId(dlc.temporaryContractId)
+            goToContract = true
+          } else if ([DLCState.signing, DLCState.signed].includes(dlc.state) && dlc.isInitiator) {
+            // goToContract = true
+          } else if ([DLCState.broadcast].includes(dlc.state)) {
+            const dialog = this.dialog.open(ConfirmationDialogComponent, {
+              data: {
+                title: 'dialog.broadcastSuccess.title',
+                content: 'dialog.broadcastSuccess.content',
+                params: { txId: dlc.fundingTxId },
+                linksContent: "dialog.broadcastSuccess.linksContent",
+                links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
+                action: 'action.close',
+                showCancelButton: false,
+              }
+            })
+          }
+          if (goToContract) {
             this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
           }
         })
