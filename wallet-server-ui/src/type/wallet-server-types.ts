@@ -80,6 +80,7 @@ export const enum WalletMessageType {
   getdlc = 'getdlc',
   canceldlc = 'canceldlc',
   createdlcoffer = 'createdlcoffer',
+  getdlcoffer = 'getdlcoffer',
   acceptdlcoffer = 'acceptdlcoffer',
   acceptdlcofferfromfile = 'acceptdlcofferfromfile',
   signdlc = 'signdlc',

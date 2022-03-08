@@ -144,6 +144,8 @@ export class ContractDetailComponent implements OnInit {
   units: string
   oracleAttestations: string // OracleAttestmentTLV
 
+  offerHex: string
+
   outcome: string
   outcomePoint: any
 
@@ -189,6 +191,7 @@ export class ContractDetailComponent implements OnInit {
       this.contractMaturity = ''
       this.contractTimeout = ''
       this.oracleAttestations = ''
+      this.offerHex = ''
     }
     this.outcome = ''
     if (this.offerForm) {
@@ -462,6 +465,21 @@ export class ContractDetailComponent implements OnInit {
     } else {
       return this.dlc.totalCollateral - outcomeValue
     }
+  }
+
+  // Offer
+
+  getOfferHex() {
+    console.debug('getOfferHex()')
+
+    this.executing = true
+    this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcoffer, [this.dlc.temporaryContractId])).subscribe(r => {
+      console.debug(' getdlcoffer', r)
+      if (r.result) {
+        this.offerHex = r.result
+      }
+      this.executing = false
+    })
   }
 
   // Send Offer
