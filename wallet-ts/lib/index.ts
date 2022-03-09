@@ -213,24 +213,23 @@ export function LabelAddress(address: string, label: string) {
   })
 }
 
-// Dupe of GetAddressLabels()
-// export function GetAddressTags(address: string) {
-//   console.debug('GetAddressTags()', address)
-//   validateString(address, 'GetAddressTags()', 'address')
+export function DropAddressLabel(address: string, label: string) {
+  console.debug('DropAddressLabel()', address, label)
+  validateString(address, 'DropAddressLabel()', 'address')
+  validateString(label, 'DropAddressLabel()', 'label')
 
-//   const m = getMessageBody(WalletMessageType.getaddresstags, [address])
-//   return SendOracleMessage(m).then(response => {
-//     return <ServerResponse<string>>response
-//   })
-// }
-
-export function GetAddressLabels(address: string) {
-  console.debug('GetAddressLabels()', address)
-  validateString(address, 'GetAddressLabels()', 'address')
-
-  const m = getMessageBody(WalletMessageType.getaddresslabels, [address])
+  const m = getMessageBody(WalletMessageType.dropaddresslabel, [address, label])
   return SendServerMessage(m).then(response => {
-    return <ServerResponse<string[]>>response
+    return <ServerResponse<unknown>>response
+  })
+}
+
+export function GetAddressLabels() {
+  console.debug('GetAddressLabels()')
+
+  const m = getMessageBody(WalletMessageType.getaddresslabels)
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<{ address: string, labels: string[] }[]>>response
   })
 }
 
