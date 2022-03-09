@@ -32,6 +32,7 @@ import { AppRoutingModule } from './app-routing.module'
 import { AboutComponent } from './component/about/about.component'
 import { NetworkComponent } from './component/network/network.component'
 import { LoginComponent } from './component/login/login.component'
+import { AddressLabelComponent } from './component/address-label/address-label.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component'
@@ -41,7 +42,7 @@ import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-addre
 import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
 
 import { AuthInterceptor } from './interceptor/auth-interceptor'
-import { ErrorInterceptor } from './interceptor/error-interceptor'
+import { ErrorInterceptor } from './interceptor/error-interceptor';
 
 
 // AoT requires an exported function for factories
@@ -85,6 +86,7 @@ export function appInitializerFactory(translate: TranslateService) {
     NetworkComponent,
     LoginComponent,
     LogoutDialogComponent,
+    AddressLabelComponent,
   ],
   imports: [
     BrowserModule,

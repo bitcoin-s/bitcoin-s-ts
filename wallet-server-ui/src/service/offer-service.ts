@@ -8,7 +8,6 @@ import { MessageService } from '~service/message.service'
 import { CoreMessageType, DLCState, IncomingOffer } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { validateHexString } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'

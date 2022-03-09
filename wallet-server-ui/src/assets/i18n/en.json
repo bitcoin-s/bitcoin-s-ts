@@ -149,6 +149,11 @@
     "value": "Value"
   },
 
+  "addressLabel": {
+    "addLabel": "Add Label",
+    "removeLabel": "Remove Label"
+  },
+
   "newOffer": {
     "heading": "New Offer",
     "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",

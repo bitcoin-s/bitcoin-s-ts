@@ -1,0 +1,20 @@
+<form class="address-label form-inline" [formGroup]="form" autocomplete="off">
+  <fieldset [disabled]="executing">
+    <mat-form-field class="mat-form-field-no-padding">
+      <input matInput formControlName="label" type="text" autocomplete="off" spellcheck="false"
+        (input)="onInputChange()">
+      <button [disabled]="executing || !labelValue || !hasInputChange"
+        class="mat-icon-button-sm" mat-icon-button matSuffix
+        matTooltip="{{ 'addressLabel.addLabel' | translate }}"
+        (click)="addLabel()">
+        <mat-icon>done</mat-icon>
+      </button>
+      <button [disabled]="executing || !hasSavedLabelValue"
+        class="mat-icon-button-sm" mat-icon-button matSuffix
+        matTooltip="{{ 'addressLabel.removeLabel' | translate }}"
+        (click)="clearLabel()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </fieldset>
+</form>

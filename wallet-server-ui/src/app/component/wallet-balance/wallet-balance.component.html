@@ -58,34 +58,38 @@
   </div>
 
   <div class="utxos-container horizontal-pane">
-    <div *ngIf="walletStateService.fundedAddresses" class="pane utxos">
+    <div *ngIf="addressService.fundedAddresses" class="pane utxos">
       <label translate>walletBalance.fundedAddresses</label>
       <div class="funded-grid">
         <div class="utxo-address-header" translate>walletBalance.address</div>
         <div class="utxo-value-header" translate>walletBalance.value</div>
         <div class="unit"></div>
-        <ng-container *ngFor="let address of walletStateService.fundedAddresses">
+        <div class="label"></div>
+        <ng-container *ngFor="let address of addressService.fundedAddresses">
           <div class="address">{{ address.address }}</div>
           <div class="value">{{ formatNumber(address.value) }}</div>
           <div class="unit" translate>unit.sats</div>
+          <app-address-label class="address-label" [address]="address.address"></app-address-label>
         </ng-container>
       </div>
     </div>
   </div>
 
   <div class="utxos-container horizontal-pane">
-    <div *ngIf="walletStateService.unfundedAddresses" class="pane utxos">
+    <div *ngIf="addressService.unfundedAddresses" class="pane utxos">
       <label translate>walletBalance.unfundedAddresses</label>
       <div class="unfunded-grid">
         <div class="utxo-address-header" translate>walletBalance.address</div>
         <div class="qr"></div>
-        <ng-container *ngFor="let address of walletStateService.unfundedAddresses">
+        <div class="label"></div>
+        <ng-container *ngFor="let address of addressService.unfundedAddresses">
           <div class="address">{{ address }}</div>
           <button mat-stroked-button class="mat-stroked-icon-button-sm qr"
             matTooltip="{{ 'walletBalance.openQRCode' | translate }}"
             (click)="onQRCodeClick(address)">
             <mat-icon>qr_code_2</mat-icon>
           </button>
+          <app-address-label class="address-label" [address]="address"></app-address-label>
         </ng-container>
       </div>
     </div>

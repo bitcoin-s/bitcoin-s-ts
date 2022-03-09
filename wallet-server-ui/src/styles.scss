@@ -204,6 +204,16 @@ mat-form-field {
   }
 }
 
+.mat-form-field-no-padding {
+  .mat-form-field-infix {
+    padding: 0;
+    border-top: 0;
+  }
+  .mat-form-field-wrapper {
+    margin-bottom: -1.25em;
+  }
+}
+
 .mat-stroked-button, .mat-flat-button {
   span + mat-icon {
     margin-left: 0.6rem;

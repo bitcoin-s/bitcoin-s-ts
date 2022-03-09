@@ -76,10 +76,10 @@
     row-gap: 0.5rem;
     column-gap: 1rem;
 
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto auto auto;
     grid-template-areas:
-      "address-header value-header ."
-      "address value unit";
+      "address-header value-header . ."
+      "address value unit label";
 
     .utxo-address-header {
       grid-area: address-header;
@@ -92,23 +92,29 @@
     .value {
       text-align: right;
     }
+    .address {
+      align-self: center;
+    }
+    .address-label {
+      align-self: center;
+    }
   }
 
   .unfunded-grid {
     display: grid;
     row-gap: 0.25rem;
-    column-gap: 0.5rem;
+    column-gap: 1rem;
 
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     grid-template-areas:
-      "address-header ."
-      "address qr";
+      "address-header . ."
+      "address qr label";
 
     .utxo-address-header {
       grid-area: address-header;
       place-self: center;
     }
-    .address {
+    .address, .address-label {
       align-self: center;
     }
   }

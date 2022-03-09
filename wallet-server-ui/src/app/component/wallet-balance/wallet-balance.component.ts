@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 
+import { AddressService } from '~service/address.service'
 import { BackendService } from '~service/backend.service'
 import { WalletStateService } from '~service/wallet-state-service'
+
 import { formatNumber, formatPercent } from '~util/utils'
 
 import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
+
 
 @Component({
   selector: 'app-wallet-balance',
@@ -18,7 +21,8 @@ export class WalletBalanceComponent implements OnInit {
   public formatPercent = formatPercent
 
   constructor(private dialog: MatDialog,
-    public walletStateService: WalletStateService, public backendService: BackendService) {}
+    public walletStateService: WalletStateService, public backendService: BackendService,
+    public addressService: AddressService) {}
 
   ngOnInit(): void {
   }

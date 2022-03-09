@@ -13,6 +13,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { BlockHeaderResponse, DLCContract, DLCState, IncomingOffer } from '~type/wallet-server-types'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
+import { AddressService } from './address.service'
 
 
 enum WebsocketMessageType {
@@ -54,7 +55,8 @@ export class WebsocketService {
   private pollingTimer$: Subscription;
 
   constructor(private walletStateService: WalletStateService, private dlcService: DLCService,
-    private offerService: OfferService, private router: Router, private authService: AuthService,
+    private offerService: OfferService, private addressService: AddressService,
+    private router: Router, private authService: AuthService,
     private dialog: MatDialog) {}
 
   private getWebsocketUrl(): string {
@@ -185,7 +187,7 @@ export class WebsocketService {
         this.walletStateService.refreshBalances().subscribe()
         break;
       case WebsocketMessageType.newaddress:
-        this.walletStateService.refreshUnfundedAddresses().subscribe()
+        this.addressService.refreshUnfundedAddresses().subscribe()
         break;
       case WebsocketMessageType.dlcofferadd:
         const offer = <IncomingOffer>message.payload
