@@ -276,7 +276,8 @@
     "totalCollateral": "Total",
     "lastUpdated": "Updated",
     "noContracts": "No DLC Contracts Started",
-    "copyContractId": "Copy Contract Id to Clipboard"
+    "copyContractId": "Copy Contract Id to Clipboard",
+    "externalPayoutAddress": "External Payout Address: {{address}}"
   },
 
   "contractDetail": {
@@ -308,6 +309,8 @@
     "fundingRebroadcastSuccess": "Successfully rebroadcast funding transaction",
     "closingRebroadcastSuccess": "Successfully rebroadcast closing transaction",
     "refundContract": "Refund",
+    "payoutAddress": "Payout Address",
+    "externalPayoutAddress": "DLC payout address is outside this wallet",
     "viewOnOracleExplorer": "View on Oracle Explorer",
 
     "contractOutcome": "Payout",

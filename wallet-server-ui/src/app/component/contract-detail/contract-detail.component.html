@@ -240,6 +240,17 @@
         </div>
       </ng-container>
 
+      <mat-form-field class="w-70">
+        <mat-label translate>contractDetail.payoutAddress</mat-label>
+        <input matInput [value]="dlc.payoutAddress.address" readonly>
+        <button *ngIf="dlc.payoutAddress.isExternal"
+          mat-icon-button matSuffix
+          matTooltip="{{ 'contractDetail.externalPayoutAddress' | translate:{address: dlc.payoutAddress.address} }}"
+          (click)="copyToClipboard(dlc.payoutAddress.address)">
+          <mat-icon>trending_up</mat-icon>
+        </button>
+      </mat-form-field>
+
     </fieldset>
   </form>
 

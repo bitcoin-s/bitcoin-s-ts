@@ -186,6 +186,7 @@ export interface DLCContract {
   state: DLCState // string //  "Offered"
   temporaryContractId: string // "ddb32c03280b4e064aad9815927f383c87b028a98c07f481e0941624e97d8924"
   totalCollateral: number // 200001
+  payoutAddress: { address: string, isExternal: boolean } // isExternal to wallet
 
   // not present initially
   contractId?: string
