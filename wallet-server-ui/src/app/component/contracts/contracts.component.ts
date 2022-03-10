@@ -47,7 +47,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
-  displayedColumns = ['eventId', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
+  displayedColumns = ['eventId', 'flags', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'totalCollateral', 'collateral', 'counterpartyCollateral', 'lastUpdated']
 
   private selectedDLCId: string|undefined
