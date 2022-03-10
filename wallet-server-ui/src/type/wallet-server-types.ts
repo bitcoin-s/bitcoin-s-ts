@@ -72,7 +72,7 @@ export const enum WalletMessageType {
   gettransaction = 'gettransaction',
   lockunspent = 'lockunspent',
   labeladdress = 'labeladdress',
-  // getaddresstags = 'getaddresstags', // dupe of 'getaddresslabels'
+  dropaddresslabel = 'dropaddresslabel',
   getaddresslabels = 'getaddresslabels',
   dropaddresslabels = 'dropaddresslabels',
 

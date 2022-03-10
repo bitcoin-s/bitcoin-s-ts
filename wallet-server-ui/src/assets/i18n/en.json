@@ -149,6 +149,11 @@
     "value": "Value"
   },
 
+  "addressLabel": {
+    "addLabel": "Add Label",
+    "removeLabel": "Remove Label"
+  },
+
   "newOffer": {
     "heading": "New Offer",
     "oracleAnnouncementOrContractInfo": "Oracle Announcement / Contract Info",
@@ -449,6 +454,10 @@
     "logout": {
       "title": "Session Expiring",
       "content": "You will be logged out in {{ time }} seconds."
+    },
+    "clearLabel": {
+      "title": "Clear Label",
+      "content": "Are you sure you want to clear the label on {{ address }}?"
     }
   },
 

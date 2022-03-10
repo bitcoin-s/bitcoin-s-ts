@@ -82,34 +82,33 @@ export async function basicTests() {
     //   console.debug('LabelAddress()', result)
     // })
 
-    await WalletServer.GetAddressLabels(address).then(r => {
-      console.debug('GetAddressLabels()', r)
-      assert.ifError(r.error)
-      assert(r.result)
-      assert(r.result[0] === TEST_LABEL)
-    })
+    // await WalletServer.GetAddressLabels().then(r => {
+    //   console.debug('GetAddressLabels()', r)
+    //   assert.ifError(r.error)
+    //   assert(r.result)
+    // })
 
-    await WalletServer.DropAddressLabels(address).then(r => {
-      console.debug('DropAddressLabels()', r)
-      assert.ifError(r.error)
-    })
+    // await WalletServer.DropAddressLabels(address).then(r => {
+    //   console.debug('DropAddressLabels()', r)
+    //   assert.ifError(r.error)
+    // })
 
-    await WalletServer.GetAddressLabels(address).then(r => {
-      console.debug('GetAddressLabels()', r)
-      assert.ifError(r.error)
-    })
+    // await WalletServer.GetAddressLabels(address).then(r => {
+    //   console.debug('GetAddressLabels()', r)
+    //   assert.ifError(r.error)
+    // })
 
-    await WalletServer.LabelAddress(address, TEST_LABEL_2).then(r => {
-      console.debug('LabelAddress()', r)
-      assert.ifError(r.error)
-    })
+    // await WalletServer.LabelAddress(address, TEST_LABEL_2).then(r => {
+    //   console.debug('LabelAddress()', r)
+    //   assert.ifError(r.error)
+    // })
 
-    await WalletServer.GetAddressLabels(address).then(r => {
-      console.debug('GetAddressLabels()', r)
-      assert.ifError(r.error)
-      assert(r.result)
-      assert(r.result[0] === TEST_LABEL_2)
-    })
+    // await WalletServer.GetAddressLabels(address).then(r => {
+    //   console.debug('GetAddressLabels()', r)
+    //   assert.ifError(r.error)
+    //   assert(r.result)
+    //   assert(r.result[0] === TEST_LABEL_2)
+    // })
 
     // await WalletServer.DropAddressLabels(address).then(result => {
     //   console.debug('DropAddressLabels()', result)

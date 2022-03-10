@@ -1,16 +1,17 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, forkJoin, of, Subscription, timer } from 'rxjs'
-import { catchError, concatMap, map, tap } from 'rxjs/operators'
+import { forkJoin, of, Subscription, timer } from 'rxjs'
+import { catchError, concatMap, tap } from 'rxjs/operators'
 
 
+import { AddressService } from '~service/address.service'
 import { AuthService } from '~service/auth.service'
 import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
 import { OfferService } from '~service/offer-service'
 
 import { BuildConfig } from '~type/proxy-server-types'
-import { Balances, BlockchainMessageType, ContractInfo, CoreMessageType, DLCContract, DLCMessageType, DLCState, DLCWalletAccounting, FundedAddress, GetInfoResponse, IncomingOffer, Offer, ServerResponse, ServerVersion, WalletMessageType } from '~type/wallet-server-types'
+import { Balances, BlockchainMessageType, DLCMessageType, DLCWalletAccounting, GetInfoResponse, WalletMessageType } from '~type/wallet-server-types'
 
 import { BitcoinNetwork, } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -44,8 +45,6 @@ export class WalletStateService {
     else return ''
   }
   balances: Balances
-  fundedAddresses: FundedAddress[]
-  unfundedAddresses: string[]
   dlcWalletAccounting: DLCWalletAccounting
   feeEstimate: number
   torDLCHostAddress: string
@@ -73,7 +72,7 @@ export class WalletStateService {
   private pollingTimer$: Subscription;
 
   constructor(private dialog: MatDialog, private messageService: MessageService, private authService: AuthService,
-    private dlcService: DLCService, private offerService: OfferService) {
+    private dlcService: DLCService, private offerService: OfferService, private addressService: AddressService) {
       this.dlcService.initialized.subscribe(v => {
         if (v) this.checkInitialized()
       })
@@ -113,6 +112,7 @@ export class WalletStateService {
     this.initialized = false
     this.dlcService.uninitialize()
     this.offerService.uninitialize()
+    this.addressService.uninitialize()
     // Could wipe all state here...
     this.stopPollingTimer()
   }
@@ -221,8 +221,7 @@ export class WalletStateService {
       this.refreshWalletInfo(), 
       this.refreshBalances(),
       this.refreshDLCWalletAccounting(),
-      this.refreshFundedAddresses(),
-      this.refreshUnfundedAddresses(),
+      this.addressService.initializeState(),
     ])
   }
 
@@ -246,22 +245,6 @@ export class WalletStateService {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).pipe(tap(r => {
       if (r.result) {
         this.dlcWalletAccounting = r.result
-      }
-    }))
-  }
-
-  private refreshFundedAddresses() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getfundedaddresses)).pipe(tap(r => {
-      if (r.result) {
-        this.fundedAddresses = r.result
-      }
-    }))
-  }
-
-  refreshUnfundedAddresses() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getunusedaddresses)).pipe(tap(r => {
-      if (r.result) {
-        this.unfundedAddresses = r.result
       }
     }))
   }
