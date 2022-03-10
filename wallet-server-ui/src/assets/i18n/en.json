@@ -451,6 +451,10 @@
     "logout": {
       "title": "Session Expiring",
       "content": "You will be logged out in {{ time }} seconds."
+    },
+    "clearLabel": {
+      "title": "Clear Label",
+      "content": "Are you sure you want to clear the label on {{ address }}?"
     }
   },
 

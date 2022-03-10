@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 
 import { AddressService } from '~service/address.service'
 import { MessageService } from '~service/message.service'
@@ -6,6 +7,8 @@ import { MessageService } from '~service/message.service'
 import { WalletMessageType } from '~type/wallet-server-types'
 
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 
 @Component({
@@ -26,7 +29,8 @@ export class AddressLabelComponent implements OnInit {
 
   executing = false
 
-  constructor(private messageService: MessageService, private addressService: AddressService) {}
+  constructor(private messageService: MessageService, private addressService: AddressService,
+    private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.addressService.initialized.subscribe(v => {
@@ -59,13 +63,25 @@ export class AddressLabelComponent implements OnInit {
   clearLabel() {
     console.debug('clearLabel()', this.address)
 
-    this.executing = true
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.dropaddresslabels, [this.address])).subscribe(r => {
-      this.hasSavedLabelValue = false
-      this.hasInputChange = false
-      this.label = ''
-      this.labelInput.nativeElement.value = ''
-      this.executing = false
+    const dialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'dialog.clearLabel.title',
+        content: 'dialog.clearLabel.content',
+        params:  { address: this.address },
+        action: 'action.yes',
+        showCancelButton: true,
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.executing = true
+        this.messageService.sendMessage(getMessageBody(WalletMessageType.dropaddresslabels, [this.address])).subscribe(r => {
+          this.hasSavedLabelValue = false
+          this.hasInputChange = false
+          this.label = ''
+          this.labelInput.nativeElement.value = ''
+          this.executing = false
+        })
+      }
     })
   }
 
