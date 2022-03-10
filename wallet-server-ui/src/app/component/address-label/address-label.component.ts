@@ -24,6 +24,7 @@ export class AddressLabelComponent implements OnInit {
 
   label: string = ''
 
+  showAddLabel = false
   hasSavedLabelValue = false
   hasInputChange = false
 
@@ -39,13 +40,32 @@ export class AddressLabelComponent implements OnInit {
         if (this.address && label && label.length > 0) {
           this.label = label.join(', ')
           this.hasSavedLabelValue = true
+          this.showAddLabel = true
         }
       }
     })
   }
 
+  onShowAddLabel() {
+    console.debug('showAddLabel()')
+
+    this.showAddLabel = true
+
+    setTimeout(() => {
+      if (this.labelInput) {
+        this.labelInput.nativeElement.focus()
+      }
+    }, 0)
+  }
+
   onInputChange() {
     this.hasInputChange = true
+  }
+
+  onBlur() {
+    if (!this.labelInput.nativeElement.value && !this.hasSavedLabelValue) {
+      this.showAddLabel = false
+    }
   }
 
   addLabel() {
@@ -77,6 +97,7 @@ export class AddressLabelComponent implements OnInit {
         this.messageService.sendMessage(getMessageBody(WalletMessageType.dropaddresslabels, [this.address])).subscribe(r => {
           this.hasSavedLabelValue = false
           this.hasInputChange = false
+          this.showAddLabel = false
           this.label = ''
           this.labelInput.nativeElement.value = ''
           this.executing = false

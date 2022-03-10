@@ -89,10 +89,15 @@
       grid-area: value-header;
       place-self: center;
     }
+    
+    .address {
+      align-self: center;
+    }
     .value {
+      align-self: center;
       text-align: right;
     }
-    .address {
+    .unit {
       align-self: center;
     }
     .address-label {
