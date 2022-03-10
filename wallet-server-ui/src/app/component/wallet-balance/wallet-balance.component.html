@@ -5,7 +5,7 @@
   </div>
 
   <div class="wallet-state horizontal-pane">
-    <div *ngIf="walletStateService.balances" class="pane balances">
+    <div *ngIf="!hideWalletBalances &&walletStateService.balances" class="pane balances">
       <label translate>walletBalance.balance</label>
       <div class="balance-group">
         <label translate>walletBalance.confirmedBalance</label>

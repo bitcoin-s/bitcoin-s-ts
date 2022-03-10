@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 
+import { environment } from '~environments'
+
 import { BackendService } from '~service/backend.service'
 import { WalletStateService } from '~service/wallet-state-service'
 import { formatNumber, formatPercent } from '~util/utils'
 
 import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
+
 
 @Component({
   selector: 'app-wallet-balance',
@@ -16,6 +19,8 @@ export class WalletBalanceComponent implements OnInit {
 
   public formatNumber = formatNumber
   public formatPercent = formatPercent
+
+  public hideWalletBalances = environment.hideWalletBalances
 
   constructor(private dialog: MatDialog,
     public walletStateService: WalletStateService, public backendService: BackendService) {}
