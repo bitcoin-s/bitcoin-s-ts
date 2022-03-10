@@ -8,6 +8,11 @@
     <button mat-icon-button (click)="copyToClipboard()"
       matTooltip="{{ 'action.copyToClipboard' | translate }}"><mat-icon>content_copy</mat-icon></button>
   </div>
+  <!-- Showing the address-label label field causes a vertical scrollbar, which I don't like
+       but I don't know if we want to suppress it for all viewing cases, so leaving as-is -->
+  <div class="lower-content-container">
+    <app-address-label [address]="data.params.address"></app-address-label>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
