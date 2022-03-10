@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
 
 import { AddressService } from '~service/address.service'
 import { MessageService } from '~service/message.service'
@@ -18,34 +17,23 @@ export class AddressLabelComponent implements OnInit {
 
   @Input() address: string
 
-  form: FormGroup
-  get labelValue() { return this.form?.get('label')?.value }
+  @ViewChild('labelInput') labelInput: ElementRef
 
-  updateLabel(label: string) {
-    this.form.patchValue({
-      label: label
-    })
-  }
+  label: string = ''
 
   hasSavedLabelValue = false
   hasInputChange = false
 
   executing = false
 
-  constructor(private formBuilder: FormBuilder, private cdr: ChangeDetectorRef,
-    private messageService: MessageService, private addressService: AddressService) {
-      
-    }
+  constructor(private messageService: MessageService, private addressService: AddressService) {}
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      label: ['']
-    })
     this.addressService.initialized.subscribe(v => {
       if (v) {
         const label = this.addressService.addressLabelMap[this.address]
         if (this.address && label && label.length > 0) {
-          this.updateLabel(label.join(', '))
+          this.label = label.join(', ')
           this.hasSavedLabelValue = true
         }
       }
@@ -57,12 +45,11 @@ export class AddressLabelComponent implements OnInit {
   }
 
   addLabel() {
-    const label = this.form.value.label
+    const label = this.labelInput.nativeElement.value
     console.debug('addLabel()', this.address, label)
 
     this.executing = true
     this.addressService.updateAddressLabel(this.address, label).subscribe(r => {
-      this.updateLabel(label)
       this.hasSavedLabelValue = true
       this.hasInputChange = false
       this.executing = false
@@ -76,7 +63,8 @@ export class AddressLabelComponent implements OnInit {
     this.messageService.sendMessage(getMessageBody(WalletMessageType.dropaddresslabels, [this.address])).subscribe(r => {
       this.hasSavedLabelValue = false
       this.hasInputChange = false
-      this.updateLabel('')
+      this.label = ''
+      this.labelInput.nativeElement.value = ''
       this.executing = false
     })
   }
