@@ -151,6 +151,7 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.dlcstatechange:
         const dlc = <DLCContract>message.payload
+        const contractInfo = this.dlcService.contractInfos.value[dlc.dlcId]
         console.debug(' dlc:', dlc)
         const obs = this.dlcService.replaceDLC(dlc)
         let goToContract = false
@@ -170,7 +171,7 @@ export class WebsocketService {
               data: {
                 title: 'dialog.broadcastSuccess.title',
                 content: 'dialog.broadcastSuccess.content',
-                params: { txId: dlc.fundingTxId },
+                params: { txId: dlc.fundingTxId, eventId: contractInfo.oracleInfo.announcement.event.eventId },
                 linksContent: "dialog.broadcastSuccess.linksContent",
                 links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
                 action: 'action.close',
