@@ -249,6 +249,8 @@
             (paste)="peerAddressValue = trimOnPaste($event)">
           <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
         </mat-form-field>
+        <app-alert *ngIf="peerAddress?.errors?.['dontMatchInvalid']"
+          [type]="AlertType.error" message="error.cannotSendToOwnHostAddress" icon="error_outline"></app-alert>
       </ng-container>
     </fieldset>
   </form>

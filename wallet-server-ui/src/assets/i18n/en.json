@@ -461,6 +461,10 @@
     }
   },
 
+  "error": {
+    "cannotSendToOwnHostAddress": "Cannot send to your own Tor DLC Host Address"
+  },
+
   "torDLCHostAddress": "Tor DLC Host Address",
 
   "WalletServiceState": {

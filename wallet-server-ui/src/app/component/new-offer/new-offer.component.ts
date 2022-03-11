@@ -19,7 +19,7 @@ import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, Num
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste } from '~util/utils'
-import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
+import { allowEmptybitcoinAddressValidator, dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '~component/alert/alert.component'
@@ -119,6 +119,7 @@ export class NewOfferComponent implements OnInit {
   get tf() { return this.typeForm.controls }
   get messageValue() { return this.typeForm.get('message')?.value }
   set messageValue(message: string) { this.typeForm.patchValue({ message }) }
+  get peerAddress() { return this.typeForm.get('peerAddress') }
   set peerAddressValue(peerAddress: string) { this.typeForm.patchValue({ peerAddress }) }
 
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
@@ -298,7 +299,7 @@ export class NewOfferComponent implements OnInit {
     })
     this.typeForm = this.formBuilder.group({
       message: [''],
-      peerAddress: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
+      peerAddress: ['', [Validators.required, dontMatchValidator(this.walletStateService.torDLCHostAddress), regexValidator(TOR_V3_ADDRESS)]],
     })
     if (this.contractInfo) {
       this.onTotalCollateral()
