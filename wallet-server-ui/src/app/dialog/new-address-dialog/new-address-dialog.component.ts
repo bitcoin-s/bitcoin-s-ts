@@ -1,6 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { copyToClipboard } from '~util/utils';
+import { Component, Inject } from '@angular/core'
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'
+
+import { copyToClipboard } from '~util/utils'
 
 
 export interface NewAddressDialogContent {

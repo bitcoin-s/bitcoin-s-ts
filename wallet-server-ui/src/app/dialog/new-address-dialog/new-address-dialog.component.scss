@@ -11,3 +11,15 @@
     margin-right: 0.5rem;
   }
 }
+.lower-content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+
+  // widen address-label field
+  ::ng-deep app-address-label > .mat-form-field {
+    min-width: 400px;
+  }
+}

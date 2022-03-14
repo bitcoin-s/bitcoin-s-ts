@@ -65,6 +65,7 @@ export class AddressLabelComponent implements OnInit {
   onBlur() {
     if (!this.labelInput.nativeElement.value && !this.hasSavedLabelValue) {
       this.showAddLabel = false
+      this.hasInputChange = false
     }
   }
 
