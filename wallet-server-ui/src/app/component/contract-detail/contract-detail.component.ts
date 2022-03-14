@@ -20,7 +20,7 @@ import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumC
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, TOR_V3_ADDRESS, trimOnPaste, validateHexString } from '~util/utils'
-import { regexValidator } from '~util/validators'
+import { dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '~component/alert/alert.component'
@@ -212,6 +212,7 @@ export class ContractDetailComponent implements OnInit {
   get tf() { return this.offerForm.controls }
   get messageValue() { return this.offerForm.get('message')?.value }
   set messageValue(message: string) { this.offerForm.patchValue({ message }) }
+  get peerAddress() { return this.offerForm.get('peerAddress') }
   set peerAddressValue(peerAddress: string) { this.offerForm.patchValue({ peerAddress }) }
 
   private defaultFilename: string
@@ -236,7 +237,7 @@ export class ContractDetailComponent implements OnInit {
     })
     this.offerForm = this.formBuilder.group({
       message: [''],
-      peerAddress: ['', [Validators.required, regexValidator(TOR_V3_ADDRESS)]],
+      peerAddress: ['', [Validators.required, dontMatchValidator(this.walletStateService.torDLCHostAddress), regexValidator(TOR_V3_ADDRESS)]],
     })
     this.setOutcome()
     this.buildChart()

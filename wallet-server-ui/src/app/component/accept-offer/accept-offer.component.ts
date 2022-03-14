@@ -19,7 +19,7 @@ import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, D
 import { OfferWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste, validateTorAddress } from '~util/utils'
-import { allowEmptybitcoinAddressValidator, regexValidator } from '~util/validators'
+import { allowEmptybitcoinAddressValidator, dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { AlertType } from '~component/alert/alert.component'
@@ -103,6 +103,7 @@ export class AcceptOfferComponent implements OnInit {
   get f() { return this.form.controls }
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
   set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
+  get peerAddressControl() { return this.form.get('peerAddress') }
   set peerAddressValue(peerAddress: string) { this.form.patchValue({ peerAddress }) }
   set filenameValue(filename: string) { this.form.patchValue({ filename }) }
 
@@ -201,7 +202,7 @@ export class AcceptOfferComponent implements OnInit {
     this.defaultFilename = this.translate.instant('acceptOffer.defaultFilename')
     this.form = this.formBuilder.group({
       // acceptOfferType: [this.acceptOfferType], // don't know how to conditionally validate with this here yet
-      peerAddress: [this._peerAddress, regexValidator(TOR_V3_ADDRESS)],
+      peerAddress: [this._peerAddress, [dontMatchValidator(this.walletStateService.torDLCHostAddress), regexValidator(TOR_V3_ADDRESS)]],
       filename: [this.defaultFilename, Validators.required],
       externalPayoutAddress: ['',
         allowEmptybitcoinAddressValidator(networkToValidationNetwork(this.walletStateService.getNetwork() || undefined))],

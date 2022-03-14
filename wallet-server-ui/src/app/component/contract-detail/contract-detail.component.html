@@ -240,7 +240,7 @@
         </div>
       </ng-container>
 
-      <mat-form-field class="w-70">
+      <mat-form-field class="w-80">
         <mat-label translate>contractDetail.payoutAddress</mat-label>
         <input matInput [value]="dlc.payoutAddress.address" readonly>
         <button *ngIf="dlc.payoutAddress.isExternal"
@@ -312,6 +312,8 @@
             (paste)="peerAddressValue = trimOnPaste($event)">
           <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
         </mat-form-field>
+        <app-alert *ngIf="peerAddress?.errors?.['dontMatchInvalid']"
+          [type]="AlertType.error" message="error.cannotSendToOwnHostAddress" icon="error_outline"></app-alert>
       </fieldset>
     </form>
 
