@@ -239,7 +239,8 @@ mat-form-field {
 .mat-stroked-button.mat-stroked-icon-button-sm {
   min-width: unset;
   vertical-align: super;
-  padding: 0 8px;
+  padding: 0 3px;
+  line-height: 30px;
 }
 
 .mat-form-field-row {
