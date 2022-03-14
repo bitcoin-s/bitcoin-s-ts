@@ -35,6 +35,7 @@ import { LoginComponent } from './component/login/login.component'
 import { AddressLabelComponent } from './component/address-label/address-label.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
+import { DLCPayoutDialogComponent } from './dialog/dlc-payload-dialog/dlc-payload-dialog.component'
 import { ErrorDialogComponent } from './dialog/error/error.component'
 import { FeeRateDialogComponent } from './dialog/fee-rate-dialog/fee-rate-dialog.component'
 import { LogoutDialogComponent } from './dialog/logout/logout.component'
@@ -87,6 +88,7 @@ export function appInitializerFactory(translate: TranslateService) {
     LoginComponent,
     LogoutDialogComponent,
     AddressLabelComponent,
+    DLCPayoutDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -458,6 +458,15 @@
     "clearLabel": {
       "title": "Clear Label",
       "content": "Are you sure you want to clear the label on {{ address }}?"
+    },
+    "dlcPayout": {
+      "title": "DLC Payout Message",
+      "eventId": "Event",
+      "outcome": "Outcome",
+      "amount": "Amount",
+      "payoutAddress": "Payout Address",
+      "bettor": "Bettor",
+      "message": "Message"
     }
   },
 

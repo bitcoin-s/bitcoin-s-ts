@@ -128,4 +128,14 @@ export class MessageService {
     const m = getMessageBody(MessageType.getversion)
     return <Observable<ServerResponse<ServerVersion>>>this.sendMessage(m)
   }
+
+  /** Arbitrary Data Forwarding */
+
+  forward(obj: any) {
+    return this.http.post<any>(environment.proxyApi + `/forward`, obj)
+      .pipe(tap(r => {
+        // Nothing to do
+      }))
+  }
+
 }

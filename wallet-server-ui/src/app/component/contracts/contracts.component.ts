@@ -8,19 +8,23 @@ import { Subscription } from 'rxjs'
 
 import { DLCFileService } from '~service/dlc-file.service'
 import { DLCService } from '~service/dlc-service'
+import { LocalStorageService } from '~service/localstorage.service'
+import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { ContractInfo, DLCContract } from '~type/wallet-server-types'
+import { ContractInfo, DLCContract, DLCState, EnumContractDescriptor } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+import { DLCPayoutDialogComponent } from '~app/dialog/dlc-payload-dialog/dlc-payload-dialog.component'
 
 
 export type DLCContractInfo = { dlc: DLCContract, contractInfo: ContractInfo }
 
-// const DEFAULT_SORT = <MatSortable>{ id: 'lastUpdated', start: 'desc'}
+const SHOW_FORWARD_BUTTON = true // Show Forward to THNDR Games button
+const FORWARDED_LOCALSTORAGE_KEY = 'FORWARDED'
 
 @Component({
   selector: 'app-contracts',
@@ -35,15 +39,12 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   public formatPercent = formatPercent
   public formatShortHex = formatShortHex
 
+  public showForwardButton = SHOW_FORWARD_BUTTON
+  forwardedMap: { [txId: string]: boolean }
+
   @ViewChild(MatTable) table: MatTable<DLCContract>
   @ViewChild(MatSort) sort: MatSort
   @ViewChild('rightDrawer') rightDrawer: MatDrawer
-
-  // @Input() clearSelection() {
-  //   console.debug('clearSelection()')
-  //   this.selectedDLCContract = <DLCContract><unknown>null
-  // }
-  // @Output() selectedDLC: EventEmitter<DLCContractInfo> = new EventEmitter()
 
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
@@ -75,7 +76,11 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   private sign$: Subscription
 
   constructor(public walletStateService: WalletStateService, private dlcService: DLCService, private dlcFileService: DLCFileService,
-    private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
+    private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
+    private messageService: MessageService, private localStorageService: LocalStorageService) {
+      this.forwardedMap = this.localStorageService.getObject(FORWARDED_LOCALSTORAGE_KEY) || {}
+      console.debug('forwardedMap:', this.forwardedMap)
+    }
 
   ngOnInit(): void {
     // Keeps state in sync with route changes
@@ -196,6 +201,60 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedDLCContractInfo = null
       // Update queryParams and set selectedDLCId via subscription
       this.router.navigate(['/contracts'])
+    }
+  }
+
+  enableContractForward(dlcContract: DLCContract) {
+    return [DLCState.broadcast, DLCState.confirmed].includes(dlcContract.state)
+  }
+
+  // This only works for EnumContractDescriptors
+  forwardContractDetails(dlc: DLCContract) {
+    const contractInfo = this.dlcService.contractInfos.value[dlc.dlcId]
+    const outcomes = { ...(<EnumContractDescriptor>contractInfo.contractDescriptor).outcomes }
+    // Flip outcome values for non-initiator
+    if (!dlc.isInitiator) {
+      for (const key of Object.keys(outcomes)) {
+        outcomes[key] = dlc.totalCollateral - outcomes[key]
+      }
+    }
+    // Assume highest outcome value is user's bet
+    let outcome = ''
+    let highestOutcome = 0
+    for (const key of Object.keys(outcomes)) {
+      if (outcomes[key] > highestOutcome) {
+        highestOutcome = outcomes[key]
+        outcome = key
+      }
+    }
+    console.debug('forwardContractDetails()', dlc, contractInfo, outcome)
+
+    if (outcome) {
+      const fundingTxId = <string>dlc.fundingTxId
+      const data = {
+        eventId: contractInfo.oracleInfo.announcement.event.eventId,
+        outcome: outcome,
+        amount: dlc.localCollateral,
+        payoutAddress: dlc.payoutAddress.address,
+        txId: fundingTxId,
+        timestamp: dlc.lastUpdated,
+        bettor: '',
+        message: '',
+      }
+
+      const dialog = this.dialog.open(DLCPayoutDialogComponent, { data }).afterClosed()
+      .subscribe(payload => {
+        console.debug('payload:', payload)
+        if (payload) {
+          this.messageService.forward(payload).subscribe(r => {
+            console.debug(' forwarded', payload)
+            this.forwardedMap[fundingTxId] = true
+            this.localStorageService.set(FORWARDED_LOCALSTORAGE_KEY, this.forwardedMap)
+          })
+        }
+      })
+    } else {
+      console.error('there was an error processing outcome')
     }
   }
 

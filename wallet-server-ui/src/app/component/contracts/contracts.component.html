@@ -67,6 +67,15 @@
                 <mat-icon class="mat-icon-sm material-icons-outlined">trending_up</mat-icon>
               </button>
             </ng-container>
+            <ng-container *ngIf="showForwardButton">
+              <button mat-icon-button class="mat-icon-button-sm"
+                [disabled]="!enableContractForward(contract)"
+                matTooltip="Forward to THNDR Games"
+                (click)="forwardContractDetails(contract); $event.stopPropagation()">
+                <mat-icon *ngIf="!forwardedMap[contract.fundingTxId]" class="mat-icon-sm material-icons-outlined">forward</mat-icon>
+                <mat-icon *ngIf="forwardedMap[contract.fundingTxId]" class="mat-icon-sm material-icons-outlined">check</mat-icon>
+              </button>
+            </ng-container>
           </td>
         </ng-container>
         <ng-container matColumnDef="contractId">
