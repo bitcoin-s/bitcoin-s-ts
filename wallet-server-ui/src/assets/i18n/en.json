@@ -415,17 +415,17 @@
     },
     "broadcastSuccess": {
       "title": "Broadcast Successful",
-      "content": "The transaction with id {{ txId }} was broadcast.",
+      "content": "A transaction with id {{ txId }} was broadcast for {{ eventId }}.",
       "linksContent": "View the transaction on Mempool.space at"
     },
     "rebroadcastSuccess": {
       "title": "Rebroadcast Successful",
-      "content": "The transaction with id {{ txId }} was rebroadcast.",
+      "content": "A transaction with id {{ txId }} was rebroadcast for {{ eventId }}.",
       "linksContent": "View the transaction on Mempool.space at"
     },
     "oracleAttestationSuccess": {
       "title": "Oracle Attestment Successful",
-      "content": "A closing transaction with id {{ txId }} was broadcast.",
+      "content": "A closing transaction with id {{ txId }} was broadcast for {{ eventId }}.",
       "linksContent": "View the transaction on Mempool.space at"
     },
     "oracleAttestationsInvalid": {

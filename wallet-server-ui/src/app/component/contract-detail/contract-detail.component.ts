@@ -312,12 +312,13 @@ export class ContractDetailComponent implements OnInit {
   
           if (r.result) { // closingTxId
             const txId = r.result
+            const eventId = this.contractInfo.oracleInfo.announcement.event.eventId
             // this.refreshDLCState() // No longer necessary with Websockets
             const dialog = this.dialog.open(ConfirmationDialogComponent, {
               data: {
                 title: 'dialog.oracleAttestationSuccess.title',
                 content: 'dialog.oracleAttestationSuccess.content',
-                params: { txId },
+                params: { txId, eventId },
                 linksContent: 'dialog.oracleAttestationSuccess.linksContent',
                 links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                 action: 'action.close',
@@ -383,6 +384,7 @@ export class ContractDetailComponent implements OnInit {
 
     const contractId = this.dlc.contractId
     const txId = <string>this.dlc.fundingTxId
+    const eventId = this.contractInfo.oracleInfo.announcement.event.eventId
 
     this.executing = true
     this.rebroadcasting = true
@@ -392,7 +394,7 @@ export class ContractDetailComponent implements OnInit {
           data: {
             title: 'dialog.rebroadcastSuccess.title',
             content: 'dialog.rebroadcastSuccess.content',
-            params: { txId },
+            params: { txId, eventId },
             linksContent: "dialog.rebroadcastSuccess.linksContent",
             links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
             action: 'action.close',
@@ -437,6 +439,7 @@ export class ContractDetailComponent implements OnInit {
     console.debug('onRebroadcastClosingTransaction()')
 
     const txId = this.dlc.closingTxId
+    const eventId = this.contractInfo.oracleInfo.announcement.event.eventId
 
     if (txId) {
       this.executing = true
@@ -451,7 +454,7 @@ export class ContractDetailComponent implements OnInit {
                 data: {
                   title: 'dialog.rebroadcastSuccess.title',
                   content: 'dialog.rebroadcastSuccess.content',
-                  params: { txId },
+                  params: { txId, eventId },
                   linksContent: "dialog.rebroadcastSuccess.linksContent",
                   links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
                   action: 'action.close',
