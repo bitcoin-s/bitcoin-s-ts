@@ -16,6 +16,7 @@
   },
   "private": true,
   "dependencies": {
+    "axios": "^0.26.1",
     "common-ts": "file:../common-ts",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.1",
