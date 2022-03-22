@@ -11,23 +11,23 @@ let SERVER_URL = 'http://localhost:9999/' // default to bitcoin-s server
 let AUTHORIZATION_HEADER = '' // default to no auth
 
 /** Set Wallet Server endpoint */
-export function ConfigureServerURL(url: string) {
+export function ConfigureServerURL(url: string): void {
   console.debug('ConfigureServerURL()', url)
   SERVER_URL = url
 }
 /** Set Wallet Server Authorization header */
-export function ConfigureAuthorizationHeader(header: string) {
+export function ConfigureAuthorizationHeader(header: string): void {
   console.debug('ConfigureAuthorizationHeader()', header)
   AUTHORIZATION_HEADER = header
 }
 // Convenience function
-export function ConfigureAuthorizationHeaderFromUserPassword(user: string, password: string) {
+export function ConfigureAuthorizationHeaderFromUserPassword(user: string, password: string): void {
   console.debug('ConfigureAuthorizationHeader()', user)
   AUTHORIZATION_HEADER = 'Basic ' + Buffer.from(`${user}:${password}`).toString('base64')
 }
 
 /** Send any ServerMessage */
-export function SendServerMessage(message: ServerMessage) {
+export function SendServerMessage(message: ServerMessage): any {
   if (message) {
     const options: any = { json: true }
     if (AUTHORIZATION_HEADER) options.headers = { 'Authorization': AUTHORIZATION_HEADER }

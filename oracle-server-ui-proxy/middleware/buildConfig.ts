@@ -1,19 +1,23 @@
+import module from 'module'
+
 import { Request, Response } from 'express'
 
-import { BuildConfig } from '../type/build-config'
+import { BuildConfig } from 'common-ts/config/build-config'
+
+import { Logger } from '../middleware/logger'
 
 
-const logger = require('../middleware/logger')
+const _require = module.createRequire(import.meta.url)
 
 // Cache
 let Build: BuildConfig
 try {
-  Build = <BuildConfig>require('../build.json')
+  Build = <BuildConfig>_require('../build.json')
 } catch (err) {
-  logger.error('did not find BuildConfig')
+  Logger.error('did not find BuildConfig')
   // undefined returned to client
 }
 
-exports.get = (req: Request, res: Response) => {
+export const getBuildConfig = (req: Request, res: Response) => {
   res.json(Build)
 }

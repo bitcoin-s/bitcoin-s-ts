@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "ES2020",
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "common-ts": ["common-ts/lib"],
+      "@bitcoin-s-ts/wallet-ts": ["wallet-ts/lib"],
+      "wallet-server-ui": ["wallet-server-ui/src"],
+      "wallet-server-ui-proxy": ["wallet-server-ui-proxy"],
+      "wallet-electron":["wallet-electron"],
+      "@bitcoin-s-ts/oracle-server-ts": ["oracle-server-ts/lib"],
+      "oracle-server-ui": ["oracle-server-ui"],
+      "oracle-server-ui-proxy": ["oracle-server-ui-proxy"],
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@bitcoin-s-ts",
+  "version": "0.0.1",
+  "scripts": {
+    "clean": "./cleanDist.sh && tsc --build --clean",
+    "build": "tsc --build",
+    "watch": "tsc --build --watch"
+  },
+  "workspaces": [
+    "common-ts",
+    "wallet-ts",
+    "wallet-server-ui",
+    "wallet-server-ui-proxy",
+    "wallet-electron",
+    "oracle-server-ts",
+    "oracle-server-ui-proxy"
+  ]
+}

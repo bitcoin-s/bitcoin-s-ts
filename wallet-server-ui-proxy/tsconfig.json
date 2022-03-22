@@ -1,8 +1,12 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es6",
-    "rootDir": "./",
-    "esModuleInterop": true
-  }
+    "rootDir": ".",
+    "outDir": "dist",
+    "strictPropertyInitialization": false,
+  },
+  "ts-node": {
+    "esm": true
+  },
 }

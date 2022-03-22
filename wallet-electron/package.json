@@ -1,0 +1,62 @@
+{
+  "name": "wallet-electron",
+  "version": "0.0.1",
+  "description": "An electrum wrapper for wallet-server-ui",
+  "main": "index.cjs",
+  "scripts": {
+    "build": "./npmBuild.sh && ./makeBin.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "private": true,
+  "dependencies": {
+    "@bitcoin-s-ts/wallet-ts": "file:./bin/wallet-ts",
+    "common-ts": "file:./bin/common-ts",
+    "electron-squirrel-startup": "^1.0.0",
+    "esm": "3.2.25",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "needle": "^3.0.0",
+    "socks-proxy-agent": "^6.1.0",
+    "wallet-server-ui-proxy": "file:./bin/wallet-server-ui-proxy",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "electron": "17.1.2"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "wallet_electron"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}

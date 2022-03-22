@@ -1,15 +1,13 @@
 import express from 'express'
 
+import { login, refresh, logout, verify, test } from '../middleware/auth'
 
-const router = express.Router()
 
-const controller = require('../middleware/auth')
+export const router = express.Router()
 
-router.route('/login').post(controller.login)
-router.route('/refresh').post(controller.refresh)
-router.route('/logout').post(controller.logout)
+router.route('/login').post(login)
+router.route('/refresh').post(refresh)
+router.route('/logout').post(logout)
 
 // Test route to validate that auth with restrict/verify access
-router.route('/test').post(controller.verify, controller.test)
-
-module.exports = router
+router.route('/test').post(verify, test)

@@ -1,13 +1,11 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-import { BodyRequest } from 'common-ts/lib/util/express-util'
-import { get64randomBytes } from 'common-ts/lib/util/string-util'
+import { BodyRequest } from 'common-ts/util/express-util'
+import { get64randomBytes } from 'common-ts/util/string-util'
 
-import { RunConfig } from '../type/run-config'
+import { Config } from '../config/run-config'
 
-
-const Config = <RunConfig>require('../type/run-config')
 
 // Client authorization
 
@@ -32,7 +30,7 @@ const users = [{
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);
 
-let refreshTokens = []
+let refreshTokens: any[] = []
 
 // create the access token with the shorter lifespan
 function generateAccessToken(payload: any) {
@@ -65,7 +63,7 @@ interface LogoutRequest {
   refreshToken: string
 }
 
-exports.login = function(req: BodyRequest<LoginRequest>, res: Response) {
+export const login = function(req: BodyRequest<LoginRequest>, res: Response) {
   // console.debug('/login', req.body)
   const username = req.body.user
   const password = req.body.password
@@ -76,7 +74,7 @@ exports.login = function(req: BodyRequest<LoginRequest>, res: Response) {
     // if user does not exist, send a 400 response
     if (user === undefined) res.status(404).send("User does not exist")
     // if (await bcrypt.compare(req.body.password, user.password)) {
-    if (user.password === password) {
+    else if (user.password === password) {
       res.json({ 
         accessToken: generateAccessToken({ user: username }),
         refreshToken: generateRefreshToken({ user: username }),
@@ -90,7 +88,7 @@ exports.login = function(req: BodyRequest<LoginRequest>, res: Response) {
   }
 }
 
-exports.verify = function(req: Request, res: Response, next) {
+export const verify = function(req: Request, res: Response, next: NextFunction) {
   // get token from request header
   const authHeader = req.headers["authorization"]
   if (authHeader) {
@@ -110,7 +108,7 @@ exports.verify = function(req: Request, res: Response, next) {
   }
 }
 
-exports.refresh = function (req: BodyRequest<RefreshRequest>, res: Response) {
+export const refresh = function (req: BodyRequest<RefreshRequest>, res: Response) {
   // console.debug('/refresh', req.body)
   const username = req.body.user
   const token = req.body.refreshToken
@@ -133,7 +131,7 @@ exports.refresh = function (req: BodyRequest<RefreshRequest>, res: Response) {
   }
 }
 
-exports.logout = function (req: BodyRequest<LogoutRequest>, res: Response) {
+export const logout = function (req: BodyRequest<LogoutRequest>, res: Response) {
   // console.debug('/logout', req.body)
   const token = req.body.refreshToken
 
@@ -146,7 +144,7 @@ exports.logout = function (req: BodyRequest<LogoutRequest>, res: Response) {
   }
 }
 
-exports.test = function(req: Request, res: Response) {
+export const test = function(req: Request, res: Response) {
   // console.debug('/test', req.body)
   res.json({ success: true })
 }

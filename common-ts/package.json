@@ -9,10 +9,19 @@
   "description": "NodeJS package for common bitcoin-s-ts functionality",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    "./*": "./dist/*"
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/*"]
+    }
+  },
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "tests": "npx ts-node tests.ts"
+    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
   },
   "private": true,
   "dependencies": {

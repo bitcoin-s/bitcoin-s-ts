@@ -1,10 +1,8 @@
 import winston from 'winston'
 const { combine, timestamp, printf } = winston.format
 
-import { RunConfig } from '../type/run-config'
+import { Config } from '../config/run-config'
 
-
-const Config = <RunConfig>require('../type/run-config')
 
 // Logger formatting
 const logFormat = printf(({ level, message, timestamp }) => {
@@ -13,18 +11,16 @@ const logFormat = printf(({ level, message, timestamp }) => {
 
 function createLoggerInstance(): winston.Logger {
   return winston.createLogger({
-      exitOnError: Config.stopOnError,
-      level: 'info',
-      format: combine(timestamp(), logFormat),
-      transports: [
-        // Log to console
-        new winston.transports.Console(),
-        // Log to file
-        new winston.transports.File({ filename: Config.logFilepath }),
-      ],
-    })
+    exitOnError: Config.stopOnError,
+    level: 'info',
+    format: combine(timestamp(), logFormat),
+    transports: [
+      // Log to console
+      new winston.transports.Console(),
+      // Log to file
+      new winston.transports.File({ filename: Config.logFilepath }),
+    ],
+  })
 }
 
-const instance: winston.Logger = createLoggerInstance()
-
-module.exports = instance
+export const Logger: winston.Logger = createLoggerInstance()

@@ -2,9 +2,9 @@
 console.debug('test.js')
 
 // Import Library
-const OracleServer = require('./dist/oracle-server-ts/lib/index')
+import * as OracleServer from './lib/index'
 
-const validationUtil = require('./dist/oracle-server-ts/lib/util/validation-util')
+import * as validationUtil from './lib/util/validation-util'
 
 // Set oracleServer URL
 OracleServer.ConfigureServerURL('http://localhost:9998/')
