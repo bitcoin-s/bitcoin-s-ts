@@ -20,7 +20,7 @@ exports.forward = async (req: Request, res: Response) => {
   const results = await axios.default({ 
     method: "POST",
     headers: {
-      "x-api-key": "18c72225-d26e-4aa5-8257-6fabfcd266a1",
+      "x-api-key": "3a731e35-f49c-4598-aae9-6b5b2bcac993",
     },
     url: "https://integrations.thndr.io/v0/dlc",
     data: body,
