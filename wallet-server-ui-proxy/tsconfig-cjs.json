@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "rootDir": ".",
+    "outDir": "dist/cjs",
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+    "lib": [
+      "ES2018"
+    ],
+  },
+  "files": [
+    "config.json",
+    "build.json"
+  ],
+}

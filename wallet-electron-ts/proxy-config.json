@@ -9,7 +9,7 @@
 	"proxyRoot": "/proxy/v0",
 	"oracleExplorerRoot": "/oracleexplorer",
 	"serverUser": "bitcoins",
-	"serverPassword": "",
+	"serverPassword": "password",
 	"uiPassword": "none",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",
@@ -19,7 +19,6 @@
 	"blockstreamUrl": "https://blockstream.info/api",
 	"mempoolRoot": "/mempool",
 	"mempoolUrl": "https://mempool.space/api",
-	"uiPath": "../wallet-server-ui/dist/wallet-server-ui",
-	"bitcoinsPath": "~/.bitcoin-s/",
-	"rootDirectory": ""
+	"uiPath": "bin/wallet-server-ui",
+	"bitcoinsPath": "~/.bitcoin-s/"
 }

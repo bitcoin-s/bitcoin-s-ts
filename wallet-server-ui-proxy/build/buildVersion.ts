@@ -1,21 +1,28 @@
 import fs from 'fs'
-import path, { dirname } from 'path'
-import module from 'module'
-import { fileURLToPath } from 'url'
+import path from 'path'
+// import module from 'module'
+// import { fileURLToPath } from 'url'
 
 import * as git from 'git-last-commit'
 
+import { loadJSON } from 'common-ts/util/fs-util'
+
+// import config from 'wallet-server-ui/package.json'
 
 async function getPackageJsonVersion(): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
-      const _require = module.createRequire(import.meta.url)
-      const __dirname = dirname(fileURLToPath(import.meta.url))
-      const localPath = path.resolve(__dirname, '../../wallet-server-ui/package.json')
+      // const _require = module.createRequire(import.meta.url)
+      // const __dirname = dirname(fileURLToPath(import.meta.url))
+      // const localPath = path.resolve(__dirname, '../../wallet-server-ui/package.json')
+
+      const _dirname = process.cwd()
+      const localPath = path.resolve(_dirname, '../wallet-server-ui/package.json')
+      const json = loadJSON(localPath)
       // Will throw error if file does not exist
-      fs.accessSync(localPath)
-      const version: string = _require(localPath).version
-      resolve(version)
+      // fs.accessSync(localPath)
+      // const version: string = _require(localPath).version
+      resolve(json.version)
     } catch (err) {
       console.error('could not find wallet-server-ui/package.json')
       // Don't fail, just return empty string

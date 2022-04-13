@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ES2018",
+    "module": "commonjs",
+    "skipLibCheck": false,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "lib": [
+      "ES2015",
+      "ES2015.Promise",
+      "ES2016.Array.Include",
+      "ES2017.TypedArrays",
+      "ES2018",
+      "ES2018.Promise",
+      "ES2020.Promise"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+  },
+  "include": ["src/**/*"]
+}

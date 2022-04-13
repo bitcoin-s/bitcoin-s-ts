@@ -8,11 +8,15 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "ES2020",
+    "lib": [
+      "ES2016"
+    ],
     "sourceMap": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "paths": {
       "common-ts": ["common-ts/lib"],
       "@bitcoin-s-ts/wallet-ts": ["wallet-ts/lib"],

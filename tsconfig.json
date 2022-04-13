@@ -5,7 +5,13 @@
       "path": "./common-ts/tsconfig.ref.json"
     },
     {
+      "path": "./common-ts/tsconfig-cjs.ref.json"
+    },
+    {
       "path": "./wallet-ts/tsconfig.ref.json"
+    },
+    {
+      "path": "./wallet-ts/tsconfig-cjs.ref.json"
     },
     {
       "path": "./wallet-server-ui/tsconfig.ref.json"
@@ -13,11 +19,17 @@
     {
       "path": "./wallet-server-ui-proxy/tsconfig.ref.json"
     },
+    {
+      "path": "./wallet-server-ui-proxy/tsconfig-cjs.ref.json"
+    },
     // {
     //   "path": "./wallet-electron/tsconfig.ref.json"
     // },
     {
       "path": "./oracle-server-ts/tsconfig.ref.json"
+    },
+    {
+      "path": "./oracle-server-ts/tsconfig-cjs.ref.json"
     },
     {
       "path": "./oracle-server-ui/tsconfig.ref.json"

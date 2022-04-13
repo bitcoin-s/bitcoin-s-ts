@@ -1,7 +1,7 @@
-import { SendServerMessage } from 'common-ts/index'
+import { SendServerMessage } from 'common-ts/index.js'
 import { ServerResponse } from 'common-ts/type/server-types'
-import { getMessageBody } from 'common-ts/util/message-util'
-import { validateBoolean, validateNumber, validateString } from 'common-ts/util/validation-util'
+import { getMessageBody } from 'common-ts/util/message-util.js'
+import { validateBoolean, validateNumber, validateString } from 'common-ts/util/validation-util.js'
 
 import { BlockchainMessageType, BlockHeaderResponse, GetInfoResponse } from './type/blockchain-types'
 import { Accept, Announcement, Attestment, CoreMessageType, Offer, Sign } from './type/core-types'
@@ -10,7 +10,7 @@ import { NetworkMessageType } from './type/network-types'
 import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
 
 // Expose all 'common' endpoints
-export * from 'common-ts/index'
+export * from 'common-ts/index.js'
 
 
 /** Blockchain functions */

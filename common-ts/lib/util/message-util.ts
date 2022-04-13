@@ -1,4 +1,4 @@
-import { ServerMessage, ServerMessageWithParameters } from '../type/server-message'
+import { ServerMessage, ServerMessageWithParameters } from '../type/server-message.js'
 
 
 export function getMessageBody(type: string /*MessageType*/, params?: any[]): ServerMessage {

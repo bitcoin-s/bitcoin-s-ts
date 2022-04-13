@@ -12,6 +12,7 @@
     "startlocal": "DEFAULT_UI_PASSWORD=none BITCOIN_S_ORACLE_RPC_PASSWORD=password node --loader ts-node/esm --es-module-specifier-resolution=node server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "license": "MIT",
   "private": true,
   "type": "module",
   "exports": {

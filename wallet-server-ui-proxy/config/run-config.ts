@@ -3,14 +3,23 @@ import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 import { ServerConfig } from 'common-ts/config/server-config'
-import { resolveHome } from 'common-ts/util/fs-util'
+import { isESMRuntime } from 'common-ts/util/env-util'
+import { loadJSON, resolveHome } from 'common-ts/util/fs-util'
 
 
-const _require = module.createRequire(import.meta.url)
-const __dirname = dirname(fileURLToPath(import.meta.url))
+// Figure out if this module is running in ESM or CJS and load ServerConfig
+let config: ServerConfig
+// See https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
+if (isESMRuntime()) { // require.main) { // ESM Module run
+  const _dirname = process.cwd() // getting around ESM vs CMJ allowance of import.meta.url
+  config = <ServerConfig>loadJSON(path.resolve(_dirname, 'config.json'))
+  config.rootDirectory = _dirname
+} else { // CJS Module run
+  // __dirname is legal to use
+  config = <ServerConfig>loadJSON(path.resolve(__dirname, 'config.json'))
+  config.rootDirectory = __dirname
+}
 
-const config = <ServerConfig>_require('../config.json')
-config.rootDirectory = path.resolve(__dirname, '..')
 const LOG_FILENAME = 'wallet-server-ui-proxy.log'
 
 
@@ -41,7 +50,7 @@ export class RunConfig {
   get uiPassword() { return process.env.DEFAULT_UI_PASSWORD || this.c.uiPassword }
   // fs
   get rootDirectory() { return this.c.rootDirectory }
-  get uiDirectory() { return path.resolve(this.c.uiPath) }
+  get uiDirectory() { return path.resolve(this.c.rootDirectory, this.c.uiPath) }
   get bitcoinsDirectory() {
     if (process.env.BITCOIN_S_HOME) return path.resolve(process.env.BITCOIN_S_HOME)
     return resolveHome(this.c.bitcoinsPath)
@@ -86,4 +95,4 @@ mempoolUrl: ${this.mempoolUrl}
   }
 }
 
-export const Config = new RunConfig(config)
+export const Config = new RunConfig(<ServerConfig><unknown>config)

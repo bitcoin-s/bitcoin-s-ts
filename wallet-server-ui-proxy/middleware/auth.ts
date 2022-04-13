@@ -30,7 +30,7 @@ const users = [{
 }]
 // const encryptedPassword = await bcrypt.hash(password, 10);
 
-let refreshTokens: any[] = []
+let refreshTokens: Array<string> = []
 
 // create the access token with the shorter lifespan
 function generateAccessToken(payload: any) {
@@ -95,7 +95,7 @@ export const verify = function(req: Request, res: Response, next: NextFunction) 
     // the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
     const token = authHeader.split(" ")[1]
 
-    jwt.verify(token, ACCESS_TOKEN_SECRET, (err, payload) => {
+    jwt.verify(token, ACCESS_TOKEN_SECRET, (err: any, payload: any) => {
       if (err) { 
         res.status(403).send("Access Token Invalid")
       } else {
@@ -118,7 +118,7 @@ export const refresh = function (req: BodyRequest<RefreshRequest>, res: Response
       res.status(400).send("Refresh Token Invalid")
     } else {
       // remove the old refreshToken from the refreshTokens list
-      refreshTokens = refreshTokens.filter(c => c !== token)
+      refreshTokens = refreshTokens.filter((c: string) => c !== token)
       // generate new accessToken and refreshTokens
       res.json({ 
         accessToken: generateAccessToken({ user: username }), 
@@ -137,7 +137,7 @@ export const logout = function (req: BodyRequest<LogoutRequest>, res: Response) 
 
   if (token !== undefined) {
     // remove the old refreshToken from the refreshTokens list
-    refreshTokens = refreshTokens.filter(c => c !== token)
+    refreshTokens = refreshTokens.filter((c: string) => c !== token)
     res.status(204).send("Logged Out")
   } else {
     res.status(400).send("Missing Request Fields")

@@ -1,10 +1,10 @@
 import needle from 'needle'
 
-import { ServerMessage } from './type/server-message'
+import { ServerMessage } from './type/server-message.js'
 import { MessageType, ServerResponse, VersionResponse } from './type/server-types'
 
-import { getMessageBody } from './util/message-util'
-import { validateString } from './util/validation-util'
+import { getMessageBody } from './util/message-util.js'
+import { validateString } from './util/validation-util.js'
 
 
 let SERVER_URL = 'http://localhost:9999/' // default to bitcoin-s server

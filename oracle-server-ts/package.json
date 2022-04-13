@@ -7,15 +7,23 @@
     "directory": "oracle-server-ts"
   },
   "description": "NodeJS package for accessing bitcoin-s oracleServer",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
   "type": "module",
   "exports": {
-    "./*": "./dist/*"
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "import": "./dist/mjs/*",
+      "require": "./dist/cjs/*"
+    }
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/*"]
+      "*": ["dist/mjs/*"]
     }
   },
   "scripts": {
