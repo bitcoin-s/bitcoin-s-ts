@@ -11,7 +11,7 @@
     "wallet-ts",
     "wallet-server-ui",
     "wallet-server-ui-proxy",
-    "wallet-electron",
+    "wallet-electron-ts",
     "oracle-server-ts",
     "oracle-server-ui-proxy"
   ]

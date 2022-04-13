@@ -22,7 +22,7 @@
       "@bitcoin-s-ts/wallet-ts": ["wallet-ts/lib"],
       "wallet-server-ui": ["wallet-server-ui/src"],
       "wallet-server-ui-proxy": ["wallet-server-ui-proxy"],
-      "wallet-electron":["wallet-electron"],
+      "wallet-electron-ts":["wallet-electron-ts"],
       "@bitcoin-s-ts/oracle-server-ts": ["oracle-server-ts/lib"],
       "oracle-server-ui": ["oracle-server-ui"],
       "oracle-server-ui-proxy": ["oracle-server-ui-proxy"],

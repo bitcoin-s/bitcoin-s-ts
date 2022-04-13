@@ -23,7 +23,7 @@
       "path": "./wallet-server-ui-proxy/tsconfig-cjs.ref.json"
     },
     // {
-    //   "path": "./wallet-electron/tsconfig.ref.json"
+    //   "path": "./wallet-electron-ts/tsconfig.ref.json"
     // },
     {
       "path": "./oracle-server-ts/tsconfig.ref.json"
