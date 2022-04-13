@@ -14,7 +14,21 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   // eslint-disable-line global-require
-  app.quit();
+  app.quit()
+}
+
+// environment var JAVA_HOME is not making it to the application when double clicked to open on Mac
+// When the internal application (Suredbits Wallet.app/Contents/MacOS/Suredbits Wallet) is double clicked, it is set
+// User must configure .zprofile like
+// export JAVA_HOME="/Users/username/Library/Caches/Coursier/jvm/openjdk@1.11.0-2/Contents/Home"
+// launchctl setenv JAVA_HOME $JAVA_HOME
+// See https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications
+if (app.isPackaged) {
+  if (!process.env['JAVA_HOME']) {
+    console.error('JAVA_HOME is not set, starting appServer is going to fail')
+    dialog.showErrorBox('An error occurred', `The JAVA_HOME environment variable must be set and exposed. Please see README for more information.`)
+    app.quit()
+  }
 }
 
 // disable Insecure Content-Security-Policy warning in console
@@ -26,13 +40,6 @@ const START_FILE_LOGGING = true
 const START_APP_SERVER = true
 
 /** Environment Specific Parameters */
-
-// HACK HACK HACK
-// environment var JAVA_HOME is not making it to the application when double clicked to open on Mac
-// When the internal application (Suredbits Wallet.app/Contents/MacOS/Suredbits Wallet) is double clicked, it is set
-if (app.isPackaged && process.platform === 'darwin') {
-  process.env['JAVA_HOME'] = '/Users/ivan/Library/Caches/Coursier/jvm/openjdk@1.11.0-2/Contents/Home'
-}
 
 // set to your local absolute path for log files
 const pathRoot = '/Users/ivan/code/bitcoin-s-ts-w/wallet-electron-ts'
@@ -217,7 +224,7 @@ app.on('ready', createWindow)
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
 })
 

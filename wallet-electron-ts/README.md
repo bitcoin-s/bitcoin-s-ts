@@ -20,6 +20,14 @@ Run `npm run make` to build a native application for this platform.
 
 NOTE : Right now, building on macOS requires manually setting the JAVA_HOME environment variable in index.ts:31. The JAVA_HOME environment variable does not pass through when double clicking an application.
 
+## Environment Requirements
+
+User needs to have Java installed and JAVA_HOME defined. They also need it exposed to Launch Services on Mac OS. This will look something like the following in ~/.zprofile:
+```
+export JAVA_HOME="/Users/username/Library/Caches/Coursier/jvm/openjdk@1.11.0-2/Contents/Home"
+launchctl setenv JAVA_HOME $JAVA_HOME
+```
+
 ## Notes
 
 The packaged instance of appServer runs off of ~/.bitcoin-s/bitcoin-s.conf. Values in proxy-config.json locally will need to match values set in the conf prior to building, specifically: serverPassword, walletServerUrl, and walletServerWs.
