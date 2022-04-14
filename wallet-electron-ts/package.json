@@ -52,7 +52,9 @@
             "options": {
               "name": "suredbits-wallet",
               "productName": "Suredbits Wallet",
-              "icon": "assets/bitcoin-S.png"
+              "icon": "assets/bitcoin-S.png",
+              "homepage": "https://suredbits.com",
+              "maintainer": "Suredbits"
             }
           }
         },
@@ -62,7 +64,8 @@
             "options": {
               "name": "suredbits-wallet",
               "productName": "Suredbits Wallet",
-              "icon": "assets/bitcoin-S.png"
+              "icon": "assets/bitcoin-S.png",
+              "homepage": "https://suredbits.com"
             }
           }
         }
