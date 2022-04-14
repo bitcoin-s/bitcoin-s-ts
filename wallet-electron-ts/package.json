@@ -23,7 +23,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "assets/bitcoin-S.icns"
+        "icon": "assets/bitcoin-S.icns",
+        "executableName": "wallet-electron-ts"
       },
       "makers": [
         {
@@ -47,11 +48,23 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "options": {
+              "name": "suredbits-wallet",
+              "productName": "Suredbits Wallet",
+              "icon": "assets/bitcoin-S.png"
+            }
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
-          "config": {}
+          "config": {
+            "options": {
+              "name": "suredbits-wallet",
+              "productName": "Suredbits Wallet",
+              "icon": "assets/bitcoin-S.png"
+            }
+          }
         }
       ],
       "plugins": [
