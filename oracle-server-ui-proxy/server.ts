@@ -4,10 +4,7 @@ import https from 'https'
 
 import express, { Request, Response } from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-
-// CJS import. This doesn't allow typing things properly, but seems to work
-import { default as createSocksProxyAgent } from 'socks-proxy-agent'
-const SocksProxyAgent = createSocksProxyAgent.SocksProxyAgent
+import { SocksProxyAgent } from 'socks-proxy-agent'
 
 import * as CommonServer from 'common-ts/index'
 

@@ -1,21 +1,18 @@
 import fs from 'fs'
-import path, { dirname } from 'path'
-import module from 'module'
-import { fileURLToPath } from 'url'
+import path from 'path'
 
 import * as git from 'git-last-commit'
+
+import { loadJSON } from 'common-ts/util/fs-util'
 
 
 async function getPackageJsonVersion(): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
-      const _require = module.createRequire(import.meta.url)
-      const __dirname = dirname(fileURLToPath(import.meta.url))
-      const localPath = path.resolve(__dirname, '../../oracle-server-ui/package.json')
-      // Will throw error if file does not exist
-      fs.accessSync(localPath)
-      const version: string = _require(localPath).version
-      resolve(version)
+      const _dirname = process.cwd()
+      const localPath = path.resolve(_dirname, '../oracle-server-ui/package.json')
+      const json = loadJSON(localPath)
+      resolve(json.version)
     } catch (err) {
       console.error('could not find oracle-server-ui/package.json')
       // Don't fail, just return empty string

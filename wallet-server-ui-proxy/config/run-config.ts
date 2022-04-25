@@ -7,21 +7,22 @@ import { isESMRuntime } from 'common-ts/util/env-util'
 import { loadJSON, resolveHome } from 'common-ts/util/fs-util'
 
 
+const CONFIG_FILENAME = 'config.json'
+const LOG_FILENAME = 'wallet-server-ui-proxy.log'
+
+// TODO : Abstract this into util function <T>(dirname, filename)
 // Figure out if this module is running in ESM or CJS and load ServerConfig
 let config: ServerConfig
 // See https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
 if (isESMRuntime()) { // require.main) { // ESM Module run
   const _dirname = process.cwd() // getting around ESM vs CMJ allowance of import.meta.url
-  config = <ServerConfig>loadJSON(path.resolve(_dirname, 'config.json'))
+  config = <ServerConfig>loadJSON(path.resolve(_dirname, CONFIG_FILENAME))
   config.rootDirectory = _dirname
 } else { // CJS Module run
   // __dirname is legal to use
-  config = <ServerConfig>loadJSON(path.resolve(__dirname, 'config.json'))
+  config = <ServerConfig>loadJSON(path.resolve(__dirname, CONFIG_FILENAME))
   config.rootDirectory = __dirname
 }
-
-const LOG_FILENAME = 'wallet-server-ui-proxy.log'
-
 
 export class RunConfig {
 
@@ -95,4 +96,4 @@ mempoolUrl: ${this.mempoolUrl}
   }
 }
 
-export const Config = new RunConfig(<ServerConfig><unknown>config)
+export const Config = new RunConfig(config)

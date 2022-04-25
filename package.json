@@ -13,6 +13,7 @@
     "wallet-server-ui-proxy",
     "wallet-electron-ts",
     "oracle-server-ts",
-    "oracle-server-ui-proxy"
+    "oracle-server-ui-proxy",
+    "oracle-electron-ts"
   ]
 }

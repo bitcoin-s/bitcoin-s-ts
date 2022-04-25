@@ -1,5 +1,5 @@
 {
-	"port": 3002,
+	"port": 3001,
 	"stopOnError": false,
 	"useHTTPS": false,
 	"apiRoot": "/api/v0",
@@ -11,14 +11,12 @@
 	"serverUser": "bitcoins",
 	"serverPassword": "password",
 	"uiPassword": "none",
-	"walletServerUrl": "http://localhost:9999/",
-	"walletServerWs": "ws://localhost:19999/events",
-	"bitcoinsHome": "~/.bitcoin-s/",
+	"oracleServerUrl": "http://localhost:9998/",
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",
 	"blockstreamUrl": "https://blockstream.info/api",
 	"mempoolRoot": "/mempool",
 	"mempoolUrl": "https://mempool.space/api",
-	"uiPath": "bin/wallet-server-ui",
+	"uiPath": "bin/oracle-server-ui",
 	"bitcoinsPath": "~/.bitcoin-s/"
 }

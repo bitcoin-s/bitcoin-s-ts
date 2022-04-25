@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es6",
     "rootDir": ".",
-    "outDir": "dist",
+    "outDir": "dist/mjs",
     "strictPropertyInitialization": false,
   },
   "ts-node": {

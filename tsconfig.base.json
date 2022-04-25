@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "module": "ES2020",
     "lib": [
-      "ES2016"
+      "ES2018"
     ],
     "sourceMap": true,
     "downlevelIteration": true,
@@ -26,6 +26,7 @@
       "@bitcoin-s-ts/oracle-server-ts": ["oracle-server-ts/lib"],
       "oracle-server-ui": ["oracle-server-ui"],
       "oracle-server-ui-proxy": ["oracle-server-ui-proxy"],
+      "oracle-electron-ts":["oracle-electron-ts"],
     }
   }
 }

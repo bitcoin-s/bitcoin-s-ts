@@ -7,20 +7,33 @@
     "directory": "oracle-server-ui-proxy"
   },
   "scripts": {
-    "build": "node --loader ts-node/esm ./build/buildVersion.ts && cp config.json build.json ./dist",
+    "build": "node --loader ts-node/esm --es-module-specifier-resolution=node ./build/buildVersion.ts && ./fixup.sh && cp config.json build.json ./dist/cjs && cp config.json build.json ./dist/mjs",
     "start": "node --loader ts-node/esm --es-module-specifier-resolution=node server.ts",
     "startlocal": "DEFAULT_UI_PASSWORD=none BITCOIN_S_ORACLE_RPC_PASSWORD=password node --loader ts-node/esm --es-module-specifier-resolution=node server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack"
   },
   "license": "MIT",
   "private": true,
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
   "type": "module",
   "exports": {
-    "./*": "./dist/*"
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "import": "./dist/mjs/*",
+      "require": "./dist/cjs/*"
+    }
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/*"]
+      "*": [
+        "dist/mjs/*"
+      ]
     }
   },
   "dependencies": {
@@ -39,7 +52,11 @@
     "@types/node": "^16.7.6",
     "git-last-commit": "^1.0.1",
     "nodemon": "^2.0.12",
+    "ts-loader": "^9.2.8",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.2",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }

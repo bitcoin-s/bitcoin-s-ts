@@ -1,12 +1,12 @@
-import { SendServerMessage } from 'common-ts/index'
-import { getMessageBody } from 'common-ts/util/message-util'
-import { validateISODateString, validateNumber, validateString } from 'common-ts/util/validation-util'
+import { SendServerMessage } from 'common-ts/index.js'
+import { getMessageBody } from 'common-ts/util/message-util.js'
+import { validateISODateString, validateNumber, validateString } from 'common-ts/util/validation-util.js'
 
 import { MessageType, OracleEvent, OracleResponse } from './type/oracle-server-types'
-import { validateEnumOutcomes } from './util/validation-util'
+import { validateEnumOutcomes } from './util/validation-util.js'
 
 // Expose all 'common' endpoints
-export * from 'common-ts/index'
+export * from 'common-ts/index.js'
 
 
 /** Specific Oracle Server message functions */

@@ -1,6 +1,6 @@
-# Suredbits Desktop Wallet
+# Krystal Bull Desktop Oracle
 
-This project wraps wallet-server-ui, wallet-server-ui-proxy, and bitcoin-s appServer into a standalone native application.
+This project wraps oracle-server-ui, oracle-server-ui-proxy, and bitcoin-s oracleServer into a standalone native application.
 
 ## Dependencies
 
@@ -8,7 +8,7 @@ All modules that are dependencies of local /bin items are included in the packag
 
 ## Building Prerequisites
 
-Run `npm run build` to build all prerequisites and move binaries into this folder. NOTE : You must supply your own bitcoin-s-server.zip in this folder.
+Run `npm run build` to build all prerequisites and move binaries into this folder. NOTE : You must supply your own bitcoin-s-oracle-server.zip in this folder.
 
 ## Starting development server
 
@@ -28,4 +28,4 @@ launchctl setenv JAVA_HOME $JAVA_HOME
 
 ## Notes
 
-The packaged instance of appServer runs off of ~/.bitcoin-s/bitcoin-s.conf. Values in proxy-config.json locally will need to match values set in the conf prior to building, specifically: serverPassword, walletServerUrl, and walletServerWs.
+The packaged instance of oracleServer runs off of ~/.bitcoin-s/bitcoin-s.conf. Values in proxy-config.json locally will need to match values set in the conf prior to building, specifically: serverPassword and oracleServerUrl.
