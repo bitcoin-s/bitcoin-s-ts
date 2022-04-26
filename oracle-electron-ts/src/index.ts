@@ -42,7 +42,7 @@ const START_APP_SERVER = true
 /** Environment Specific Parameters */
 
 // set to your local absolute path for log files
-const pathRoot = '/Users/ivan/code/bitcoin-s-ts-w/oracle-electron-ts'
+const pathRoot = '/home/ivan/code/bitcoin-s-ts/oracle-electron-ts'
 const uiPort = 3001
 
 /** File logging */
@@ -171,7 +171,7 @@ const createWindow = (): void => {
   mainWindow = new BrowserWindow({
     width: 1080,
     height: 900,
-    // icon: path.join(__dirname, 'assets/icon.png'), // Linux app icon
+    icon: path.join(__dirname, 'assets/icon.png'), // Linux app icon
     webPreferences: {
       nodeIntegration: true,
       // May want to use app.getAppPath() instead
