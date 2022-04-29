@@ -6,6 +6,8 @@ This project wraps wallet-server-ui, wallet-server-ui-proxy, and bitcoin-s appSe
 
 All modules that are dependencies of local /bin items are included in the package.json here.
 
+You must `npm install` in this folder to get Electron installed properly. `npm i` in the top level monorepo seems to remove node_modules here, requiring another `npm install` here before building with Electron.
+
 ## Building Prerequisites
 
 Run `npm run build` to build all prerequisites and move binaries into this folder. NOTE : You must supply your own bitcoin-s-server.zip in this folder.

@@ -34,7 +34,7 @@
     "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
   },
   "dependencies": {
-    "common-ts": "*"
+    "common-ts": "file:../common-ts"
   },
   "devDependencies": {
     "typescript": "^4.4.3"
