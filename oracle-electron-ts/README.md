@@ -29,3 +29,20 @@ launchctl setenv JAVA_HOME $JAVA_HOME
 ## Notes
 
 The packaged instance of oracleServer runs off of ~/.bitcoin-s/bitcoin-s.conf. Values in proxy-config.json locally will need to match values set in the conf prior to building, specifically: serverPassword and oracleServerUrl.
+
+# RPM Build Config
+
+This takes a bit longer to build than deb bundling. Disabling until necessary.
+```
+{
+    "name": "@electron-forge/maker-rpm",
+    "config": {
+    "options": {
+        "name": "krystal-bull",
+        "productName": "Krystal Bull",
+        "icon": "assets/krystal_bull.png",
+        "homepage": "https://suredbits.com"
+    }
+    }
+}
+```

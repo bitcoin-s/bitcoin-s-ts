@@ -3,10 +3,11 @@ FROM node:16-buster-slim AS builder
 RUN apt-get update && apt-get install -y git python3 build-essential
 WORKDIR /build
 COPY . .
+RUN npm i
 WORKDIR /build/oracle-server-ui
-RUN npm i && npm run build
+RUN npm run build
 WORKDIR /build/oracle-server-ui-proxy
-RUN npm i && npm run build
+RUN npm run build
 
 FROM node:16-buster-slim
 USER 1000
