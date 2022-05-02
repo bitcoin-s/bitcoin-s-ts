@@ -6,7 +6,7 @@ This project wraps oracle-server-ui, oracle-server-ui-proxy, and bitcoin-s oracl
 
 All modules that are dependencies of local /bin items are included in the package.json here.
 
-At present, you must `npm install` in this folder to get Electron installed properly. `npm i` in the top level monorepo seems to remove node_modules here, requiring another `npm install` here before building with Electron.
+You must `npm install` in this folder to get Electron installed properly. `npm i` in the top level monorepo seems to remove node_modules here, requiring another `npm install` here before building with Electron.
 
 ## Building Prerequisites
 
@@ -39,12 +39,12 @@ This takes a bit longer to build than deb bundling. Disabling until necessary.
 {
     "name": "@electron-forge/maker-rpm",
     "config": {
-    "options": {
-        "name": "krystal-bull",
-        "productName": "Krystal Bull",
-        "icon": "assets/krystal_bull.png",
-        "homepage": "https://suredbits.com"
-    }
+        "options": {
+            "name": "krystal-bull",
+            "productName": "Krystal Bull",
+            "icon": "assets/krystal_bull.png",
+            "homepage": "https://suredbits.com"
+        }
     }
 }
 ```

@@ -31,3 +31,20 @@ launchctl setenv JAVA_HOME $JAVA_HOME
 ## Notes
 
 The packaged instance of appServer runs off of ~/.bitcoin-s/bitcoin-s.conf. Values in proxy-config.json locally will need to match values set in the conf prior to building, specifically: serverPassword, walletServerUrl, and walletServerWs.
+
+# RPM Build Config
+
+This takes a bit longer to build than deb bundling. Disabling until necessary.
+```
+{
+  "name": "@electron-forge/maker-rpm",
+  "config": {
+    "options": {
+      "name": "suredbits-wallet",
+      "productName": "Suredbits Wallet",
+      "icon": "assets/bitcoin-S.png",
+      "homepage": "https://suredbits.com"
+    }
+  }
+}
+```
