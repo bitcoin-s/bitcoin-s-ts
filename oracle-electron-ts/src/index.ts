@@ -36,7 +36,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 /** Run Config */
 
-const START_FILE_LOGGING = true
+const START_FILE_LOGGING = false
 const START_APP_SERVER = true
 
 /** Environment Specific Parameters */
