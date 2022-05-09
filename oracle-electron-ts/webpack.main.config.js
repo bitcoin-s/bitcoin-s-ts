@@ -39,6 +39,12 @@ module.exports = {
       }, {
         path: path.resolve(packagedPath, `bin/${server}/bin/${server}.bat`),
         fileMode: '755'
+      }, {
+        path: path.resolve(packagedPath, `bin/${server}/jre/bin/java`),
+        fileMode: '755'
+      }, {
+        path: path.resolve(packagedPath, `bin/${server}/jre/bin/keytool`),
+        fileMode: '755'
       }],
     })
   ],
