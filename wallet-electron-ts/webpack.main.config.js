@@ -6,6 +6,8 @@ const PermissionsOutputPlugin = require('webpack-permissions-plugin')
 const packagedPath = path.resolve(__dirname, '.webpack/main')
 console.log('\n  webpack.main.config packagedPath:', packagedPath)
 
+const server = 'bitcoin-s-server' // binary name
+
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file
@@ -32,10 +34,10 @@ module.exports = {
     // Re-set the +x permissions on bitcoin-s-server executables
     new PermissionsOutputPlugin({
       buildFiles: [{
-        path: path.resolve(packagedPath, 'bin/bitcoin-s-server/bin/bitcoin-s-server'),
+        path: path.resolve(packagedPath, `bin/${server}/bin/${server}`),
         fileMode: '755'
       }, {
-        path: path.resolve(packagedPath, 'bin/bitcoin-s-server/bin/bitcoin-s-server.bat'),
+        path: path.resolve(packagedPath, `bin/${server}/bin/${server}.bat`),
         fileMode: '755'
       }],
     })

@@ -76,6 +76,7 @@ console.debug('process.env:', process.env)
 
 let serverProcess: ChildProcessWithoutNullStreams = null
 let expectedKill = false
+const server = 'bitcoin-s-server' // binary name
 
 const startAppServer = (): void => {
   console.debug('startAppServer')
@@ -83,20 +84,20 @@ const startAppServer = (): void => {
   let p: string
 
   if (platform === 'win32') {
-    serverProcess = spawn('cmd.exe', ['/c', 'bitcoin-s-server.bat'],
+    serverProcess = spawn('cmd.exe', ['/c', `${server}.bat`],
       {
         cwd: './bin/bitcoin-s-server/bin'
       })
   } else {
     // Needs chmod +x before being able to spawn
-    p = path.join(__dirname, 'bin', 'bitcoin-s-server', 'bin', 'bitcoin-s-server')
+    p = path.join(__dirname, 'bin', server, 'bin', server)
     console.debug('spawn path: ' + p)
     serverProcess = spawn(p)
     // serverProcess = spawn('ls', ['-la'])
   }
 
   if (!serverProcess) {
-    console.error('Unable to start appServer from ' + __dirname)
+    console.error(`Unable to start ${server} from ${__dirname}`)
     app.quit()
     return
   }
@@ -106,7 +107,7 @@ const startAppServer = (): void => {
     process.stdout.write(data) // 'appServer: ' + data)
   })
   serverProcess.stderr.on('data', function (data) {
-    process.stderr.write('appServer error: ' + data)
+    process.stderr.write(`${server} error: ${data}`)
   })
 
   serverProcess.on('exit', code => {
@@ -115,12 +116,12 @@ const startAppServer = (): void => {
     }
 
     serverProcess = null
-    console.warn('serverProcess exit code: ' + code)
+    console.warn(`serverProcess ${server} exit code: ${code}`)
 
     // Cmd-Q code 130 is triggering this
     if (code !== 0) {
-      console.error(`appServer stopped unexpectedly with code ${code}`);
-      dialog.showErrorBox('An error occurred', `The appServer stopped unexpectedly with code ${code}, app will close. Path: ${p}`)
+      console.error(`${server} stopped unexpectedly with code ${code}`)
+      dialog.showErrorBox('An error occurred', `The ${server} stopped unexpectedly with code ${code}, app will close. Path: ${p}`)
     }
     if (mainWindow !== null) {
       mainWindow.close()
