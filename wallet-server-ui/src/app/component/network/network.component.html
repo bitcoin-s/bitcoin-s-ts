@@ -14,14 +14,20 @@
       translate="status.feeEstimateLabel"
       [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
 
-    <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
-      <label translate>torDLCHostAddress</label>
-      <input [value]="walletStateService.torDLCHostAddress" disabled>
-      <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-        (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
-        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-      </button>
-    </div>
+      <div class="tor-container">
+        <div *ngIf="walletStateService.info" class="tor-started">
+          <label translate>network.torStarted</label>
+          <input type="checkbox" [checked]="!walletStateService.info.torStarted" disabled>
+        </div>
+        <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
+          <label translate>network.torDLCHostAddress</label>
+          <input [value]="walletStateService.torDLCHostAddress" disabled>
+          <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+            (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
+            <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
   </div>
 
   <div class="data-connection">

@@ -183,6 +183,15 @@
             autocomplete="off" spellcheck="false" maxlength="1024"
             placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
             (paste)="peerAddressValue = trimOnPaste($event)">
+          <!-- Contact Selection -->
+          <button mat-stroked-button matSuffix class="mat-stroked-icon-button-md" [matMenuTriggerFor]="contactMenu"
+            matTooltip="{{ 'contacts.addContact' | translate }}"
+            [disabled]="!contactService.contacts.value || contactService.contacts.value.length === 0">
+            <mat-icon class="material-icons-outlined">person_add</mat-icon></button>
+          <mat-menu #contactMenu="matMenu" xPosition="before">
+            <button mat-menu-item *ngFor="let contact of contactService.contacts.value"
+              (click)="onContact(contact)">{{ contact.alias }}</button>
+          </mat-menu>
           <app-more-info matSuffix tooltip="acceptOfferDescription.peerAddress"></app-more-info>
         </mat-form-field>
         <app-alert *ngIf="peerAddressControl?.errors?.['dontMatchInvalid']"

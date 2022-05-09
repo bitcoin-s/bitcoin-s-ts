@@ -29,4 +29,5 @@ export interface GetInfoResponse {
   network: string // like 'test'
   blockHeight: number
   blockHash: string
+  torStarted: boolean
 }

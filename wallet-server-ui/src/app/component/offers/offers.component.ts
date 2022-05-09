@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
+import { ContactService } from '~service/contact-service'
 import { OfferService } from '~service/offer-service'
 
 import { IncomingOffer } from '~type/wallet-server-types'
@@ -59,7 +60,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   private decodedOffer$: Subscription
 
   constructor(private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder,
-    public offerService: OfferService) { }
+    public offerService: OfferService, public contactService: ContactService) { }
 
   ngOnInit(): void {
     // Keeps state in sync with route changes

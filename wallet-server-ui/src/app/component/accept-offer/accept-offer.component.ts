@@ -11,11 +11,12 @@ import { of } from 'rxjs'
 import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
+import { ContactService } from '~service/contact-service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor } from '~type/wallet-server-types'
+import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor, Contact } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste, validateTorAddress } from '~util/utils'
@@ -196,7 +197,8 @@ export class AcceptOfferComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private dialog: MatDialog,
     private messageService: MessageService, private walletStateService: WalletStateService,
-    private translate: TranslateService, private chartService: ChartService, private darkModeService: DarkModeService) { }
+    private translate: TranslateService, private chartService: ChartService, private darkModeService: DarkModeService,
+    public contactService: ContactService) { }
 
   ngOnInit(): void {
     this.defaultFilename = this.translate.instant('acceptOffer.defaultFilename')
@@ -323,6 +325,13 @@ export class AcceptOfferComponent implements OnInit {
         externalPayoutAddress: text,
       })
       this.externalPayoutAddress?.markAsDirty() // Trigger validation
+    }
+  }
+
+  onContact(contact: Contact) {
+    console.debug('onContact()', contact)
+    if (contact) {
+      this.peerAddressValue = contact.address
     }
   }
 
