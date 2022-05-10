@@ -31,8 +31,13 @@ cp -a ../wallet-server-ui-proxy/dist/bundle-static.js bin/wallet-server-ui-proxy
 # Replace config.json
 cp -a proxy-config.json bin/wallet-server-ui-proxy/config.json
 
-# Expand bitcoin-s-server zip
-echo "TODO : Pull down bitcoin-s-server.zip"
-mkdir -p bin/bitcoin-s-server
-unzip bitcoin-s-server.zip -d bin/bitcoin-s-server
-chmod +x bin/bitcoin-s-server/bin/bitcoin-s-server
+# Expand bitcoin-s-server* zip
+file="bitcoin-s-server"
+echo "TODO : Pull down ${file}*.zip"
+mkdir -p bin/${file}
+unzip ${file}*.zip -d bin/${file}
+# Take care of extra folder level that embeds metadata like 'bitcoin-s-server-1.9.1-13-f5940c93-20220422-1030-SNAPSHOT'
+cd bin/${file}
+mv ${file}*/* .
+rm -rf ${file}*
+chmod +x bin/${file}

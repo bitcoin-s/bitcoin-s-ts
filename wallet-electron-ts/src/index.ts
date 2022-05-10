@@ -23,13 +23,13 @@ if (require('electron-squirrel-startup')) {
 // export JAVA_HOME="/Users/username/Library/Caches/Coursier/jvm/openjdk@1.11.0-2/Contents/Home"
 // launchctl setenv JAVA_HOME $JAVA_HOME
 // See https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications
-if (app.isPackaged) {
-  if (!process.env['JAVA_HOME']) {
-    console.error('JAVA_HOME is not set, starting appServer is going to fail')
-    dialog.showErrorBox('An error occurred', `The JAVA_HOME environment variable must be set and exposed. Please see README for more information.`)
-    app.quit()
-  }
-}
+// if (app.isPackaged) {
+//   if (!process.env['JAVA_HOME']) {
+//     console.error('JAVA_HOME is not set, starting appServer is going to fail')
+//     dialog.showErrorBox('An error occurred', `The JAVA_HOME environment variable must be set and exposed. Please see README for more information.`)
+//     app.quit()
+//   }
+// }
 
 // disable Insecure Content-Security-Policy warning in console
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
