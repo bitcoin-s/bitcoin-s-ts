@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y git python3 build-essential
 WORKDIR /build
 COPY . .
 RUN npm i
+RUN npm run build
 WORKDIR /build/oracle-server-ui
 RUN npm run build
 WORKDIR /build/oracle-server-ui-proxy
