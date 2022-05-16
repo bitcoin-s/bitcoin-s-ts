@@ -1,8 +1,22 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es6",
-    "rootDir": "./",
-    "esModuleInterop": true
-  }
+    "rootDir": ".",
+    "outDir": "dist/mjs",
+    "strictPropertyInitialization": false,
+    // "lib": [
+    //   "ES2018"
+    // ],
+    // "typeRoots": [
+    //   "node_modules/@types"
+    // ],
+  },
+  "ts-node": {
+    "esm": true
+  },
+  // "files": [
+  //   "config.json",
+  //   "build.json"
+  // ],
 }

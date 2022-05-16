@@ -1,0 +1,7 @@
+bin
+.webpack
+out
+*.log
+.vscode
+build.json
+bitcoin-s-oracle-server*.zip

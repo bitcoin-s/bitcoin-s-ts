@@ -1,17 +1,15 @@
-import { RunConfig } from '../type/run-config'
+import { Config } from '../config/run-config'
+import { Logger } from '../middleware/logger'
 
 
-const Config = <RunConfig>require('../type/run-config')
-const logger = require('../middleware/logger')
-
-exports.setErrorHandlers = () => {
+export const setErrorHandlers = () => {
   process.on('uncaughtException', error => {
-    logger.error('uncaught error', error)
+    Logger.error('uncaught error', error)
     if (Config.stopOnError) process.exit(1)
   })
   
   process.on('unhandledRejection', error => {
-    logger.error('uncaught rejection', error)
+    Logger.error('uncaught rejection', error)
     if (Config.stopOnError) process.exit(1)
   })
 }

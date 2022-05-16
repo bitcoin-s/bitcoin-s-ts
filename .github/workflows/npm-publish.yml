@@ -13,6 +13,7 @@ jobs:
         with:
           node-version: 16
       - run: |
+          npm install && npm run build
           cd oracle-server-ts
           npm install
           cd ../wallet-ts

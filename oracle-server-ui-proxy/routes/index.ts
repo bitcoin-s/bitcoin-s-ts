@@ -1,10 +1,10 @@
 import express from 'express'
 
+import { router as authRouter } from './auth'
+import { router as proxyRouter } from './proxy'
 
-const router = express.Router()
 
-router.use('/auth', express.json(), require('./auth'))
+export const router = express.Router()
 
-router.use('/', require('./proxy'))
-
-module.exports = router
+router.use('/auth', express.json(), authRouter)
+router.use('/', proxyRouter)

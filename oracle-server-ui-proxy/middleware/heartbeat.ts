@@ -1,21 +1,20 @@
 import { Request, Response } from 'express'
 
-import * as CommonServer from 'common-ts/lib/index'
-
+import * as CommonServer from 'common-ts/index'
 
 
 /** 'Is this proxy running' endpoint */
-exports.heartbeat = (req: Request, res: Response) => {
+export const heartbeat = (req: Request, res: Response) => {
   res.json({ success: true })
 }
 
 /** 'Is the appServer/oracleServer running' endpoint */
-exports.serverHeartbeat = (serverUrl: string) => async (req: Request, res: Response) => {
+export const serverHeartbeat = (serverUrl: string) => async (req: Request, res: Response) => {
   let success = false
 
-  await CommonServer.GetVersion().then(_ => {
+  await CommonServer.GetVersion().then(() => {
     success = true
-  }).catch(err => {
+  }).catch((err: any) => {
     // errno: 'ECONNREFUSED', code: 'ECONNREFUSED' for no server present to talk to
     success = false;
   })

@@ -3,21 +3,21 @@ import path from 'path'
 
 import { Request, Response } from 'express'
 
-import * as OracleServer from 'oracle-server-ts/lib/index'
+import { ServerResponse } from 'common-ts/type/server-types'
 
-import { RunConfig } from '../type/run-config'
+import * as OracleServer from '@bitcoin-s-ts/oracle-server-ts/index'
 
+import { Config } from '../config/run-config'
+import { Logger } from '../middleware/logger'
 
-const Config = <RunConfig>require('../type/run-config')
-const logger = require('../middleware/logger')
 
 const filename = 'oracle-backup.zip'
 
-exports.downloadBackup = (req: Request, res: Response) => {
-  logger.info('downloadBackup ' + Config.bitcoinsDirectory)
+export const downloadBackup = (req: Request, res: Response) => {
+  Logger.info('downloadBackup ' + Config.bitcoinsDirectory)
 
   const fullPath = path.join(Config.bitcoinsDirectory, filename)
-  logger.info('fullPath: ' + fullPath)
+  Logger.info('fullPath: ' + fullPath)
 
   // logger.info('auth header: ' + res.getHeader('Authorization'))
 
@@ -25,19 +25,19 @@ exports.downloadBackup = (req: Request, res: Response) => {
   try {
     fs.accessSync(Config.bitcoinsDirectory) // Will throw error if directory does not exist
   } catch (err) {
-    logger.error('downloadBackup backupDirectory is not accessible ' + Config.bitcoinsDirectory)
+    Logger.error('downloadBackup backupDirectory is not accessible ' + Config.bitcoinsDirectory)
     res.end() // Blob size 0 returned
   }
 
   // Use wallet-ts to create backup
-  OracleServer.ZipDataDir(fullPath).then(result => {
-    logger.info('ZipDataDir() complete')
+  OracleServer.ZipDataDir(fullPath).then((result: ServerResponse<string|null>) => {
+    Logger.info('ZipDataDir() complete')
     if (result.result === null) { // success case
       // Sanity check
       try {
         fs.accessSync(fullPath) // Will throw error if file does not exist
       } catch (err) {
-        logger.error('downloadBackup fullPath is not accessible ' + fullPath)
+        Logger.error('downloadBackup fullPath is not accessible ' + fullPath)
         res.end() // Blob size 0 returned
       }
 
@@ -45,7 +45,7 @@ exports.downloadBackup = (req: Request, res: Response) => {
       readStream.on('open', () =>
         res.setHeader('Content-Type', 'application/zip; charset=utf-8'))
       readStream.on('error',
-        (err) => { logger.error('readStream error ' + err) })
+        (err) => { Logger.error('readStream error ' + err) })
       readStream.on('end', () => {
         // Always delete backup zip after sending
         fs.unlink(fullPath, function() {
@@ -54,7 +54,7 @@ exports.downloadBackup = (req: Request, res: Response) => {
       })
       readStream.pipe(res)
     } else {
-      logger.error('downloadBackup ZipDataDir failed')
+      Logger.error('downloadBackup ZipDataDir failed')
       res.end() // Blob size 0 returned
     }
   })
@@ -66,12 +66,12 @@ function sendPlainText(res: Response, filePath: string) {
   readStream.on('open', () =>
     res.setHeader('Content-Type', 'text/plain; charset=utf-8'))
   readStream.on('error',
-    (err) => { logger.error('readStream error ' + err) })
+    (err) => { Logger.error('readStream error ' + err) })
   readStream.pipe(res)
 }
 
-exports.downloadOracleServerLog = (req: Request, res: Response) => {
-  logger.info('downloadOracleServerLog')
+export const downloadOracleServerLog = (req: Request, res: Response) => {
+  Logger.info('downloadOracleServerLog')
 
   const oracleFolderName = 'oracle'
   const logFileName = 'bitcoin-s.log'
@@ -81,22 +81,22 @@ exports.downloadOracleServerLog = (req: Request, res: Response) => {
   try {
     fs.accessSync(logPath)
   } catch (err) {
-    logger.error('downloadOracleServerLog log is not accessible ' + logPath)
+    Logger.error('downloadOracleServerLog log is not accessible ' + logPath)
     res.end() // Blob size 0 returned
   }
 
   sendPlainText(res, logPath)
 }
 
-exports.downloadProxyLog = (req: Request, res: Response) => {
-  logger.info('downloadProxyLog')
+export const downloadProxyLog = (req: Request, res: Response) => {
+  Logger.info('downloadProxyLog')
 
   const logPath = Config.logFilepath
 
   try {
     fs.accessSync(logPath)
   } catch (err) {
-    logger.error('downloadProxyLog log is not accessible ' + logPath)
+    Logger.error('downloadProxyLog log is not accessible ' + logPath)
     res.end() // Blob size 0 returned
   }
 

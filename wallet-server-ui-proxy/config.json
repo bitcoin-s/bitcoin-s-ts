@@ -13,12 +13,12 @@
 	"uiPassword": "none",
 	"walletServerUrl": "http://localhost:9999/",
 	"walletServerWs": "ws://localhost:19999/events",
-	"bitcoinsHome": "~/.bitcoin-s/",
 	"oracleExplorerHost": "test.oracle.suredbits.com",
 	"blockstreamRoot": "/blockstream",
 	"blockstreamUrl": "https://blockstream.info/api",
 	"mempoolRoot": "/mempool",
 	"mempoolUrl": "https://mempool.space/api",
 	"uiPath": "../wallet-server-ui/dist/wallet-server-ui",
-	"bitcoinsPath": "~/.bitcoin-s/"
+	"bitcoinsPath": "~/.bitcoin-s/",
+	"rootDirectory": ""
 }

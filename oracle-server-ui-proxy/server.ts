@@ -6,25 +6,21 @@ import express, { Request, Response } from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 
-import * as CommonServer from 'common-ts/lib/index'
-
-import { RunConfig } from './type/run-config'
-
+import * as CommonServer from 'common-ts/index'
 
 /** State */
 
-const Config = <RunConfig>require('./type/run-config')
-Config.rootDirectory = __dirname
+import { Config } from './config/run-config'
 
 /** Logging */
 
-const logger = require('./middleware/logger')
-logger.info('Starting wallet-server-ui-proxy')
-Config.show(logger)
+import { Logger } from './middleware/logger'
+Logger.info('Starting wallet-server-ui-proxy ' + Config.getState())
 
 /** Error Handling  */
 
-require('./middleware/error').setErrorHandlers()
+import { setErrorHandlers } from './middleware/error'
+setErrorHandlers()
 
 /** Configure common-ts, oracle-server-ts */
 
@@ -39,27 +35,26 @@ const app = express()
 app.use(express.static(Config.uiDirectory))
 
 // Host all proxy routes
-app.use(Config.proxyRoot, require('./routes/index'))
+import { router } from './routes/index'
+app.use(Config.proxyRoot, router)
 
 const EXPLORER_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
 const BLOCKSTREAM_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
 const MEMPOOL_PROXY_TIMEOUT = 10 * 1000 // 10 seconds
 
-const removeFrontendHeaders = require('./middleware/proxy').removeFrontendHeaders
-const getProxyErrorHandler = require('./middleware/proxy').getProxyErrorHandler
-const hostRouter = require('./middleware/proxy').hostRouter
+import * as proxy from './middleware/proxy'
 
 // Use the HOST_OVERRIDE_HEADER if present to set the Oracle Explorer host
 const HOST_OVERRIDE_HEADER = 'host-override'
 const ECONNREFUSED = 'ECONNREFUSED'
 
 // Proxy calls to this server on to Oracle Explorer
-function createOracleExplorerProxy(agent?: SocksProxyAgent) {
+function createOracleExplorerProxy(agent?: any /* SocksProxyAgent */) {
   const root = (agent ? Config.torProxyRoot : '') + Config.oracleExplorerRoot
   app.use(root, createProxyMiddleware({
     // target: oracleExplorerUrl,
     agent,
-    router: hostRouter, // Dynamic target
+    router: proxy.hostRouter, // Dynamic target
     changeOrigin: true,
     pathRewrite: {
       [`^${root}`]: '',
@@ -72,7 +67,7 @@ function createOracleExplorerProxy(agent?: SocksProxyAgent) {
         proxyReq.setHeader('host', host)
         proxyReq.removeHeader(HOST_OVERRIDE_HEADER)
         // Remove unnecessary headers
-        removeFrontendHeaders(proxyReq)
+        proxy.removeFrontendHeaders(proxyReq)
         res.removeHeader('x-powered-by')
       }
       
@@ -80,12 +75,12 @@ function createOracleExplorerProxy(agent?: SocksProxyAgent) {
       // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
       // console.debug('onProxyReq() res headers:', res.getHeaders())
     },
-    onError: getProxyErrorHandler('oracleExplorer', agent),
+    onError: proxy.getProxyErrorHandler('oracleExplorer', agent),
   }))
 }
 
 // Proxy calls to this server to Blockstream API
-function createBlockstreamProxy(agent?: SocksProxyAgent | null) {
+function createBlockstreamProxy(agent?: any /* SocksProxyAgent */) {
   const root = (agent ? Config.torProxyRoot : '') + Config.blockstreamRoot
   app.use(root, createProxyMiddleware({
     agent,
@@ -97,19 +92,19 @@ function createBlockstreamProxy(agent?: SocksProxyAgent | null) {
     proxyTimeout: BLOCKSTREAM_PROXY_TIMEOUT,
     onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
       if (!agent) { // this throws error with 'agent' set
-        removeFrontendHeaders(proxyReq)
+        proxy.removeFrontendHeaders(proxyReq)
       }
 
       // console.debug('onProxyReq() req headers:', req.headers)
       // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
       // console.debug('onProxyReq() res headers:', res.getHeaders())
     },
-    onError: getProxyErrorHandler('blockstream', agent),
+    onError: proxy.getProxyErrorHandler('blockstream', agent),
   }))
 }
 
 // Proxy calls to this server to Mempool API
-function createMempoolProxy(agent?: SocksProxyAgent | null) {
+function createMempoolProxy(agent?: any /* SocksProxyAgent */) {
   const root = (agent ? Config.torProxyRoot : '') + Config.mempoolRoot
   app.use(root, createProxyMiddleware({
     agent,
@@ -121,18 +116,18 @@ function createMempoolProxy(agent?: SocksProxyAgent | null) {
     proxyTimeout: MEMPOOL_PROXY_TIMEOUT,
     onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options/*: httpProxy.ServerOptions*/) => {
       if (!agent) { // this throws error with 'agent' set
-        removeFrontendHeaders(proxyReq)
+        proxy.removeFrontendHeaders(proxyReq)
       }
 
       // console.debug('onProxyReq() req headers:', req.headers)
       // console.debug('onProxyReq() proxyReq headers:', proxyReq.getHeaders())
       // console.debug('onProxyReq() res headers:', res.getHeaders())
     },
-    onError: getProxyErrorHandler('mempool', agent),
+    onError: proxy.getProxyErrorHandler('mempool', agent),
   }))
 }
 
-function createProxies(agent?: SocksProxyAgent) {
+function createProxies(agent?: any /* SocksProxyAgent */) {
   createOracleExplorerProxy(agent)
   createBlockstreamProxy(agent)
   createMempoolProxy(agent)
@@ -150,7 +145,7 @@ if (USE_TOR_PROXY) {
 
 /** Authenticated Oracle Server Proxy Routes */
 
-const verifyAuth = require('./middleware/auth').verify
+import { verify as verifyAuth } from './middleware/auth'
 
 // Proxy calls to this server to oracleServer/run instance
 const PROXY_TIMEOUT = 10 * 1000; // 10 seconds
@@ -175,7 +170,7 @@ app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
     if (err && (<any>err).code === ECONNREFUSED) {
       res.writeHead(500, 'oracleServer connection refused').end()
     } else {
-      logger.error('onError', err, res.statusCode, res.statusMessage)
+      Logger.error('onError', err, res.statusCode, res.statusMessage)
     }
   }
 }))
@@ -184,17 +179,17 @@ app.use(Config.apiRoot, verifyAuth, createProxyMiddleware({
 
 let server
 if (Config.useHTTPS) {
-  logger.info('starting HTTPS server with certs')
+  Logger.info('starting HTTPS server with certs')
   const options = {
     key: fs.readFileSync('config/keys/key.pem'),
     cert: fs.readFileSync('config/keys/cert.pem'),
   }
   server = https.createServer(options, app)
 } else {
-  logger.info('starting HTTP server')
+  Logger.info('starting HTTP server')
   server = http.createServer(app)
 }
 
 server.listen(Config.port, async () => {
-  logger.info(`Web Server started on port: ${Config.port} ⚡`)
+  Logger.info(`Web Server started on port: ${Config.port} ⚡`)
 })

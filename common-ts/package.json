@@ -7,12 +7,29 @@
     "directory": "common-ts"
   },
   "description": "NodeJS package for common bitcoin-s-ts functionality",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "import": "./dist/mjs/*",
+      "require": "./dist/cjs/*"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/mjs/*"]
+    }
+  },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "tsc",
-    "tests": "npx ts-node tests.ts"
+    "build": "tsc && ./fixup.sh",
+    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
   },
   "private": true,
   "dependencies": {

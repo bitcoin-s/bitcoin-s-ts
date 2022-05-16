@@ -7,20 +7,34 @@
     "directory": "wallet-ts"
   },
   "description": "NodeJS package for accessing bitcoin-s wallet",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "import": "./dist/mjs/*",
+      "require": "./dist/cjs/*"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/mjs/*"]
+    }
+  },
   "scripts": {
-    "preinstall": "cd ../common-ts && npm i",
     "prepublish": "npm run build",
-    "build": "tsc",
-    "tests": "npx ts-node tests.ts"
+    "build": "tsc && ./fixup.sh",
+    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
   },
   "dependencies": {
-    "common-ts": "file:../common-ts",
-    "needle": "^3.0.0"
+    "common-ts": "file:../common-ts"
   },
   "devDependencies": {
-    "@types/needle": "^2.5.2",
     "typescript": "^4.4.3"
   }
 }

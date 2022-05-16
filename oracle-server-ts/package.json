@@ -7,22 +7,36 @@
     "directory": "oracle-server-ts"
   },
   "description": "NodeJS package for accessing bitcoin-s oracleServer",
-  "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "import": "./dist/mjs/*",
+      "require": "./dist/cjs/*"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/mjs/*"]
+    }
+  },
   "scripts": {
-    "preinstall": "cd ../common-ts && npm i",
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "node test.js",
-    "demo": "npx ts-node demo.ts",
-    "tests": "npx ts-node tests.ts"
+    "test": "node --loader ts-node/esm --es-module-specifier-resolution=node test.js",
+    "demo": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/demo.ts",
+    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
   },
   "dependencies": {
-    "common-ts": "file:../common-ts",
-    "needle": "^3.0.0"
+    "common-ts": "file:../common-ts"
   },
   "devDependencies": {
-    "@types/needle": "^2.5.2",
     "typescript": "^4.4.3"
   }
 }

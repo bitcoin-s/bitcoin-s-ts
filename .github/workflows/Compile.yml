@@ -22,6 +22,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Install monorepo dependencies
+        run: |
+         npm i && npm run build
       - name: Install oracle-server-ui dependencies
         run: |
          cd oracle-server-ui
