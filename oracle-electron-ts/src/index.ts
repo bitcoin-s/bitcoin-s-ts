@@ -153,8 +153,10 @@ const startProxy = (): void => {
   //   console.debug('wallet-server-ui-proxy loaded', _)
   // })
 
-  // Works in debug and prod
-  const proxy = require('oracle-server-ui-proxy-bundle')
+  // Works in debug and prod on Mac/linux with "oracle-server-ui-proxy-bundle": "file:bin/oracle-server-ui-proxy/bundle-static.js"
+  // const proxy = require('oracle-server-ui-proxy-bundle')
+  // Works on Mac and Windows "oracle-server-ui-proxy-bin": "file:bin/oracle-server-ui-proxy"
+  const proxy = require('oracle-server-ui-proxy-bin/bundle-static.js')
 }
 
 const stopProxy = (): void => {

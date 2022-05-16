@@ -45,6 +45,9 @@ module.exports = {
       }, {
         path: path.resolve(packagedPath, `bin/${server}/jre/bin/keytool`),
         fileMode: '755'
+      }, {
+        path: path.resolve(packagedPath, `bin/${server}/jre/lib/jspawnhelper`),
+        fileMode: '755'
       }],
     })
   ],
