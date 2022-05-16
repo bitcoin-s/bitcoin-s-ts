@@ -114,6 +114,6 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "oracle-server-ui-proxy": "file:../oracle-server-ui-proxy",
-    "oracle-server-ui-proxy-bundle": "file:bin/oracle-server-ui-proxy/bundle-static.js"
+    "oracle-server-ui-proxy-bin": "file:bin/oracle-server-ui-proxy"
   }
 }
