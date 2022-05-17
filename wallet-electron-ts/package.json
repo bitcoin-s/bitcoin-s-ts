@@ -8,6 +8,7 @@
   },
   "productName": "Suredbits Wallet",
   "description": "Suredbits Desktop Wallet",
+  "author": "Suredbits",
   "scripts": {
     "build": "./buildDependencies.sh && ./makeBin.sh",
     "start": "electron-forge start",
@@ -114,6 +115,6 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "wallet-server-ui-proxy": "file:../wallet-server-ui-proxy",
-    "wallet-server-ui-proxy-bundle": "file:bin/wallet-server-ui-proxy/bundle-static.js"
+    "wallet-server-ui-proxy-bin": "file:bin/wallet-server-ui-proxy"
   }
 }

@@ -153,7 +153,7 @@ const startProxy = (): void => {
   // })
 
   // Works in debug and prod
-  const proxy = require('wallet-server-ui-proxy-bundle')
+  const proxy = require('wallet-server-ui-proxy-bundle/bundle-static.js')
 }
 
 const stopProxy = (): void => {
