@@ -34,7 +34,7 @@
         {{ 'header.createDLC' | translate }}</a>
       <a mat-button routerLink="/wallet" routerLinkActive="active">
         {{ 'walletBalance.heading' | translate }}</a>
-  
+
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
       <div *ngIf="walletStateService.balances" class="wallet-status"
         matTooltip="{{ 'header.walletBalance' | translate: { 
@@ -56,6 +56,12 @@
       </div>
   
       <div class="spacer-auto"></div>
+
+      <button class="contacts-icon" mat-icon-button routerLink="/contacts" routerLinkActive="active"
+        matTooltip="{{ 'contacts.heading' | translate }}"
+        aria-label="Contacts">
+        <mat-icon class="material-icons-outlined">contacts</mat-icon>
+      </button>
   
       <button *ngIf="walletStateService.balances" mat-icon-button class="wallet-icon"
         [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
@@ -71,7 +77,7 @@
           <span translate>dialog.sendFunds.title</span>
         </button>
       </mat-menu>
-  
+
       <button mat-icon-button class="upload-icon"
         matTooltip="{{ 'Upload a DLC File' | translate }}"
         [matMenuTriggerFor]="uploadMenu" aria-label="Upload a DLC File">
@@ -103,7 +109,7 @@
         aria-label="About">
         <mat-icon>help_outline</mat-icon>
       </button>
-  
+
       <button mat-icon-button class="more-icon"
         matTooltip="{{ 'More' | translate }}"
         [matMenuTriggerFor]="moreMenu" aria-label="More">
@@ -117,6 +123,10 @@
         <button class="network-menu-button" mat-menu-item routerLink="/network">
           <mat-icon class="material-icons-outlined">cloud</mat-icon>
           <span translate>network.heading</span>
+        </button>
+        <button class="contacts-menu-button" mat-menu-item routerLink="/contacts">
+          <mat-icon class="material-icons-outlined">contacts</mat-icon>
+          <span translate>contacts.heading</span>
         </button>
         <button mat-menu-item (click)="onConfiguration()">
           <mat-icon class="material-icons-outlined">settings</mat-icon>
@@ -157,7 +167,12 @@
           <!-- </div> -->
         <!-- </div> -->
       </a>
-  
+
+      <!-- Tor Starting indicator -->
+      <mat-icon *ngIf="walletStateService.torStarting.value" class="tor-starting" 
+        matTooltip="{{ 'network.torStarting' | translate }}"
+        matTooltipPosition="before">sync_disabled</mat-icon>
+
       <!--
       <div class="indicator-padding"></div>
   

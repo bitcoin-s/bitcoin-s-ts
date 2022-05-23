@@ -5,7 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators'
 
 import { MessageService } from '~service/message.service'
 
-import { CoreMessageType, DLCState, IncomingOffer } from '~type/wallet-server-types'
+import { CoreMessageType, DLCState, IncomingOffer, WalletMessageType } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
 import { getMessageBody } from '~util/wallet-server-util'
@@ -39,9 +39,9 @@ export class OfferService {
   }
 
   loadIncomingOffers() {
-    return this.messageService.sendMessage(getMessageBody('offers-list'))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.offerslist))
     .pipe(tap(r => {
-      console.warn('offers-list', r)
+      // console.debug('offers-list', r)
       if (r.result) {
         const offers = r.result
         this.offers.next(offers)
@@ -89,7 +89,7 @@ export class OfferService {
   }
 
   addIncomingOffer(offerTLV: string, peer: string, message: string) {
-    return this.messageService.sendMessage(getMessageBody('offer-add', [offerTLV, peer, message]))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.offeradd, [offerTLV, peer, message]))
     .pipe(tap(r => {
       console.debug('offer-add', r)
       if (r.result) { // hash.hex
@@ -99,7 +99,7 @@ export class OfferService {
   }
 
   removeIncomingOffer(hash: string) {
-    return this.messageService.sendMessage(getMessageBody('offer-remove', [hash]))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.offerremove, [hash]))
     .pipe(tap(r => {
       console.debug('offer-remove', r)
       if (r.result) { // hash.hex
@@ -118,7 +118,7 @@ export class OfferService {
   }
 
   sendIncomingOffer(offerTLVorTempId: string, peer: string, message: string) {
-    return this.messageService.sendMessage(getMessageBody('offer-send', [offerTLVorTempId, peer, message]))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.offersend, [offerTLVorTempId, peer, message]))
     .pipe(tap(r => {
       console.debug('offer-send', r)
       if (r.result) { // hash.hex

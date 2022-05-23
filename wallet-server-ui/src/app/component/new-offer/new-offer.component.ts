@@ -10,12 +10,13 @@ import { catchError } from 'rxjs/operators'
 import { Result } from '@zxing/library'
 
 import { ChartService } from '~service/chart.service'
+import { ContactService } from '~service/contact-service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { MessageService } from '~service/message.service'
 import { OfferService } from '~service/offer-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
+import { Contact, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste } from '~util/utils'
@@ -279,7 +280,7 @@ export class NewOfferComponent implements OnInit {
   }
 
   constructor(private messageService: MessageService, public walletStateService: WalletStateService,
-    private offerService: OfferService,
+    private offerService: OfferService, public contactService: ContactService,
     private formBuilder: FormBuilder, private translate: TranslateService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
@@ -619,4 +620,11 @@ export class NewOfferComponent implements OnInit {
     if (!this.messageValue) this.messageValue = trimOnPaste(event)
   }
   
+  onContact(contact: Contact) {
+    console.debug('onContact()', contact)
+    if (contact) {
+      this.peerAddressValue = contact.address
+    }
+  }
+
 }

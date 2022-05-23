@@ -1,0 +1,46 @@
+@import '../../../scss/breakpoints';
+
+$padding: 0.5rem;
+
+.form-container {
+  padding: 0 1rem;
+  .mat-form-field {
+    margin-right: 0.5rem;
+  }
+  button ~ button {
+    margin-left: 0.5rem;
+  }
+}
+
+.contacts {
+  .contact-table {
+    // flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    // width: 100%;
+    margin: 0 1rem;
+
+    // Column padding
+    .mat-header-cell, .mat-cell, .mat-footer-cell {
+      padding-left: $padding;
+      padding-right: $padding;
+      &:first-of-type {
+        padding-left: $padding * 2;
+      }
+      &:last-of-type {
+        padding-right: $padding * 2;
+      }
+    }
+
+    .focus-row {
+      font-weight: bold;
+    }
+    .mat-no-data-row {
+      text-align: center;
+    }
+
+    .mat-column-memo {
+      white-space: pre-line;
+    }
+  }
+}

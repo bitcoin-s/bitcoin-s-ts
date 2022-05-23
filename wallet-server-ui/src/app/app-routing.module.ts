@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router'
 
 import { AboutComponent } from './component/about/about.component'
 import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component'
+import { ContactsComponent } from './component/contacts/contacts.component'
 import { ContractsComponent } from './component/contracts/contracts.component'
 import { LoginComponent } from './component/login/login.component'
 import { NetworkComponent } from './component/network/network.component'
@@ -21,6 +22,7 @@ const appRoutes: Routes = [
   { path: 'offers', component: OffersComponent, canActivate: [AuthGuard] },
   { path: 'create', component: BuildAcceptOfferComponent, canActivate: [AuthGuard] },
   { path: 'network', component: NetworkComponent, canActivate: [AuthGuard] },
+  { path: 'contacts', component: ContactsComponent, canActivate: [AuthGuard] },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
 ];

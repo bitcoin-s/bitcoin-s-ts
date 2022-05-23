@@ -82,6 +82,9 @@ $padding: 0.5rem;
       word-wrap: break-word;
       max-width: 300px;
     }
+    .mat-column-peer {
+      white-space: nowrap;
+    }
 
     // Hide Outcomes and Attestations on narrow screens
     @include lt-md {

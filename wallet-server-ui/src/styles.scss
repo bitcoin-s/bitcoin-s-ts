@@ -236,11 +236,19 @@ mat-form-field {
   }
 }
 
-.mat-stroked-button.mat-stroked-icon-button-sm {
-  min-width: unset;
-  vertical-align: super;
-  padding: 0 3px;
-  line-height: 30px;
+.mat-stroked-button {
+  &.mat-stroked-icon-button-sm {
+    min-width: unset;
+    vertical-align: super;
+    padding: 0 3px;
+    line-height: 30px;
+  }
+  &.mat-stroked-icon-button-md {
+    min-width: unset;
+    vertical-align: super;
+    padding: 0 6px;
+    line-height: 30px;
+  }
 }
 
 .mat-form-field-row {
@@ -332,6 +340,9 @@ mat-form-field {
 .cdk-overlay-container {
   @include sm {
     .mat-menu-item.about-menu-button {
+      display: none;
+    }
+    .mat-menu-item.contacts-menu-button {
       display: none;
     }
   }
