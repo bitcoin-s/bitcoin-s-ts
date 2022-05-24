@@ -50,6 +50,7 @@ export interface GetInfoResponse {
   network: string // like 'test'
   blockHeight: number
   blockHash: string
+  torStarted: boolean
 }
 
 // EO blockbhain-types.ts
@@ -122,6 +123,15 @@ export const enum WalletMessageType {
   estimatefee = 'estimatefee',
   getdlcwalletaccounting = 'getdlcwalletaccounting',
   backupwallet = 'backupwallet',
+
+  offeradd = 'offer-add',
+  offerremove = 'offer-remove',
+  offerslist = 'offers-list',
+  offersend = 'offer-send',
+
+  contactadd = 'contact-add',
+  contactremove = 'contact-remove',
+  contactslist = 'contacts-list',
 }
 
 export interface WalletInfo {
@@ -225,6 +235,12 @@ export interface IncomingOffer {
   peer: string
   message: string
   offerTLV: string
+}
+
+export interface Contact {
+  alias: string
+  address: string
+  memo: string
 }
 
 // EO wallet-types.ts

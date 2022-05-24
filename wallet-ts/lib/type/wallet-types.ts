@@ -66,6 +66,15 @@ export const enum WalletMessageType {
   estimatefee = 'estimatefee',
   getdlcwalletaccounting = 'getdlcwalletaccounting',
   backupwallet = 'backupwallet',
+
+  offeradd = 'offer-add',
+  offerremove = 'offer-remove',
+  offerslist = 'offers-list',
+  offersend = 'offer-send',
+
+  contactadd = 'contact-add',
+  contactremove = 'contact-remove',
+  contactslist = 'contacts-list',
 }
 
 export interface WalletInfo {
@@ -161,4 +170,18 @@ export enum DLCState {
   remoteClaimed = 'RemoteClaimed',
   // ClosedState
   refunded = 'Refunded',
+}
+
+export interface IncomingOffer {
+  hash: string
+  receivedAt: number
+  peer: string
+  message: string
+  offerTLV: string
+}
+
+export interface Contact {
+  alias: string
+  address: string
+  memo: string
 }

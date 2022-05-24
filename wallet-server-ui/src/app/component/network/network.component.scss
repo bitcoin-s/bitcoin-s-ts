@@ -9,11 +9,14 @@
       margin-bottom: 0.5rem;
     }
 
-    .tor-dlc-host-address {
+    .tor-container {
       margin-top: 1rem;
       margin-bottom: 1rem;
-      label {
-        margin-right: 0.5rem;
+
+      .tor-started, .tor-dlc-host-address {
+        label {
+          margin-right: 0.5rem;
+        }
       }
     }
   }

@@ -6,7 +6,8 @@ $light-background-palette: map-get($angular-default-theme, background);
 $dark-foreground-palette: map-get($angular-dark-theme, foreground);
 $dark-background-palette: map-get($angular-dark-theme, background);
 
-@import '../../../scss/breakpoints';
+@import '../../../scss/animations.scss';
+@import '../../../scss/_breakpoints.scss';
 
 $appLogoSize: 30px;
 
@@ -51,7 +52,6 @@ $appLogoSize: 30px;
   .network-button {
     padding-left: 12px;
     padding-right: 12px;
-
     .network-name {
       margin-left: 0.4rem;
     }
@@ -63,6 +63,11 @@ $appLogoSize: 30px;
     > *:not(:last-of-type) {
       margin-bottom: 0.1rem;
     }
+  }
+  .tor-starting {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    animation: blink 2s ease-in infinite;
   }
 
   .wallet-status, .network-status2 {
@@ -144,6 +149,9 @@ $appLogoSize: 30px;
 
   @include lt-sm {
     .wallet-icon {
+      display: none;
+    }
+    .contacts-icon {
       display: none;
     }
     .upload-icon {

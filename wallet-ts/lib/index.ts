@@ -7,7 +7,7 @@ import { BlockchainMessageType, BlockHeaderResponse, GetInfoResponse } from './t
 import { Accept, Announcement, Attestment, CoreMessageType, Offer, Sign } from './type/core-types'
 import { DLCMessageType } from './type/dlc-types'
 import { NetworkMessageType } from './type/network-types'
-import { AddressInfo, Balances, DLCContract, DLCWalletAccounting, FundedAddress, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
+import { AddressInfo, Balances, Contact, DLCContract, DLCWalletAccounting, FundedAddress, IncomingOffer, Outpoint, UTXO, WalletInfo, WalletMessageType } from './type/wallet-types'
 
 // Expose all 'common' endpoints
 export * from 'common-ts/index.js'
@@ -875,5 +875,75 @@ export function CreateMultiSig() {
   const m = getMessageBody(CoreMessageType.createmultisig)
   return SendServerMessage(m).then(response => {
     return <ServerResponse<unknown>>response
+  })
+}
+
+/** Offers */
+
+export function OfferList() {
+  console.debug('OfferList()')
+
+  const m = getMessageBody(WalletMessageType.offerslist)
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<IncomingOffer[]>>response
+  })
+}
+
+export function OfferAdd(offerTLV: string, peer: string, message: string) {
+  console.debug('OfferAdd()')
+  validateString(offerTLV, 'OfferAdd()', 'offerTLV')
+  validateString(peer, 'OfferAdd()', 'peer')
+  validateString(message, 'OfferAdd()', 'message')
+
+  const m = getMessageBody(WalletMessageType.offeradd, [offerTLV, peer, message])
+  return SendServerMessage(m).then(response => {
+    // Returns hash.hex
+    return <ServerResponse<string>>response
+  })
+}
+
+export function OfferRemove(hash: string) {
+  console.debug('OfferRemove()')
+  validateString(hash, 'OfferRemove()', 'hash')
+
+  const m = getMessageBody(WalletMessageType.offerremove, [hash])
+  return SendServerMessage(m).then(response => {
+    // Returns hash.hex
+    return <ServerResponse<string>>response
+  })
+}
+
+/** Contacts */
+
+export function ContactList() {
+  console.debug('ContactList()')
+
+  const m = getMessageBody(WalletMessageType.contactslist)
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<Contact[]>>response
+  })
+}
+
+export function ContactAdd(alias: string, address: string, memo: string) {
+  console.debug('ContactAdd()')
+  validateString(alias, 'ContactAdd()', 'alias')
+  validateString(address, 'ContactAdd()', 'address')
+  validateString(memo, 'ContactAdd()', 'memo')
+
+  const m = getMessageBody(WalletMessageType.contactadd, [alias, address, memo])
+  return SendServerMessage(m).then(response => {
+    // Returns "ok"
+    return <ServerResponse<string>>response
+  })
+}
+
+export function ContactRemove(address: string) {
+  console.debug('ContactRemove()')
+  validateString(address, 'ContactRemove()', 'address')
+
+  const m = getMessageBody(WalletMessageType.contactremove, [address])
+  return SendServerMessage(m).then(response => {
+    // Returns "ok"
+    return <ServerResponse<string>>response
   })
 }
