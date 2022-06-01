@@ -8,6 +8,7 @@
   },
   "productName": "Krystal Bull",
   "description": "Krystal Bull Desktop Oracle",
+  "author": "Suredbits",
   "scripts": {
     "build": "./buildDependencies.sh && ./makeBin.sh",
     "start": "electron-forge start",
