@@ -3,7 +3,7 @@ FROM node:16.15-buster-slim AS builder
 RUN apt-get update && apt-get install -y git python3 build-essential
 WORKDIR /build
 COPY . .
-RUN npm i
+RUN npm ci
 RUN npm run build
 WORKDIR /build/oracle-server-ui
 RUN npm run build

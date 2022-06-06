@@ -23,13 +23,22 @@ cp -a ../oracle-server-ui-proxy/dist/bundle-static.js bin/oracle-server-ui-proxy
 # Replace config.json
 cp -a proxy-config.json bin/oracle-server-ui-proxy/config.json
 
-# Expand bitcoin-s-oracle-server* zip
+# Expand bitcoin-s-oracle-server* zip if it's available, otherwise look for folder
 file="bitcoin-s-oracle-server"
-echo "TODO : Pull down ${file}*.zip"
-mkdir -p bin/${file}
-unzip ${file}*.zip -d bin/${file}
-# Take care of extra folder level that embeds metadata like 'bitcoin-s-oracle-server-1.9.1-13-f5940c93-20220422-1030-SNAPSHOT'
-cd bin/${file}
-mv ${file}*/* .
-rm -rf ${file}*
-chmod +x bin/${file}
+if ls ${file}*.zip 1> /dev/null 2>&1; then
+  echo "${file}*.zip exists, expanding into /bin"
+  mkdir -p bin/${file}
+  unzip ${file}*.zip -d bin/${file}
+  # Take care of extra folder level that embeds metadata like 'bitcoin-s-oracle-server-1.9.1-13-f5940c93-20220422-1030-SNAPSHOT'
+  cd bin/${file}
+  mv ${file}*/* .
+  rm -rf ${file}*
+  chmod +x bin/${file}
+elif ls ${file} 1> /dev/null 2>&1; then
+  echo "${file} folder exists. copying into /bin"
+  cp -R ${file} bin/${file}
+  cd bin/${file}
+  chmod +x bin/${file}
+else
+  echo "No source for ${file} found"
+fi
