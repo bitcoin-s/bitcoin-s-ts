@@ -33,11 +33,20 @@ cp -a proxy-config.json bin/wallet-server-ui-proxy/config.json
 
 # Expand bitcoin-s-server* zip
 file="bitcoin-s-server"
-echo "TODO : Pull down ${file}*.zip"
-mkdir -p bin/${file}
-unzip ${file}*.zip -d bin/${file}
-# Take care of extra folder level that embeds metadata like 'bitcoin-s-server-1.9.1-13-f5940c93-20220422-1030-SNAPSHOT'
-cd bin/${file}
-mv ${file}*/* .
-rm -rf ${file}*
-chmod +x bin/${file}
+if ls ${file}*.zip 1> /dev/null 2>&1; then
+  echo "${file}*.zip exists, expanding into /bin"
+  mkdir -p bin/${file}
+  unzip ${file}*.zip -d bin/${file}
+  # Take care of extra folder level that embeds metadata like 'bitcoin-s-server-1.9.1-13-f5940c93-20220422-1030-SNAPSHOT'
+  cd bin/${file}
+  mv ${file}*/* .
+  rm -rf ${file}*
+  chmod +x bin/${file}
+elif ls ${file} 1> /dev/null 2>&1; then
+  echo "${file} folder exists. copying into /bin"
+  cp -R ${file} bin/${file}
+  cd bin/${file}
+  chmod +x bin/${file}
+else
+  echo "No source for ${file} found"
+fi
