@@ -104,10 +104,12 @@ if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.en
   console.debug('Notarizing app. NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID, 'NOTORIZE_APPLE_TEAM:', process.env.NOTORIZE_APPLE_TEAM)
   CONFIG.packagerConfig.osxNotarize = {
     "appBundleId": 'org.bitcoins.krystalbull',
-    "appleId": process.env.NOTORIZE_APPLE_ID,
-    "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
+    // "appleId": process.env.NOTORIZE_APPLE_ID,
+    // "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
     // May need to use keychain / keychainProfile https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
+    keychain: 'signing_temp.keychain',
+    keychainProfile: process.env.NOTORIZE_APPLE_ID,
   }
 }
 
