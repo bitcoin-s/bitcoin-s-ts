@@ -1,6 +1,15 @@
 
 // See https://stackoverflow.com/questions/69046910/electron-forge-securely-add-appleid-and-password
 
+// const { utils: { fromBuildIdentifier } } = require('@electron-forge/core');
+
+// module.exports = {
+//   buildIdentifier: process.env.IS_BETA ? 'beta' : 'prod',
+//   packagerConfig: {
+//     appBundleId: fromBuildIdentifier({ beta: 'com.beta.app', prod: 'com.app' })
+//   }
+// }
+
 const CONFIG = {
   packagerConfig: {
     "icon": "assets/krystal_bull.icns",
@@ -87,11 +96,12 @@ if (process.env.APP_SIGNING_ID) {
     "signature-flags": "library"
   }
 }
-if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW) {
-  console.debug('Notarizing app. NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID)
+if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.env.NOTORIZE_APPLE_TEAM) {
+  console.debug('Notarizing app. NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID, 'NOTORIZE_APPLE_TEAM:', process.env.NOTORIZE_APPLE_TEAM)
   CONFIG.packagerConfig.osxNotarize = {
     "appleId": process.env.NOTORIZE_APPLE_ID,
     "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
+    "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
   }
 }
 
