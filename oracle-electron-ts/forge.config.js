@@ -12,6 +12,9 @@
 
 // See https://github.com/electron/electron-notarize
 
+// TODO : Set this from a flag
+const appType = 'development' //, 'distribution'
+
 const CONFIG = {
   packagerConfig: {
     "icon": "assets/krystal_bull.icns",
@@ -93,6 +96,8 @@ if (process.env.APP_SIGNING_ID) {
   console.debug('Signing app. APP_SIGNING_ID:', process.env.APP_SIGNING_ID)
   CONFIG.packagerConfig.osxSign = {
     "identity": process.env.APP_SIGNING_ID,
+    "keychain": 'signing_temp.keychain',
+    "type": appType,
     "hardened-runtime": true,
     "entitlements": "entitlements.plist",
     "entitlements-inherit": "entitlements.plist",
@@ -104,12 +109,12 @@ if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.en
   console.debug('Notarizing app. NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID, 'NOTORIZE_APPLE_TEAM:', process.env.NOTORIZE_APPLE_TEAM)
   CONFIG.packagerConfig.osxNotarize = {
     "appBundleId": 'org.bitcoins.krystalbull',
-    // "appleId": process.env.NOTORIZE_APPLE_ID,
-    // "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
+    "appleId": process.env.NOTORIZE_APPLE_ID,
+    "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
     // May need to use keychain / keychainProfile https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
-    keychain: 'signing_temp.keychain',
-    keychainProfile: process.env.NOTORIZE_APPLE_ID,
+    // keychain: 'signing_temp.keychain',
+    // keychainProfile: process.env.NOTORIZE_APPLE_ID,
   }
 }
 
