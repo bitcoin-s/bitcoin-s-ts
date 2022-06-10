@@ -10,6 +10,8 @@
 //   }
 // }
 
+// See https://github.com/electron/electron-notarize
+
 const CONFIG = {
   packagerConfig: {
     "icon": "assets/krystal_bull.icns",
@@ -86,6 +88,7 @@ const CONFIG = {
 // TODO : Windows platform modifications to config
 
 // Add macos signing and notarization
+// See https://github.com/electron/osx-sign
 if (process.env.APP_SIGNING_ID) {
   console.debug('Signing app. APP_SIGNING_ID:', process.env.APP_SIGNING_ID)
   CONFIG.packagerConfig.osxSign = {
@@ -96,12 +99,15 @@ if (process.env.APP_SIGNING_ID) {
     "signature-flags": "library"
   }
 }
+// See https://github.com/electron/electron-notarize
 if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.env.NOTORIZE_APPLE_TEAM) {
   console.debug('Notarizing app. NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID, 'NOTORIZE_APPLE_TEAM:', process.env.NOTORIZE_APPLE_TEAM)
   CONFIG.packagerConfig.osxNotarize = {
+    "appBundleId": 'org.bitcoins.krystalbull',
     "appleId": process.env.NOTORIZE_APPLE_ID,
     "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
+    // May need to use keychain / keychainProfile https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
   }
 }
 
