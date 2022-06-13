@@ -20,6 +20,17 @@
             <span class="unit" translate>unit.percent</span>
           </div>
         </div>
+        <div class="peer-filter">
+          <mat-form-field>
+            <mat-label translate>contracts.peerFilter</mat-label>
+            <select matNativeControl [(ngModel)]="selectedContact" (ngModelChange)="onContactFilter($event)">
+              <option [ngValue]="null"></option>
+              <option *ngFor="let o of contactService.contacts.value" [ngValue]="o.address">{{o.alias}}</option>
+            </select>
+            <button mat-icon-button matSuffix type="button" (click)="onContactFilter()"
+              [disabled]="selectedContact === null"><mat-icon>close</mat-icon></button>
+          </mat-form-field>
+        </div>
       </div>
 
       <table class="contract-table mat-elevation-z8"
@@ -69,6 +80,24 @@
             </ng-container>
           </td>
         </ng-container>
+        <ng-container matColumnDef="peer">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.peer' | translate }}</th>
+          <td mat-cell *matCellDef="let contract">
+            <ng-container *ngIf="contract.peer">
+              <ng-container *ngIf="contactService.getContact(contract.peer); else contactAddress">
+                <span class="peer">{{ contactService.getContactAlias(contract.peer) }}</span>
+              </ng-container>
+              <ng-template #contactAddress>
+                <span class="peer">{{ formatShortHex(contract.peer) }}</span>
+                <button mat-icon-button class="mat-icon-button-sm"
+                  matTooltip="{{ 'action.copyToClipboard' | translate }}"
+                  (click)="copyToClipboard(contract.peer); $event.stopPropagation()">
+                  <mat-icon class="mat-icon-sm material-icons-outlined">content_copy</mat-icon>
+                </button>
+              </ng-template>
+            </ng-container>
+          </td>
+        </ng-container>
         <ng-container matColumnDef="contractId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.contractId' | translate }}</th>
           <td mat-cell *matCellDef="let contract">
@@ -115,7 +144,12 @@
             [class.focus-row]="selectedDLCContract === contract"></tr>
         <tr class="mat-row mat-no-data-row" *matNoDataRow>
           <td class="mat-cell" colspan="9999">
-            {{ 'contracts.noContracts' | translate }}
+            <ng-container *ngIf="dataSource.data.length === 0; else filterTemplate">
+              {{ 'contracts.noContracts' | translate }}
+            </ng-container>
+            <ng-template #filterTemplate>
+              {{ 'contracts.noFilterMatches' | translate }}
+            </ng-template>
           </td>
         </tr>
       </table>

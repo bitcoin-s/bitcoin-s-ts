@@ -267,10 +267,15 @@ export function CreateContractInfo(announcementTLV: string, totalCollateral: num
   })
 }
 
-export function GetDLCs() {
+export function GetDLCs(contactAddress?: string) {
   console.debug('GetDLCs()')
 
-  const m = getMessageBody(WalletMessageType.getdlcs)
+  let params: any[]|undefined = undefined
+  if (contactAddress) {
+    params = [contactAddress]
+  }
+
+  const m = getMessageBody(WalletMessageType.getdlcs, params)
   return SendServerMessage(m).then(response => {
     return <ServerResponse<DLCContract[]>>response
   })
@@ -890,7 +895,7 @@ export function OfferList() {
 }
 
 export function OfferAdd(offerTLV: string, peer: string, message: string) {
-  console.debug('OfferAdd()')
+  console.debug('OfferAdd()', peer, message)
   validateString(offerTLV, 'OfferAdd()', 'offerTLV')
   validateString(peer, 'OfferAdd()', 'peer')
   validateString(message, 'OfferAdd()', 'message')
@@ -903,7 +908,7 @@ export function OfferAdd(offerTLV: string, peer: string, message: string) {
 }
 
 export function OfferRemove(hash: string) {
-  console.debug('OfferRemove()')
+  console.debug('OfferRemove()', hash)
   validateString(hash, 'OfferRemove()', 'hash')
 
   const m = getMessageBody(WalletMessageType.offerremove, [hash])
@@ -925,7 +930,7 @@ export function ContactList() {
 }
 
 export function ContactAdd(alias: string, address: string, memo: string) {
-  console.debug('ContactAdd()')
+  console.debug('ContactAdd()', alias, address, memo)
   validateString(alias, 'ContactAdd()', 'alias')
   validateString(address, 'ContactAdd()', 'address')
   validateString(memo, 'ContactAdd()', 'memo')
@@ -938,10 +943,33 @@ export function ContactAdd(alias: string, address: string, memo: string) {
 }
 
 export function ContactRemove(address: string) {
-  console.debug('ContactRemove()')
+  console.debug('ContactRemove()', address)
   validateString(address, 'ContactRemove()', 'address')
 
   const m = getMessageBody(WalletMessageType.contactremove, [address])
+  return SendServerMessage(m).then(response => {
+    // Returns "ok"
+    return <ServerResponse<string>>response
+  })
+}
+
+export function DLCContactAdd(dlcId: string, address: string) {
+  console.debug('DLCContactAdd()', dlcId, address)
+  validateString(dlcId, 'DLCContactAdd()', 'dlcId')
+  validateString(address, 'DLCContactAdd()', 'address')
+
+  const m = getMessageBody(WalletMessageType.dlccontactadd, [dlcId, address])
+  return SendServerMessage(m).then(response => {
+    // Returns "ok"
+    return <ServerResponse<string>>response
+  })
+}
+
+export function DLCContactRemove(dlcId: string) {
+  console.debug('DLCContactRemove()', dlcId)
+  validateString(dlcId, 'DLCContactRemove()', 'dlcId')
+
+  const m = getMessageBody(WalletMessageType.dlccontactremove, [dlcId])
   return SendServerMessage(m).then(response => {
     // Returns "ok"
     return <ServerResponse<string>>response

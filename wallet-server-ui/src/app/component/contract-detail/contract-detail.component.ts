@@ -10,13 +10,14 @@ import { of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
 import { ChartService } from '~service/chart.service'
+import { ContactService } from '~service/contact-service'
 import { DarkModeService } from '~service/dark-mode.service'
 import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
 import { OfferService } from '~service/offer-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { Attestment, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
+import { Attestment, Contact, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, TOR_V3_ADDRESS, trimOnPaste, validateHexString } from '~util/utils'
@@ -226,7 +227,7 @@ export class ContractDetailComponent implements OnInit {
 
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
     private messsageService: MessageService, private walletStateService: WalletStateService,
-    private dlcService: DLCService, private offerService: OfferService,
+    private dlcService: DLCService, private offerService: OfferService, public contactService: ContactService,
     private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
@@ -601,4 +602,36 @@ export class ContractDetailComponent implements OnInit {
       })
     }
   }
+
+  onContact(contact: Contact) {
+    console.debug('onContact()')
+
+    this.executing = true
+    this.dlcService.addContact(this.dlc, contact.address).subscribe(r => {
+      console.debug('addContact', r)
+      this.executing = false
+    })
+  }
+
+  removeContact() {
+    console.debug('removeContact()')
+
+    const dialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'dialog.removePeer.title',
+        content: 'dialog.removePeer.content',
+        action: 'action.yes',
+        showCancelButton: true,
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.executing = true
+        this.dlcService.removeContact(this.dlc).subscribe(r => {
+          console.debug('removeContact', r)
+          this.executing = false
+        })
+      }
+    })
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Chart, ChartData, ChartDataset, ChartOptions } from 'chart.js'
+import { Chart, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, TooltipItem } from 'chart.js'
 import { TranslateService } from '@ngx-translate/core'
 
 import { DarkModeService } from './dark-mode.service'
@@ -85,14 +85,14 @@ export class ChartService {
         },
         tooltip: {
           callbacks: {
-            label: (context) => {
+            label: (context: TooltipItem<keyof ChartTypeRegistry>): string => {
               // console.debug('label context:', context)
               // Handle potential 'range' in outcome values
               const outcomeValue = (<any>context.raw).range ? (<any>context.raw).range : context.label
               const label = ' ' + this.outcomeLabel + ' : ' + outcomeValue + ' ' + units
               return label
             },
-            afterLabel: (context) => {
+            afterLabel: (context: TooltipItem<keyof ChartTypeRegistry>): string => {
               // console.debug('afterLabel context:', context)
               const text = ' ' + this.payoutLabel + ' : ' + formatNumber((<any>context).raw.y) + ' ' + this.satoshisLabel
               return text

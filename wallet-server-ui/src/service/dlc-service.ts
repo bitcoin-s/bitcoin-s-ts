@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 import { BehaviorSubject, forkJoin, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
@@ -7,6 +8,8 @@ import { MessageService } from '~service/message.service'
 import { ContractInfo, CoreMessageType, DLCContract, ServerResponse, WalletMessageType } from '~type/wallet-server-types'
 
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 
 @Injectable({ providedIn: 'root' })
@@ -18,7 +21,7 @@ export class DLCService {
   contractInfos: BehaviorSubject<{ [dlcId: string]: ContractInfo }> = 
     new BehaviorSubject<{ [dlcId: string]: ContractInfo }>({})
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService, private dialog: MatDialog) {}
 
   uninitialize() {
     this.initialized.next(false)
@@ -115,6 +118,44 @@ export class DLCService {
       console.warn('loadContractInfo() already have Contract Info for', dlc.dlcId)
       return of(null)
     }
+  }
+
+  /** Contacts */
+
+  addContact(dlc: DLCContract, address: string) {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.dlccontactadd, [dlc.dlcId, address])).pipe(tap(r => {
+      console.debug('dlccontactadd', r)
+      if (r) {
+        if (r.error) {
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.error',
+              content: r.error,
+            }
+          })
+        } else if (r.result) { // "ok"
+          dlc.peer = address
+        }
+      }
+    }))
+  }
+
+  removeContact(dlc: DLCContract) {
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.dlccontactremove, [dlc.dlcId])).pipe(tap(r => {
+      console.debug('dlccontactadd', r)
+      if (r) {
+        if (r.error) {
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.error',
+              content: r.error,
+            }
+          })
+        } else if (r.result) { // "ok"
+          dlc.peer = null
+        }
+      }
+    }))
   }
 
 }
