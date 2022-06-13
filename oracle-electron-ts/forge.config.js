@@ -95,7 +95,7 @@ const CONFIG = {
 if (process.env.APP_SIGNING_ID) {
   console.debug('Signing app with APP_SIGNING_ID:', process.env.APP_SIGNING_ID)
   CONFIG.packagerConfig.osxSign = {
-    "identity": "Chris Stewart (9ZG3GPKHX8)", // process.env.APP_SIGNING_ID, // TODO : Test "Chris Stewart (9ZG3GPKHX8)"
+    "identity": process.env.APP_SIGNING_ID, // TODO : Test "Chris Stewart (9ZG3GPKHX8)"
     "keychain": 'signing_temp.keychain',
     "type": appType,
     "hardened-runtime": true,
