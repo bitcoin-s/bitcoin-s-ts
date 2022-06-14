@@ -55,8 +55,14 @@ export class ContactService {
       if (r.result) { // "ok"
         this.contacts.value.push({ alias, address, memo })
         this.contacts.next(this.contacts.value)
+      } else if (r.error) {
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.error',
+            content: r.error,
+          }
+        })
       }
-      // TODO : Handle error
     }))
   }
 
@@ -70,6 +76,13 @@ export class ContactService {
           this.contacts.value.splice(i, 1)
           this.contacts.next(this.contacts.value)
         }
+      } else if (r.error) {
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.error',
+            content: r.error,
+          }
+        })
       }
     }))
   }

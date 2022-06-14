@@ -186,6 +186,11 @@ function endPadArray(arr: any[], length: number, padding: any) {
   return arr.concat(Array(length - arr.length).fill(padding))
 }
 
+export function getRandomItem(arr: any[]) {
+  if (!arr || arr.length === 0) return undefined
+  return arr[Math.floor((Math.random()*arr.length))]
+}
+
 export interface OutcomeRange {
   high: number,
   low: number,

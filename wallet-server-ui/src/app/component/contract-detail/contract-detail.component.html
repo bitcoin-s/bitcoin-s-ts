@@ -154,6 +154,47 @@
       </ng-container>
 
       <div class="spacer"></div>
+
+      <mat-form-field *ngIf="dlc.peer" class="ellipsis">
+        <mat-label translate>contractDetail.peer</mat-label>
+        <input matInput [value]="contactService.getContactAlias(dlc.peer) || dlc.peer" readonly>
+        <button *ngIf="!contactService.getContact(dlc.peer)"
+          mat-icon-button matSuffix
+          (click)="copyToClipboard(dlc.peer)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button matSuffix
+          (click)="removeContact()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="!dlc.peer">
+        <mat-label translate>contractDetail.peer</mat-label>
+        <input matInput readonly>
+        <!-- Contact Selection -->
+        <button mat-stroked-button matSuffix class="mat-stroked-icon-button-md" [matMenuTriggerFor]="contactMenu"
+          matTooltip="{{ 'contacts.addContact' | translate }}"
+          [disabled]="!contactService.contacts.value || contactService.contacts.value.length === 0">
+          <mat-icon class="material-icons-outlined">person_add</mat-icon></button>
+        <mat-menu #contactMenu="matMenu" xPosition="before">
+        <button mat-menu-item *ngFor="let contact of contactService.contacts.value"
+          (click)="onContact(contact)">{{ contact.alias }}</button>
+        </mat-menu>
+      </mat-form-field>
+
+      <mat-form-field class="w-80">
+        <mat-label translate>contractDetail.payoutAddress</mat-label>
+        <input matInput [value]="dlc.payoutAddress.address" readonly>
+        <button *ngIf="dlc.payoutAddress.isExternal"
+          mat-icon-button matSuffix
+          matTooltip="{{ 'contractDetail.externalPayoutAddress' | translate:{address: dlc.payoutAddress.address} }}"
+          (click)="copyToClipboard(dlc.payoutAddress.address)">
+          <mat-icon>trending_up</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div class="spacer"></div>
       
       <div class="mat-form-field-row">
         <mat-form-field class="narrow ellipsis">
@@ -239,17 +280,6 @@
           </mat-form-field>
         </div>
       </ng-container>
-
-      <mat-form-field class="w-80">
-        <mat-label translate>contractDetail.payoutAddress</mat-label>
-        <input matInput [value]="dlc.payoutAddress.address" readonly>
-        <button *ngIf="dlc.payoutAddress.isExternal"
-          mat-icon-button matSuffix
-          matTooltip="{{ 'contractDetail.externalPayoutAddress' | translate:{address: dlc.payoutAddress.address} }}"
-          (click)="copyToClipboard(dlc.payoutAddress.address)">
-          <mat-icon>trending_up</mat-icon>
-        </button>
-      </mat-form-field>
 
     </fieldset>
   </form>

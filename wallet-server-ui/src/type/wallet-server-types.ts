@@ -132,6 +132,9 @@ export const enum WalletMessageType {
   contactadd = 'contact-add',
   contactremove = 'contact-remove',
   contactslist = 'contacts-list',
+
+  dlccontactadd = 'dlc-contact-add',
+  dlccontactremove = 'dlc-contact-remove',
 }
 
 export interface WalletInfo {
@@ -184,6 +187,7 @@ export interface DLCWalletAccounting {
 }
 
 export interface DLCContract {
+  peer: string|null // tor address of counterparty
   contractInfo: string
   contractMaturity: number // 1635877874
   contractTimeout: number // 1636877874

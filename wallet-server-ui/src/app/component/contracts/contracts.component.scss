@@ -55,6 +55,24 @@ $padding: 0.5rem;
     }
   }
 
+  .peer-filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+
+    margin-left: 1rem; // to match inset
+
+    // Get rid of mat-form-field padding that is hard to kill
+    margin-bottom: -1.25rem;
+
+    // .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    //   padding-bottom: unset;
+    // }
+    // > mat-form-field.mat-form-field-appearance-legacy > .mat-form-field-wrapper {
+    //   padding-bottom: unset;
+    // }
+  }
+
   .contract-table {
     flex: 1 1 auto;
     overflow-y: auto;

@@ -6,11 +6,12 @@ import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
+import { ContactService } from '~service/contact-service'
 import { DLCFileService } from '~service/dlc-file.service'
 import { DLCService } from '~service/dlc-service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { ContractInfo, DLCContract } from '~type/wallet-server-types'
+import { Contact, ContractInfo, DLCContract } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
 import { copyToClipboard, formatISODate, formatNumber, formatPercent, formatShortHex } from '~util/utils'
@@ -47,7 +48,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Grid config
   dataSource = new MatTableDataSource(<DLCContract[]>[])
-  displayedColumns = ['eventId', 'flags', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
+  displayedColumns = ['eventId', 'flags', 'peer', 'contractId', 'state', 'realizedPNL', 'rateOfReturn', 
     'totalCollateral', 'collateral', 'counterpartyCollateral', 'lastUpdated']
 
   private selectedDLCId: string|undefined
@@ -57,6 +58,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedSign: SignWithHex|null
 
   contractDetailsVisible = false
+  selectedContact: string|null = null
 
   getContractInfo(dlcId: string) {
     return this.dlcService.contractInfos.value[dlcId]
@@ -75,6 +77,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   private sign$: Subscription
 
   constructor(public walletStateService: WalletStateService, private dlcService: DLCService, private dlcFileService: DLCFileService,
+    public contactService: ContactService,
     private dialog: MatDialog, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
@@ -104,6 +107,9 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.dataSource.sort = this.sort
+    this.dataSource.filterPredicate = (data: DLCContract, filter: string) => {
+      return data.peer == filter
+    }
 
     this.dlc$ = this.dlcService.dlcs.subscribe(_ => {
       this.dataSource.data = this.dlcService.dlcs.value
@@ -196,6 +202,20 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedDLCContractInfo = null
       // Update queryParams and set selectedDLCId via subscription
       this.router.navigate(['/contracts'])
+    }
+  }
+
+  onContactFilter(address?: string) {
+    console.debug('onContactFilter()', address)
+
+    if (address) {
+      address = address.trim(); // Remove whitespace
+      address = address.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+      this.dataSource.filter = address;
+      this.selectedContact = address
+    } else {
+      this.selectedContact = null
+      this.dataSource.filter = ''
     }
   }
 

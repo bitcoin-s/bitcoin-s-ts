@@ -273,6 +273,7 @@
   "contracts": {
     "heading": "Contracts",
     "eventId": "Event Id",
+    "peer": "Peer",
     "contractId": "Contract Id",
     "state": "State",
     "return": "Return",
@@ -285,7 +286,9 @@
     "lastUpdated": "Updated",
     "noContracts": "No DLC Contracts Started",
     "copyContractId": "Copy Contract Id to Clipboard",
-    "externalPayoutAddress": "External Payout Address: {{address}}"
+    "externalPayoutAddress": "External Payout Address: {{address}}",
+    "peerFilter": "Peer Filter",
+    "noFilterMatches": "No Filter Matches"
   },
 
   "contractDetail": {
@@ -294,6 +297,7 @@
     "eventId": "Event Id",
     "initiator": "Initiator",
     "state": "State",
+    "peer": "Peer",
     "contractId": "Contract Id",
     "temporaryContractId": "Temporary Contract Id",
     "contractInfo": "Contract Info",
@@ -367,7 +371,6 @@
     "heading": "Contacts",
     "addContact": "Add Contact",
     "removeContact": "Remove Contact",
-    "contact": "Contact",
     "alias": "Alias",
     "address": "Address",
     "memo": "Memo",
@@ -472,6 +475,10 @@
     "clearLabel": {
       "title": "Clear Label",
       "content": "Are you sure you want to clear the label on {{ address }}?"
+    },
+    "removePeer": {
+      "title": "Remove Peer",
+      "content": "Are you sure you want to remove the saved peer on this DLC?"
     }
   },
 
