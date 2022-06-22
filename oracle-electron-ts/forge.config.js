@@ -95,8 +95,9 @@ const CONFIG = {
 if (process.env.APP_SIGNING_ID) {
   console.debug('Signing app with APP_SIGNING_ID:', process.env.APP_SIGNING_ID)
   CONFIG.packagerConfig.osxSign = {
-    "identity": process.env.APP_SIGNING_ID, // TODO : Test "Chris Stewart (9ZG3GPKHX8)"
-    "keychain": 'signing_temp.keychain',
+    "identity": process.env.APP_SIGNING_ID,
+    "identityValidation": true,
+    "keychain": 'signing_temp',
     "type": appType,
     "hardened-runtime": true,
     "entitlements": "entitlements.plist",
@@ -108,7 +109,7 @@ if (process.env.APP_SIGNING_ID) {
 if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.env.NOTORIZE_APPLE_TEAM) {
   console.debug('Notarizing app with NOTORIZE_APPLE_ID:', process.env.NOTORIZE_APPLE_ID, 'NOTORIZE_APPLE_TEAM:', process.env.NOTORIZE_APPLE_TEAM)
   CONFIG.packagerConfig.osxNotarize = {
-    "appBundleId": 'org.bitcoins.krystalbull',
+    "appBundleId": 'org.bitcoins.krystalbull', // org.bitcoins.bundle
     "appleId": process.env.NOTORIZE_APPLE_ID,
     "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
