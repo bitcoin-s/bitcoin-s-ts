@@ -97,7 +97,7 @@ if (process.env.APP_SIGNING_ID) {
   CONFIG.packagerConfig.osxSign = {
     "identity": process.env.APP_SIGNING_ID,
     "identityValidation": true,
-    // "keychain": 'signing_temp',
+    "keychain": 'signing_temp',
     "type": appType,
     "hardened-runtime": true,
     "entitlements": "entitlements.plist",
