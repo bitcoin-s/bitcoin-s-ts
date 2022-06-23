@@ -97,7 +97,7 @@ if (process.env.APP_SIGNING_ID) {
   CONFIG.packagerConfig.osxSign = {
     "identity": process.env.APP_SIGNING_ID,
     "identityValidation": true,
-    "keychain": 'signing_temp',
+    // "keychain": 'signing_temp',
     "type": appType,
     "hardened-runtime": true,
     "entitlements": "entitlements.plist",
@@ -114,8 +114,8 @@ if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.en
     "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
     // May need to use keychain / keychainProfile https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
-    // keychain: 'signing_temp.keychain',
-    // keychainProfile: process.env.NOTORIZE_APPLE_ID,
+    keychain: 'signing_temp',
+    keychainProfile: process.env.NOTORIZE_APPLE_ID,
   }
 }
 
