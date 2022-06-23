@@ -1,6 +1,9 @@
 #!/bin/bash
 
+
 cd wallet-electron-ts
+curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-mac.os.x-1.9.2.zip
+
 for name in *bitcoin-s-server*; do
 	if [ -f "$name" ]; then 
 		cd ..
