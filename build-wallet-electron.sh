@@ -29,11 +29,10 @@ esac
 cd wallet-electron-ts
 
 if [[ $OS == 'Mac' ]]; then 
-	echo $OS
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-mac.os.x-1.9.2.zip
-elif [[ $OS=='Windows' ]]; then
+elif [[ $OS == 'Windows' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-windows.server.2019-1.9.2.zip
-elif [[ $OS=='Linux' ]]; then
+elif [[ $OS == 'Linux' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-linux-1.9.2.zip
 else 
 	echo "not supported OS"
