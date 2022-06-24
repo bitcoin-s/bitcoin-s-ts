@@ -57,12 +57,12 @@ const CONFIG = {
       "linux"
     ]
   },
-  {
-    "name": "@electron-forge/maker-dmg",
-    "config": {
-      "iconSize": 128
-    }
-  },
+  // {
+  //   "name": "@electron-forge/maker-dmg",
+  //   "config": {
+  //     "iconSize": 128
+  //   }
+  // },
   {
     "name": "@electron-forge/maker-deb",
     "config": {
