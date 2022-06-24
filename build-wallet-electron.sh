@@ -1,13 +1,11 @@
 #!/bin/bash
 
 # downloads the bitcoin-s-server.zip file corresponding to your operating system 
-# then builds the Suredbits Wallet app so it can be run in dev mode 
-
+# then sets up Suredbits Wallets dependencies
 OS="`uname`"
 case $OS in
   'Linux')
    OS='Linux'
-   alias ls='ls --color=auto'
     ;;
   'WindowsNT')
     OS='Windows'
@@ -40,6 +38,7 @@ fi
 for name in *bitcoin-s-server*; do
 	if [ -f "$name" ]; then 
 		cd ..
+		npm run clean
 		npm i && npm run build 
 		cd wallet-electron-ts 
 		npm i && npm run build 
