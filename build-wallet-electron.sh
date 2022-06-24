@@ -9,10 +9,6 @@ case $OS in
    OS='Linux'
    alias ls='ls --color=auto'
     ;;
-  'FreeBSD')
-    OS='FreeBSD'
-    alias ls='ls -G'
-    ;;
   'WindowsNT')
     OS='Windows'
     ;;
@@ -20,10 +16,7 @@ case $OS in
     OS='Mac'
     ;;
   'arm64')
-    OS='Mac'
-    ;;
-  'SunOS')
-    OS='Solaris'
+    OS='MacM1'
     ;;
   'AIX') ;;
   *) ;;
@@ -37,6 +30,9 @@ elif [[ $OS == 'Windows' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-windows.server.2019-1.9.2.zip
 elif [[ $OS == 'Linux' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-linux-1.9.2.zip
+elif [[ $OS == 'MacM1' ]]; then
+	echo "you're on a M1 Mac need to generate bitcoin-s-sever.zip if have not already done so"
+
 else 
 	echo "not supported OS"
 fi
