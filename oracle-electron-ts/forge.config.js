@@ -23,9 +23,24 @@ const appType = 'development' //, 'distribution'
 const keychain = 'signing_temp.keychain' // keychain name, could pass in
 const appBundleId = 'org.bitcoins.krystalbull'
 
+function getIcon() {
+  switch (p) {
+    case 'darwin':
+      return 'assets/krystal_bull.icns'
+    case 'linux':
+      return 'assets/krystal_bull.png'
+    case 'win32':
+      return 'assets/krystal_bull.ico'
+    default:
+      throw new Error(
+        'forge.config.js error: your OS is not supported. Supported OS are: darwin, linux, win32',
+      )
+  }
+}
+
 const CONFIG = {
   packagerConfig: {
-    "icon": "assets/krystal_bull.icns",
+    "icon": getIcon(),
     "executableName": "oracle-electron-ts",
   },
   // electronRebuildConfig: {},
@@ -101,7 +116,11 @@ if (p === DARWIN) {
       // TODO : Need to address signing issues in https://osxapps-ssl.itunes.apple.com/itunes-assets/Enigma112/v4/f7/35/cb/f735cb93-f916-de7c-2d25-f63464888437/developer_log.json?accessKey=1656241094_3099320763189474635_sq%2F2q9mZhc0FWHrKyij7yu3n5Fh0xtY9mJwhvdrWAFMCLCIRDdzMW11yuvFoxik8NgbdKL0BDAwpcSRgxhpkx7YxCQJc%2F4DPoX2knxgn9FtrlIfmDM60uKiagsTR5EHVrVQXxlDcCePPntOieCv%2FaaIFVPP1C%2BPyZNE%2BD5XjJiU%3D
       "entitlements": "entitlements.plist",
       "entitlements-inherit": "entitlements.plist",
-      "signature-flags": "library"
+      "signature-flags": "library",
+      // This is going to be a pain as versions change
+      "binaries": [
+        'Krystal Bull.app/Contents/Resources/app/.webpack/main/bin/bitcoin-s-oracle-server/lib/org.xerial.sqlite-jdbc-3.36.0.3.jar/org/sqlite/native/Mac/aarch64/libsqlitejdbc.jnilib',
+        'Krystal Bull.app/Contents/Resources/app/.webpack/main/bin/bitcoin-s-oracle-server/lib/org.xerial.sqlite-jdbc-3.36.0.3.jar/org/sqlite/native/Mac/x86_64/libsqlitejdbc.jnilib'],
     }
   }
   // See https://github.com/electron/electron-notarize
