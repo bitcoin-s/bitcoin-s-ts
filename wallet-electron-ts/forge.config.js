@@ -21,18 +21,18 @@ const WIN32 = 'win32'
 // TODO : Set this from a flag
 const appType = 'development' //, 'distribution'
 const keychain = 'signing_temp.keychain' // keychain name, could pass in
-const appBundleId = 'org.bitcoins.krystalbull'
+const appBundleId = 'org.bitcoins.suredbitswallet'
 
 const CONFIG = {
   packagerConfig: {
-    "icon": "assets/krystal_bull.icns",
-    "executableName": "oracle-electron-ts",
+    "icon": "assets/bitcoin-S.icns",
+    "executableName": "wallet-electron-ts"
   },
   // electronRebuildConfig: {},
   makers: [ {
     "name": "@electron-forge/maker-squirrel",
     "config": {
-      "name": "oracle-electron-ts"
+      "name": "wallet-electron-ts"
     }
   },
   {
@@ -52,9 +52,9 @@ const CONFIG = {
     "name": "@electron-forge/maker-deb",
     "config": {
       "options": {
-        "name": "krystal-bull",
-        "productName": "Krystal Bull",
-        "icon": "assets/krystal_bull.png",
+        "name": "suredbits-wallet",
+        "productName": "Suredbits Wallet",
+        "icon": "assets/bitcoin-S.png",
         "homepage": "https://suredbits.com",
         "maintainer": "Suredbits"
       }
