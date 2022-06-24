@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# downloads the bitcoin-s-server.zip file corresponding to your operating system 
+# then builds the Suredbits Wallet app so it can be run in dev mode 
+
 OS="`uname`"
 case $OS in
   'Linux')
@@ -52,7 +55,7 @@ for name in *bitcoin-s-server*; do
 		For Mac m1 if not on the github then need to generate it like so
 		go to your bitcoin-s node and inside it Run sbt appServer/universal:packageBin
 		then Run cd app/server/target/universal 
-		then Run cp bitcoin-s-server-1.9.1-87-f210d9d9-SNAPSHOT.zip ~/bitcoin-s-ts/wallet-electron-ts"
+		then Run cp <the zip file> ~/bitcoin-s-ts/wallet-electron-ts"
 
 	fi
 done
