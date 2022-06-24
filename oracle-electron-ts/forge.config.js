@@ -14,6 +14,7 @@
 
 // TODO : Set this from a flag
 const appType = 'development' //, 'distribution'
+const KEYCHAIN = 'signing_temp.keychain' // keychain name, could pass in
 
 const CONFIG = {
   packagerConfig: {
@@ -97,8 +98,9 @@ if (process.env.APP_SIGNING_ID) {
   CONFIG.packagerConfig.osxSign = {
     "identity": process.env.APP_SIGNING_ID,
     "identityValidation": true,
-    "keychain": 'signing_temp',
+    "keychain": KEYCHAIN,
     "type": appType,
+    "gatekeeper-assess": false,
     "hardened-runtime": true,
     "entitlements": "entitlements.plist",
     "entitlements-inherit": "entitlements.plist",
@@ -114,7 +116,7 @@ if (process.env.NOTORIZE_APPLE_ID && process.env.NOTORIZE_APPLE_PW && process.en
     "appleIdPassword": process.env.NOTORIZE_APPLE_PW,
     "ascProvider": process.env.NOTORIZE_APPLE_TEAM,
     // May need to use keychain / keychainProfile https://github.com/electron/electron-notarize#safety-when-using-appleidpassword
-    keychain: 'signing_temp',
+    keychain: KEYCHAIN,
     keychainProfile: process.env.NOTORIZE_APPLE_ID,
   }
 }
