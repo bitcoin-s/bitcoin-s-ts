@@ -7,5 +7,6 @@
     <key>com.apple.security.cs.debugger</key>
     <true/>
     <key>com.apple.security.device.camera</key>
+    <true/>
   </dict>
 </plist>
