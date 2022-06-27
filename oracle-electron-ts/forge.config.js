@@ -140,6 +140,7 @@ if (p === DARWIN) {
   // Nothing to do here? May need to adjust icon
 } else if (p === WIN32) {
   console.debug('TODO : update forge.config output for win32')
+  CONFIG.packagerConfig.executableName = "Krystal Bull"
 }
 
 module.exports = CONFIG
