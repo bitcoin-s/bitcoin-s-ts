@@ -111,7 +111,7 @@ if (p === DARWIN) {
       "identityValidation": true,
       "keychain": keychain,
       "type": appType,
-      "gatekeeper-assess": false,
+      // "gatekeeper-assess": false, // This flag is problematic. Doesn't want to sign successfully without it, app doesn't seem to open with it
       "hardened-runtime": true,
       // TODO : Need to address signing issues in https://osxapps-ssl.itunes.apple.com/itunes-assets/Enigma112/v4/f7/35/cb/f735cb93-f916-de7c-2d25-f63464888437/developer_log.json?accessKey=1656241094_3099320763189474635_sq%2F2q9mZhc0FWHrKyij7yu3n5Fh0xtY9mJwhvdrWAFMCLCIRDdzMW11yuvFoxik8NgbdKL0BDAwpcSRgxhpkx7YxCQJc%2F4DPoX2knxgn9FtrlIfmDM60uKiagsTR5EHVrVQXxlDcCePPntOieCv%2FaaIFVPP1C%2BPyZNE%2BD5XjJiU%3D
       "entitlements": "entitlements.plist",
