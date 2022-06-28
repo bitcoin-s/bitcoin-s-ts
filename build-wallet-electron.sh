@@ -13,23 +13,22 @@ case $OS in
   'Darwin') 
     OS='Mac'
     ;;
-  'arm64')
-    OS='MacM1'
-    ;;
   'AIX') ;;
   *) ;;
 esac
 
 cd wallet-electron-ts
 
-if [[ $OS == 'Mac' ]]; then 
+Chip="`uname -m`"
+
+if [[ $Chip == 'arm64' ]]; then 
+	echo "you're on a M1 Mac need to generate bitcoin-s-sever.zip if have not already done so"
+elif [[ $OS == 'Mac' ]]; then 
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-mac.os.x-1.9.2.zip
 elif [[ $OS == 'Windows' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-windows.server.2019-1.9.2.zip
 elif [[ $OS == 'Linux' ]]; then
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-linux-1.9.2.zip
-elif [[ $OS == 'MacM1' ]]; then
-	echo "you're on a M1 Mac need to generate bitcoin-s-sever.zip if have not already done so"
 
 else 
 	echo "not supported OS"
