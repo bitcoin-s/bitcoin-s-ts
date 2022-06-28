@@ -13,7 +13,7 @@ case $OS in
   'Darwin') 
     OS='Mac'
     ;;
-  'AIX') ;;
+  'incompatable') ;;
   *) ;;
 esac
 
@@ -40,7 +40,7 @@ for name in *bitcoin-s-server*; do
 		npm run clean
 		npm i && npm run build 
 		cd wallet-electron-ts 
-		npm i && npm run build 
+		npm i && npm run build && npm run make
 		echo "Want to start the server in dev mode? Run cd wallet-electron-ts && npm run start"
 	else 
 		cd..
