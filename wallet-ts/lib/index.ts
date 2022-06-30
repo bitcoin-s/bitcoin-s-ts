@@ -697,6 +697,42 @@ export function ImportXprv(walletName: string, mnemonic: string, passphrase?: st
   })
 }
 
+export function LoadWallet(walletName?: string, passphrase?: string) {
+  console.debug('LoadWallet()', walletName) // not logging passphrase
+  if (walletName !== undefined) validateString(walletName, 'LoadWallet()', 'walletName')
+  if (passphrase !== undefined) validateString(passphrase, 'LoadWallet()', 'passphrase')
+
+  const m = getMessageBody(WalletMessageType.loadwallet, [walletName, passphrase])
+  return SendServerMessage(m).then(response => {
+    // Returns walletName
+    return <ServerResponse<string>>response
+  })
+}
+
+// undefined walletName is default wallet
+export function ExportSeed(walletName?: string, passphrase?: string) {
+  console.debug('ExportSeed()', walletName) // not logging passphrase
+  if (walletName !== undefined) validateString(walletName, 'ExportSeed()', 'walletName')
+  if (passphrase !== undefined) validateString(passphrase, 'ExportSeed()', 'passphrase')
+
+  const m = getMessageBody(WalletMessageType.exportseed, [walletName, passphrase]) // , [walletName, passphrase]
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<string[]>>response
+  })
+}
+
+// undefined walletName is default wallet
+export function GetSeedBackupTime(walletName?: string, passphrase?: string) {
+  console.debug('GetSeedBackupTime()', walletName) // not logging passphrase
+  if (walletName !== undefined) validateString(walletName, 'GetSeedBackupTime()', 'walletName')
+  if (passphrase !== undefined) validateString(passphrase, 'GetSeedBackupTime()', 'passphrase')
+
+  const m = getMessageBody(WalletMessageType.getseedbackuptime, [walletName, passphrase])
+  return SendServerMessage(m).then(response => {
+    return <ServerResponse<unknown>>response
+  })
+}
+
 export function SendRawTransaction(hex: string) {
   console.debug('SendRawTransaction()', hex)
   validateString(hex, 'SendRawTransaction()', 'hex')

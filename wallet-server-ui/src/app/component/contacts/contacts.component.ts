@@ -9,7 +9,7 @@ import { ContactService } from '~service/contact-service'
 
 import { Contact } from '~type/wallet-server-types'
 
-import { copyToClipboard, TOR_V3_ADDRESS, trimOnPaste } from '~util/utils'
+import { copyToClipboard, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste } from '~util/utils'
 import { regexValidator } from '~util/validators'
 
 import { environment } from '~environments'
@@ -24,6 +24,7 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public copyToClipboard = copyToClipboard
   public trimOnPaste = trimOnPaste
+  public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   debug = environment.debug
 

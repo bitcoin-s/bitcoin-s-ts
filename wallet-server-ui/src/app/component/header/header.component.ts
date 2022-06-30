@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit {
 
   @Output() showConfiguration: EventEmitter<void> = new EventEmitter()
   @Output() showAdvanced: EventEmitter<void> = new EventEmitter()
+  @Output() showImportExport: EventEmitter<void> = new EventEmitter()
 
   constructor(public walletStateService: WalletStateService, public backendService: BackendService,
     public dlcFileService: DLCFileService, public authService: AuthService,
@@ -38,6 +39,11 @@ export class HeaderComponent implements OnInit {
   onAdvanced() {
     console.debug('onAdvanced()')
     this.showAdvanced.emit()
+  }
+
+  onImportExport() {
+    console.debug('onImportExport()')
+    this.showImportExport.emit()
   }
 
   onLogout() {

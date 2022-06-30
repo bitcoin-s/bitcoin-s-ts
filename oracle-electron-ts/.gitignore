@@ -4,4 +4,4 @@ out
 *.log
 .vscode
 build.json
-bitcoin-s-oracle-server*.zip
+bitcoin-s-oracle-server*

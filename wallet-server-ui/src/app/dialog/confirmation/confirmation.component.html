@@ -1,5 +1,10 @@
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 <mat-dialog-content [translate]="data.content" [translateParams]="data.params"></mat-dialog-content>
+<mat-dialog-content *ngIf="data.list">
+  <ol>
+    <li *ngFor="let i of data.list">{{ i }}</li>
+  </ol>
+</mat-dialog-content>
 <mat-dialog-content *ngIf="data.linksContent" class="links-content"
   [translate]="data.linksContent"></mat-dialog-content>
 <mat-dialog-content *ngIf="data.links" class="links">

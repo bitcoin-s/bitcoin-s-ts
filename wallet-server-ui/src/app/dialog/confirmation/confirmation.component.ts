@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export interface ConfirmationDialogContent {
   title: string
   content: string
+  list: string[]
   params: any // { key: value }
   linksContent: string
   links: string[]

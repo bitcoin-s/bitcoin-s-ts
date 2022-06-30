@@ -30,4 +30,5 @@ export interface GetInfoResponse {
   blockHeight: number
   blockHash: string
   torStarted: boolean
+  sync: boolean // Blockchain is currently syncing
 }

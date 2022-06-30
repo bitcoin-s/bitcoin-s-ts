@@ -62,6 +62,11 @@ export const enum WalletMessageType {
 
   importseed = 'importseed',
   importxprv = 'importxprv',
+  listwallets = 'listwallets',
+  loadwallet = 'loadwallet',
+  exportseed = 'exportseed',
+  getseedbackuptime = 'getseedbackuptime',
+  
   sendrawtransaction = 'sendrawtransaction',
   estimatefee = 'estimatefee',
   getdlcwalletaccounting = 'getdlcwalletaccounting',
@@ -91,6 +96,7 @@ export interface Wallet {
   hdPath: string // like "m/84'/1'/0'"
   height: number
   blockHash: string
+  rescan: boolean // wallet is currently rescanning
 }
 
 export interface Balances {

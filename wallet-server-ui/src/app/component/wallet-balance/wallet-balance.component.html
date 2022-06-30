@@ -5,6 +5,20 @@
   </div>
 
   <div class="wallet-state horizontal-pane">
+    <!--
+    <div class="pane wallet-name">
+      <div class="wallet-select">
+        <mat-form-field>
+          <mat-label translate>walletBalance.activeWallet</mat-label>
+          <select matNativeControl [(ngModel)]="walletService.walletName" (ngModelChange)="onWalletChange($event)">
+            <!- Default wallet is not included in wallets[] ->
+            <option [ngValue]="''">{{ 'walletBalance.defaultWallet' | translate }}</option>
+            <option *ngFor="let w of walletService.wallets.value" [ngValue]="w">{{w}}</option>
+          </select>
+        </mat-form-field>
+      </div>
+    </div>
+    -->
     <div *ngIf="walletStateService.balances" class="pane balances">
       <label translate>walletBalance.balance</label>
       <div class="balance-group">

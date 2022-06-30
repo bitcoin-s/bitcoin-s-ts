@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   configurationVisible = false
   advancedVisible = false
+  importExportVisible = false
 
   stateLoaded = false
 
@@ -165,6 +166,22 @@ export class AppComponent implements OnInit, OnDestroy {
     console.debug('onAdvancedClose()')
 
     this.advancedVisible = false
+    this.rightDrawer.close()
+  }
+
+  showImportExport() {
+    console.debug('showImportExport()')
+
+    this.configurationVisible = false
+    this.advancedVisible = false
+    this.importExportVisible = true
+    this.rightDrawer.open()
+  }
+
+  onImportExportClose() {
+    console.debug('onImportExportClose()')
+
+    this.importExportVisible = false
     this.rightDrawer.close()
   }
 

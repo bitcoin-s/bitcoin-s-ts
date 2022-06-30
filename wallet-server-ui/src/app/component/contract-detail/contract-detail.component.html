@@ -339,7 +339,7 @@
           <input matInput formControlName="peerAddress" type="text"
             autocomplete="off" spellcheck="false" maxlength="1024"
             placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
-            (paste)="peerAddressValue = trimOnPaste($event)">
+            (paste)="peerAddressValue = trimAndStripHTTPOnPaste($event)">
           <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
         </mat-form-field>
         <app-alert *ngIf="peerAddress?.errors?.['dontMatchInvalid']"

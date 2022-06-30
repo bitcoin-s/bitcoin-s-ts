@@ -33,7 +33,8 @@ import { AboutComponent } from './component/about/about.component'
 import { NetworkComponent } from './component/network/network.component'
 import { LoginComponent } from './component/login/login.component'
 import { AddressLabelComponent } from './component/address-label/address-label.component'
-import { ContactsComponent } from './component/contacts/contacts.component';
+import { ContactsComponent } from './component/contacts/contacts.component'
+import { ImportExportComponent } from './component/import-export/import-export.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component'
@@ -89,6 +90,7 @@ export function appInitializerFactory(translate: TranslateService) {
     LogoutDialogComponent,
     AddressLabelComponent,
     ContactsComponent,
+    ImportExportComponent,
   ],
   imports: [
     BrowserModule,

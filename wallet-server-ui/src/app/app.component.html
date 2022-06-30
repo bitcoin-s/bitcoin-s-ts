@@ -5,6 +5,7 @@
   <app-header
     (showConfiguration)="showConfiguration()"
     (showAdvanced)="showAdvanced()"
+    (showImportExport)="showImportExport()"
   ></app-header>
 
   <mat-sidenav-container>
@@ -24,6 +25,10 @@
         <!-- Advanced -->
         <app-debug *ngIf="advancedVisible"
           (close)="onAdvancedClose()"></app-debug>
+
+        <!-- Import/Export -->
+        <app-import-export *ngIf="importExportVisible"
+          (close)="onImportExportClose()"></app-import-export>
       </div>
     </mat-sidenav>
 
