@@ -50,7 +50,7 @@ export class WalletService {
 
   getWallets() {
     console.debug('getWallets()')
-
+    return;
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.listwallets)).pipe(tap(r => {
       console.debug(' listwallets', r)
       if (r.result) {
