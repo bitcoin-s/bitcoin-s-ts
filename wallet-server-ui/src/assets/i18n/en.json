@@ -124,7 +124,7 @@
     "importWallet": "Import Wallet",
     "exportWallet": "Export Wallet",
     "exportType": {
-      "seed_words_24": "24 Word Seed"
+      "seed_words_24": "24 Word BIP39 Mnemonic Seed Phrase"
     },
     "importType": {
       "words": "Seed Words",
@@ -512,7 +512,7 @@
     },
     "seedExport": {
       "title": "Seed Export",
-      "content": "Seed words for wallet \"{{ walletName }}\""
+      "content": "BIP39 Mnemonic Seed Phrase for wallet \"{{ walletName }}\""
     }
   },
 

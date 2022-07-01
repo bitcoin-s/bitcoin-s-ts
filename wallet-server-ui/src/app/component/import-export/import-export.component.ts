@@ -1,14 +1,13 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatRadioChange } from '@angular/material/radio'
 import { TranslateService } from '@ngx-translate/core'
-import * as FileSaver from 'file-saver'
 
 import { MessageService } from '~service/message.service'
 import { WalletService } from '~service/wallet.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
-import { trimOnPaste, validateHexString } from '~util/utils'
+import { trimOnPaste } from '~util/utils'
 
 import { AlertType } from '../alert/alert.component'
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
@@ -85,15 +84,9 @@ export class ImportExportComponent implements OnInit {
     const trimmed = this.importText ? this.importText.trim() : ''
     if (this.importType === ImportType.words) {
       // Validate 24 words for now
-      const is24Words = SPACE_SEPARATED_24_REGEX.test(trimmed)
-      if (is24Words) {
-        this.importValid = true
-      }
+      this.importValid = SPACE_SEPARATED_24_REGEX.test(trimmed)
     } else if (this.importType === ImportType.xprv) {
-      const isXprv = XPRV_REGEX.test(trimmed)
-      if (isXprv) {
-        this.importValid = true
-      }
+      this.importValid = XPRV_REGEX.test(trimmed)
     }
     console.debug('validateImportText()', this.importValid) // , trimmed)
   }
@@ -144,7 +137,7 @@ export class ImportExportComponent implements OnInit {
     const seed = this.importText
     const passphrase = this.importUsePassphrase ? this.importPassphrase : undefined
 
-    console.debug('importWallet()',  walletName) //, seed, passphrase)
+    console.debug('importWallet() walletName:',  walletName) //, seed, passphrase)
 
     this.executing = true
     let obs
