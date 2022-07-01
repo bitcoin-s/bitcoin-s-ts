@@ -144,6 +144,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.configurationVisible = true
     this.advancedVisible = false
+    this.importExportVisible = false
     this.rightDrawer.open()
   }
 
@@ -159,6 +160,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.configurationVisible = false
     this.advancedVisible = true
+    this.importExportVisible = false
     this.rightDrawer.open()
   }
 
@@ -189,6 +191,7 @@ export class AppComponent implements OnInit, OnDestroy {
   hideConfigDebug() {
     this.configurationVisible = false
     this.advancedVisible = false
+    this.importExportVisible = false
   }
 
   rightDrawerOpened(opened: boolean) {
