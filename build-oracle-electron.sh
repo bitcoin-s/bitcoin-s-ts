@@ -22,7 +22,7 @@ cd oracle-electron-ts
 Chip="`uname -m`"
 
 if [[ $Chip == 'arm64' ]]; then 
-	echo "you're on a M1 Mac need to generate bitcoin-s-oracle-sever.zip if have not already done so"
+	echo "you're on a M1 Mac need to generate bitcoin-s-oracle-server.zip if have not already done so"
 elif [[ $OS == 'Mac' ]]; then 
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-oracle-server-mac.os.x-1.9.2.zip
 elif [[ $OS == 'Windows' ]]; then

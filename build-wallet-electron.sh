@@ -22,7 +22,7 @@ cd wallet-electron-ts
 Chip="`uname -m`"
 
 if [[ $Chip == 'arm64' ]]; then 
-	echo "you're on a M1 Mac need to generate bitcoin-s-sever.zip if have not already done so"
+	echo "you're on a M1 Mac need to generate bitcoin-s-server.zip if have not already done so"
 elif [[ $OS == 'Mac' ]]; then 
 	curl -O -L https://github.com/bitcoin-s/bitcoin-s/releases/download/1.9.2/bitcoin-s-server-mac.os.x-1.9.2.zip
 elif [[ $OS == 'Windows' ]]; then
@@ -43,11 +43,11 @@ for name in *bitcoin-s-server*; do
 		npm i && npm run build && npm run make
 		echo "Want to start the server in dev mode? Run cd wallet-electron-ts && npm run start"
 	else 
-		cd..
+		cd ..
 		echo "
 		Retrieve bitcoin-s-server file from https://github.com/bitcoin-s/bitcoin-s releases/tag/1.9.2 need to put bitcoin-s-server.zip file in ~/bitcoin-s-ts/wallet-electron-ts. 
 		For Mac m1 if not on the github then need to generate it like so
-		go to your bitcoin-s node and inside it Run sbt appServer/universal:packageBin
+		go to your bitcoin-s node and inside it Run sbt app/server/universal:packageBin
 		then Run cd app/server/target/universal 
 		then Run cp <the zip file> ~/bitcoin-s-ts/wallet-electron-ts"
 
