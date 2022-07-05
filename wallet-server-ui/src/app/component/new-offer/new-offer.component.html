@@ -246,7 +246,7 @@
           <input matInput formControlName="peerAddress" type="text"
             autocomplete="off" spellcheck="false" maxlength="1024"
             placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
-            (paste)="peerAddressValue = trimOnPaste($event)">
+            (paste)="peerAddressValue = trimAndStripHTTPOnPaste($event)">
           <!-- Contact Selection -->
           <button mat-stroked-button matSuffix class="mat-stroked-icon-button-md" [matMenuTriggerFor]="contactMenu"
             matTooltip="{{ 'contacts.addContact' | translate }}"

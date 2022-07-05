@@ -10,6 +10,7 @@ import { ContactService } from './contact-service'
 import { DLCService } from '~service/dlc-service'
 import { MessageService } from '~service/message.service'
 import { OfferService } from '~service/offer-service'
+import { WalletService } from '~service/wallet.service'
 
 import { BuildConfig } from '~type/proxy-server-types'
 import { Balances, BlockchainMessageType, DLCMessageType, DLCWalletAccounting, GetInfoResponse, ServerResponse, WalletMessageType } from '~type/wallet-server-types'
@@ -79,7 +80,7 @@ export class WalletStateService {
 
   constructor(private dialog: MatDialog, private messageService: MessageService, private authService: AuthService,
     private dlcService: DLCService, private offerService: OfferService, private addressService: AddressService,
-    private contactService: ContactService) {
+    private contactService: ContactService, private walletService: WalletService) {
       this.dlcService.initialized.subscribe(v => {
         if (v) this.checkInitialized()
       })
@@ -121,6 +122,7 @@ export class WalletStateService {
     this.offerService.uninitialize()
     this.addressService.uninitialize()
     this.contactService.uninitialize()
+    this.walletService.uninitialize()
     // Could wipe all state here...
     this.stopPollingTimer()
   }
@@ -198,12 +200,17 @@ export class WalletStateService {
       this.refreshWalletState(),
       this.dlcService.loadDLCs(),
       this.offerService.loadIncomingOffers(),
-      this.contactService.loadContacts()
+      this.contactService.loadContacts(),
+      this.walletService.initializeState(),
     ]).subscribe(_ => {
       console.debug(' initializedState() initialized')
       this.initialized = true
       this.checkInitialized()
       this.startPollingTimer(ONLINE_POLLING_TIME, ONLINE_POLLING_TIME)
+    }, err => {
+      console.error('initializeState() forkJoin error')
+      // setOffline() to restart polling loop
+      this.setOffline()
     })
   }
 

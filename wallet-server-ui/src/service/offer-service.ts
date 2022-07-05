@@ -68,10 +68,10 @@ export class OfferService {
   }
 
   private decodeOffer(offerTLV: string) {
-    console.debug('decodeOffer()')
+    // console.debug('decodeOffer()')
     return this.messageService.sendMessage(getMessageBody(CoreMessageType.decodeoffer, [offerTLV]), false)
     .pipe(catchError(error => of({ result: null })), map(r => {
-      console.debug('decodeoffer', r)
+      // console.debug(' decodeoffer', r)
       if (r.result) {
         const offerWithHex = <OfferWithHex>{ offer: r.result, hex: offerTLV }
         return offerWithHex
@@ -91,7 +91,7 @@ export class OfferService {
   addIncomingOffer(offerTLV: string, peer: string, message: string) {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.offeradd, [offerTLV, peer, message]))
     .pipe(tap(r => {
-      console.debug('offer-add', r)
+      console.debug(' offer-add', r)
       if (r.result) { // hash.hex
         
       }
@@ -101,7 +101,7 @@ export class OfferService {
   removeIncomingOffer(hash: string) {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.offerremove, [hash]))
     .pipe(tap(r => {
-      console.debug('offer-remove', r)
+      console.debug(' offer-remove', r)
       if (r.result) { // hash.hex
         const hash = r.result
         delete this.decodedOffers.value[hash]
@@ -120,7 +120,7 @@ export class OfferService {
   sendIncomingOffer(offerTLVorTempId: string, peer: string, message: string) {
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.offersend, [offerTLVorTempId, peer, message]))
     .pipe(tap(r => {
-      console.debug('offer-send', r)
+      console.debug(' offer-send', r)
       if (r.result) { // hash.hex
         
       }

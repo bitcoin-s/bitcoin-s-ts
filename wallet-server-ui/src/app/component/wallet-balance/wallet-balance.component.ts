@@ -8,6 +8,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { formatNumber, formatPercent } from '~util/utils'
 
 import { NewAddressDialogComponent } from '~app/dialog/new-address-dialog/new-address-dialog.component'
+import { WalletService } from '~service/wallet.service'
 
 
 @Component({
@@ -20,9 +21,11 @@ export class WalletBalanceComponent implements OnInit {
   public formatNumber = formatNumber
   public formatPercent = formatPercent
 
+  private executing = false
+
   constructor(private dialog: MatDialog,
     public walletStateService: WalletStateService, public backendService: BackendService,
-    public addressService: AddressService) {}
+    public addressService: AddressService, public walletService: WalletService) {}
 
   ngOnInit(): void {
   }
@@ -38,6 +41,21 @@ export class WalletBalanceComponent implements OnInit {
         action: 'action.close',
       }
     })
+  }
+
+  onWalletChange(walletName: string) {
+    console.debug('onWalletName()', walletName)
+
+    this.executing = true
+    this.walletService.loadWallet(walletName).subscribe(r => {
+      console.debug(' loadwallet', r)
+      if (r.result) {
+        
+      } else {
+
+      }
+      this.executing = false
+    }, err => { this.executing = false })
   }
 
 }

@@ -5,6 +5,11 @@
     gap: 1rem;
     margin: 0 1rem 1rem 1rem;
     
+    .wallet-name {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
     .balances, .pnl, .buttons, .utxos {
       border: 1px solid rgba(0,0,0,.2);
       padding: 1rem;

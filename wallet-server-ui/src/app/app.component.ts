@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   configurationVisible = false
   advancedVisible = false
+  importExportVisible = false
 
   stateLoaded = false
 
@@ -143,6 +144,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.configurationVisible = true
     this.advancedVisible = false
+    this.importExportVisible = false
     this.rightDrawer.open()
   }
 
@@ -158,6 +160,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.configurationVisible = false
     this.advancedVisible = true
+    this.importExportVisible = false
     this.rightDrawer.open()
   }
 
@@ -168,10 +171,27 @@ export class AppComponent implements OnInit, OnDestroy {
     this.rightDrawer.close()
   }
 
+  showImportExport() {
+    console.debug('showImportExport()')
+
+    this.configurationVisible = false
+    this.advancedVisible = false
+    this.importExportVisible = true
+    this.rightDrawer.open()
+  }
+
+  onImportExportClose() {
+    console.debug('onImportExportClose()')
+
+    this.importExportVisible = false
+    this.rightDrawer.close()
+  }
+
   // Clicking off of drawer doesn't call close() so this cleans up state
   hideConfigDebug() {
     this.configurationVisible = false
     this.advancedVisible = false
+    this.importExportVisible = false
   }
 
   rightDrawerOpened(opened: boolean) {

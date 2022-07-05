@@ -19,6 +19,8 @@ import { BuildConfig, SuccessType, UrlResponse } from '~type/proxy-server-types'
 import { getMessageBody } from '~util/wallet-server-util'
 
 
+const UNKNOWN_ERROR = 'Unknown Error' // Seeing this on rescan bootups when many outstanding requests go unanswered. 'backend overwhelmed' failure case
+
 /** Service that communicates with underlying server instance through wallet-server-ui-proxy */
 @Injectable({ providedIn: 'root' })
 export class MessageService {
@@ -66,15 +68,19 @@ export class MessageService {
         // Gracefully handle no longer authenticated
         if (error && error.status === 403) {
           this.authService.doLogout()
+        } else if (error && error.statusText === UNKNOWN_ERROR) { // May not want to keep this as logout case
+          this.authService.doLogout()
+        } else {
+          let message = error?.error?.error || error?.error || error?.statusText
+          const dialog = this.dialog.open(ErrorDialogComponent, {
+            data: {
+              title: 'dialog.sendMessageError.title',
+              content: message,
+              // action: '',
+            }
+          })
+          throw(Error('sendMessage error ' + message))
         }
-        let message = error?.error?.error || error?.error
-        const dialog = this.dialog.open(ErrorDialogComponent, {
-          data: {
-            title: 'dialog.sendMessageError.title',
-            content: message,
-          }
-        })
-        throw(Error('sendMessage error ' + message))
         return new Observable<any>() // required for type checking...
       }))
     } else {

@@ -217,3 +217,20 @@ export function trimOnPaste(event: ClipboardEvent, callback?: (value: string) =>
   }
   return ''
 }
+
+// Trim text that is pasted into a input field, strip 'http(s)://'xxx'/' and fire callback function if present
+export function trimAndStripHTTPOnPaste(event: ClipboardEvent, callback?: (value: string) => void): string {
+  event.preventDefault()
+  const clipboardData = event.clipboardData
+  if (clipboardData) {
+    let text = clipboardData.getData('text').trim()
+    // Remove 'http(s)://'xxx'/' wrapper
+    text = text.replace(/^https?:\/\//, '')
+    text = text.replace(/\/$/, '')
+
+    if (callback) callback(text)
+    return text
+  }
+  return ''
+}
+

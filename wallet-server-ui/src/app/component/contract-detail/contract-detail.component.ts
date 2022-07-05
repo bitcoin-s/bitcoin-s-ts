@@ -20,7 +20,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { Attestment, Contact, ContractInfo, CoreMessageType, DLCContract, DLCState, EnumContractDescriptor, NumericContractDescriptor, NumericEventDescriptor, WalletMessageType } from '~type/wallet-server-types'
 import { AcceptWithHex, SignWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, TOR_V3_ADDRESS, trimOnPaste, validateHexString } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatNumber, formatPercent, isCancelable, isExecutable, isFundingTxRebroadcastable, isRefundable, outcomeDigitsToNumber, outcomeDigitsToRange, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste, validateHexString } from '~util/utils'
 import { dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -48,6 +48,7 @@ export class ContractDetailComponent implements OnInit {
   public isExecutable = isExecutable
   public isFundingTxRebroadcastable = isFundingTxRebroadcastable
   public trimOnPaste = trimOnPaste
+  public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 

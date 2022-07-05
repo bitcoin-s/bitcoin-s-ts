@@ -1,0 +1,88 @@
+.import-export-section {
+
+  height: calc(100% - 75px); // subtract out header and fudge
+  padding-bottom: 0.25rem;
+
+  .operations {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    app-alert {
+      margin-bottom: 0.25rem;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      margin-bottom: 0.5rem;
+      &.mb-0 {
+        margin-bottom: 0rem;
+      }
+
+      label {
+        margin-right: 0.5rem;
+      }
+      button {
+        flex: 1;
+        margin-bottom: 0;
+      }
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      label {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .paste-input {
+      margin-right: 0.25rem;
+    }
+
+    .raw-tx-textarea {
+      width: 100%;
+      margin-bottom: 0.25rem;
+    }
+
+    .decoded-tx-textarea {
+      flex: 1;
+      width: 100%;
+    }
+    
+    .import, .export {
+      .radio-row {
+        // margin-bottom: 1rem;
+  
+        .import-type {
+          margin-bottom: 0.5rem;
+          mat-radio-button {
+            margin-right: 1rem;
+          }
+        }
+      }
+      .import-textarea {
+        margin-bottom: -0.75rem;
+      }
+      .wallet-name-input {
+        // margin-bottom: -0.75rem;
+      }
+      .passphrase-input {
+        // margin-bottom: -0.75rem;
+      }
+    }
+   
+    button {
+      margin-bottom: 0.5rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+  }
+}

@@ -19,7 +19,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { EnumContractDescriptor, NumericContractDescriptor, WalletMessageType, DLCMessageType, NumericEventDescriptor, Contact } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste, validateTorAddress } from '~util/utils'
+import { copyToClipboard, formatDateTime, formatISODateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste, validateTorAddress } from '~util/utils'
 import { allowEmptybitcoinAddressValidator, dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -45,6 +45,7 @@ export class AcceptOfferComponent implements OnInit {
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
   public trimOnPaste = trimOnPaste
+  public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
@@ -245,7 +246,7 @@ export class AcceptOfferComponent implements OnInit {
 
     // TODO : Catch error on either of these and unset executing
     this.executing = true
-    if (peerAddress) {
+    if (this.acceptOfferType === AcceptOfferType.TOR) {
       console.debug('acceptdlc over Tor')
 
       this.messageService.sendMessage(getMessageBody(DLCMessageType.acceptdlc,
@@ -262,7 +263,7 @@ export class AcceptOfferComponent implements OnInit {
           }
           this.executing = false
         })
-    } else {
+    } else if (this.acceptOfferType === AcceptOfferType.FILES) {
       console.debug('acceptdlcoffer to hex')
 
       // Needed to increase the proxy layer timeout. Moved to 45 seconds, may need more

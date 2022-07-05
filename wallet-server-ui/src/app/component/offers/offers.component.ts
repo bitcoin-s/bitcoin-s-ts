@@ -11,7 +11,7 @@ import { OfferService } from '~service/offer-service'
 import { IncomingOffer } from '~type/wallet-server-types'
 import { OfferWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, TOR_V3_ADDRESS, trimOnPaste, UPPERLOWER_CASE_HEX } from '~util/utils'
+import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste, UPPERLOWER_CASE_HEX } from '~util/utils'
 
 import { environment } from '~environments'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -30,6 +30,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   public formatISODateTime = formatISODateTime
   public formatShortHex = formatShortHex
   public trimOnPaste = trimOnPaste
+  public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   // New Incoming Offer
   form: FormGroup

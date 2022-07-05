@@ -34,6 +34,8 @@ export class AddressService {
       this.refreshAddressLabels(),
     ]).pipe(tap(r => {
       this.initialized.next(true)
+    }, err => {
+      console.error('error in AddressService.initializeState()')
     }))
   }
 

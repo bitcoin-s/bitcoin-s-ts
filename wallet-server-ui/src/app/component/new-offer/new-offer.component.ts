@@ -19,7 +19,7 @@ import { WalletStateService } from '~service/wallet-state-service'
 import { Contact, DLCMessageType, EnumContractDescriptor, EnumEventDescriptor, Event, NumericContractDescriptor, NumericEventDescriptor, PayoutFunctionPoint, WalletMessageType } from '~type/wallet-server-types'
 import { AnnouncementWithHex, ContractInfoWithHex } from '~type/wallet-ui-types'
 
-import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimOnPaste } from '~util/utils'
+import { copyToClipboard, datePlusDays, dateToSecondsSinceEpoch, formatDateTime, formatNumber, networkToValidationNetwork, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste } from '~util/utils'
 import { allowEmptybitcoinAddressValidator, dontMatchValidator, regexValidator } from '~util/validators'
 import { getMessageBody } from '~util/wallet-server-util'
 
@@ -44,6 +44,7 @@ export class NewOfferComponent implements OnInit {
   public OfferType = OfferType
   public copyToClipboard = copyToClipboard
   public trimOnPaste = trimOnPaste
+  public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective
 
