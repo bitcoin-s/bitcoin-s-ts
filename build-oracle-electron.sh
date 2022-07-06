@@ -34,7 +34,7 @@ else
 	echo "not supported OS"
 fi
 
-for name in *bitcoin-s-server*; do
+for name in *bitcoin-s-oracle-server*; do
 	if [ -f "$name" ]; then 
 		cd ..
 		npm run clean
@@ -45,8 +45,8 @@ for name in *bitcoin-s-server*; do
 	else 
 		cd ..
 		echo "
-		Retrieve bitcoin-s-server file from https://github.com/bitcoin-s/bitcoin-s releases/tag/1.9.2 need to put bitcoin-s-oracle-server.zip file in ~/bitcoin-s-ts/oracle-electron-ts. 
-		For Mac m1 if not on the github then need to generate it like so
+		Retrieve bitcoin-s-server file from https://github.com/bitcoin-s/bitcoin-s releases/tag/1.9.2 need to put the bitcoin-s-oracle-server.zip file in ~/bitcoin-s-ts/oracle-electron-ts. 
+		For Mac m1 if file not on the github then need to generate it like so
 		go to your bitcoin-s node and inside it Run sbt app/oracle-server/universal:packageBin
 		then Run cd app/oracle-server/target/universal 
 		then Run cp <the zip file> ~/bitcoin-s-ts/oracle-electron-ts"
