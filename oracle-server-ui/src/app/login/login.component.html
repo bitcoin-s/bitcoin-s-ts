@@ -13,7 +13,8 @@
       </mat-form-field>
       <mat-form-field class="w-100">
         <mat-label translate>login.password</mat-label>
-        <input matInput name="password" formControlName="password" type="password" autocomplete="current-password">
+        <input matInput name="password" formControlName="password" type="password" autocomplete="current-password"
+          [readonly]="autoLogin">
       </mat-form-field>
     </fieldset>
     <div class="button-group">

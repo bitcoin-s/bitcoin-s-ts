@@ -8,5 +8,6 @@ export const environment = {
   blockstreamApi: '/blockstream',
   mempoolApi: '/mempool',
   user: 'frontend',
-  password: '',
+  password: 'none',
+  autoLogin: true,
 };

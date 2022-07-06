@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.websocketService.stopPolling()
     this.stateLoaded = false
     this.rightDrawer.close()
-    this.router.navigate(['/login'])
+    this.router.navigate(['/login'], { queryParams: { loggedOut: 1 } })
   }
 
   ngOnInit(): void {

@@ -76,7 +76,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private onLogout() {
     this.stateLoaded = false
     this.rightDrawer.close()
-    this.router.navigate(['/login'])
+    this.router.navigate(['/login'], { queryParams: { loggedOut: 1 } })
   }
 
   ngOnInit() {

@@ -13,6 +13,7 @@ export const environment = {
   mempoolApi: '/mempool',
   user: 'frontend',
   password: 'none',
+  autoLogin: true,
 };
 
 /*
