@@ -5,5 +5,6 @@ export const environment = {
   proxyApi: '/proxy/v0',
   wsApi: '/websocket',
   user: 'frontend',
-  password: '',
+  password: 'none',
+  autoLogin: true,
 };

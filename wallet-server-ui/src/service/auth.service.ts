@@ -25,6 +25,17 @@ export class AuthService {
   expiration: Date|null|undefined = undefined
   loginTime$: Subscription
 
+  public get isLoggedIn() {
+    if (this.expiration) {
+      return this.expiration.getTime() >= new Date().getTime()
+    }
+    return false
+  }
+
+  public get isLoggedOut() {
+    return !this.isLoggedIn
+  }
+
   loggedIn: EventEmitter<void> = new EventEmitter()
   loggedOut: EventEmitter<void> = new EventEmitter()
 
@@ -155,17 +166,6 @@ export class AuthService {
 
   public getToken() {
     return localStorage.getItem(ACCESS_TOKEN_KEY)
-  }
-
-  public get isLoggedIn() {
-    if (this.expiration) {
-      return this.expiration.getTime() >= new Date().getTime()
-    }
-    return false
-  }
-
-  public get isLoggedOut() {
-    return !this.isLoggedIn
   }
 
 }

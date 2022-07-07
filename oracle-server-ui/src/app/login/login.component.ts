@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
+import { Subscription } from 'rxjs'
 
 import { environment } from '../../environments/environment'
 
@@ -17,11 +18,12 @@ import { getMessageBody } from '~util/oracle-server-util'
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   public AlertType = AlertType
   
   debug = environment.debug // flag for debugging buttons
+  autoLogin = environment.autoLogin
 
   form: FormGroup
 
@@ -29,19 +31,30 @@ export class LoginComponent implements OnInit {
   loginExecuting = false
 
   error: any
+  queryParams$: Subscription
 
-  constructor(private fb: FormBuilder, public authService: AuthService, private router: Router,
+  constructor(private fb: FormBuilder, private route: ActivatedRoute,
+    public authService: AuthService, private router: Router,
     private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.queryParams$ = this.route.queryParams
+      .subscribe((params: Params) => {
+        // If logout was set by application, break out of autoLogin cycle
+        if (params.loggedOut) this.autoLogin = false
+      })
     this.form = this.fb.group({
       user: [environment.user, Validators.required],
       password: [environment.password, Validators.required],
     })
-    // if (environment.autoLogin && this.authService.expiration === undefined) {
-    //   console.debug('autoLogin')
-    //   this.login()
-    // }
+    if (this.autoLogin && this.authService.isLoggedOut) {
+      console.warn('autoLogin')
+      this.login()
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.queryParams$) this.queryParams$.unsubscribe()
   }
 
   private errorHandler(err: any) {
