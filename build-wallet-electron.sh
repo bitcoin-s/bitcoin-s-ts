@@ -38,18 +38,27 @@ for name in *bitcoin-s-server*; do
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 2dbb739 (added build-oracle-elctron and build-wallet-electron bash files)
+=======
+>>>>>>> 7116858 (made it so that it will check for zip filefor the server or for server folder)
 	if [ -e "$name" ]; then 
 =======
 	if [ -f "$name" ]; then 
 >>>>>>> 127c80d (added build-oracle-elctron and build-wallet-electron bash files)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if [ -e "$name" ]; then 
 >>>>>>> 23d2c31 (made it so that it will check for zip filefor the server or for server folder)
 =======
 >>>>>>> 2dbb739 (added build-oracle-elctron and build-wallet-electron bash files)
+=======
+=======
+	if [ -e "$name" ]; then 
+>>>>>>> 23d2c31 (made it so that it will check for zip filefor the server or for server folder)
+>>>>>>> 7116858 (made it so that it will check for zip filefor the server or for server folder)
 		rm -rf node_modules 
 		cd ..
 		npm run clean
