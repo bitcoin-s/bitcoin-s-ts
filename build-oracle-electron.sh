@@ -35,7 +35,7 @@ else
 fi
 
 for name in *bitcoin-s-oracle-server*; do
-	if [ -f "$name" ]; then 
+	if [ -e "$name" ]; then 
 		rm -rf node_modules
 		cd ..
 		npm run clean
