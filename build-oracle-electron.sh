@@ -35,7 +35,11 @@ else
 fi
 
 for name in *bitcoin-s-oracle-server*; do
+<<<<<<< HEAD
 	if [ -e "$name" ]; then 
+=======
+	if [ -f "$name" ]; then 
+>>>>>>> 127c80d (added build-oracle-elctron and build-wallet-electron bash files)
 		rm -rf node_modules
 		cd ..
 		npm run clean
