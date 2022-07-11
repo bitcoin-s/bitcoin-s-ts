@@ -36,6 +36,7 @@ fi
 
 for name in *bitcoin-s-server*; do
 	if [ -f "$name" ]; then 
+		rm -rf node_modules 
 		cd ..
 		npm run clean
 		npm i && npm run build 
