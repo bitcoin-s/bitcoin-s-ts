@@ -41,7 +41,19 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.queryParams$ = this.route.queryParams
       .subscribe((params: Params) => {
         // If logout was set by application, break out of autoLogin cycle
-        if (params.loggedOut) this.autoLogin = false
+        if (params.loggedOut) {
+          this.autoLogin = false
+          // TODO : Wipe 'loggedOut' out of url
+          // Doing this as-is will add a navigation to the history...
+          // this.router.navigate([''], {
+          //   queryParams: {
+          //     'loggedOut': null,
+          //   },
+          //   queryParamsHandling: 'merge',
+          //   // skipLocationChange: true, // Does not change visible URL, even with replaceUrl set also
+          //   // replaceUrl: true,
+          // })
+        }
       })
     this.form = this.fb.group({
       user: [environment.user, Validators.required],

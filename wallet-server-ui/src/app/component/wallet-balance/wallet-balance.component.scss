@@ -9,6 +9,28 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+
+      .wallet-select {
+        .spinner {
+          margin-left: 0.5rem;
+        }
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+  
+        margin-bottom: 0.5rem;
+  
+        label {
+          margin-right: 0.5rem;
+        }
+        button {
+          flex: 1;
+          margin-bottom: 0;
+        }
+      }
     }
     .balances, .pnl, .buttons, .utxos {
       border: 1px solid rgba(0,0,0,.2);
@@ -127,6 +149,11 @@
     .address, .address-label {
       align-self: center;
     }
+  }
+
+  .none {
+    grid-column: 1 / span 3;
+    margin-top: 1rem;
   }
   
 }

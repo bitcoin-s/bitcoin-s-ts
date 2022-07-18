@@ -51,7 +51,7 @@ export interface GetInfoResponse {
   blockHeight: number
   blockHash: string
   torStarted: boolean
-  sync: boolean // TODO : Blockchain is currently syncing
+  syncing: boolean // Blockchain data is currently syncing
 }
 
 // EO blockbhain-types.ts

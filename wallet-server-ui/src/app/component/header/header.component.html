@@ -173,9 +173,19 @@
       </a>
 
       <!-- Tor Starting indicator -->
-      <mat-icon *ngIf="walletStateService.torStarting.value" class="tor-starting" 
+      <mat-icon *ngIf="walletStateService.info?.torStarted === false" class="tor-starting" 
         matTooltip="{{ 'network.torStarting' | translate }}"
         matTooltipPosition="before">sync_disabled</mat-icon>
+
+      <!-- Blockchain syncing indicator -->
+      <mat-icon *ngIf="walletStateService.info?.syncing" class="syncing" 
+        matTooltip="{{ 'header.syncing' | translate }}"
+        matTooltipPosition="before">sync_cloud</mat-icon>
+      
+      <!-- Wallet rescanning indicator -->
+      <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="syncing" 
+        matTooltip="{{ 'header.rescanning' | translate }}"
+        matTooltipPosition="before">sync_lock</mat-icon>
 
       <!--
       <div class="indicator-padding"></div>
