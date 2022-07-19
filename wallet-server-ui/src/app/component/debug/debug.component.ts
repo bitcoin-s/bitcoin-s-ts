@@ -80,7 +80,7 @@ export class DebugComponent implements OnInit {
 
     this.walletStateService.rescanWallet(ignoreCreationTime).subscribe(r => {
       if (r.error) {
-        console.error('error in rescanWallet')
+        console.error('error in rescanWallet()')
         const dialog = this.dialog.open(ErrorDialogComponent, {
           data: {
             title: 'dialog.serverError',

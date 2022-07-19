@@ -296,7 +296,7 @@ export class WalletStateService {
     return forkJoin([
       this.getWallets(),
       this.getWalletInfo(),
-      // We do not load all wallet details - just the current wallet. There is no way to load there details yet.
+      // We do not load all wallet details - just the current wallet. There is no way to load their details yet.
     ]).pipe(tap(r => {
       
     }, err => {

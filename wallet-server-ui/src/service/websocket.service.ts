@@ -28,6 +28,7 @@ enum WebsocketMessageType {
   torstarted = 'torstarted', // Backend successfully started Tor
   syncflagchanged = 'syncflagchanged', // 'syncing', Blockchain synced when payload === false
   rescancomplete = 'rescancomplete', // Wallet rescan complete
+  feeratechange = 'feeratechange', // New fee rate estimate, payload in sats/vbyte
 }
 
 export interface WebsocketMessage {
@@ -237,6 +238,10 @@ export class WebsocketService {
         // TODO : Any wallet-specific things to do here?
         // Reload wallet info, will call refreshWalletState() during process
         this.walletStateService.initializeWallet().subscribe()
+        break;
+      case WebsocketMessageType.feeratechange:
+        const feeRate = <number>message.payload
+        this.walletStateService.feeEstimate = feeRate
         break;
       default:
         console.error('handleMessage() unknown message.type', message)
