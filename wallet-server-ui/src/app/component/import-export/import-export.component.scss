@@ -18,9 +18,6 @@
       align-items: center;
 
       margin-bottom: 0.5rem;
-      &.mb-0 {
-        margin-bottom: 0rem;
-      }
 
       label {
         margin-right: 0.5rem;
@@ -64,6 +61,12 @@
             margin-right: 1rem;
           }
         }
+      }
+      .export-radio-row {
+        margin-bottom: 1rem;
+      }
+      .expansion-panel {
+        margin-bottom: 0.75rem;
       }
       .import-textarea {
         margin-bottom: -0.75rem;

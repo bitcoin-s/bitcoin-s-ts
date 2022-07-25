@@ -38,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loggedIn$: Subscription
   loggedOut$: Subscription
   subscriptions: Subscription[]
+  appServerReady$: Subscription
   
   constructor(private titleService: Title, private translate: TranslateService, public messageService: MessageService, 
     private overlay: OverlayContainer, private router: Router,
@@ -58,12 +59,18 @@ export class AppComponent implements OnInit, OnDestroy {
   
   private onLogin() {
     this.createSubscriptions()
-    this.walletStateService.startPolling()
+    this.appServerReady$ = this.walletStateService.waitForAppServer().subscribe(r => {
+      console.debug(' waitForAppServer()', r)
+      // We have blockchain info locally
+      this.appServerReady$.unsubscribe()
+      this.websocketService.startPolling()
+    })
   }
 
   private onLogout() {
     this.destroySubscriptions()
-    this.walletStateService.stopPolling()
+    this.appServerReady$.unsubscribe()
+    this.walletStateService.uninitialize()
     this.websocketService.stopPolling()
     this.stateLoaded = false
     this.rightDrawer.close()
@@ -91,10 +98,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.stateLoaded = true
       console.debug('stateLoaded:', this.router.url)
 
-      this.websocketService.startPolling()
-
       // Check current route and set route based on wallet and dlc state after initialization
-      if (this.router.url === '/login') {
+      if (this.router.url.startsWith('/login')) {
         if (this.dlcService.dlcs.value.length > 0) {
           this.router.navigate(['/contracts'])
         } else { // if (this.walletStateService.balances.total > 0) {

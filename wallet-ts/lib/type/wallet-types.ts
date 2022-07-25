@@ -90,13 +90,18 @@ export interface WalletInfo {
 }
 
 export interface Wallet {
-  keymanager: any
+  keymanager: KeyManager
   walletName: string
   xpub: string
   hdPath: string // like "m/84'/1'/0'"
   height: number
   blockHash: string
   rescan: boolean // wallet is currently rescanning
+  imported: boolean // wallet was imported via external seed
+}
+
+export interface KeyManager {
+  rootXpub: string
 }
 
 export interface Balances {
