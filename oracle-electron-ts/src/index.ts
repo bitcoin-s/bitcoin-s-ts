@@ -85,9 +85,11 @@ const startServer = (): void => {
   let p: string
 
   if (platform === 'win32') {
+    p = path.join(__dirname, 'bin', server, 'bin')
+    console.debug('spawn path: ' + p)
     serverProcess = spawn('cmd.exe', ['/c', `${server}.bat`],
       {
-        cwd: `./bin/${server}/bin`
+        cwd: p
       })
   } else {
     // Needs chmod +x before being able to spawn
@@ -97,7 +99,8 @@ const startServer = (): void => {
     // serverProcess = spawn('ls', ['-la'])
   }
 
-  if (!serverProcess) {
+  if (!serverProcess || !serverProcess.pid) {
+    console.log('serverProcess:', serverProcess)
     console.error(`Unable to start ${server} from ${__dirname}`)
     app.quit()
     return
@@ -106,9 +109,11 @@ const startServer = (): void => {
 
   serverProcess.stdout.on('data', function (data) {
     process.stdout.write(data) // 'appServer: ' + data)
+    if (platform === 'win32') console.log(data.toString())
   })
   serverProcess.stderr.on('data', function (data) {
     process.stderr.write(`${server} error: ${data}`)
+    if (platform === 'win32') console.error(data.toString())
   })
 
   serverProcess.on('exit', code => {
