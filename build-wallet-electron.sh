@@ -2,20 +2,18 @@
 
 # downloads the bitcoin-s-server.zip file corresponding to your operating system 
 # then sets up Suredbits Wallets dependencies
+
 OS="`uname`"
-case $OS in
-  'Linux')
-   OS='Linux'
-    ;;
-  'WindowsNT')
-    OS='Windows'
-    ;;
-  'Darwin') 
-    OS='Mac'
-    ;;
-  'incompatible') ;;
-  *) ;;
-esac
+
+if [[ ${OS:0:6} == 'Darwin' ]]; then 
+	OS='Mac'
+elif [[ ${OS:0:10} == 'MINGW64_NT' ]]; then
+	OS='Windows'    
+elif [[ ${OS:0:5} == 'Linux' ]]; then
+	OS='Linux'    
+else 
+	OS='incompatible'
+fi
 
 cd wallet-electron-ts
 
@@ -35,30 +33,7 @@ else
 fi
 
 for name in *bitcoin-s-server*; do
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2dbb739 (added build-oracle-elctron and build-wallet-electron bash files)
-=======
->>>>>>> 7116858 (made it so that it will check for zip filefor the server or for server folder)
 	if [ -e "$name" ]; then 
-=======
-	if [ -f "$name" ]; then 
->>>>>>> 127c80d (added build-oracle-elctron and build-wallet-electron bash files)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-	if [ -e "$name" ]; then 
->>>>>>> 23d2c31 (made it so that it will check for zip filefor the server or for server folder)
-=======
->>>>>>> 2dbb739 (added build-oracle-elctron and build-wallet-electron bash files)
-=======
-=======
-	if [ -e "$name" ]; then 
->>>>>>> 23d2c31 (made it so that it will check for zip filefor the server or for server folder)
->>>>>>> 7116858 (made it so that it will check for zip filefor the server or for server folder)
 		rm -rf node_modules 
 		cd ..
 		npm run clean
