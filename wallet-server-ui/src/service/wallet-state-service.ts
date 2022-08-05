@@ -106,17 +106,29 @@ export class WalletStateService {
   private checkWalletCurrent() {
     console.debug('checkWalletCurrent() blockHeight:', this.info.blockHeight, this.wallet.value)
     if (this.wallet.value && this.wallet.value.height < this.info.blockHeight) {
-      console.warn('wallet is out of date and needs a rescan. wallet height:', this.wallet.value.height, 'blockHeight:', this.info.blockHeight)
+      const w = this.wallet.value.walletName || 'Default Wallet'
+      const m = `This wallet (${w}) needs a rescan.\n\nWallet blockHeight: ${this.wallet.value.height}, current blockHeight: ${this.info.blockHeight}`
+      console.warn(m)
       // TODO : Dialog with offer to rescan wallet up-to-date?
       // this.rescanWallet(false, this.wallet.value.height /* +1? */)
+      // TEMP Dialog to say wallet is not synced
+      const dialog = this.dialog.open(ErrorDialogComponent, {
+        data: {
+          title: 'dialog.warning',
+          content: m,
+          class: 'ws-preline',
+        }
+      })
     }
   }
 
   // Wallet
+  showWalletSelector: boolean = true // flag for visibility of wallet selection and seed import
   wallets: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
   wallet: BehaviorSubject<Wallet|null> = new BehaviorSubject<Wallet|null>(null)
 
   private setWallet(wallet: Wallet|null) {
+    // console.debug('setWallet()', wallet)
     this.wallet.next(wallet)
     this.checkWalletScanning()
     this.checkWalletCurrent()
@@ -346,15 +358,17 @@ export class WalletStateService {
         // Trouble
       }
     }),
-      switchMap(_ => this.getWalletInfo()), // get newly loaded wallet info
-      switchMap(_ => this.refreshWalletState()), // refresh local state for new wallet
+      // get newly loaded wallet info
+      switchMap(_ => this.getWalletInfo()),
+      // Doing this in checkWalletScanning() now instead
+      // switchMap(_ => this.refreshWalletState()), // refresh local state for new wallet
       // Auto-rescan based on loaded wallet
-      tap(_ => {
-        if (this.wallet.value && this.wallet.value.height < this.info.blockHeight) {
-          console.warn('wallet is out of date and needs a rescan wallet height:', this.wallet.value.height, 'blockHeight:', this.info.blockHeight)
-          // TODO
-        }
-      }),
+      // tap(_ => {
+      //   if (this.wallet.value && this.wallet.value.height < this.info.blockHeight) {
+      //     console.warn('wallet is out of date and needs a rescan wallet height:', this.wallet.value.height, 'blockHeight:', this.info.blockHeight)
+      //     // TODO
+      //   }
+      // }),
       catchError((error: any, caught: Observable<unknown>) => {
         console.error('loadWallet() chain error', error)
         let e = error?.message || error
@@ -396,6 +410,7 @@ export class WalletStateService {
   }
 
   refreshWalletState() {
+    // console.debug('refreshWalletState()')
     return forkJoin([
       this.refreshBalances(),
       this.refreshDLCWalletAccounting(),

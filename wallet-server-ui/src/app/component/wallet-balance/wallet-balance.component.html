@@ -6,7 +6,7 @@
 
   <div class="wallet-state horizontal-pane">
     <!-- walletName must have been set and there must be more than one wallet -->
-    <div *ngIf="walletName !== undefined && walletStateService.wallets.value.length > 1" class="pane wallet-name">
+    <div *ngIf="walletStateService.showWalletSelector && walletName !== undefined && walletStateService.wallets.value.length > 1" class="pane wallet-name">
       <div class="wallet-select">
         <mat-form-field class="w-100">
           <mat-label translate>walletBalance.activeWallet</mat-label>

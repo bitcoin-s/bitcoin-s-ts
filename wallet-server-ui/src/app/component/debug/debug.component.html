@@ -54,6 +54,18 @@
       <textarea class="decoded-tx-textarea" [(ngModel)]="decodedTransaction"></textarea>
     </div>
     <app-alert *ngIf="transactionNotFound" [type]="AlertType.warn" message="advanced.transactionNotFoundInWallet"></app-alert>
+
+    <div class="vspacer-2"></div>
+
+    <h4 translate>advanced.alphaFeatures</h4>
+
+    <div class="row">
+      <label>
+        <!-- Enable loadwallet functionality and seed importing -->
+        <input type="checkbox" [(ngModel)]="walletStateService.showWalletSelector">
+        {{ 'advanced.showWalletSelector' | translate }}
+      </label>
+    </div>
   </div>
 
 </section>

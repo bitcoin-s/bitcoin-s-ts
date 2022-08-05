@@ -54,11 +54,11 @@
       </mat-form-field>
       <button class="w-100" mat-stroked-button (click)="exportWallet()" [disabled]="executing">
         <mat-icon class="material-icons-outlined">file_download</mat-icon>
-        <span translate>importexport.exportWallet</span>
+        <span translate>importexport.export</span>
       </button>
     </fieldset>
 
-    <fieldset class="import">
+    <fieldset *ngIf="walletStateService.showWalletSelector" class="import">
       <h4 translate>importexport.import</h4>
       <div class="row radio-row">
         <mat-radio-group class="import-type"
@@ -102,7 +102,7 @@
       </mat-form-field>
       <button class="w-100" mat-stroked-button (click)="importWallet()" [disabled]="!importValid || !importWalletName || executing">
         <mat-icon class="material-icons-outlined">file_upload</mat-icon>
-        <span translate>importexport.importWallet</span>
+        <span translate>importexport.import</span>
       </button>
     </fieldset>
 

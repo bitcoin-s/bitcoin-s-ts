@@ -37,7 +37,7 @@ export class DebugComponent implements OnInit {
   executing = false
   backupExecuting = false
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
+  constructor(private messageService: MessageService, public walletStateService: WalletStateService,
     private translate: TranslateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {

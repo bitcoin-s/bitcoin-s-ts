@@ -7,6 +7,7 @@ export interface ErrorDialogContent {
   content: string
   params: any // { key: value }
   // action: string
+  class: string
 }
 
 @Component({

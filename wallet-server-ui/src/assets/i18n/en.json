@@ -120,15 +120,15 @@
     "getTransaction": "Get Transaction",
     "transactionNotFoundInWallet": "Transaction not found in wallet",
     "raw": "Raw",
-    "decoded": "Decoded"
+    "decoded": "Decoded",
+    "alphaFeatures": "Alpha Features",
+    "showWalletSelector": "Show Wallet Selector and Seed Import"
   },
 
   "importexport": {
     "heading": "Import/Export",
     "export": "Export",
     "import": "Import",
-    "importWallet": "Import Wallet",
-    "exportWallet": "Export Wallet",
     "exportType": {
       "seed_words_24": "24 Word BIP39 Mnemonic Seed Phrase"
     },
@@ -138,7 +138,7 @@
     },
     "importTypeDescription": {
       "words": "24 words separated by spaces",
-      "xprv": "xprv string"
+      "xprv": "Extended private key string"
     },
     "walletName": "Wallet Name",
     "walletNameBlankForDefault": "Wallet Name (blank for default)",
@@ -438,6 +438,7 @@
   },
 
   "dialog": {
+    "warning": "Warning",
     "error": "Error",
     "serverError": "Server Error",
     "newAddress": {
