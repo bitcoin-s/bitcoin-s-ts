@@ -123,7 +123,7 @@ export class WalletStateService {
   }
 
   // Wallet
-  showWalletSelector: boolean = true // flag for visibility of wallet selection and seed import
+  showWalletSelector: boolean = false // flag for visibility of wallet selection and seed import
   wallets: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
   wallet: BehaviorSubject<Wallet|null> = new BehaviorSubject<Wallet|null>(null)
 
