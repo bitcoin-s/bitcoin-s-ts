@@ -112,13 +112,13 @@ export class WalletStateService {
       // TODO : Dialog with offer to rescan wallet up-to-date?
       // this.rescanWallet(false, this.wallet.value.height /* +1? */)
       // TEMP Dialog to say wallet is not synced
-      const dialog = this.dialog.open(ErrorDialogComponent, {
-        data: {
-          title: 'dialog.warning',
-          content: m,
-          class: 'ws-preline',
-        }
-      })
+      // const dialog = this.dialog.open(ErrorDialogComponent, {
+      //   data: {
+      //     title: 'dialog.warning',
+      //     content: m,
+      //     class: 'ws-preline',
+      //   }
+      // })
     }
   }
 
