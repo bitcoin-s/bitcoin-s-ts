@@ -141,7 +141,12 @@ export class WebsocketService {
 
   private handleMessage(message: WebsocketMessage) {
     const d = new Date().toISOString()
-    console.debug('handleMessage()', d, 'message:', message.type, message.payload)
+    if (message.type === WebsocketMessageType.blockprocessed) {
+      // just too many to log, overwhelms browser
+    } else {
+      console.debug('handleMessage()', d, 'message:', message.type, message.payload)
+    }
+    
     switch (message.type) {
       case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
@@ -154,7 +159,7 @@ export class WebsocketService {
         }
         if (this.walletStateService.isServerReady()) {
           // Not sure if we need to refresh everything here...
-          this.walletStateService.refreshWalletState().subscribe()
+          this.walletStateService.refreshWallet$.subscribe()
         }
         break;
       case WebsocketMessageType.dlcstatechange:
@@ -237,7 +242,7 @@ export class WebsocketService {
         // console.warn('rescancomplete, wallet:', walletName)
         // TODO : Any wallet-specific things to do here?
         // Reload wallet info, will call refreshWalletState() during process
-        this.walletStateService.initializeWallet().subscribe()
+        this.walletStateService.initializeWallet$.subscribe()
         break;
       case WebsocketMessageType.feeratechange:
         const feeRate = <number>message.payload

@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, forkJoin, Observable, throwError, timer } from 'rxjs'
-import { catchError, delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, forkJoin, Observable, Subject, throwError, timer } from 'rxjs'
+import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap, throttleTime } from 'rxjs/operators'
 
 import { AddressService } from '~service/address.service'
 import { AuthService } from '~service/auth.service'
@@ -29,6 +29,7 @@ export /* const */ enum WalletServiceState {
 }
 
 const OFFLINE_POLLING_TIME = 5000 // ms
+const STATE_RETRY_DELAY = 15000 // ms
 
 const FEE_RATE_NOT_SET = -1
 const DEFAULT_FEE_RATE = 1 // sats/vbyte
@@ -80,7 +81,7 @@ export class WalletStateService {
     if (this.info && this.info.torStarted === true && this.info.syncing === false) {
       // If we are transitioning to server_ready, load wallet info
       if (this.state !== WalletServiceState.server_ready) {
-        this.initializeWallet().subscribe()
+        this.initializeWallet$.subscribe()
       }
       this.state = WalletServiceState.server_ready
     } else {
@@ -92,9 +93,9 @@ export class WalletStateService {
     console.debug('checkWalletScanning()')
     if (this.wallet.value?.rescan === false) {
       if (!this.initialized) {
-        this.initializeState().subscribe()
+        this.initializeState$.subscribe()
       }
-      this.refreshWalletState().subscribe()
+      this.refreshWallet$.subscribe()
       this.state = WalletServiceState.server_ready
     } else {
       console.warn('wallet is rescanning...', this.wallet.value)
@@ -191,6 +192,8 @@ export class WalletStateService {
       tap(_ => {
         // console.debug(' waitForAppServer() complete')
         this.state = WalletServiceState.online
+        // Getting basic server data so user can see Tor address
+        this.initializeServerState$.subscribe()
       })
     )
   }
@@ -204,10 +207,14 @@ export class WalletStateService {
     }
   }
 
+  private readonly initializeState$ = this.initializeState().pipe(
+    debounceTime(STATE_RETRY_DELAY),
+  )
+
   private initializeState() {
     console.debug('initializeState()')
     return forkJoin([
-      this.initializeServerState(),
+      // this.initializeServerState$, // Happening earlier now
       this.offerService.loadIncomingOffers(),
       this.contactService.loadContacts(),
     ]).pipe(tap(r => {
@@ -232,6 +239,10 @@ export class WalletStateService {
   }
 
   /** Server */
+
+  private readonly initializeServerState$ = this.initializeServerState().pipe(
+    debounceTime(STATE_RETRY_DELAY),
+  )
 
   private initializeServerState() {
     console.debug('initializeServerState()')
@@ -304,7 +315,11 @@ export class WalletStateService {
 
   /** Wallet */
 
-  initializeWallet() {
+  public readonly initializeWallet$ = this.initializeWallet().pipe(
+    debounceTime(STATE_RETRY_DELAY), // May want lower on this one to make it easy to change wallets
+  )
+
+  private initializeWallet() {
     return forkJoin([
       this.getWallets(),
       this.getWalletInfo(),
@@ -409,7 +424,11 @@ export class WalletStateService {
     }))
   }
 
-  refreshWalletState() {
+  public readonly refreshWallet$ = this.refreshWalletState().pipe(
+    // debounceTime(STATE_RETRY_DELAY),
+  )
+
+  private refreshWalletState() {
     // console.debug('refreshWalletState()')
     return forkJoin([
       this.refreshBalances(),
