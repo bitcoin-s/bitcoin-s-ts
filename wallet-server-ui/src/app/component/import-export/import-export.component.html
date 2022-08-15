@@ -7,30 +7,37 @@
   <div class="operations">
     <fieldset class="export">
       <h4 translate>importexport.export</h4>
-      <div class="row radio-row">
+      <div class="row radio-row export-radio-row">
         <!--[value]="exportType"-->
         <mat-radio-group class="export-type">
           <mat-radio-button *ngFor="let e of [ExportType.seed_words_24]"
             [value]="e" checked="true">{{ 'importexport.exportType.' + e | translate }}</mat-radio-button>
         </mat-radio-group>
       </div>
-      <div class="row mb-0">
-        <label>
-          <mat-checkbox [(ngModel)]="exportUsePassphrase" (change)="exportPassphrase = ''"
-            matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
-        </label>
-        <!-- [type]="hideExportPassphrase ? 'password' : 'text'" - using style instead to avoid browser password prompt -->
-        <mat-form-field class="passphrase-input w-100">
-          <input #exportPassphraseInput [class.password]="hideExportPassphrase"
-            [(ngModel)]="exportPassphrase" matInput type="text"
-            autocomplete="off" spellcheck="false"
-            placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!exportUsePassphrase">
-          <mat-icon class="mat-icon-sm" matSuffix
-            matTooltip="{{ 'importexport.showHidePassphrase' | translate }}"
-            (click)="hideExportPassphrase = !hideExportPassphrase">{{hideExportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
-          <mat-hint *ngIf="exportUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
-        </mat-form-field>
-      </div>
+
+      <!-- Advanced : Passphrase -->
+      <mat-expansion-panel *ngIf="advancedVisible" class="expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <label>
+            <mat-checkbox [(ngModel)]="exportUsePassphrase" (change)="exportPassphrase = ''"
+              matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
+          </label>
+          <!-- [type]="hideExportPassphrase ? 'password' : 'text'" - using style instead to avoid browser password prompt -->
+          <mat-form-field class="passphrase-input w-100">
+            <input #exportPassphraseInput [class.password]="hideExportPassphrase"
+              [(ngModel)]="exportPassphrase" matInput type="text"
+              autocomplete="off" spellcheck="false"
+              placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!exportUsePassphrase">
+            <mat-icon class="mat-icon-sm" matSuffix
+              matTooltip="{{ 'importexport.showHidePassphrase' | translate }}"
+              (click)="hideExportPassphrase = !hideExportPassphrase">{{hideExportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-hint *ngIf="exportUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
       <!--
       <mat-form-field class="wallet-name-input w-100">
         <input [(ngModel)]="exportWalletName" matInput type="text" autocomplete="off" spellcheck="false"
@@ -42,16 +49,16 @@
         <select matNativeControl [(ngModel)]="exportWalletName" (ngModelChange)="onWalletChange($event)">
           <!-- Default wallet is not included in wallets[] -->
           <option [ngValue]="''">{{ 'walletBalance.defaultWallet' | translate }}</option>
-          <option *ngFor="let w of walletService.wallets.value" [ngValue]="w">{{w}}</option>
+          <option *ngFor="let w of walletStateService.wallets.value" [ngValue]="w">{{w}}</option>
         </select>
       </mat-form-field>
       <button class="w-100" mat-stroked-button (click)="exportWallet()" [disabled]="executing">
         <mat-icon class="material-icons-outlined">file_download</mat-icon>
-        <span translate>importexport.exportWallet</span>
+        <span translate>importexport.export</span>
       </button>
     </fieldset>
 
-    <fieldset class="import">
+    <fieldset *ngIf="walletStateService.showWalletSelector" class="import">
       <h4 translate>importexport.import</h4>
       <div class="row radio-row">
         <mat-radio-group class="import-type"
@@ -67,28 +74,35 @@
         </textarea>
         <mat-hint *ngIf="importText && !importValid && importType === ImportType.words">{{ 'importexport.importTypeDescription.words' | translate }}</mat-hint>
       </mat-form-field>
-      <div class="row mb-0">
-        <label>
-          <mat-checkbox [(ngModel)]="importUsePassphrase" (change)="importPassphrase = ''"
-            matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
-        </label>
-        <!-- <input type="text" [(ngModel)]="passphrase"> -->
-        <mat-form-field class="passphrase-input w-100">
-          <input #importPassphraseInput [class.password]="hideImportPassphrase"
-            [(ngModel)]="importPassphrase" matInput type="text"
-            autocomplete="off" spellcheck="false"
-            placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!importUsePassphrase">
-          <mat-icon class="mat-icon-sm" matSuffix (click)="hideImportPassphrase = !hideImportPassphrase">{{hideImportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
-          <mat-hint *ngIf="importUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
-        </mat-form-field>
-      </div>
+
+      <!-- Advanced : Passphrase -->
+      <mat-expansion-panel *ngIf="advancedVisible" class="expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <label>
+            <mat-checkbox [(ngModel)]="importUsePassphrase" (change)="importPassphrase = ''"
+              matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
+          </label>
+          <mat-form-field class="passphrase-input w-100">
+            <input #importPassphraseInput [class.password]="hideImportPassphrase"
+              [(ngModel)]="importPassphrase" matInput type="text"
+              autocomplete="off" spellcheck="false"
+              placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!importUsePassphrase">
+            <mat-icon class="mat-icon-sm" matSuffix (click)="hideImportPassphrase = !hideImportPassphrase">{{hideImportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-hint *ngIf="importUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
       <mat-form-field class="wallet-name-input w-100">
         <input [(ngModel)]="importWalletName" matInput type="text" autocomplete="off" spellcheck="false"
           placeholder="{{ 'importexport.walletName' | translate }}">
       </mat-form-field>
       <button class="w-100" mat-stroked-button (click)="importWallet()" [disabled]="!importValid || !importWalletName || executing">
         <mat-icon class="material-icons-outlined">file_upload</mat-icon>
-        <span translate>importexport.importWallet</span>
+        <span translate>importexport.import</span>
       </button>
     </fieldset>
 

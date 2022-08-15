@@ -8,7 +8,7 @@ import { environment } from '../environments/environment'
 import { AuthService } from '~service/auth.service'
 import { DLCService } from '~service/dlc-service'
 import { OfferService } from '~service/offer-service'
-import { WalletStateService } from '~service/wallet-state-service'
+import { WalletServiceState, WalletStateService } from '~service/wallet-state-service'
 
 import { BlockHeaderResponse, DLCContract, DLCState, IncomingOffer } from '~type/wallet-server-types'
 
@@ -25,6 +25,10 @@ enum WebsocketMessageType {
   newaddress = 'newaddress', // address string
   dlcofferadd = 'dlcofferadd',
   dlcofferremove = 'dlcofferremove',
+  torstarted = 'torstarted', // Backend successfully started Tor
+  syncflagchanged = 'syncflagchanged', // 'syncing', Blockchain synced when payload === false
+  rescancomplete = 'rescancomplete', // Wallet rescan complete
+  feeratechange = 'feeratechange', // New fee rate estimate, payload in sats/vbyte
 }
 
 export interface WebsocketMessage {
@@ -32,7 +36,7 @@ export interface WebsocketMessage {
   payload: any
 }
 
-const STARTUP_POLLING_DELAY = 1000 // ms
+const STARTUP_POLLING_DELAY = 0 // ms
 const POLLING_TIME = 15000 // ms
 
 @Injectable({ providedIn: 'root' })
@@ -136,59 +140,69 @@ export class WebsocketService {
   }
 
   private handleMessage(message: WebsocketMessage) {
-    console.debug('handleMessage() type:', message.type)
+    const d = new Date().toISOString()
+    console.debug('handleMessage()', d, 'message:', message.type, message.payload)
     switch (message.type) {
       case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
         // Nothing to do
         break;
       case WebsocketMessageType.blockprocessed:
-        this.walletStateService.refreshWalletState().subscribe()
         const block = <BlockHeaderResponse>message.payload
         if (this.walletStateService.info) {
           this.walletStateService.info.blockHeight = block.height
         }
+        if (this.walletStateService.isServerReady()) {
+          // Not sure if we need to refresh everything here...
+          this.walletStateService.refreshWalletState().subscribe()
+        }
         break;
       case WebsocketMessageType.dlcstatechange:
-        const dlc = <DLCContract>message.payload
-        const contractInfo = this.dlcService.contractInfos.value[dlc.dlcId]
-        console.debug(' dlc:', dlc)
-        const obs = this.dlcService.replaceDLC(dlc)
-        let goToContract = false
-        // Wait for ContractInfo to load before navigating
-        obs.subscribe(_ => {
-          // If someone just accepted a DLC Offer or signed a DLC Accept, move to Contract Detail view
-          // Using both states because accepted/signed usually comes in too quickly to have transitioned
-          // TODO : May only want to do this when user is in specific views, but doing it for any UI state right now
-          if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && !dlc.isInitiator) {
-            // Remove IncomingOffer if it exists
-            this.offerService.removeIncomingOfferByTemporaryContractId(dlc.temporaryContractId)
-            goToContract = true
-          } else if ([DLCState.signing, DLCState.signed].includes(dlc.state) && dlc.isInitiator) {
-            // goToContract = true
-          } else if ([DLCState.broadcast].includes(dlc.state)) {
-            const dialog = this.dialog.open(ConfirmationDialogComponent, {
-              data: {
-                title: 'dialog.broadcastSuccess.title',
-                content: 'dialog.broadcastSuccess.content',
-                params: { txId: dlc.fundingTxId, eventId: contractInfo.oracleInfo.announcement.event.eventId },
-                linksContent: "dialog.broadcastSuccess.linksContent",
-                links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
-                action: 'action.close',
-                showCancelButton: false,
-              }
-            })
-          }
-          if (goToContract) {
-            this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
-          }
-        })
+        if (this.walletStateService.isServerReady()) {
+          const dlc = <DLCContract>message.payload
+          const contractInfo = this.dlcService.contractInfos.value[dlc.dlcId]
+          console.debug(' dlc:', dlc)
+          const obs = this.dlcService.replaceDLC(dlc)
+          let goToContract = false
+          // Wait for ContractInfo to load before navigating
+          obs.subscribe(_ => {
+            // If someone just accepted a DLC Offer or signed a DLC Accept, move to Contract Detail view
+            // Using both states because accepted/signed usually comes in too quickly to have transitioned
+            // TODO : May only want to do this when user is in specific views, but doing it for any UI state right now
+            if ([DLCState.accepting, DLCState.accepted].includes(dlc.state) && !dlc.isInitiator) {
+              // Remove IncomingOffer if it exists
+              this.offerService.removeIncomingOfferByTemporaryContractId(dlc.temporaryContractId)
+              goToContract = true
+            } else if ([DLCState.signing, DLCState.signed].includes(dlc.state) && dlc.isInitiator) {
+              // goToContract = true
+            } else if ([DLCState.broadcast].includes(dlc.state)) {
+              const dialog = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'dialog.broadcastSuccess.title',
+                  content: 'dialog.broadcastSuccess.content',
+                  params: { txId: dlc.fundingTxId, eventId: contractInfo.oracleInfo.announcement.event.eventId },
+                  linksContent: "dialog.broadcastSuccess.linksContent",
+                  links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
+                  action: 'action.close',
+                  showCancelButton: false,
+                }
+              })
+            }
+            if (goToContract) {
+              this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
+            }
+          })
+        }
         break;
       case WebsocketMessageType.reservedutxos:
-        this.walletStateService.refreshBalances().subscribe()
+        if (this.walletStateService.isServerReady()) {
+          this.walletStateService.refreshBalances().subscribe()
+        }
         break;
       case WebsocketMessageType.newaddress:
-        this.addressService.refreshUnfundedAddresses().subscribe()
+        if (this.walletStateService.isServerReady()) {
+          this.addressService.refreshUnfundedAddresses().subscribe()
+        }
         break;
       case WebsocketMessageType.dlcofferadd:
         const offer = <IncomingOffer>message.payload
@@ -197,6 +211,37 @@ export class WebsocketService {
       case WebsocketMessageType.dlcofferremove:
         const hash = <string>message.payload
         this.offerService.incomingOfferRemoved(hash)
+        break;
+      case WebsocketMessageType.torstarted:
+        // console.warn('torstarted')
+        if (this.walletStateService.info) {
+          this.walletStateService.info.torStarted = true
+        }
+        this.walletStateService.checkForServerReady()
+        break;
+      case WebsocketMessageType.syncflagchanged:
+        const syncing = <boolean>message.payload
+        // console.warn('syncflagchanged', syncing)
+        if (this.walletStateService.info) {
+          this.walletStateService.info.syncing = syncing
+        }
+        // sync flag sets and unsets with blockprocessed event. We only want to checkServerReady()
+        // (and pay the cost of loading wallets and state) if it's not syncing and it was not ready previously
+        // TODO : this may not be playing nice with rescan, doing work in the middle
+        if (!syncing && ![WalletServiceState.server_ready,WalletServiceState.wallet_rescan].includes(this.walletStateService.state)) {
+          this.walletStateService.checkForServerReady()
+        }
+        break;
+      case WebsocketMessageType.rescancomplete:
+        const walletName = <string>message.payload
+        // console.warn('rescancomplete, wallet:', walletName)
+        // TODO : Any wallet-specific things to do here?
+        // Reload wallet info, will call refreshWalletState() during process
+        this.walletStateService.initializeWallet().subscribe()
+        break;
+      case WebsocketMessageType.feeratechange:
+        const feeRate = <number>message.payload
+        this.walletStateService.feeEstimate = feeRate
         break;
       default:
         console.error('handleMessage() unknown message.type', message)

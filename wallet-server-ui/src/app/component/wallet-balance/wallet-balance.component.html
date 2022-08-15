@@ -5,20 +5,45 @@
   </div>
 
   <div class="wallet-state horizontal-pane">
-    <!--
-    <div class="pane wallet-name">
+    <!-- walletName must have been set and there must be more than one wallet -->
+    <div *ngIf="walletStateService.showWalletSelector && walletName !== undefined && walletStateService.wallets.value.length > 1" class="pane wallet-name">
       <div class="wallet-select">
-        <mat-form-field>
+        <mat-form-field class="w-100">
           <mat-label translate>walletBalance.activeWallet</mat-label>
-          <select matNativeControl [(ngModel)]="walletService.walletName" (ngModelChange)="onWalletChange($event)">
-            <!- Default wallet is not included in wallets[] ->
+          <select matNativeControl [(ngModel)]="walletName" (ngModelChange)="onWalletChange($event)"
+            [disabled]="executing">
+            <!-- Default wallet is not included in wallets[] -->
             <option [ngValue]="''">{{ 'walletBalance.defaultWallet' | translate }}</option>
-            <option *ngFor="let w of walletService.wallets.value" [ngValue]="w">{{w}}</option>
+            <option *ngFor="let w of walletStateService.wallets.value" [ngValue]="w">{{w}}</option>
           </select>
+          <div *ngIf="executing" matSuffix class="spinner">
+            <mat-spinner diameter="20"></mat-spinner>
+          </div>
         </mat-form-field>
+        <!-- Advanced : Passphrase -->
+        <mat-expansion-panel *ngIf="advancedVisible">
+          <mat-expansion-panel-header>
+            <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="row">
+            <label>
+              <mat-checkbox [(ngModel)]="walletUsePassphrase" (change)="walletPassphrase = ''"
+                matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
+            </label>
+            <mat-form-field>
+              <input [class.password]="hideWalletPassphrase"
+                [(ngModel)]="walletPassphrase" matInput type="text"
+                autocomplete="off" spellcheck="false"
+                placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!walletUsePassphrase">
+              <mat-icon class="mat-icon-sm" matSuffix
+                matTooltip="{{ 'importexport.showHidePassphrase' | translate }}"
+                (click)="hideWalletPassphrase = !hideWalletPassphrase">{{hideWalletPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-hint *ngIf="walletUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
       </div>
     </div>
-    -->
     <div *ngIf="walletStateService.balances" class="pane balances">
       <label translate>walletBalance.balance</label>
       <div class="balance-group">
@@ -85,6 +110,9 @@
           <div class="unit" translate>unit.sats</div>
           <app-address-label class="address-label" [address]="address.address"></app-address-label>
         </ng-container>
+        <ng-container *ngIf="addressService.fundedAddresses.length === 0">
+          <span class="none" translate>walletBalance.noFundedAddresses</span>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -104,6 +132,9 @@
             <mat-icon>qr_code_2</mat-icon>
           </button>
           <app-address-label class="address-label" [address]="address"></app-address-label>
+        </ng-container>
+        <ng-container *ngIf="addressService.unfundedAddresses.length === 0">
+          <span class="none" translate>walletBalance.noUnfundedAddresses</span>
         </ng-container>
       </div>
     </div>

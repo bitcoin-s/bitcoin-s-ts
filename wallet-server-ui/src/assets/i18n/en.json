@@ -28,14 +28,17 @@
     "network": "Network",
     "blockHeight": "Block Height",
     "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
-    "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte"
+    "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte",
+    "torStarting": "Tor Starting",
+    "syncing": "Syncing Blockchain",
+    "rescanning": "Rescanning Blockchain"
   },
 
   "network": {
     "heading": "Network",
     "torDLCHostAddress": "Tor DLC Host Address",
     "torStarted": "Tor Started",
-    "torStarting": "Tor Starting"
+    "syncing": "Syncing Blockchain"
   },
 
   "about": {
@@ -53,13 +56,16 @@
     "blockHeightLabel": "Block Height: {{ height }}",
     "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte",
     "dataConnection": "Data Connection",
-    "pollingLabel": "Pollling state: {{state}}",
+    "serverLabel": "Server state: {{state}}",
     "websocketLabel": "Websocket state: {{state}}"
   },
 
   "serverEvent": {
     "serverFound": "Found appServer! 😀",
-    "serverNotFound": "Did not find appServer! 😞"
+    "serverNotFound": "Did not find appServer! 😞",
+    "torStarted": "Tor Started!",
+    "blockchainSynced": "Blockchain Synced!",
+    "walletRescanned": "Wallet Rescanned!"
   },
 
   "action": {
@@ -114,25 +120,25 @@
     "getTransaction": "Get Transaction",
     "transactionNotFoundInWallet": "Transaction not found in wallet",
     "raw": "Raw",
-    "decoded": "Decoded"
+    "decoded": "Decoded",
+    "alphaFeatures": "Alpha Features",
+    "showWalletSelector": "Show Wallet Selector and Seed Import"
   },
 
   "importexport": {
     "heading": "Import/Export",
     "export": "Export",
     "import": "Import",
-    "importWallet": "Import Wallet",
-    "exportWallet": "Export Wallet",
     "exportType": {
       "seed_words_24": "24 Word BIP39 Mnemonic Seed Phrase"
     },
     "importType": {
-      "words": "Seed Words",
+      "words": "BIP39 Seed Phrase",
       "xprv": "xprv"
     },
     "importTypeDescription": {
       "words": "24 words separated by spaces",
-      "xprv": "xprv string"
+      "xprv": "Extended private key string"
     },
     "walletName": "Wallet Name",
     "walletNameBlankForDefault": "Wallet Name (blank for default)",
@@ -173,7 +179,9 @@
     "getNewAddress": "Get New Address",
     "sendFunds": "Send Funds",
     "fundedAddresses": "Funded Addresses",
+    "noFundedAddresses": "No Funded Addresses",
     "unfundedAddresses": "Unfunded Addresses",
+    "noUnfundedAddresses": "No Unfunded Addresses",
     "openQRCode": "Show QR Code",
     "address": "Address",
     "value": "Value",
@@ -430,6 +438,7 @@
   },
 
   "dialog": {
+    "warning": "Warning",
     "error": "Error",
     "serverError": "Server Error",
     "newAddress": {

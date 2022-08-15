@@ -4,7 +4,6 @@ import { MatRadioChange } from '@angular/material/radio'
 import { TranslateService } from '@ngx-translate/core'
 
 import { MessageService } from '~service/message.service'
-import { WalletService } from '~service/wallet.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
 import { trimOnPaste } from '~util/utils'
@@ -46,7 +45,8 @@ export class ImportExportComponent implements OnInit {
   importType: ImportType = ImportType.words
   importTypes = [ImportType.words, ImportType.xprv]
   importText: string
-  importUsePassphrase: boolean
+  advancedVisible = true
+  importUsePassphrase = false
   importPassphrase: string = ''
   hideImportPassphrase = true
   importWalletName: string
@@ -54,12 +54,11 @@ export class ImportExportComponent implements OnInit {
   
   executing = false
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
-    public walletService: WalletService,
+  constructor(private messageService: MessageService, public walletStateService: WalletStateService,
     private translate: TranslateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.exportWalletName = this.walletService.walletName
+    
   }
 
   onClose() {
@@ -100,7 +99,7 @@ export class ImportExportComponent implements OnInit {
     console.debug('walletName:', walletName, 'passphrase:', passphrase)
 
     this.executing = true
-    this.walletService.exportWallet(walletName, passphrase).subscribe(r => {
+    this.walletStateService.exportWallet(walletName, passphrase).subscribe(r => {
       // console.debug(' exportseed:', r)
       if (r.result) {
         // TODO : Show seed words. Confirmation dialog, allow user to click to reveal words
@@ -118,7 +117,7 @@ export class ImportExportComponent implements OnInit {
           data: {
             title: 'dialog.serverError',
             content: 'error.error',
-            params: { error: r.error }
+            params: { error: r.error },
           }
         })
       }
@@ -142,17 +141,25 @@ export class ImportExportComponent implements OnInit {
     this.executing = true
     let obs
     if (this.importType === ImportType.words) {
-      obs = this.walletService.importSeedWordWallet(walletName, seed, passphrase)
+      obs = this.walletStateService.importSeedWordWallet(walletName, seed, passphrase)
     } else { // if (this.importType === ImportType.xprv) {
-      obs = this.walletService.importXprvWallet(walletName, seed, passphrase)
+      obs = this.walletStateService.importXprvWallet(walletName, seed, passphrase)
     }
 
     obs.subscribe(r => {
-      if (r.result) {
-        this.walletService.initializeState().subscribe()
-        // TODO : Show dialog, update local state for all balances and DLCs
+      // Reload wallets so new import is visible
+      this.walletStateService.initializeWallet().subscribe()
+      if (r.result) { // TODO : Currently r.result is null for success. Asked for walletName to be returned
+        
       } else {
-        // TODO : Handle error
+        console.error('error in importWallet()')
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.serverError',
+            content: 'error.error',
+            params: { error: r.error }
+          }
+        })
       }
       this.executing = false
     }, err => { this.executing = false })

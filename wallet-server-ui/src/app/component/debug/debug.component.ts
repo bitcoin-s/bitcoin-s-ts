@@ -37,7 +37,7 @@ export class DebugComponent implements OnInit {
   executing = false
   backupExecuting = false
 
-  constructor(private messageService: MessageService, private walletStateService: WalletStateService,
+  constructor(private messageService: MessageService, public walletStateService: WalletStateService,
     private translate: TranslateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -77,13 +77,17 @@ export class DebugComponent implements OnInit {
     const ignoreCreationTime = this.fullRescan // false // forces full rescan regardless of wallet creation time
 
     this.executing = true
-    this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).subscribe(r => {
-      console.debug('r:', r)
 
-      if (r.result) { // "Rescan started."
-        // TODO : Started dialog / message
-
-        // this.walletStateService.refreshBalances()
+    this.walletStateService.rescanWallet(ignoreCreationTime).subscribe(r => {
+      if (r.error) {
+        console.error('error in rescanWallet()')
+        const dialog = this.dialog.open(ErrorDialogComponent, {
+          data: {
+            title: 'dialog.serverError',
+            content: 'error.error',
+            params: { error: r.error },
+          }
+        })
       }
       this.executing = false
     }, err => { this.executing = false })

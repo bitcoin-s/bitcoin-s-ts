@@ -82,7 +82,7 @@ useHTTPS: ${this.useHTTPS}
 rootDirectory: ${this.rootDirectory}
 uiDirectory: ${this.uiDirectory}
 bitcoinsDirectory: ${this.bitcoinsDirectory}
-logFilename: ${this.logFilepath}
+logFilepath: ${this.logFilepath}
 serverUser: ${this.serverUser}
 apiRoot: ${this.apiRoot}
 wsRoot: ${this.wsRoot}

@@ -37,6 +37,17 @@ fieldset {
   }
 }
 
+/** Bootstrap equivalents */
+
+.mx-auto {
+  margin-right: auto!important;
+  margin-left: auto!important;
+}
+
+.mb-0 {
+  margin-bottom: 0rem;
+}
+
 [hidden] {
   display: none !important;
 }
