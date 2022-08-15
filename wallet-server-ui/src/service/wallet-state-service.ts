@@ -193,7 +193,7 @@ export class WalletStateService {
         // console.debug(' waitForAppServer() complete')
         this.state = WalletServiceState.online
         // Getting basic server data so user can see Tor address
-        this.initializeServerState$.subscribe()
+        // this.initializeServerState$.subscribe()
       })
     )
   }
@@ -214,7 +214,7 @@ export class WalletStateService {
   private initializeState() {
     console.debug('initializeState()')
     return forkJoin([
-      // this.initializeServerState$, // Happening earlier now
+      this.initializeServerState$,
       this.offerService.loadIncomingOffers(),
       this.contactService.loadContacts(),
     ]).pipe(tap(r => {
