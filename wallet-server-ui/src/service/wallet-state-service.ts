@@ -81,6 +81,7 @@ export class WalletStateService {
     if (this.info && this.info.torStarted === true && this.info.syncing === false) {
       // If we are transitioning to server_ready, load wallet info
       if (this.state !== WalletServiceState.server_ready) {
+        this.initializeServerState$.subscribe()
         this.initializeWallet$.subscribe()
       }
       this.state = WalletServiceState.server_ready
@@ -214,7 +215,7 @@ export class WalletStateService {
   private initializeState() {
     console.debug('initializeState()')
     return forkJoin([
-      this.initializeServerState$,
+      // this.initializeServerState$,
       this.offerService.loadIncomingOffers(),
       this.contactService.loadContacts(),
     ]).pipe(tap(r => {
