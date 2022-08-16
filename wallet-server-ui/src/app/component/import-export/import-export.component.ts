@@ -148,7 +148,7 @@ export class ImportExportComponent implements OnInit {
 
     obs.subscribe(r => {
       // Reload wallets so new import is visible
-      this.walletStateService.initializeWallet$.subscribe()
+      this.walletStateService.initializeWallet().subscribe()
       if (r.result) { // TODO : Currently r.result is null for success. Asked for walletName to be returned
         
       } else {

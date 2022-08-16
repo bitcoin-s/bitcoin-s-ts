@@ -59,7 +59,7 @@ export class DebugComponent implements OnInit {
       if (r.result) {
         // TODO : Dialog / message
 
-        this.walletStateService.refreshWallet$.subscribe()
+        this.walletStateService.refreshWalletState().subscribe()
       }
       this.executing = false
     }, err => { this.executing = false })

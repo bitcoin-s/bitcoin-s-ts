@@ -159,7 +159,7 @@ export class WebsocketService {
         }
         if (this.walletStateService.isServerReady()) {
           // Not sure if we need to refresh everything here...
-          this.walletStateService.refreshWallet$.subscribe()
+          this.walletStateService.refreshWalletState().subscribe()
         }
         break;
       case WebsocketMessageType.dlcstatechange:
@@ -207,6 +207,12 @@ export class WebsocketService {
       case WebsocketMessageType.newaddress:
         if (this.walletStateService.isServerReady()) {
           this.addressService.refreshUnfundedAddresses().subscribe()
+        } else { // Show new address when we haven't loaded state yet (waiting on backend sync)
+          const newAddress = <string>message.payload
+          if (!this.addressService.unfundedAddresses) {
+            this.addressService.unfundedAddresses = []
+          }
+          this.addressService.unfundedAddresses.push(newAddress)
         }
         break;
       case WebsocketMessageType.dlcofferadd:
@@ -239,10 +245,8 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.rescancomplete:
         const walletName = <string>message.payload
-        // console.warn('rescancomplete, wallet:', walletName)
-        // TODO : Any wallet-specific things to do here?
         // Reload wallet info, will call refreshWalletState() during process
-        this.walletStateService.initializeWallet$.subscribe()
+        this.walletStateService.initializeWallet().subscribe()
         break;
       case WebsocketMessageType.feeratechange:
         const feeRate = <number>message.payload

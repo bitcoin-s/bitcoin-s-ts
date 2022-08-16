@@ -522,6 +522,10 @@
     "seedExport": {
       "title": "Seed Export",
       "content": "BIP39 Mnemonic Seed Phrase for wallet \"{{ walletName }}\""
+    },
+    "deleteContact": {
+      "title": "Delete Contact",
+      "content": "Are you sure you want to delete the contact \"{{ alias }}\"?"
     }
   },
 
@@ -533,6 +537,10 @@
   "WalletServiceState": {
     "offline": "Offline",
     "online": "Online",
-    "polling": "Polling"
+    "polling": "Polling",
+    "server_starting": "Server Starting",
+    "tor_started": "Tor Started",
+    "server_ready": "Server Ready",
+    "wallet_rescan": "Wallet Rescan"
   }
 }

@@ -21,11 +21,12 @@ import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 
 export /* const */ enum WalletServiceState {
   offline = 'offline', // not talking with backend
-  online = 'online', // backend has responded to a getversion // TODO : Kill
+  online = 'online', // backend has responded to a getversion // TODO : Believe this is a dead state, remove
   server_starting = 'server_starting', // torStarted or syncing means the server is up but busy and may not want to respond to requests
+  tor_started = 'tor_started', // torStarted is true, may be syncing
   server_ready = 'server_ready', // walletinfo reports backend is ready to go
   wallet_rescan = 'wallet_rescan', // wallet is being rescanned, state is not stable
-  polling = 'polling', // may not want to have as a state // TODO : Kill
+  polling = 'polling', // may not want to have as a state // TODO : Believe this is a dead state, remove
 }
 
 const OFFLINE_POLLING_TIME = 5000 // ms
@@ -42,7 +43,7 @@ const DEFAULT_FEE_RATE = 1 // sats/vbyte
  *    state -> WalletServiceState.server_starting
  * 2. Wait for checkServerReady() if torStarting or syncing on backend
  *    (optional) Receive websocket messages updating state of torStarted and syncing
- *    state -> WalletServiceState.server_ready
+ *    state -> WalletServiceState.tor_started (otherwise stay in loop), WalletServiceState.server_ready
  * 3. initializeWallet(), loads all wallet names and info on current wallet
  * 4. Wait for checkWalletScanning()
  *    state -> WalletServiceState.wallet_rescan if rescanning
@@ -60,7 +61,7 @@ export class WalletStateService {
   set state(s: WalletServiceState) { this._state = s }
   get state() { return this._state }
 
-  isServerReady() {
+  isServerReady() { // torStarted and synced
     return this.state === WalletServiceState.server_ready
   }
 
@@ -75,17 +76,30 @@ export class WalletStateService {
   torDLCHostAddress: string
   feeEstimate: number
 
-  // Checks to see if the backend is done with startup procedures and if so, initializes wallet
+  // Checks to see if the backend is done with startup procedures and if so, loads server state and initializes wallet
   checkForServerReady() {
     console.warn('checkServerReady()', this.info, this.wallet.value, this.state)
     if (this.info && this.info.torStarted === true && this.info.syncing === false) {
+      // If tor_started hasn't happened yet, load server state so user has tor address
+      if (![WalletServiceState.tor_started,
+            WalletServiceState.server_ready].includes(this.state)) {
+        console.warn('tor_started, syncing == false, state:', this.state)
+        this.initializeServerState().subscribe()
+      }
       // If we are transitioning to server_ready, load wallet info
       if (this.state !== WalletServiceState.server_ready) {
-        this.initializeServerState$.subscribe()
-        this.initializeWallet$.subscribe()
+        console.warn('server_ready')
+        this.initializeWallet().subscribe()
       }
       this.state = WalletServiceState.server_ready
-    } else {
+    } else if (this.info && this.info.torStarted === true) {
+      if (![WalletServiceState.tor_started,
+            WalletServiceState.server_ready].includes(this.state)) {
+        console.warn('tor_started')
+        this.initializeServerState().subscribe()
+      }
+      this.state = WalletServiceState.tor_started
+    } else { // default starting up state
       this.state = WalletServiceState.server_starting
     }
   }
@@ -94,9 +108,9 @@ export class WalletStateService {
     console.debug('checkWalletScanning()')
     if (this.wallet.value?.rescan === false) {
       if (!this.initialized) {
-        this.initializeState$.subscribe()
+        this.initializeState().subscribe()
       }
-      this.refreshWallet$.subscribe()
+      this.refreshWalletState().subscribe()
       this.state = WalletServiceState.server_ready
     } else {
       console.warn('wallet is rescanning...', this.wallet.value)
@@ -181,8 +195,6 @@ export class WalletStateService {
   // Detect that backend is available and ready for interaction
   public waitForAppServer() {
     console.debug('waitForAppServer()')
-    // return this.messageService.serverHeartbeat().pipe(
-    //   concatMap(_ => this.refreshBlockchainInfo()), // putting this ahead of retryWhen() in case the backend isn't stable yet
     return this.refreshBlockchainInfo().pipe(
       retryWhen(errors => {
         return errors.pipe(
@@ -191,10 +203,8 @@ export class WalletStateService {
         );
       }),
       tap(_ => {
-        // console.debug(' waitForAppServer() complete')
-        this.state = WalletServiceState.online
-        // Getting basic server data so user can see Tor address
-        // this.initializeServerState$.subscribe()
+        // refreshBlockchainInfo() calls checkForServerReady() which sets WalletServiceState state
+        // nothing to do here
       })
     )
   }
@@ -208,9 +218,9 @@ export class WalletStateService {
     }
   }
 
-  private readonly initializeState$ = this.initializeState().pipe(
-    debounceTime(STATE_RETRY_DELAY),
-  )
+  // private readonly initializeState$ = this.initializeState().pipe(
+  //   debounceTime(STATE_RETRY_DELAY),
+  // )
 
   private initializeState() {
     console.debug('initializeState()')
@@ -241,22 +251,22 @@ export class WalletStateService {
 
   /** Server */
 
-  private readonly initializeServerState$ = this.initializeServerState().pipe(
-    debounceTime(STATE_RETRY_DELAY),
-  )
-
+  private initializeServerState$: Observable<any>
   private initializeServerState() {
     console.debug('initializeServerState()')
-    return forkJoin([
-      this.getServerVersion(),
-      this.getMempoolUrl(),
-      this.getFeeEstimate(),
-      this.getDLCHostAddress(),
-    ]).pipe(tap(r => {
-      
-    }, err => {
-      console.error('initializeServerState() forkJoin error')
-    }))
+    if (!this.initializeServerState$) {
+      this.initializeServerState$ = forkJoin([
+        this.getServerVersion(),
+        this.getMempoolUrl(),
+        this.getFeeEstimate(),
+        this.getDLCHostAddress(),
+      ]).pipe(tap(r => {
+        
+      }, err => {
+        console.error('initializeServerState() forkJoin error')
+      })).pipe(debounceTime(STATE_RETRY_DELAY))
+    }
+    return this.initializeServerState$
   }
 
   private getServerVersion() {
@@ -316,20 +326,20 @@ export class WalletStateService {
 
   /** Wallet */
 
-  public readonly initializeWallet$ = this.initializeWallet().pipe(
-    debounceTime(STATE_RETRY_DELAY), // May want lower on this one to make it easy to change wallets
-  )
-
-  private initializeWallet() {
-    return forkJoin([
-      this.getWallets(),
-      this.getWalletInfo(),
-      // We do not load all wallet details - just the current wallet. There is no way to load their details yet.
-    ]).pipe(tap(r => {
-      
-    }, err => {
-      console.error('error in initializeWallet()')
-    }))
+  public initializeWallet$: Observable<any>
+  initializeWallet() {
+    if (!this.initializeWallet$) {
+      this.initializeWallet$ = forkJoin([
+        this.getWallets(),
+        this.getWalletInfo(),
+        // We do not load all wallet details - just the current wallet. There is no way to load their details yet.
+      ]).pipe(tap(r => {
+        
+      }, err => {
+        console.error('error in initializeWallet()')
+      })).pipe(debounceTime(STATE_RETRY_DELAY))
+    }
+    return this.initializeWallet$
   }
 
   private getWallets() {
@@ -425,22 +435,22 @@ export class WalletStateService {
     }))
   }
 
-  public readonly refreshWallet$ = this.refreshWalletState().pipe(
-    // debounceTime(STATE_RETRY_DELAY),
-  )
-
-  private refreshWalletState() {
+  private refreshWallet$: Observable<any>
+  refreshWalletState() {
     // console.debug('refreshWalletState()')
-    return forkJoin([
-      this.refreshBalances(),
-      this.refreshDLCWalletAccounting(),
-      this.addressService.initializeState(),
-      this.dlcService.loadDLCs(),
-    ]).pipe(tap(r => {
-      // Set flag for wallet initialized?
-    }, err => {
-      console.error('refreshWalletState() forkJoin error')
-    }))
+    if (!this.refreshWallet$) {
+      this.refreshWallet$ = forkJoin([
+        this.refreshBalances(),
+        this.refreshDLCWalletAccounting(),
+        this.addressService.initializeState(),
+        this.dlcService.loadDLCs(),
+      ]).pipe(tap(r => {
+        // Set flag for wallet initialized?
+      }, err => {
+        console.error('refreshWalletState() forkJoin error')
+      })).pipe(debounceTime(STATE_RETRY_DELAY))
+    }
+    return this.refreshWallet$
   }
 
   private refreshBlockchainInfo() {
