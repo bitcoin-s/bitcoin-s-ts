@@ -20,7 +20,7 @@
     </mat-sidenav-content>
 
     <!-- Right Drawer -->
-    <mat-sidenav #rightDrawer mode="over" position="end">
+    <mat-sidenav #rightDrawer mode="over" position="end" (openedChange)="rightDrawerOpened($event)">
       <div class="drawer-container">
         <app-configuration *ngIf="showConfiguration" (close)="closeRightDrawer()" (rootClassName)="onRootClassName($event)"></app-configuration>
         <app-advanced *ngIf="showAdvanced" (close)="closeRightDrawer()"></app-advanced>

@@ -21,6 +21,9 @@
         <mat-option *ngFor="let o of ORACLE_EXPLORERS" [value]="o.value">{{ o.name }}</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <div class="vspacer-1"></div>
+
     <div class="mat-form-field--checkbox">
       <mat-label translate>configuration.useTor</mat-label>
       <mat-checkbox [checked]="useTor" (change)="useTorChanged($event)"></mat-checkbox>

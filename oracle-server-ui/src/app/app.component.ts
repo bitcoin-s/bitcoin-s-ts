@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // Turn on polling here
 
-      if (this.router.url === '/login') {
+      if (this.router.url.startsWith('/login')) {
         this.router.navigate(['/oracle'])
       }
     })
@@ -166,6 +166,14 @@ export class AppComponent implements OnInit, OnDestroy {
     console.debug('closeRightDrawer()')
     this.rightDrawer.close()
     this.hideRightDrawerItems()
+  }
+
+  rightDrawerOpened(opened: boolean) {
+    console.debug('rightDrawerOpened()', opened)
+    // Clean up state on close
+    if (!opened) {
+      this.hideRightDrawerItems()
+    }
   }
 
 }

@@ -3,6 +3,7 @@
 export const enum MessageType {
   getpublickey = 'getpublickey',
   getstakingaddress = 'getstakingaddress',
+  exportstakingaddresswif = 'exportstakingaddresswif',
   listannouncements = 'listannouncements',
   createenumannouncement = 'createenumannouncement',
   createnumericannouncement = 'createnumericannouncement',

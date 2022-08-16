@@ -8,6 +8,7 @@ export interface ConfirmationDialogContent {
   params: any // { key: value }
   action: string
   actionColor: string
+  showCancelButton: boolean
 }
 
 @Component({

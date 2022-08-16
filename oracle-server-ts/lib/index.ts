@@ -29,6 +29,15 @@ export function GetStakingAddress() {
   })
 }
 
+export function ExportStakingAddressWIF() {
+  console.debug('ExportStakingAddressWIF()')
+
+  const m = getMessageBody(MessageType.exportstakingaddresswif)
+  return SendServerMessage(m).then(response => {
+    return <OracleResponse<string>>response
+  })
+}
+
 export function ListAnnouncements() {
   console.debug('ListAnnouncements()')
 

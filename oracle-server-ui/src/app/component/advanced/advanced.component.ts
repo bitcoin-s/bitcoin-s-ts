@@ -4,6 +4,9 @@ import * as FileSaver from 'file-saver'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { MessageService } from '~service/message.service'
+import { OracleStateService } from '~service/oracle-state.service'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 
 @Component({
@@ -18,7 +21,7 @@ export class AdvancedComponent implements OnInit {
   executing = false
   backupExecuting = false
 
-  constructor(private dialog: MatDialog, private messageService: MessageService) { }
+  constructor(private dialog: MatDialog, private messageService: MessageService, private oracleStateService: OracleStateService) { }
 
   ngOnInit(): void {
   }
@@ -94,4 +97,29 @@ export class AdvancedComponent implements OnInit {
       this.executing = false
     })
   }
+
+  exportStakingAddressWIF() {
+    console.debug('exportStakingAddressWIF()')
+
+    this.executing = true
+    this.oracleStateService.exportStakingAddress().subscribe(r => {
+      console.debug('r', r)
+      if (r.result) {
+        const wif = <string>r.result
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.exportStakingAddressWIF.title',
+            content: 'dialog.exportStakingAddressWIF.content',
+            params: { wif },
+            action: 'action.close',
+            showCancelButton: false,
+          }
+        })
+      } else if (r.error) {
+
+      }
+      this.executing = false
+    }, err => { this.executing = false })
+  }
+
 }
