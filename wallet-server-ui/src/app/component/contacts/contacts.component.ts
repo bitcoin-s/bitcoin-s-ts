@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { Subscription } from 'rxjs'
@@ -13,6 +13,8 @@ import { copyToClipboard, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste }
 import { regexValidator } from '~util/validators'
 
 import { environment } from '~environments'
+
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 
 @Component({
@@ -47,7 +49,7 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private contacts$: Subscription
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog,
     public contactService: ContactService) { }
 
   ngOnInit(): void {
@@ -106,9 +108,21 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedContact = null
   }
 
-  onDelete(contract: Contact) {
-    console.debug('onDelete()', contract)
-    this.contactService.removeContact(contract.address).subscribe()
+  onDelete(contact: Contact) {
+    console.debug('onDelete()', contact)
+    const dialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'dialog.deleteContact.title',
+        content: 'dialog.deleteContact.content',
+        params: { alias: contact.alias },
+        action: 'action.yes',
+        showCancelButton: true,
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.contactService.removeContact(contact.address).subscribe()
+      }
+    })
   }
 
 }

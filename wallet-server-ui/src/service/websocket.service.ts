@@ -141,7 +141,12 @@ export class WebsocketService {
 
   private handleMessage(message: WebsocketMessage) {
     const d = new Date().toISOString()
-    console.debug('handleMessage()', d, 'message:', message.type, message.payload)
+    if (message.type === WebsocketMessageType.blockprocessed) {
+      // just too many to log, overwhelms browser
+    } else {
+      console.debug('handleMessage()', d, 'message:', message.type, message.payload)
+    }
+    
     switch (message.type) {
       case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
@@ -202,6 +207,12 @@ export class WebsocketService {
       case WebsocketMessageType.newaddress:
         if (this.walletStateService.isServerReady()) {
           this.addressService.refreshUnfundedAddresses().subscribe()
+        } else { // Show new address when we haven't loaded state yet (waiting on backend sync)
+          const newAddress = <string>message.payload
+          if (!this.addressService.unfundedAddresses) {
+            this.addressService.unfundedAddresses = []
+          }
+          this.addressService.unfundedAddresses.push(newAddress)
         }
         break;
       case WebsocketMessageType.dlcofferadd:
@@ -234,8 +245,6 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.rescancomplete:
         const walletName = <string>message.payload
-        // console.warn('rescancomplete, wallet:', walletName)
-        // TODO : Any wallet-specific things to do here?
         // Reload wallet info, will call refreshWalletState() during process
         this.walletStateService.initializeWallet().subscribe()
         break;
