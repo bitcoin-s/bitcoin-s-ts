@@ -34,7 +34,8 @@
     "heading": "Advanced",
     "backup": "Download Oracle Backup",
     "downloadOracleServerLog": "Download Oracle Server Log",
-    "downloadProxyLog": "Download Proxy Log"
+    "downloadProxyLog": "Download Proxy Log",
+    "exportStakingAddressWIF": "Export Staking Address WIF"
   },
 
   "eventName": "Event Name",
@@ -152,6 +153,10 @@
     "logout": {
       "title": "Session Expiring",
       "content": "You will be logged out in {{ time }} seconds."
+    },
+    "exportStakingAddressWIF": {
+      "title": "Staking Address WIF",
+      "content": "{{ wif }}"
     }
   },
 
@@ -251,6 +256,7 @@
   "action": {
     "cancel": "Cancel",
     "dismiss": "Dismiss",
+    "close": "Close",
     "sign": "Sign",
     "ok": "Ok",
     "yes": "Yes",

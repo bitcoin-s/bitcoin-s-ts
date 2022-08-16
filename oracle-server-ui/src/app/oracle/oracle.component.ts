@@ -180,6 +180,7 @@ export class OracleComponent implements OnInit, AfterViewInit {
           content: 'dialog.confirmOracleName.content',
           params: { oracleName: this.oracleName },
           action: 'dialog.confirmOracleName.action',
+          showCancelButton: true,
         }
       }).afterClosed().subscribe(result => {
         console.debug(' set oracleName:', result)

@@ -6,6 +6,7 @@ export function getMessageBody(type: MessageType, params?: any[]): OracleServerM
   switch (type) {
     case MessageType.getpublickey:
     case MessageType.getstakingaddress:
+    case MessageType.exportstakingaddresswif:
     case MessageType.listannouncements:
     case MessageType.getoraclename:
     // Common

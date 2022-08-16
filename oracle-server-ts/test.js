@@ -59,6 +59,10 @@ async function runTests() {
     console.debug('test.js GetStakingAddress response:', response)
   })
 
+  // await OracleServer.ExportStakingAddressWIF().then(response => {
+  //   console.debug('test.js ExportStakingAddressWIF response:', response)
+  // })
+
   await OracleServer.SignMessage(TEST_MESSAGE).then(response => {
     console.debug('test.js SignMessage response:', response)
   })

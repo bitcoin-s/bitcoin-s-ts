@@ -130,6 +130,13 @@ export class OracleStateService {
     return of(null)
   }
 
+  exportStakingAddress() {
+    console.debug('exportStakingAddress()')
+    return this.messageService.sendMessage(getMessageBody(MessageType.exportstakingaddresswif)).pipe(tap(r => {
+      // Nothing to store here
+    }))
+  }
+
   getAllAnnouncements() {
     console.debug('getAllAnnouncements()')
     this.flatAnnouncements.next([])

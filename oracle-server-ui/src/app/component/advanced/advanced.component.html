@@ -19,6 +19,12 @@
     <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
       {{ 'advanced.downloadProxyLog' | translate }}
     </button>
+
+    <div class="vspacer-2"></div>
+
+    <button mat-stroked-button (click)="exportStakingAddressWIF()" [disabled]="executing">
+      {{ 'advanced.exportStakingAddressWIF' | translate }}
+    </button>
   </div>
 
 </section>

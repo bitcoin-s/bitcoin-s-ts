@@ -129,6 +129,7 @@ export class AnnouncementDetailComponent implements OnInit {
         content: 'dialog.deleteAttestation.content',
         action: 'action.yes',
         actionColor: 'warn',
+        showCancelButton: true,
       }
     }).afterClosed().subscribe(result => {
       console.debug(' onDeleteAttestation():', result)
@@ -155,6 +156,7 @@ export class AnnouncementDetailComponent implements OnInit {
         content: 'dialog.deleteAnnouncement.content',
         action: 'action.yes',
         actionColor: 'warn',
+        showCancelButton: true,
       }
     }).afterClosed().subscribe(result => {
       console.debug(' onDeleteClick():', result)
