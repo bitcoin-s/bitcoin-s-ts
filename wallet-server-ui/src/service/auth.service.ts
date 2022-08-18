@@ -69,15 +69,22 @@ export class AuthService {
     return this.http.post<LoginResponse>(environment.proxyApi + `/auth/login`, { user, password })
       .pipe(tap(result => {
         this.doLogin(result)
-      }), shareReplay())
+      }))
   }
 
   logout() {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
-    return this.http.post<any>(environment.proxyApi + `/auth/logout`, { refreshToken })
-      .pipe(tap(res => {
+    if (!refreshToken) {
+      console.warn('no refreshToken to logout with')
+      return of(<LoginResponse><unknown>null).pipe(tap(res => {
         this.doLogout()
-      }), shareReplay())
+      }))
+    } else {
+      return this.http.post<any>(environment.proxyApi + `/auth/logout`, { refreshToken })
+        .pipe(tap(res => {
+          this.doLogout()
+        }))
+    }
   }
 
   authTest() {

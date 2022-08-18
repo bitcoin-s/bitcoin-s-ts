@@ -74,6 +74,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.executing = false
     this.loginExecuting = false
     this.error = err.error
+    // Force autoLogin false after an error in case loggedOut flag didn't get set
+    this.autoLogin = false
   }
 
   login() {
