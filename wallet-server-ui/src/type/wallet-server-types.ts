@@ -50,8 +50,9 @@ export interface GetInfoResponse {
   network: string // like 'test'
   blockHeight: number
   blockHash: string
+  isinitialblockdownload: boolean // Currently doing initial block download (IBD) to sync chain
   torStarted: boolean
-  syncing: boolean // Blockchain data is currently syncing
+  syncing: boolean // Blockchain data is currently syncing, goes true/false during syncs after IBD
 }
 
 // EO blockbhain-types.ts
