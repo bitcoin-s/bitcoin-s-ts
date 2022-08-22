@@ -90,6 +90,8 @@ export class WalletStateService {
       if (this.state !== WalletServiceState.server_ready) {
         console.warn('server_ready')
         this.initializeWallet().subscribe()
+        // Clear IBD flag
+        this.refreshBlockchainInfo().subscribe()
       }
       this.state = WalletServiceState.server_ready
     } else if (this.info && this.info.torStarted === true) {
