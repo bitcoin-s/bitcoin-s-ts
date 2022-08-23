@@ -90,6 +90,8 @@ export class WalletStateService {
       if (this.state !== WalletServiceState.server_ready) {
         console.warn('server_ready')
         this.initializeWallet().subscribe()
+        // Clear IBD flag
+        this.refreshBlockchainInfo().subscribe()
       }
       this.state = WalletServiceState.server_ready
     } else if (this.info && this.info.torStarted === true) {
@@ -356,7 +358,7 @@ export class WalletStateService {
     console.debug('getWalletInfo()')
 
     return this.messageService.sendMessage(getMessageBody(WalletMessageType.walletinfo), false).pipe(tap(r => {
-      console.debug(' getinfo', r)
+      console.debug(' walletinfo', r)
       if (r.error) {
         console.error('getWalletInfo() error', r.error)
       } else if (r.result) {

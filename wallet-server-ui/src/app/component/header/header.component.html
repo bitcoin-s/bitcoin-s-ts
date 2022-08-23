@@ -172,20 +172,27 @@
         <!-- </div> -->
       </a>
 
-      <!-- Tor Starting indicator -->
-      <mat-icon *ngIf="walletStateService.info?.torStarted === false" class="tor-starting" 
-        matTooltip="{{ 'header.torStarting' | translate }}"
-        matTooltipPosition="before">sync_disabled</mat-icon>
+      <ng-container *ngIf="walletStateService.info">
+        <!-- Tor Starting indicator -->
+        <mat-icon *ngIf="walletStateService.info.torStarted === false" class="tor-starting" 
+          matTooltip="{{ 'header.torStarting' | translate }}"
+          matTooltipPosition="below">sync_disabled</mat-icon>
 
-      <!-- Blockchain syncing indicator -->
-      <mat-icon *ngIf="walletStateService.info?.syncing" class="syncing" 
-        matTooltip="{{ 'header.syncing' | translate }}"
-        matTooltipPosition="before">sync_cloud</mat-icon>
+        <!-- Initial Block Download indicator -->
+        <mat-icon *ngIf="walletStateService.info.isinitialblockdownload" class="initial-block-download" 
+          matTooltip="{{ 'header.initialBlockDownload' | translate }}"
+          matTooltipPosition="below">cloud_sync</mat-icon>
+
+        <!-- Blockchain syncing indicator -->
+        <mat-icon *ngIf="walletStateService.info.syncing && !walletStateService.info.isinitialblockdownload" class="syncing" 
+          matTooltip="{{ 'header.syncing' | translate }}"
+          matTooltipPosition="below">sync</mat-icon>
+      </ng-container>
       
       <!-- Wallet rescanning indicator -->
-      <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="syncing" 
+      <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="rescanning" 
         matTooltip="{{ 'header.rescanning' | translate }}"
-        matTooltipPosition="before">sync_lock</mat-icon>
+        matTooltipPosition="below">sync_lock</mat-icon>
 
       <!--
       <div class="indicator-padding"></div>

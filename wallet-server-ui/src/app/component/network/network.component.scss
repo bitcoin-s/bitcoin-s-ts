@@ -1,39 +1,31 @@
 .network-section {
 
-  .network-content {
+  .network-content, .tor-container, .server-container, .data-connection {
     display: flex;
     flex-direction: column;
-    margin: 0 1rem 1rem 1rem;
+    margin: 0 1rem 1.5rem 1rem;
 
-    .network, .syncing, .block-height, .fee-estimate {
-      margin-bottom: 0.5rem;
-    }
-
-    .tor-container {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-
-      .tor-started, .tor-dlc-host-address {
-        
-      }
+    > label {
+      margin-bottom: 0.75rem;
+      font-size: larger;
     }
 
     label {
       margin-right: 0.5rem;
     }
-  }
 
-  .data-connection {
-    display: flex;
-    flex-direction: column;
-    margin: 0 1rem 1rem 1rem;
-
-    label {
-      margin-bottom: 0.75rem;
-      font-size: larger;
+    .network, .block-height, .fee-estimate {
+      margin-bottom: 0.5rem;
     }
+
+    .initial-block-download, .syncing,
+    .tor-started, .tor-dlc-host-address {
+      margin-bottom: 0.5rem;
+    }
+
     .server, .websocket {
       margin-bottom: 0.5rem;
     }
   }
+  
 }

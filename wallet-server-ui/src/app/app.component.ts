@@ -69,7 +69,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private onLogout() {
     this.destroySubscriptions()
-    this.appServerReady$.unsubscribe()
+    if (this.appServerReady$)
+      this.appServerReady$.unsubscribe()
     this.walletStateService.uninitialize()
     this.websocketService.stopPolling()
     this.stateLoaded = false

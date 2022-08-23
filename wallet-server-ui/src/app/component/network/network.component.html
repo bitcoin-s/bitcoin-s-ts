@@ -10,27 +10,36 @@
     <div class="block-height"
       translate="status.blockHeightLabel" 
       [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
-    <div *ngIf="walletStateService.info" class="syncing">
-      <label translate>network.syncing</label>
-      <input type="checkbox" [checked]="walletStateService.info.syncing" disabled>
-    </div>
     <div class="fee-estimate" 
       translate="status.feeEstimateLabel"
       [translateParams]="{ fee: walletStateService.feeEstimate }"></div>
+  </div>
 
-    <div class="tor-container">
-      <div *ngIf="walletStateService.info" class="tor-started">
-        <label translate>network.torStarted</label>
-        <input type="checkbox" [checked]="walletStateService.info.torStarted" disabled>
-      </div>
-      <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
-        <label translate>network.torDLCHostAddress</label>
-        <input [value]="walletStateService.torDLCHostAddress" disabled>
-        <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
-          (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
-          <mat-icon class="mat-icon-sm">content_copy</mat-icon>
-        </button>
-      </div>
+  <div class="tor-container">
+    <label translate>status.tor</label>
+    <div *ngIf="walletStateService.info" class="tor-started">
+      <label translate>network.torStarted</label>
+      <input type="checkbox" [checked]="walletStateService.info.torStarted" disabled>
+    </div>
+    <div *ngIf="walletStateService.torDLCHostAddress" class="tor-dlc-host-address">
+      <label translate>network.torDLCHostAddress</label>
+      <input [value]="walletStateService.torDLCHostAddress" disabled>
+      <button mat-icon-button class="copy-button mat-icon-button-sm" matTooltip="{{ 'action.copyToClipboard' | translate }}"
+        (click)="copyToClipboard(walletStateService.torDLCHostAddress)">
+        <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="server-container">
+    <label translate>status.serverState</label>
+    <div *ngIf="walletStateService.info" class="initial-block-download">
+      <label translate>network.initialBlockDownload</label>
+      <input type="checkbox" [checked]="walletStateService.info.isinitialblockdownload" disabled>
+    </div>
+    <div *ngIf="walletStateService.info" class="syncing">
+      <label translate>network.syncing</label>
+      <input type="checkbox" [checked]="walletStateService.info.syncing" disabled>
     </div>
   </div>
 

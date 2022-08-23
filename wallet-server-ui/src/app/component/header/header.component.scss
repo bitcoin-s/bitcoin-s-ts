@@ -64,7 +64,7 @@ $appLogoSize: 30px;
       margin-bottom: 0.1rem;
     }
   }
-  .tor-starting, .syncing {
+  .tor-starting, .initial-block-download, .syncing, .rescanning {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     animation: blink 2s ease-in infinite;
