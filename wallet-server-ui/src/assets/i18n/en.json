@@ -411,6 +411,7 @@
   "contacts": {
     "heading": "Contacts",
     "addContact": "Add Contact",
+    "sendToContact": "Send to Contact",
     "removeContact": "Remove Contact",
     "alias": "Alias",
     "address": "Address",
