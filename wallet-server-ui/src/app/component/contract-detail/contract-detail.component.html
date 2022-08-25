@@ -174,7 +174,7 @@
         <input matInput readonly>
         <!-- Contact Selection -->
         <button mat-stroked-button matSuffix class="mat-stroked-icon-button-md" [matMenuTriggerFor]="contactMenu"
-          matTooltip="{{ 'contacts.sendToContact' | translate }}"
+          matTooltip="{{ 'contacts.selectContact' | translate }}"
           [disabled]="!contactService.contacts.value || contactService.contacts.value.length === 0">
           <mat-icon class="material-icons-outlined">person_add</mat-icon></button>
         <mat-menu #contactMenu="matMenu" xPosition="before">
