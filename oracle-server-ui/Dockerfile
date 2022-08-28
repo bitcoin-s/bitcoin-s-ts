@@ -10,6 +10,9 @@ RUN npm run build
 WORKDIR /build/oracle-server-ui-proxy
 RUN npm run build
 
+RUN ["mkdir", "-p", "/bitcoin-s"]
+VOLUME ["/bitcoin-s"]
+
 FROM node:16.15-buster-slim
 USER 1000
 WORKDIR /build

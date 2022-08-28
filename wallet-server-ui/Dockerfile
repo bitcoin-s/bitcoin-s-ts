@@ -11,6 +11,8 @@ WORKDIR /build/wallet-server-ui
 RUN npm run build
 WORKDIR /build/wallet-server-ui-proxy
 RUN npm run build
+RUN ["mkdir", "-p", "/bitcoin-s"]
+VOLUME ["/bitcoin-s"]
 
 FROM node:16.15-buster-slim
 # defaulting to local first uid
