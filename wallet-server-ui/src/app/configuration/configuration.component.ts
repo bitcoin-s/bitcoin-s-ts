@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 
 import { DarkModeService } from '~service/dark-mode.service'
 
@@ -13,7 +13,7 @@ export class ConfigurationComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  toggleControl: FormControl = new FormControl(false)
+  toggleControl: UntypedFormControl = new UntypedFormControl(false)
 
 
   constructor(private darkModeService: DarkModeService) { }

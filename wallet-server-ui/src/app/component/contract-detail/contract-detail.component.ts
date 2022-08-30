@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ChartData, ChartDataset, ChartOptions } from 'chart.js'
@@ -207,10 +207,10 @@ export class ContractDetailComponent implements OnInit {
 
   // For Completing DLC Contracts
 
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
 
-  offerForm: FormGroup
+  offerForm: UntypedFormGroup
   get tf() { return this.offerForm.controls }
   get messageValue() { return this.offerForm.get('message')?.value }
   set messageValue(message: string) { this.offerForm.patchValue({ message }) }
@@ -229,7 +229,7 @@ export class ContractDetailComponent implements OnInit {
   constructor(private translate: TranslateService, private snackBar: MatSnackBar,
     private messsageService: MessageService, private walletStateService: WalletStateService,
     private dlcService: DLCService, private offerService: OfferService, public contactService: ContactService,
-    private dialog: MatDialog, private formBuilder: FormBuilder, private messageService: MessageService,
+    private dialog: MatDialog, private formBuilder: UntypedFormBuilder, private messageService: MessageService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {

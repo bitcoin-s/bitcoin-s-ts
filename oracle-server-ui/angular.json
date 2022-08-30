@@ -110,5 +110,7 @@
       }
     }
   },
-  "defaultProject": "oracle-server-ui"
+  "cli": {
+    "analytics": false
+  }
 }

@@ -14,7 +14,7 @@ import { OfferWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste, UPPERLOWER_CASE_HEX } from '~util/utils'
 
 import { environment } from '~environments'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { regexValidator } from '~util/validators'
 
 
@@ -33,7 +33,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   public trimAndStripHTTPOnPaste = trimAndStripHTTPOnPaste
 
   // New Incoming Offer
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
   get messageValue() { return this.form.get('message')?.value }
   set messageValue(message: string) { this.form.patchValue({ message }) }
@@ -60,7 +60,7 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
   private offers$: Subscription
   private decodedOffer$: Subscription
 
-  constructor(private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder,
+  constructor(private route: ActivatedRoute, private router: Router, private formBuilder: UntypedFormBuilder,
     public offerService: OfferService, public contactService: ContactService) { }
 
   ngOnInit(): void {

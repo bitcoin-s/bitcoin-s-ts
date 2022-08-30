@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { MatRadioChange } from '@angular/material/radio'
 import { ChartData, ChartOptions } from 'chart.js'
@@ -101,7 +101,7 @@ export class AcceptOfferComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
   set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
@@ -196,7 +196,7 @@ export class AcceptOfferComponent implements OnInit {
     }
   }
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog,
+  constructor(private formBuilder: UntypedFormBuilder, private dialog: MatDialog,
     private messageService: MessageService, private walletStateService: WalletStateService,
     private translate: TranslateService, private chartService: ChartService, private darkModeService: DarkModeService,
     public contactService: ContactService) { }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators, ValidatorFn, FormControl } from '@angular/forms'
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn, FormControl } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
 import { MatInput } from '@angular/material/input'
 
@@ -92,9 +92,9 @@ export class NewAnnouncementComponent implements OnInit {
   public AlertType = AlertType
   public AnnouncementType = AnnouncementType
 
-  enumForm: FormGroup
-  numericForm: FormGroup
-  selectedForm: FormGroup
+  enumForm: UntypedFormGroup
+  numericForm: UntypedFormGroup
+  selectedForm: UntypedFormGroup
 
   @ViewChild('announcementNameInput') announcementNameInput: MatInput
   @ViewChild('datePicker') datePicker: MatDatepickerInput<Date>
@@ -137,7 +137,7 @@ export class NewAnnouncementComponent implements OnInit {
 
   oracleName: string
 
-  constructor(private formBuilder: FormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
+  constructor(private formBuilder: UntypedFormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
     // Set minimum Maturation date to tomorrow
     this.minDate = new Date()
     this.minDate.setDate(this.minDate.getDate() + 1)

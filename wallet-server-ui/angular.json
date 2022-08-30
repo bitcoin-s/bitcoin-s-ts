@@ -107,5 +107,7 @@
       }
     }
   },
-  "defaultProject": "wallet-server-ui"
+  "cli": {
+    "analytics": false
+  }
 }
