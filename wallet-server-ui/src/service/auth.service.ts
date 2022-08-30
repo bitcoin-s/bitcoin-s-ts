@@ -168,7 +168,7 @@ export class AuthService {
         throw(Error('auth refresh error, doLogout()'))
       }), tap(res => {
         this.setSession(res)
-      }), shareReplay())
+      }))
   }
 
   public getToken() {
