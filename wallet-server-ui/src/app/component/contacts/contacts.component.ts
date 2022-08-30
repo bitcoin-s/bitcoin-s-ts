@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { Subscription } from 'rxjs'
@@ -31,7 +31,7 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
   debug = environment.debug
 
   // New Contact
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
   set aliasValue(alias: string) { this.form.patchValue({ alias }) }
   set addressValue(address: string) { this.form.patchValue({ address }) }
@@ -49,7 +49,7 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private contacts$: Subscription
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog,
+  constructor(private formBuilder: UntypedFormBuilder, private dialog: MatDialog,
     public contactService: ContactService) { }
 
   ngOnInit(): void {

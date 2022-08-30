@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
 import { MatRadioChange } from '@angular/material/radio'
 import { ChartData, ChartOptions } from 'chart.js'
@@ -112,12 +112,12 @@ export class NewOfferComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
   get externalPayoutAddress() { return this.form.get('externalPayoutAddress') }
   set externalPayoutAddressValue(externalPayoutAddress: string) { this.form.patchValue({ externalPayoutAddress }) }
 
-  typeForm: FormGroup
+  typeForm: UntypedFormGroup
   get tf() { return this.typeForm.controls }
   get messageValue() { return this.typeForm.get('message')?.value }
   set messageValue(message: string) { this.typeForm.patchValue({ message }) }
@@ -282,7 +282,7 @@ export class NewOfferComponent implements OnInit {
 
   constructor(private messageService: MessageService, public walletStateService: WalletStateService,
     private offerService: OfferService, public contactService: ContactService,
-    private formBuilder: FormBuilder, private translate: TranslateService,
+    private formBuilder: UntypedFormBuilder, private translate: TranslateService,
     private chartService: ChartService, private darkModeService: DarkModeService) { }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { Result } from '@zxing/library'
 
 import { WalletStateService } from '~service/wallet-state-service'
@@ -16,7 +16,7 @@ export class SendFundsDialogComponent implements OnInit {
 
   public trimOnPaste = trimOnPaste
 
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
   get address() { return this.form.get('address') }
   set addressValue(address: string) { this.form.patchValue({ address }) }
@@ -29,7 +29,7 @@ export class SendFundsDialogComponent implements OnInit {
   qrScanNoCamera = false
   qrScanEnabled = false
 
-  constructor(private walletStateService: WalletStateService, private formBuilder: FormBuilder) { }
+  constructor(private walletStateService: WalletStateService, private formBuilder: UntypedFormBuilder) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { MatCheckboxChange } from '@angular/material/checkbox'
 
 import { OracleExplorerService, ORACLE_EXPLORERS } from '~service/oracle-explorer.service'
@@ -21,7 +21,7 @@ export class ConfigurationComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter()
   @Output() rootClassName: EventEmitter<boolean> = new EventEmitter()
 
-  toggleControl: FormControl = new FormControl(false)
+  toggleControl: UntypedFormControl = new UntypedFormControl(false)
 
   oracleExplorer: string // 'test', 'prod'
   useTor: boolean

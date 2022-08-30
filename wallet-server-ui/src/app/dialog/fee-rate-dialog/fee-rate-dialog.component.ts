@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 
 import { WalletStateService } from '~service/wallet-state-service'
@@ -21,7 +21,7 @@ export class FeeRateDialogComponent implements OnInit {
 
   @ViewChild('feeRate') feeRate: ElementRef
 
-  form: FormGroup
+  form: UntypedFormGroup
   get f() { return this.form.controls }
 
   action = 'action.send'
@@ -30,7 +30,7 @@ export class FeeRateDialogComponent implements OnInit {
   minimumFeeRate: number
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FeeRateDialogContent,
-    private walletStateService: WalletStateService, private formBuilder: FormBuilder) { }
+    private walletStateService: WalletStateService, private formBuilder: UntypedFormBuilder) { }
 
   ngOnInit() {
     this.minimumFeeRate = this.data.minimumFeeRate
