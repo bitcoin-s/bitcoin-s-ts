@@ -32,7 +32,8 @@
     "torStarting": "Tor Starting",
     "initialBlockDownload": "Initial Block Download",
     "syncing": "Syncing Blockchain",
-    "rescanning": "Rescanning Blockchain"
+    "rescanning": "Rescanning Blockchain",
+    "more": "More"
   },
 
   "network": {
@@ -429,6 +430,7 @@
 
   "dlcFile": {
     "heading": "DLC File Operations",
+    "uploadADLCFile": "Upload a DLC File",
     "chooseOffer": "Choose Offer DLC File to Accept",
     "chooseAccept": "Choose Accepted DLC File to Sign",
     "chooseSign": "Choose Signed DLC File to Broadcast"
