@@ -14,6 +14,8 @@ const ACCESS_TOKEN_KEY = 'access_token'
 const REFRESH_TOKEN_KEY = 'refresh_token'
 const EXPIRES_KEY = 'expires_at'
 
+const FRONTEND_USER = 'frontend'
+
 interface LoginResponse { accessToken: string, refreshToken: string, expiresIn: number }
 
 const LOGOUT_DELAY = 60000 // ms
@@ -57,9 +59,7 @@ export class AuthService {
       } else {
         console.debug('AuthService.initialize() Found auth token')
         // If the token is from a previous server run, will logout when data loading 403s
-        this.expiration = expiration
-        this.setLoginTimer(expiration.getTime() - new Date().getTime() - LOGOUT_FUDGE_FACTOR)
-        this.loggedIn.emit()
+        this.refresh().subscribe()
       }
     }
   }
@@ -162,7 +162,7 @@ export class AuthService {
       return of(<LoginResponse><unknown>null)
     }
     return this.http.post<LoginResponse>(environment.proxyApi + `/auth/refresh`, 
-      { user: 'frontend', refreshToken })
+      { user: FRONTEND_USER, refreshToken })
       .pipe(catchError(error => {
         this.doLogout()
         throw(Error('auth refresh error, doLogout()'))

@@ -112,6 +112,7 @@ export class MessageService {
 
   getServerVersion() {
     const m = getMessageBody(MessageType.getversion)
-    return <Observable<OracleResponse<ServerVersion>>>this.sendMessage(m)
+    // Ignoring errors so we can poll without giving the user errors
+    return <Observable<OracleResponse<ServerVersion>>>this.sendMessage(m, false)
   }
 }
