@@ -37,6 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loggedIn$: Subscription
   loggedOut$: Subscription
   subscriptions: Subscription[]
+  appServerReady$: Subscription
 
   constructor(private titleService: Title, private translate: TranslateService, public router: Router,
     public messageService: MessageService, private snackBar: MatSnackBar, public authService: AuthService,
@@ -54,7 +55,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private onLogin() {
     this.createSubscriptions()
-    this.oracleStateService.initializeState()
+    this.appServerReady$ = this.oracleStateService.waitForAppServer().subscribe(r => {
+      console.debug(' waitForAppServer()', r)
+      this.appServerReady$.unsubscribe()
+      this.oracleStateService.initializeState()
+    })
   }
 
   private createSubscriptions() {
@@ -74,6 +79,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private onLogout() {
+    this.destroySubscriptions()
+    if (this.appServerReady$)
+      this.appServerReady$.unsubscribe()
     this.stateLoaded = false
     this.rightDrawer.close()
     this.router.navigate(['/login'], { queryParams: { loggedOut: 1 } })

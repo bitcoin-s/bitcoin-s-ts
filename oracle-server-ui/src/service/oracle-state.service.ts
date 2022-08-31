@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, OnInit } from '@angular/core'
-import { BehaviorSubject, forkJoin, of } from 'rxjs'
-import { switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, forkJoin, of, timer } from 'rxjs'
+import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
 
 import { BuildConfig } from '~type/proxy-server-types'
 import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
@@ -13,6 +13,8 @@ import { MempoolService } from './mempool-service'
 import { MessageService } from './message.service'
 import { OracleExplorerService } from './oracle-explorer.service'
 
+
+const OFFLINE_POLLING_TIME = 5000 // ms
 
 type OracleServerAnnouncementMap = { [eventName: string]: OracleAnnouncement }
 type OracleExplorerAnnouncementMap = { [eventName: string]: OracleAnnouncementsResponse }
@@ -57,6 +59,20 @@ export class OracleStateService {
   constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService, 
     private blockstreamService: BlockstreamService, private mempoolService: MempoolService) {
     
+  }
+
+  // Detect that backend is available and ready for interaction
+  public waitForAppServer() {
+    console.debug('waitForAppServer()')
+    return this.getServerVersion().pipe(
+      retryWhen(errors => {
+        return errors.pipe(
+          tap(_ => console.debug('polling oracleServer')),
+          delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
+        );
+      }),
+      tap(_ => {})
+    )
   }
 
   initializeState() {
