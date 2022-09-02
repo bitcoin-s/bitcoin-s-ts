@@ -2,20 +2,18 @@
 
 # downloads the bitcoin-s-server.zip file corresponding to your operating system 
 # then sets up Suredbits Wallets dependencies
+
 OS="`uname`"
-case $OS in
-  'Linux')
-   OS='Linux'
-    ;;
-  'WindowsNT')
-    OS='Windows'
-    ;;
-  'Darwin') 
-    OS='Mac'
-    ;;
-  'incompatible') ;;
-  *) ;;
-esac
+
+if [[ ${OS:0:6} == 'Darwin' ]]; then 
+	OS='Mac'
+elif [[ ${OS:0:10} == 'MINGW64_NT' ]]; then
+	OS='Windows'    
+elif [[ ${OS:0:5} == 'Linux' ]]; then
+	OS='Linux'    
+else 
+	OS='incompatible'
+fi
 
 cd oracle-electron-ts
 
