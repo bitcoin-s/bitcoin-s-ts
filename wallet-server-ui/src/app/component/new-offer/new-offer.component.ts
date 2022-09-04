@@ -387,12 +387,15 @@ export class NewOfferComponent implements OnInit {
     const refundLT = dateToSecondsSinceEpoch(v.refundDate)
     const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
     const changeAddress = null
+    const tv = this.typeForm.value
+    const peerAddress = tv.peerAddress ? tv.peerAddress.trim() : null
+
 
     console.debug('handleContractInfo() collateral:', collateral, 'feeRate:', feeRate, 'locktime:', locktime, 
       'refundLT:', refundLT, 'payoutAddress:', payoutAddress, 'changeAddress:', changeAddress)
 
     this.messageService.sendMessage(getMessageBody(WalletMessageType.createdlcoffer, 
-      [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress])).subscribe(r => {
+      [contractInfoTLV, collateral, feeRate, locktime, refundLT, payoutAddress, changeAddress, peerAddress])).subscribe(r => {
       console.warn(' createdlcoffer', r)
       if (r.result) {
         this.newOfferResult = r.result
