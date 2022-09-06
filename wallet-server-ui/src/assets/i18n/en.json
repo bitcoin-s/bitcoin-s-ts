@@ -533,6 +533,10 @@
     "deleteContact": {
       "title": "Delete Contact",
       "content": "Are you sure you want to delete the contact \"{{ alias }}\"?"
+    },
+    "torRestartRequired": {
+      "title": "Restart Required",
+      "content": "Tor failed to start. Please restart the server/this application/your Umbrel device."
     }
   },
 
