@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, forkJoin, Observable, Subject, throwError, timer } from 'rxjs'
+import { BehaviorSubject, forkJoin, Observable, of, Subject, throwError, timer } from 'rxjs'
 import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap, throttleTime } from 'rxjs/operators'
 
 import { AddressService } from '~service/address.service'
@@ -17,6 +17,7 @@ import { BitcoinNetwork, } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 
 export /* const */ enum WalletServiceState {
@@ -34,6 +35,8 @@ const STATE_RETRY_DELAY = 15000 // ms
 
 const FEE_RATE_NOT_SET = -1
 const DEFAULT_FEE_RATE = 1 // sats/vbyte
+
+const RESTART_DIALOG_DELAY = 120000 // ms
 
 /**
  * WalletStateService holds bitcoin-s appServer state that we care about.
@@ -73,8 +76,22 @@ export class WalletStateService {
     if (this.info) return <BitcoinNetwork>this.info.network
     else return ''
   }
+  // info state passthroughs
+  set torStarted(bool: boolean) {
+    if (this.info) this.info.torStarted = bool
+    // If we receive a torStarted event, no need to show restart dialog
+    this.showRestartDialog = false
+  }
+  set syncing(bool: boolean) {
+    if (this.info) this.info.syncing = bool
+  }
+  set blockHeight(height: number) {
+    if (this.info) this.info.blockHeight = height
+  }
   torDLCHostAddress: string
   feeEstimate: number
+
+  showRestartDialog = false
 
   // Checks to see if the backend is done with startup procedures and if so, loads server state and initializes wallet
   checkForServerReady() {
@@ -194,19 +211,43 @@ export class WalletStateService {
       })
     }
 
+  private restartDialogTimer$ = timer(RESTART_DIALOG_DELAY).pipe(tap(_ => {
+    if (this.showRestartDialog) {
+      console.error('show tor restart dialog')
+      this.showRestartDialog = false // Don't show any more restart dialogs
+      const dialog = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          title: 'dialog.torRestartRequired.title',
+          content: 'dialog.torRestartRequired.content',
+          params: { sec: RESTART_DIALOG_DELAY },
+          action: 'action.close',
+        }
+      })
+    } else {
+      console.error('show tor restart dialog - showRestartDialog == false')
+    }
+  }))
+
   // Detect that backend is available and ready for interaction
   public waitForAppServer() {
     console.debug('waitForAppServer()')
     return this.refreshBlockchainInfo().pipe(
       retryWhen(errors => {
         return errors.pipe(
-          tap(_ => this.state = WalletServiceState.offline),
+          tap(_ => {
+            this.state = WalletServiceState.offline
+            this.showRestartDialog = false
+          }),
           delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
         );
       }),
       tap(_ => {
         // refreshBlockchainInfo() calls checkForServerReady() which sets WalletServiceState state
-        // nothing to do here
+
+        if (!this.info.torStarted) {
+          this.showRestartDialog = true
+          this.restartDialogTimer$.subscribe()
+        }
       })
     )
   }
