@@ -2,9 +2,16 @@
 
 /** General HTML */
 
-html, body { height: 100%; }
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
-body { margin: 0; }
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+body {
+  margin: 0;
+}
 
 fieldset {
   border: 0;
@@ -18,7 +25,7 @@ fieldset {
 @for $i from 1 through 10 {
   $size: $i * 10;
   .w-#{$size} {
-    width: percentage($size * .01);
+    width: percentage($size * 0.01);
   }
 }
 
@@ -40,8 +47,8 @@ fieldset {
 /** Bootstrap equivalents */
 
 .mx-auto {
-  margin-right: auto!important;
-  margin-left: auto!important;
+  margin-right: auto !important;
+  margin-left: auto !important;
 }
 
 .mb-0 {
@@ -175,7 +182,7 @@ mat-sidenav {
   }
 }
 .mat-icon.mat-icon-sm {
-// .mat-mini-fab.mat-icon-sm
+  // .mat-mini-fab.mat-icon-sm
   height: 16px;
   width: 16px;
   font-size: 16px;
@@ -249,7 +256,8 @@ mat-form-field {
   }
 }
 
-.mat-stroked-button, .mat-flat-button {
+.mat-stroked-button,
+.mat-flat-button {
   span + mat-icon {
     margin-left: 0.6rem;
   }
@@ -312,7 +320,7 @@ mat-form-field {
 .execute-container {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
-  
+
   .button-group {
     display: flex;
     flex-direction: row;
@@ -371,7 +379,7 @@ mat-form-field {
 }
 
 /** Header Menu */
-@import './scss/breakpoints';
+@import "./scss/breakpoints";
 .cdk-overlay-container {
   @include sm {
     .mat-menu-item.about-menu-button {

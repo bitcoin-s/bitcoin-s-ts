@@ -8,6 +8,8 @@
     "betaSoftware": "This application is alpha software.",
     "significantValue": "Please do not use it with significant amounts of value at this time.",
     "caveatEmptor": "caveat emptor",
+    "startOnboardingButton": "Take a Brief Setup Tour",
+    "skipOnboardingButton": "Skip the Tour",
     "dontShowSplashAgain": "Don't show this screen again"
   },
 
@@ -533,6 +535,10 @@
     "deleteContact": {
       "title": "Delete Contact",
       "content": "Are you sure you want to delete the contact \"{{ alias }}\"?"
+    },
+    "torRestartRequired": {
+      "title": "Restart Required",
+      "content": "Tor failed to start. Please restart the server/this application/your Umbrel device."
     }
   },
 

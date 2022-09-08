@@ -154,9 +154,7 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.blockprocessed:
         const block = <BlockHeaderResponse>message.payload
-        if (this.walletStateService.info) {
-          this.walletStateService.info.blockHeight = block.height
-        }
+        this.walletStateService.blockHeight = block.height
         if (this.walletStateService.isServerReady()) {
           // Not sure if we need to refresh everything here...
           this.walletStateService.refreshWalletState().subscribe()
@@ -225,17 +223,13 @@ export class WebsocketService {
         break;
       case WebsocketMessageType.torstarted:
         // console.warn('torstarted')
-        if (this.walletStateService.info) {
-          this.walletStateService.info.torStarted = true
-        }
+        this.walletStateService.torStarted = true
         this.walletStateService.checkForServerReady()
         break;
       case WebsocketMessageType.syncflagchanged:
         const syncing = <boolean>message.payload
         // console.warn('syncflagchanged', syncing)
-        if (this.walletStateService.info) {
-          this.walletStateService.info.syncing = syncing
-        }
+        this.walletStateService.syncing = syncing
         // sync flag sets and unsets with blockprocessed event. We only want to checkServerReady()
         // (and pay the cost of loading wallets and state) if it's not syncing and it was not ready previously
         // TODO : this may not be playing nice with rescan, doing work in the middle

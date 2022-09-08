@@ -6,6 +6,7 @@
   right: 0;
   bottom: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -18,6 +19,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: auto;
 
     .app-logo {
       background: url("../../../assets/image/suredbits.svg");
@@ -37,12 +39,25 @@
       // font-family: "Pacifico", cursive;
     }
 
-    p {
-      color: #fff;
-      font-size: 1.5em;
-    }
-    .italic {
-      font-style: italic;
-    }
+    // p {
+    //   color: #fff;
+    //   font-size: 1.5em;
+    // }
+    // .italic {
+    //   font-style: italic;
+    // }
+  }
+
+  p {
+    color: #fff;
+    font-size: 1.5em;
+  }
+  .italic {
+    font-style: italic;
+  }
+
+  .footer-section {
+    margin-top: auto;
+    margin-bottom: 4rem;
   }
 }

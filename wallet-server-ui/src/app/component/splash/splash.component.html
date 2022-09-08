@@ -1,12 +1,31 @@
 <div class="splash-screen" *ngIf="showSplash" @fadeOut>
-  <div class="app-splash-inner" (click)="onClick()">
+  <!-- <div class="app-splash-inner" (click)="onClick()"> -->
+  <div class="app-splash-inner">
     <div class="app-logo"></div>
+
     <div class="app-label" translate>splashScreen.heading</div>
 
     <p translate>splashScreen.betaSoftware</p>
     <p translate>splashScreen.significantValue</p>
-    <p class="italic" translate>splashScreen.caveatEmptor</p>
+
     <div class="vspacer-1"></div>
-    <button mat-raised-button (click)="dontShowSplashAgainClick()">{{ 'splashScreen.dontShowSplashAgain' | translate }}</button>
+    <!-- <button mat-raised-button (click)="dontShowSplashAgainClick()">
+      {{ "splashScreen.dontShowSplashAgain" | translate }}
+    </button> -->
+
+    <button mat-raised-button (click)="onStartOnboardingClicked()">
+      {{ "splashScreen.startOnboardingButton" | translate }}
+    </button>
+
+    <button mat-raised-button (click)="onSkipOnboardingClicked()">
+      {{ "splashScreen.skipOnboardingButton" | translate }}
+    </button>
+
+    <label translate>splashScreen.dontShowSplashAgain</label>
+    <input type="checkbox" [(ngModel)]="dontShowSplashAgain" />
   </div>
+
+  <footer class="footer-section">
+    <p class="italic" translate>splashScreen.caveatEmptor</p>
+  </footer>
 </div>

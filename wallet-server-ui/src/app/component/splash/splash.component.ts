@@ -1,44 +1,66 @@
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  animateChild,
+  query,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 
-
-const SPLASH_KEY = 'noSplash'
+const SPLASH_KEY = 'noSplash';
 
 @Component({
   selector: 'splash',
   templateUrl: './splash.component.html',
   animations: [
-  // the fade-in/fade-out animation.
-  trigger('fadeOut', [
-    transition(':leave', [
-      query(':leave', animateChild(), {optional: true}),
-      animate(300, style({opacity: 0}))
+    // the fade-in/fade-out animation.
+    trigger('fadeOut', [
+      transition(':leave', [
+        query(':leave', animateChild(), { optional: true }),
+        animate(300, style({ opacity: 0 })),
+      ]),
     ]),
-  ]),
-],
-  styleUrls: ['./splash.component.scss']
+  ],
+  styleUrls: ['./splash.component.scss'],
 })
 export class SplashComponent implements OnInit {
+  showSplash = false;
+  dontShowSplashAgain = false;
 
-  showSplash = false
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     // Force reset splash key
     // localStorage.removeItem(SPLASH_KEY)
 
-    const show = localStorage.getItem(SPLASH_KEY) === null
-    this.showSplash = show
+    const show = localStorage.getItem(SPLASH_KEY) === null;
+    this.showSplash = show;
+    // this.showSplash = true;
   }
 
-  dontShowSplashAgainClick() {
-    console.debug('dontShowSplashAgainClick()')
-    localStorage.setItem(SPLASH_KEY, '1')
+  // dontShowSplashAgainClick() {
+  //   console.debug('dontShowSplashAgainClick()');
+  //   localStorage.setItem(SPLASH_KEY, '1');
+  // }
+
+  // onClick() {
+  // this.showSplash = !this.showSplash;
+  // }
+
+  onStartOnboardingClicked() {
+    this.saveSplashSettings();
+    this.showSplash = false;
   }
 
-  onClick() {
-    this.showSplash = !this.showSplash
+  onSkipOnboardingClicked() {
+    this.saveSplashSettings();
+    this.showSplash = false;
   }
 
+  saveSplashSettings() {
+    if (this.dontShowSplashAgain) {
+      localStorage.setItem(SPLASH_KEY, '1');
+    }
+  }
 }
