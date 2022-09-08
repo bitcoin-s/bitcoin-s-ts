@@ -8,6 +8,7 @@ import { ContactsComponent } from './component/contacts/contacts.component';
 import { ContractsComponent } from './component/contracts/contracts.component';
 import { LoginComponent } from './component/login/login.component';
 import { NetworkComponent } from './component/network/network.component';
+import { NewUserOnboardingComponent } from './component/new-user-onboarding/new-user-onboarding.component';
 import { OffersComponent } from './component/offers/offers.component';
 import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component';
 
@@ -16,11 +17,11 @@ import { AuthGuard } from './guard/auth-guard';
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'about', component: AboutComponent },
-  // {
-  //   path: 'onboarding',
-  //   component: NewUserOnboardingComponent,
-  //   canActivate: [AuthGuard],
-  // },
+  {
+    path: 'onboarding',
+    component: NewUserOnboardingComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'wallet',
     component: WalletBalanceComponent,

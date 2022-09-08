@@ -6,6 +6,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { Router } from '@angular/router';
+
 import { Component, OnInit } from '@angular/core';
 
 const SPLASH_KEY = 'noSplash';
@@ -28,7 +30,7 @@ export class SplashComponent implements OnInit {
   showSplash = false;
   dontShowSplashAgain = false;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     // Force reset splash key
@@ -36,26 +38,20 @@ export class SplashComponent implements OnInit {
 
     const show = localStorage.getItem(SPLASH_KEY) === null;
     this.showSplash = show;
-    // this.showSplash = true;
   }
-
-  // dontShowSplashAgainClick() {
-  //   console.debug('dontShowSplashAgainClick()');
-  //   localStorage.setItem(SPLASH_KEY, '1');
-  // }
-
-  // onClick() {
-  // this.showSplash = !this.showSplash;
-  // }
 
   onStartOnboardingClicked() {
     this.saveSplashSettings();
     this.showSplash = false;
+
+    this.router.navigate(['/onboarding']);
   }
 
   onSkipOnboardingClicked() {
     this.saveSplashSettings();
     this.showSplash = false;
+
+    this.router.navigate(['/wallet']);
   }
 
   saveSplashSettings() {
