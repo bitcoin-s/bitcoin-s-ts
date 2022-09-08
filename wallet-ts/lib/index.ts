@@ -303,13 +303,13 @@ export function CancelDLC(sha256hash: string) {
 // ContractInfoV0TLV
 // collateral in sats
 // feeRate in sats / vbyte
-export function CreateDLCOffer(contractInfoTLV: string, collateral: number, feeRate: number, locktime: number, refundLT: number) {
-  console.debug('CreateDLCOffer()', contractInfoTLV, collateral, feeRate, locktime, refundLT)
+export function CreateDLCOffer(contractInfoTLV: string, collateral: number, feeRate: number, refundLT: number) {
+  console.debug('CreateDLCOffer()', contractInfoTLV, collateral, feeRate, refundLT)
   validateString(contractInfoTLV, 'CreateDLCOffer()', 'contractInfoTLV')
   validateNumber(collateral, 'CreateDLCOffer()', 'collateral')
   validateNumber(feeRate, 'CreateDLCOffer()', 'feeRate')
-  validateNumber(locktime, 'CreateDLCOffer()', 'locktime')
   validateNumber(refundLT, 'CreateDLCOffer()', 'refundLT')
+  const locktime = null //don't set locktime, see: https://github.com/bitcoin-s/bitcoin-s/issues/4721
 
   const m = getMessageBody(WalletMessageType.createdlcoffer, [contractInfoTLV, collateral, feeRate, locktime, refundLT])
   return SendServerMessage(m).then(response => {
