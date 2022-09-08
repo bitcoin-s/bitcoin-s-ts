@@ -3,6 +3,6 @@
     "**/node_modules": true,
     "**/bower_components": true,
     "**/*.code-search": true,
-    "oracle-server-ui/**/*": true
+    "**/oracle-server-ui/**/*": true
   }
 }
