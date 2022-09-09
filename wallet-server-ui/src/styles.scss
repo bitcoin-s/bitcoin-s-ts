@@ -312,7 +312,7 @@ mat-form-field {
 .execute-container {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
-  
+
   .button-group {
     display: flex;
     flex-direction: row;
@@ -386,18 +386,4 @@ mat-form-field {
       display: none;
     }
   }
-}
-
-/** Global PNL Styling */
-.arrow-icon {
-  vertical-align: middle;
-}
-.profit {
-  color: forestgreen;
-}
-.loss {
-  color: crimson;
-}
-.even {
-  // no styling yet
 }

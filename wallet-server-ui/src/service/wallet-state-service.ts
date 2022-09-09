@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, forkJoin, Observable, throwError, timer } from 'rxjs'
-import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, forkJoin, Observable, of, Subject, throwError, timer } from 'rxjs'
+import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap, throttleTime } from 'rxjs/operators'
 
 import { AddressService } from '~service/address.service'
 import { AuthService } from '~service/auth.service'
@@ -36,8 +36,6 @@ const FEE_RATE_NOT_SET = -1
 const DEFAULT_FEE_RATE = 1 // sats/vbyte
 
 const RESTART_DIALOG_DELAY = 120000 // ms
-
-const THREE_DASHES_WORTH = /([.\w]+-[.\w]+-[.\w]+)/ // matches "1.9.3-11-8788b6f4" of "1.9.3-11-8788b6f4-20220907-1105-SNAPSHOT"
 
 /**
  * WalletStateService holds bitcoin-s appServer state that we care about.
@@ -74,10 +72,7 @@ export class WalletStateService {
   }
 
   serverVersion: string
-  shortServerVersion: string
-
   buildConfig: BuildConfig
-  shortUIVersion: string
 
   info: GetInfoResponse
   getNetwork() {
@@ -99,7 +94,7 @@ export class WalletStateService {
   torDLCHostAddress: string
   feeEstimate: number
 
-  showRestartDialog = false // track backend !torStarted state and ask user to restart after threshold
+  showRestartDialog = false
 
   // Checks to see if the backend is done with startup procedures and if so, loads server state and initializes wallet
   checkForServerReady() {
@@ -238,7 +233,7 @@ export class WalletStateService {
           },
         })
       } else {
-        console.debug('show tor restart dialog - showRestartDialog == false, nothing to do')
+        console.error('show tor restart dialog - showRestartDialog == false')
       }
     })
   )
@@ -249,14 +244,9 @@ export class WalletStateService {
     return this.refreshBlockchainInfo().pipe(
       retryWhen((errors) => {
         return errors.pipe(
-          tap((error) => {
+          tap((_) => {
             this.state = WalletServiceState.offline
             this.showRestartDialog = false
-            // Handle proxy restart when token has gone invalid
-            if (error && error.status === 403) {
-              console.debug('waitForAppServer() 403 - doLogout')
-              this.authService.doLogout()
-            }
           }),
           delayWhen((_) => timer(OFFLINE_POLLING_TIME))
         )
@@ -264,8 +254,7 @@ export class WalletStateService {
       tap((_) => {
         // refreshBlockchainInfo() calls checkForServerReady() which sets WalletServiceState state
 
-        // If tor has not started yet, set timeout to show a restart dialog
-        if (this.info && !this.info.torStarted) {
+        if (!this.info.torStarted) {
           this.showRestartDialog = true
           this.restartDialogTimer$.subscribe()
         }
@@ -288,7 +277,11 @@ export class WalletStateService {
 
   private initializeState() {
     console.debug('initializeState()')
-    return forkJoin([this.offerService.loadIncomingOffers(), this.contactService.loadContacts()]).pipe(
+    return forkJoin([
+      // this.initializeServerState$,
+      this.offerService.loadIncomingOffers(),
+      this.contactService.loadContacts(),
+    ]).pipe(
       tap(
         (r) => {
           this.initialized = true
@@ -320,13 +313,7 @@ export class WalletStateService {
   private initializeServerState() {
     console.debug('initializeServerState()')
     if (!this.initializeServerState$) {
-      this.initializeServerState$ = forkJoin([
-        this.getServerVersion(),
-        this.getMempoolUrl(),
-        this.getFeeEstimate(),
-        this.getDLCHostAddress(),
-        this.getAboutInfo(), // So we can make tooltips
-      ])
+      this.initializeServerState$ = forkJoin([this.getServerVersion(), this.getMempoolUrl(), this.getFeeEstimate(), this.getDLCHostAddress()])
         .pipe(
           tap(
             (r) => {},
@@ -344,11 +331,7 @@ export class WalletStateService {
     return this.messageService.getServerVersion().pipe(
       tap((r) => {
         if (r.result) {
-          const v = r.result.version
-          this.serverVersion = v
-          const m = v.match(/([.\w]+-[.\w]+-[.\w]+)/)
-          if (m && m.length > 0) this.shortServerVersion = m[0]
-          else this.shortServerVersion = v
+          this.serverVersion = r.result.version
         }
       })
     )
@@ -360,7 +343,6 @@ export class WalletStateService {
         if (r) {
           r.dateString = new Date(r.committedOn * 1000).toLocaleDateString()
           this.buildConfig = r
-          this.shortUIVersion = this.buildConfig.version + ' ' + this.buildConfig.shortHash
         }
       })
     )
