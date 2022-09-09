@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { BehaviorSubject, forkJoin, Observable, of, Subject, throwError, timer } from 'rxjs'
-import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap, throttleTime } from 'rxjs/operators'
+import { BehaviorSubject, forkJoin, Observable, throwError, timer } from 'rxjs'
+import { catchError, debounceTime, delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
 
 import { AddressService } from '~service/address.service'
 import { AuthService } from '~service/auth.service'
@@ -11,16 +11,7 @@ import { MessageService } from '~service/message.service'
 import { OfferService } from '~service/offer-service'
 
 import { BuildConfig } from '~type/proxy-server-types'
-import {
-  Balances,
-  BlockchainMessageType,
-  DLCMessageType,
-  DLCWalletAccounting,
-  GetInfoResponse,
-  ServerResponse,
-  Wallet,
-  WalletMessageType,
-} from '~type/wallet-server-types'
+import { Balances, BlockchainMessageType, DLCMessageType, DLCWalletAccounting, GetInfoResponse, ServerResponse, Wallet, WalletMessageType } from '~type/wallet-server-types'
 
 import { BitcoinNetwork } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
@@ -45,6 +36,8 @@ const FEE_RATE_NOT_SET = -1
 const DEFAULT_FEE_RATE = 1 // sats/vbyte
 
 const RESTART_DIALOG_DELAY = 120000 // ms
+
+const THREE_DASHES_WORTH = /([.\w]+-[.\w]+-[.\w]+)/ // matches "1.9.3-11-8788b6f4" of "1.9.3-11-8788b6f4-20220907-1105-SNAPSHOT"
 
 /**
  * WalletStateService holds bitcoin-s appServer state that we care about.
@@ -81,7 +74,10 @@ export class WalletStateService {
   }
 
   serverVersion: string
+  shortServerVersion: string
+
   buildConfig: BuildConfig
+  shortUIVersion: string
 
   info: GetInfoResponse
   getNetwork() {
@@ -103,7 +99,7 @@ export class WalletStateService {
   torDLCHostAddress: string
   feeEstimate: number
 
-  showRestartDialog = false
+  showRestartDialog = false // track backend !torStarted state and ask user to restart after threshold
 
   // Checks to see if the backend is done with startup procedures and if so, loads server state and initializes wallet
   checkForServerReady() {
@@ -242,7 +238,7 @@ export class WalletStateService {
           },
         })
       } else {
-        console.error('show tor restart dialog - showRestartDialog == false')
+        console.debug('show tor restart dialog - showRestartDialog == false, nothing to do')
       }
     })
   )
@@ -253,9 +249,14 @@ export class WalletStateService {
     return this.refreshBlockchainInfo().pipe(
       retryWhen((errors) => {
         return errors.pipe(
-          tap((_) => {
+          tap((error) => {
             this.state = WalletServiceState.offline
             this.showRestartDialog = false
+            // Handle proxy restart when token has gone invalid
+            if (error && error.status === 403) {
+              console.debug('waitForAppServer() 403 - doLogout')
+              this.authService.doLogout()
+            }
           }),
           delayWhen((_) => timer(OFFLINE_POLLING_TIME))
         )
@@ -263,7 +264,8 @@ export class WalletStateService {
       tap((_) => {
         // refreshBlockchainInfo() calls checkForServerReady() which sets WalletServiceState state
 
-        if (!this.info.torStarted) {
+        // If tor has not started yet, set timeout to show a restart dialog
+        if (this.info && !this.info.torStarted) {
           this.showRestartDialog = true
           this.restartDialogTimer$.subscribe()
         }
@@ -286,11 +288,7 @@ export class WalletStateService {
 
   private initializeState() {
     console.debug('initializeState()')
-    return forkJoin([
-      // this.initializeServerState$,
-      this.offerService.loadIncomingOffers(),
-      this.contactService.loadContacts(),
-    ]).pipe(
+    return forkJoin([this.offerService.loadIncomingOffers(), this.contactService.loadContacts()]).pipe(
       tap(
         (r) => {
           this.initialized = true
@@ -327,6 +325,7 @@ export class WalletStateService {
         this.getMempoolUrl(),
         this.getFeeEstimate(),
         this.getDLCHostAddress(),
+        this.getAboutInfo(), // So we can make tooltips
       ])
         .pipe(
           tap(
@@ -345,7 +344,11 @@ export class WalletStateService {
     return this.messageService.getServerVersion().pipe(
       tap((r) => {
         if (r.result) {
-          this.serverVersion = r.result.version
+          const v = r.result.version
+          this.serverVersion = v
+          const m = v.match(/([.\w]+-[.\w]+-[.\w]+)/)
+          if (m && m.length > 0) this.shortServerVersion = m[0]
+          else this.shortServerVersion = v
         }
       })
     )
@@ -357,6 +360,7 @@ export class WalletStateService {
         if (r) {
           r.dateString = new Date(r.committedOn * 1000).toLocaleDateString()
           this.buildConfig = r
+          this.shortUIVersion = this.buildConfig.version + ' ' + this.buildConfig.shortHash
         }
       })
     )
@@ -505,14 +509,7 @@ export class WalletStateService {
   }
 
   rescanWallet(ignoreCreationTime: boolean = false, startBlock: number | null = null, endBlock: number | null = null) {
-    console.debug(
-      'rescanWallet() ignoreCreationTime:',
-      ignoreCreationTime,
-      'startBlock:',
-      startBlock,
-      'endBlock:',
-      endBlock
-    )
+    console.debug('rescanWallet() ignoreCreationTime:', ignoreCreationTime, 'startBlock:', startBlock, 'endBlock:', endBlock)
 
     // Could expose these to the user, but would need to validate
     // [0,0,0,true,true] results in infinite loop in backend
@@ -522,36 +519,27 @@ export class WalletStateService {
     const force = true
     // const ignoreCreationTime = ignoreCreationTime // false // forces full rescan regardless of wallet creation time
 
-    return this.messageService
-      .sendMessage(
-        getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])
-      )
-      .pipe(
-        tap((r) => {
-          console.debug(' rescan', r)
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).pipe(
+      tap((r) => {
+        console.debug(' rescan', r)
 
-          if (r.result) {
-            // "Rescan started."
-            // TODO : Started dialog / message
-            if (this.wallet.value) {
-              this.wallet.value.rescan = true
-            }
-            this.state = WalletServiceState.wallet_rescan
+        if (r.result) {
+          // "Rescan started."
+          // TODO : Started dialog / message
+          if (this.wallet.value) {
+            this.wallet.value.rescan = true
           }
-        })
-      )
+          this.state = WalletServiceState.wallet_rescan
+        }
+      })
+    )
   }
 
   private refreshWallet$: Observable<any>
   refreshWalletState() {
     // console.debug('refreshWalletState()')
     if (!this.refreshWallet$) {
-      this.refreshWallet$ = forkJoin([
-        this.refreshBalances(),
-        this.refreshDLCWalletAccounting(),
-        this.addressService.initializeState(),
-        this.dlcService.loadDLCs(),
-      ])
+      this.refreshWallet$ = forkJoin([this.refreshBalances(), this.refreshDLCWalletAccounting(), this.addressService.initializeState(), this.dlcService.loadDLCs()])
         .pipe(
           tap(
             (r) => {
@@ -614,26 +602,22 @@ export class WalletStateService {
   importSeedWordWallet(walletName: string | undefined, words: string, passphrase?: string) {
     console.debug('importSeedWordWallet()', walletName)
 
-    return this.messageService
-      .sendMessage(getMessageBody(WalletMessageType.importseed, [walletName, words, passphrase]))
-      .pipe(
-        tap((r) => {
-          console.debug(' importseed', r)
-          // TODO : Waiting on result: string === walletName
-          // success : {result: null, error: null}
-        })
-      )
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importseed, [walletName, words, passphrase])).pipe(
+      tap((r) => {
+        console.debug(' importseed', r)
+        // TODO : Waiting on result: string === walletName
+        // success : {result: null, error: null}
+      })
+    )
   }
 
   importXprvWallet(walletName: string | undefined, xprv: string, passphrase?: string) {
     console.debug('importXprvWallet()', walletName)
 
-    return this.messageService
-      .sendMessage(getMessageBody(WalletMessageType.importxprv, [walletName, xprv, passphrase]))
-      .pipe(
-        tap((r) => {
-          console.debug(' importxprv', r)
-        })
-      )
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importxprv, [walletName, xprv, passphrase])).pipe(
+      tap((r) => {
+        console.debug(' importxprv', r)
+      })
+    )
   }
 }

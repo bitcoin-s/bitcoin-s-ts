@@ -14,6 +14,7 @@ import { BlockHeaderResponse, DLCContract, DLCState, IncomingOffer } from '~type
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 import { AddressService } from './address.service'
+import { ContactService } from './contact-service'
 
 enum WebsocketMessageType {
   txprocessed = 'txprocessed',
@@ -28,6 +29,9 @@ enum WebsocketMessageType {
   syncflagchanged = 'syncflagchanged', // 'syncing', Blockchain synced when payload === false
   rescancomplete = 'rescancomplete', // Wallet rescan complete
   feeratechange = 'feeratechange', // New fee rate estimate, payload in sats/vbyte
+  dlcconnectioninitiated = 'dlcconnectioninitiated', // Tor peer connection ???
+  dlcconnectionestablished = 'dlcconnectionestablished', // Tor peer connection successfully established
+  dlcconnectionfailed = 'dlcconnectionfailed', // Tor peer connection failed
 }
 
 export interface WebsocketMessage {
@@ -65,6 +69,7 @@ export class WebsocketService {
     private dlcService: DLCService,
     private offerService: OfferService,
     private addressService: AddressService,
+    private contactService: ContactService,
     private router: Router,
     private authService: AuthService,
     private dialog: MatDialog
@@ -190,26 +195,16 @@ export class WebsocketService {
                 data: {
                   title: 'dialog.broadcastSuccess.title',
                   content: 'dialog.broadcastSuccess.content',
-                  params: {
-                    txId: dlc.fundingTxId,
-                    eventId: contractInfo.oracleInfo.announcement.event.eventId,
-                  },
+                  params: { txId: dlc.fundingTxId, eventId: contractInfo.oracleInfo.announcement.event.eventId },
                   linksContent: 'dialog.broadcastSuccess.linksContent',
-                  links: [
-                    this.walletStateService.mempoolTransactionURL(
-                      <string>dlc.fundingTxId,
-                      this.walletStateService.getNetwork()
-                    ),
-                  ],
+                  links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
                   action: 'action.close',
                   showCancelButton: false,
                 },
               })
             }
             if (goToContract) {
-              this.router.navigate(['/contracts'], {
-                queryParams: { dlcId: dlc.dlcId },
-              })
+              this.router.navigate(['/contracts'], { queryParams: { dlcId: dlc.dlcId } })
             }
           })
         }
@@ -251,10 +246,7 @@ export class WebsocketService {
         // sync flag sets and unsets with blockprocessed event. We only want to checkServerReady()
         // (and pay the cost of loading wallets and state) if it's not syncing and it was not ready previously
         // TODO : this may not be playing nice with rescan, doing work in the middle
-        if (
-          !syncing &&
-          ![WalletServiceState.server_ready, WalletServiceState.wallet_rescan].includes(this.walletStateService.state)
-        ) {
+        if (!syncing && ![WalletServiceState.server_ready, WalletServiceState.wallet_rescan].includes(this.walletStateService.state)) {
           this.walletStateService.checkForServerReady()
         }
         break
@@ -266,6 +258,21 @@ export class WebsocketService {
       case WebsocketMessageType.feeratechange:
         const feeRate = <number>message.payload
         this.walletStateService.feeEstimate = feeRate
+        break
+      case WebsocketMessageType.dlcconnectioninitiated:
+        const addressConnectionInitiated = <string>message.payload
+        this.contactService.setConnectionCheck(addressConnectionInitiated, undefined)
+        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
+        break
+      case WebsocketMessageType.dlcconnectionestablished:
+        const addressConnectionEstablished = <string>message.payload
+        this.contactService.setConnectionCheck(addressConnectionEstablished, true)
+        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
+        break
+      case WebsocketMessageType.dlcconnectionfailed:
+        const addressConnectionFailed = <string>message.payload
+        this.contactService.setConnectionCheck(addressConnectionFailed, false)
+        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
         break
       default:
         console.error('handleMessage() unknown message.type', message)
