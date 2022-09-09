@@ -59,7 +59,13 @@ export class AuthService {
       } else {
         console.debug('AuthService.initialize() Found auth token')
         // If the token is from a previous server run, will logout when data loading 403s
-        this.refresh().subscribe()
+        this.expiration = expiration
+        this.setLoginTimer(expiration.getTime() - new Date().getTime() - LOGOUT_FUDGE_FACTOR)
+        this.loggedIn.emit()
+        
+        // Would be a good thing to auto-refresh old token without any user effort
+        // this is causing issues with auth token not being set on calls
+        // this.refresh().subscribe()
       }
     }
   }

@@ -362,7 +362,7 @@ export class NewOfferComponent implements OnInit {
           if (r.result) {
             this.handleContractInfo(r.result)
           }
-        })
+        }, err => { this.executing = false })
     } else if (this.isNumeric()) {
       const numericPayoutVals = this.points
       // const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
@@ -375,7 +375,7 @@ export class NewOfferComponent implements OnInit {
         if (r.result) {
           this.handleContractInfo(r.result)
         }
-      })
+      }, err => { this.executing = false })
     }
   }
 

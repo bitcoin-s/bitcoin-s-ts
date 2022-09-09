@@ -16,7 +16,7 @@ export class AboutComponent implements OnInit {
   constructor(public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
-    this.walletStateService.getAboutInfo().subscribe()
+    // this.walletStateService.getAboutInfo().subscribe()
   }
 
 }

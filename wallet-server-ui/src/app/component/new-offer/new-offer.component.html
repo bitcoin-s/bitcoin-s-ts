@@ -264,6 +264,9 @@
     </fieldset>
   </form>
 
+  <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
+  <app-alert *ngIf="offerSent" [type]="AlertType.success" message="newOffer.offerSent" icon="check_circle"></app-alert>
+
   <div class="execute-container">
     <div class="button-group">
       <button [hidden]="offerType === OfferType.TOR" mat-stroked-button class="tor-dlc-host-address-button"
@@ -284,9 +287,6 @@
     </div>
   </div>
 
-  <app-alert *ngIf="offerCreated" [type]="AlertType.success" message="newOffer.offerCreated" icon="check_circle"></app-alert>
-  <app-alert *ngIf="offerSent" [type]="AlertType.success" message="newOffer.offerSent" icon="check_circle"></app-alert>
-  
   <!-- Could have button to open new contract or auto-open new contract detail -->
 
   <div class="result-footer" [hidden]="offerType === OfferType.TOR">

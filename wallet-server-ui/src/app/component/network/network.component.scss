@@ -1,9 +1,12 @@
 .network-section {
 
-  .network-content, .tor-container, .server-container, .data-connection {
+  .bitcoin-container, .tor-container, .server-container, .data-connection {
     display: flex;
     flex-direction: column;
-    margin: 0 1rem 1.5rem 1rem;
+    margin: 0 1.5rem 1.5rem 1.5rem;
+    &:first-child {
+      margin-left: 1rem;
+    }
 
     > label {
       margin-bottom: 0.75rem;
