@@ -417,7 +417,9 @@
     "alias": "Alias",
     "address": "Address",
     "memo": "Memo",
-    "noContacts": "No Contacts"
+    "noContacts": "No Contacts",
+    "checkConnection": "Check Network Connection\n\nStatus: {{status}}\nLast Checked: {{last}}",
+    "never": "Never"
   },
 
   "events": {
