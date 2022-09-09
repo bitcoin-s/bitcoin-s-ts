@@ -101,9 +101,11 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.sortingDataAccessor = (dlc: DLCContract, property: string) => {
       switch (property) {
         case 'eventId':
-          return this.getContractInfo(dlc.dlcId)?.oracleInfo?.announcement?.event?.eventId;
+          return this.getContractInfo(dlc.dlcId)?.oracleInfo?.announcement?.event?.eventId
+        case 'realizedPNL':
+          return dlc.pnl
         default:
-          return (<any>dlc)[property];
+          return (<any>dlc)[property]
       }
     }
     this.dataSource.sort = this.sort
