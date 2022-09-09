@@ -55,6 +55,43 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let contact">
+
+        <button mat-icon-button
+          [class.checking]="contactService.getConnectionChecking(contact)"
+          (click)="onCheckConnection(contact); $event.stopPropagation()" [disabled]="checkingContact"
+          matTooltip="{{ 'contacts.checkConnection' | translate : {
+            status: contactService.getConnectionStatus(contact),
+            last: contactService.getLastConnectionChecked(contact)
+          } }}"
+          matTooltipClass="ws-prewrap"
+        >
+          <ng-container *ngIf="contactService.connectionCheck.value[contact.address]; else notyet">
+            <ng-container [ngSwitch]="contactService.connectionCheck.value[contact.address].success">
+              <ng-container *ngSwitchCase="undefined">
+                <mat-icon class="material-icons-outlined">wifi_find</mat-icon>
+              </ng-container>
+              <ng-container *ngSwitchCase="true">
+                <!-- <mat-icon class="material-icons-outlined">wifi</mat-icon> -->
+                <mat-icon class="material-icons-outlined">signal_wifi_statusbar_4_bar</mat-icon>
+              </ng-container>
+              <ng-container *ngSwitchCase="false">
+                <!-- <mat-icon class="material-icons-outlined">wifi_off</mat-icon> -->
+                <!-- <mat-icon class="material-icons-outlined">signal_wifi_connected_no_internet_4</mat-icon> -->
+                <mat-icon class="material-icons-outlined">signal_wifi_statusbar_connected_no_internet_4</mat-icon>
+              </ng-container>
+              <!-- Shouldn't happen -->
+              <ng-container *ngSwitchDefault>
+                <mat-icon class="material-icons-outlined">network_check</mat-icon>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-template #notyet>
+            <!-- <mat-icon class="material-icons-outlined">signal_wifi_statusbar_null</mat-icon> -->
+            <!-- <mat-icon class="material-icons-outlined">signal_wifi_off</mat-icon> -->
+            <mat-icon class="material-icons-outlined">network_check</mat-icon>
+          </ng-template>
+        </button>
+
         <button mat-icon-button (click)="onDelete(contact); $event.stopPropagation()"
           matTooltip="{{ 'action.delete' | translate }}"
         >

@@ -47,6 +47,9 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedContact: Contact|null
 
+  // Probably could be removed at this point since process callbacks are async, but does prevent double clicking button at the moment
+  checkingContact: Contact|null // Contact being Tor Network checked
+
   private contacts$: Subscription
 
   constructor(private formBuilder: UntypedFormBuilder, private dialog: MatDialog,
@@ -106,6 +109,22 @@ export class ContactsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clearSelection() {
     this.selectedContact = null
+  }
+
+  onCheckConnection(contact: Contact) {
+    console.debug('onCheckConnection()', contact)
+
+    if (this.contactService.getConnectionChecking(contact)) {
+      console.warn('already checking connection')
+      return
+    }
+
+    this.checkingContact = contact
+
+    this.contactService.checkConnection(contact.address).subscribe(r => {
+      console.debug(' checkConnection', r)
+      this.checkingContact = null
+    }, err => { this.checkingContact = null })
   }
 
   onDelete(contact: Contact) {
