@@ -1,1 +1,34 @@
-<p>new-user-onboarding works!</p>
+<div class="new-user-onboarding" @fadeOut>
+  <mat-sidenav-container>
+    <mat-sidenav-content>
+      <div class="sidenav__menu-container">
+        <div class="app-logo"></div>
+
+        <mat-action-list class="sidenav__menu-list">
+          <button mat-list-item *ngFor="let card of onboardingStepCards" (click)="onStepSelected(card.onboardingStep)">
+            <span class="material-icons-outlined sidenav__menu-list-item__icon">{{ stepIconName(card.onboardingStep) }} </span>
+            {{ card.menuTitle }}
+          </button>
+        </mat-action-list>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <div class="main-content-container">
+    <div [@stepSlider]="currentStep" class="card-slide-container">
+      <ng-container *ngFor="let card of onboardingStepCards; let index = index">
+        <div *ngIf="index == currentStep - 1" class="card-slide-container__card-slide">
+          <new-user-onboarding-card [card]="card" class="card-slide-container__card-slide-card"></new-user-onboarding-card>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="card-slide-controls-container">
+      <button mat-flat-button color="primary" type="button" (click)="onPreviousStepTapped()" [disabled]="currentStep == 1">Previous Step</button>
+
+      <button *ngIf="this.currentStep != this.onboardingStepCards.length" mat-flat-button color="primary" type="button" (click)="onNextStepTapped()">Next</button>
+
+      <button *ngIf="this.currentStep == this.onboardingStepCards.length" mat-flat-button color="primary" type="button" (click)="onCompleteTapped()">Complete</button>
+    </div>
+  </div>
+</div>

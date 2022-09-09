@@ -1,0 +1,91 @@
+.new-user-onboarding {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+
+  background-color: #09081D;
+
+  .app-logo {
+    background: url("../../../assets/image/suredbits.svg");
+    background-repeat: no-repeat;
+    max-width: 100%;
+    background-position: center;
+    background-size: contain;
+    width: 300px;
+    height: 100px;
+    padding-top: 3rem;
+  }
+
+  .mat-drawer-container {
+    height: 100%;
+    flex: 1;
+    flex-basis: 1;
+    min-width: 300px;
+    max-width: 400px;
+
+    .mat-drawer-content {
+      height: 100%;
+    }
+  }
+
+  .sidenav__menu-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-image: linear-gradient(0deg, #5f1f04, #2a1828, #1b1c3b);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    .sidenav__menu-list {
+      width: 100%;
+    }
+
+    .sidenav__menu-list-item__icon {
+      margin-right: 1em;
+    }
+  }
+
+  .main-content-container {
+    flex: 3;
+    position: relative;
+  }
+
+  .card-slide-container {
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+    .card-slide-container__card-slide {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .card-slide-container__card-slide-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  .card-slide-controls-container {
+    z-index: 1;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
