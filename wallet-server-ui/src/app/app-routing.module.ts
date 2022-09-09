@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { RouterModule, Routes } from '@angular/router'
 
-import { AboutComponent } from './component/about/about.component';
-import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component';
-import { ContactsComponent } from './component/contacts/contacts.component';
-import { ContractsComponent } from './component/contracts/contracts.component';
-import { LoginComponent } from './component/login/login.component';
-import { NetworkComponent } from './component/network/network.component';
-import { NewUserOnboardingComponent } from './component/new-user-onboarding/new-user-onboarding.component';
-import { OffersComponent } from './component/offers/offers.component';
-import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component';
+import { AboutComponent } from './component/about/about.component'
+import { BuildAcceptOfferComponent } from './component/build-accept-offer/build-accept-offer.component'
+import { ContactsComponent } from './component/contacts/contacts.component'
+import { ContractsComponent } from './component/contracts/contracts.component'
+import { LoginComponent } from './component/login/login.component'
+import { NetworkComponent } from './component/network/network.component'
+import { NewUserOnboardingComponent } from './component/new-user-onboarding/new-user-onboarding.component'
+import { OffersComponent } from './component/offers/offers.component'
+import { WalletBalanceComponent } from './component/wallet-balance/wallet-balance.component'
 
-import { AuthGuard } from './guard/auth-guard';
+import { AuthGuard } from './guard/auth-guard'
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -42,7 +42,7 @@ const appRoutes: Routes = [
   { path: 'contacts', component: ContactsComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   // { path: '**', component: AppComponent }, // TODO : 404 page
-];
+]
 
 @NgModule({
   declarations: [],
