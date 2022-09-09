@@ -387,3 +387,17 @@ mat-form-field {
     }
   }
 }
+
+/** Global PNL Styling */
+.arrow-icon {
+  vertical-align: middle;
+}
+.profit {
+  color: forestgreen;
+}
+.loss {
+  color: crimson;
+}
+.even {
+  // no styling yet
+}

@@ -119,6 +119,11 @@ $padding: 0.5rem;
     .mat-cell.mat-column-contractId {
       white-space: nowrap;
     }
+    .pnl-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
     // Hide Outcomes and Attestations on narrow screens
     @include lt-lg {
