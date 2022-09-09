@@ -85,17 +85,18 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.dataSource.sortingDataAccessor = (offer: IncomingOffer, property: string) => {
+      const offerWithHex = this.getOffer(offer.hash)
       switch (property) {
         case 'eventId':
-          return this.getOffer(offer.hash)?.offer.contractInfo.oracleInfo.announcement.event.eventId
+          return offerWithHex && offerWithHex.offer.contractInfo.oracleInfo.announcement.event.eventId
         case 'maturity':
-          return this.getOffer(offer.hash)?.offer.contractInfo.oracleInfo.announcement.event.maturity
+          return offerWithHex && offerWithHex.offer.contractInfo.oracleInfo.announcement.event.maturity
         case 'totalCollateral':
-          return this.getOffer(offer.hash)?.offer?.contractInfo?.totalCollateral
+          return offerWithHex && offerWithHex.offer.contractInfo.totalCollateral
         case 'collateral':
           return this.yourCollateral(offer)
         case 'counterpartyCollateral':
-          return this.getOffer(offer.hash)?.offer?.offerCollateral
+          return offerWithHex && offerWithHex.offer.offerCollateral
         // case 'feeRate':
         //   return this.getOffer(offer.hash)?.offer?.feeRatePerVb
         default:
@@ -180,7 +181,6 @@ export class OffersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedOfferWithHex = this.offerService.decodedOffers.value[offer.hash]
 
     console.debug('onRowClick()', offer, this.selectedOfferWithHex)
-    console.warn('equal?', offer.offerTLV === this.selectedOfferWithHex.hex)
 
     this.rightDrawer.open()
     // Update queryParams

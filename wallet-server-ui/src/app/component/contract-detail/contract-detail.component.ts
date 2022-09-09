@@ -581,20 +581,6 @@ export class ContractDetailComponent implements OnInit {
         console.debug('adddlcsigsandbroadcast', r)
 
         if (r.result) {
-          // Now done on websocket dlcstatechange
-          // const txId = r.result
-          // const dialog = this.dialog.open(ConfirmationDialogComponent, {
-          //   data: {
-          //     title: 'dialog.broadcastSuccess.title',
-          //     content: 'dialog.broadcastSuccess.content',
-          //     params: { txId },
-          //     linksContent: "dialog.broadcastSuccess.linksContent",
-          //     links: [this.walletStateService.mempoolTransactionURL(txId, this.walletStateService.getNetwork())],
-          //     action: 'action.close',
-          //     showCancelButton: false,
-          //   }
-          // })
-
           this.signBroadcast = true
 
           this.refreshDLCState()

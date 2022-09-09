@@ -5,21 +5,24 @@
   </div>
 
   <div class="operations">
-    <button mat-stroked-button (click)="downloadBackup()" [disabled]="executing">
-      {{ 'advanced.backup' | translate }}
-      <div class="spinner" *ngIf="backupExecuting">
-        <mat-spinner diameter="20"></mat-spinner>
-      </div>
-    </button>
-
-    <button mat-stroked-button (click)="downloadBitcoinsLog()" [disabled]="executing">
-      {{ 'advanced.downloadBitcoinsLog' | translate }}
-    </button>
-
-    <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
-      {{ 'advanced.downloadProxyLog' | translate }}
-    </button>
-
+    <div class="downloads">
+      <label translate>advanced.downloads</label>
+      <button mat-stroked-button (click)="downloadBackup()" [disabled]="executing">
+        {{ 'advanced.backup' | translate }}
+        <div class="spinner" *ngIf="backupExecuting">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      </button>
+  
+      <button mat-stroked-button (click)="downloadBitcoinsLog()" [disabled]="executing">
+        {{ 'advanced.downloadBitcoinsLog' | translate }}
+      </button>
+  
+      <button mat-stroked-button (click)="downloadProxyLog()" [disabled]="executing">
+        {{ 'advanced.downloadProxyLog' | translate }}
+      </button>
+    </div>
+    
     <div class="vspacer-2"></div>
     
     <app-alert *ngIf="fullRescan" [type]="AlertType.warn" message="advanced.fullRescanWarning" icon="warning_amber"></app-alert>

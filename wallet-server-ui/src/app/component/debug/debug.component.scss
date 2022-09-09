@@ -12,6 +12,15 @@
       margin-bottom: 0.25rem;
     }
 
+    .downloads {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 0.5rem;
+      }
+    }
+
     .row {
       display: flex;
       flex-direction: row;

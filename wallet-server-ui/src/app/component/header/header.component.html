@@ -23,16 +23,20 @@
     </ng-container>
 
     <ng-container *ngIf="authService.isLoggedIn">
-      <a mat-button routerLink="/contracts" routerLinkActive="active">
+      <a mat-button routerLink="/contracts" routerLinkActive="active"
+        matTooltip="{{ 'contracts.description' | translate }}">
         {{ 'contracts.heading' | translate }}</a>
       <a mat-button routerLink="/offers" routerLinkActive="active"
+        matTooltip="{{ 'offers.description' | translate }}"
         matBadgePosition="after" matBadgeColor="accent"
         [matBadge]="offerService.offers.value.length"
         [matBadgeHidden]="offerService.offers.value.length === 0">
         {{ 'offers.heading' | translate }}</a>
-      <a mat-button routerLink="/create" routerLinkActive="active">
+      <a mat-button routerLink="/create" routerLinkActive="active"
+        matTooltip="{{ 'buildAcceptOffer.description' | translate }}">
         {{ 'header.createDLC' | translate }}</a>
-      <a mat-button routerLink="/wallet" routerLinkActive="active">
+      <a mat-button routerLink="/wallet" routerLinkActive="active"
+        matTooltip="{{ 'walletBalance.description' | translate }}">
         {{ 'walletBalance.heading' | translate }}</a>
 
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
@@ -105,7 +109,10 @@
       </mat-menu>
   
       <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
-        matTooltip="{{ 'about.heading' | translate }}"
+        matTooltip="{{ 'header.about' | translate : {
+          serverVersion: walletStateService.shortServerVersion,
+          uiVersion: walletStateService.shortUIVersion } }}"
+        matTooltipClass="ws-prewrap fs-medium lineheight-14"
         aria-label="About">
         <mat-icon>help_outline</mat-icon>
       </button>
