@@ -8,6 +8,8 @@
     "betaSoftware": "This application is alpha software.",
     "significantValue": "Please do not use it with significant amounts of value at this time.",
     "caveatEmptor": "caveat emptor",
+    "startOnboardingButton": "Take a Brief Setup Tour",
+    "skipOnboardingButton": "Skip the Tour",
     "dontShowSplashAgain": "Don't show this screen again"
   },
 

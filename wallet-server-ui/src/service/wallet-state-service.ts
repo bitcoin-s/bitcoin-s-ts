@@ -13,12 +13,11 @@ import { OfferService } from '~service/offer-service'
 import { BuildConfig } from '~type/proxy-server-types'
 import { Balances, BlockchainMessageType, DLCMessageType, DLCWalletAccounting, GetInfoResponse, ServerResponse, Wallet, WalletMessageType } from '~type/wallet-server-types'
 
-import { BitcoinNetwork, } from '~util/utils'
+import { BitcoinNetwork } from '~util/utils'
 import { getMessageBody } from '~util/wallet-server-util'
 
 import { ErrorDialogComponent } from '~app/dialog/error/error.component'
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
-
 
 export /* const */ enum WalletServiceState {
   offline = 'offline', // not talking with backend
@@ -59,14 +58,18 @@ const THREE_DASHES_WORTH = /([.\w]+-[.\w]+-[.\w]+)/ // matches "1.9.3-11-8788b6f
  */
 @Injectable({ providedIn: 'root' })
 export class WalletStateService {
-
   // Server
 
   private _state: WalletServiceState = WalletServiceState.offline
-  set state(s: WalletServiceState) { this._state = s }
-  get state() { return this._state }
+  set state(s: WalletServiceState) {
+    this._state = s
+  }
+  get state() {
+    return this._state
+  }
 
-  isServerReady() { // torStarted and synced
+  isServerReady() {
+    // torStarted and synced
     return this.state === WalletServiceState.server_ready
   }
 
@@ -103,8 +106,7 @@ export class WalletStateService {
     console.warn('checkServerReady()', this.info, this.wallet.value, this.state)
     if (this.info && this.info.torStarted === true && this.info.syncing === false) {
       // If tor_started hasn't happened yet, load server state so user has tor address
-      if (![WalletServiceState.tor_started,
-            WalletServiceState.server_ready].includes(this.state)) {
+      if (![WalletServiceState.tor_started, WalletServiceState.server_ready].includes(this.state)) {
         console.warn('tor_started, syncing == false, state:', this.state)
         this.initializeServerState().subscribe()
       }
@@ -117,13 +119,13 @@ export class WalletStateService {
       }
       this.state = WalletServiceState.server_ready
     } else if (this.info && this.info.torStarted === true) {
-      if (![WalletServiceState.tor_started,
-            WalletServiceState.server_ready].includes(this.state)) {
+      if (![WalletServiceState.tor_started, WalletServiceState.server_ready].includes(this.state)) {
         console.warn('tor_started')
         this.initializeServerState().subscribe()
       }
       this.state = WalletServiceState.tor_started
-    } else { // default starting up state
+    } else {
+      // default starting up state
       this.state = WalletServiceState.server_starting
     }
   }
@@ -165,9 +167,9 @@ export class WalletStateService {
   // Wallet
   showWalletSelector: boolean = false // flag for visibility of wallet selection and seed import
   wallets: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
-  wallet: BehaviorSubject<Wallet|null> = new BehaviorSubject<Wallet|null>(null)
+  wallet: BehaviorSubject<Wallet | null> = new BehaviorSubject<Wallet | null>(null)
 
-  private setWallet(wallet: Wallet|null) {
+  private setWallet(wallet: Wallet | null) {
     // console.debug('setWallet()', wallet)
     this.wallet.next(wallet)
     this.checkWalletScanning()
@@ -184,7 +186,7 @@ export class WalletStateService {
   dlcWalletAccounting: DLCWalletAccounting
 
   // Misc
-  
+
   mempoolUrl: string = 'https://mempool.space' // default
   mempoolTransactionURL(txIdHex: string, network: string) {
     switch (network) {
@@ -237,9 +239,9 @@ export class WalletStateService {
   public waitForAppServer() {
     console.debug('waitForAppServer()')
     return this.refreshBlockchainInfo().pipe(
-      retryWhen(errors => {
+      retryWhen((errors) => {
         return errors.pipe(
-          tap((error) => {
+          tap((_) => {
             this.state = WalletServiceState.offline
             this.showRestartDialog = false
             // Handle proxy restart when token has gone invalid
@@ -248,10 +250,10 @@ export class WalletStateService {
               this.authService.doLogout()
             }
           }),
-          delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
-        );
+          delayWhen((_) => timer(OFFLINE_POLLING_TIME))
+        )
       }),
-      tap(_ => {
+      tap((_) => {
         // refreshBlockchainInfo() calls checkForServerReady() which sets WalletServiceState state
 
         // If tor has not started yet, set timeout to show a restart dialog
@@ -281,14 +283,19 @@ export class WalletStateService {
     return forkJoin([
       this.offerService.loadIncomingOffers(),
       this.contactService.loadContacts(),
-    ]).pipe(tap(r => {
-      this.initialized = true
-      this.checkInitialized()
-    }, err => {
-      console.error('initializeState() forkJoin error')
-      this.state = WalletServiceState.offline
-      this.initialized = false
-    }))
+    ]).pipe(
+      tap(
+        (r) => {
+          this.initialized = true
+          this.checkInitialized()
+        },
+        (err) => {
+          console.error('initializeState() forkJoin error')
+          this.state = WalletServiceState.offline
+          this.initialized = false
+        }
+      )
+    )
   }
 
   public uninitialize() {
@@ -353,34 +360,40 @@ export class WalletStateService {
   }
 
   private getMempoolUrl() {
-    return this.messageService.mempoolUrl().pipe(tap(r => {
-      if (r && r.url) {
-        // HACK HACK HACK - This converts api URL to base URL. Should get passed good URL
-        const index = r.url.lastIndexOf('/api')
-        if (index !== -1) {
-          this.mempoolUrl = r.url.substring(0, index)
+    return this.messageService.mempoolUrl().pipe(
+      tap((r) => {
+        if (r && r.url) {
+          // HACK HACK HACK - This converts api URL to base URL. Should get passed good URL
+          const index = r.url.lastIndexOf('/api')
+          if (index !== -1) {
+            this.mempoolUrl = r.url.substring(0, index)
+          }
         }
-      }
-    }))
+      })
+    )
   }
 
   private getFeeEstimate() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(tap(r => {
-      if (r.result && r.result !== FEE_RATE_NOT_SET) {
-        this.feeEstimate = r.result
-      } else {
-        this.feeEstimate = DEFAULT_FEE_RATE
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.estimatefee)).pipe(
+      tap((r) => {
+        if (r.result && r.result !== FEE_RATE_NOT_SET) {
+          this.feeEstimate = r.result
+        } else {
+          this.feeEstimate = DEFAULT_FEE_RATE
+        }
+      })
+    )
   }
 
   private getDLCHostAddress() {
-    return this.messageService.sendMessage(getMessageBody(DLCMessageType.getdlchostaddress)).pipe(tap(r => {
-      if (r.result) {
-        this.torDLCHostAddress = r.result
-        console.warn('torDLCHostAddress:', this.torDLCHostAddress)
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(DLCMessageType.getdlchostaddress)).pipe(
+      tap((r) => {
+        if (r.result) {
+          this.torDLCHostAddress = r.result
+          console.warn('torDLCHostAddress:', this.torDLCHostAddress)
+        }
+      })
+    )
   }
 
   /** Wallet */
@@ -392,37 +405,46 @@ export class WalletStateService {
         this.getWallets(),
         this.getWalletInfo(),
         // We do not load all wallet details - just the current wallet. There is no way to load their details yet.
-      ]).pipe(tap(r => {
-        
-      }, err => {
-        console.error('error in initializeWallet()')
-      })).pipe(debounceTime(STATE_RETRY_DELAY))
+      ])
+        .pipe(
+          tap(
+            (r) => {},
+            (err) => {
+              console.error('error in initializeWallet()')
+            }
+          )
+        )
+        .pipe(debounceTime(STATE_RETRY_DELAY))
     }
     return this.initializeWallet$
   }
 
   private getWallets() {
     console.debug('getWallets()')
-    
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.listwallets)).pipe(tap(r => {
-      console.debug(' listwallets', r)
-      const wallets = <string[]> r.result || []
-      this.wallets.next(wallets)
-    }))
+
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.listwallets)).pipe(
+      tap((r) => {
+        console.debug(' listwallets', r)
+        const wallets = <string[]>r.result || []
+        this.wallets.next(wallets)
+      })
+    )
   }
 
   getWalletInfo() {
     console.debug('getWalletInfo()')
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.walletinfo), false).pipe(tap(r => {
-      console.debug(' walletinfo', r)
-      if (r.error) {
-        console.error('getWalletInfo() error', r.error)
-      } else if (r.result) {
-        const wallet = <Wallet>r.result.wallet
-        this.setWallet(wallet)
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.walletinfo), false).pipe(
+      tap((r) => {
+        console.debug(' walletinfo', r)
+        if (r.error) {
+          console.error('getWalletInfo() error', r.error)
+        } else if (r.result) {
+          const wallet = <Wallet>r.result.wallet
+          this.setWallet(wallet)
+        }
+      })
+    )
   }
 
   loadWallet(walletName: string, passphrase?: string) {
@@ -433,18 +455,20 @@ export class WalletStateService {
 
     const name = walletName || undefined // empty string serializes to undefined
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.loadwallet, [name, passphrase])).pipe(tap(r => {
-      console.debug(' loadwallet', r)
-      if (r.error) {
-        throw Error(r.error)
-      } else if (r.result !== undefined) { // r.result is null for default wallet
-        const walletName = r.result
-      } else {
-        // Trouble
-      }
-    }),
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.loadwallet, [name, passphrase])).pipe(
+      tap((r) => {
+        console.debug(' loadwallet', r)
+        if (r.error) {
+          throw Error(r.error)
+        } else if (r.result !== undefined) {
+          // r.result is null for default wallet
+          const walletName = r.result
+        } else {
+          // Trouble
+        }
+      }),
       // get newly loaded wallet info
-      switchMap(_ => this.getWalletInfo()),
+      switchMap((_) => this.getWalletInfo()),
       // Doing this in checkWalletScanning() now instead
       // switchMap(_ => this.refreshWalletState()), // refresh local state for new wallet
       // Auto-rescan based on loaded wallet
@@ -463,14 +487,14 @@ export class WalletStateService {
             title: 'dialog.error',
             content: 'error.error',
             params: { error: e },
-          }
+          },
         })
         return throwError(error)
       })
     )
   }
 
-  rescanWallet(ignoreCreationTime: boolean = false, startBlock: number|null = null, endBlock: number|null = null) {
+  rescanWallet(ignoreCreationTime: boolean = false, startBlock: number | null = null, endBlock: number | null = null) {
     console.debug('rescanWallet() ignoreCreationTime:', ignoreCreationTime, 'startBlock:', startBlock, 'endBlock:', endBlock)
 
     // Could expose these to the user, but would need to validate
@@ -481,61 +505,72 @@ export class WalletStateService {
     const force = true
     // const ignoreCreationTime = ignoreCreationTime // false // forces full rescan regardless of wallet creation time
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).pipe(tap(r => {
-      console.debug(' rescan', r)
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.rescan, [batchSize, startBlock, endBlock, force, ignoreCreationTime])).pipe(
+      tap((r) => {
+        console.debug(' rescan', r)
 
-      if (r.result) { // "Rescan started."
-        // TODO : Started dialog / message
-        if (this.wallet.value) {
-          this.wallet.value.rescan = true
+        if (r.result) {
+          // "Rescan started."
+          // TODO : Started dialog / message
+          if (this.wallet.value) {
+            this.wallet.value.rescan = true
+          }
+          this.state = WalletServiceState.wallet_rescan
         }
-        this.state = WalletServiceState.wallet_rescan
-      }
-    }))
+      })
+    )
   }
 
   private refreshWallet$: Observable<any>
   refreshWalletState() {
     // console.debug('refreshWalletState()')
     if (!this.refreshWallet$) {
-      this.refreshWallet$ = forkJoin([
-        this.refreshBalances(),
-        this.refreshDLCWalletAccounting(),
-        this.addressService.initializeState(),
-        this.dlcService.loadDLCs(),
-      ]).pipe(tap(r => {
-        // Set flag for wallet initialized?
-      }, err => {
-        console.error('refreshWalletState() forkJoin error')
-      })).pipe(debounceTime(STATE_RETRY_DELAY))
+      this.refreshWallet$ = forkJoin([this.refreshBalances(), this.refreshDLCWalletAccounting(), this.addressService.initializeState(), this.dlcService.loadDLCs()])
+        .pipe(
+          tap(
+            (r) => {
+              // Set flag for wallet initialized?
+            },
+            (err) => {
+              console.error('refreshWalletState() forkJoin error')
+            }
+          )
+        )
+        .pipe(debounceTime(STATE_RETRY_DELAY))
     }
     return this.refreshWallet$
   }
 
   private refreshBlockchainInfo() {
-    return this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo), false).pipe(tap(r => {
-      console.debug(' getinfo', r)
-      if (r.result) {
-        this.info = r.result
-        this.checkForServerReady()
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(BlockchainMessageType.getinfo), false).pipe(
+      tap((r) => {
+        console.debug(' getinfo', r)
+        if (r.result) {
+          this.info = r.result
+          this.checkForServerReady()
+        }
+      })
+    )
   }
 
   refreshBalances() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).pipe(tap(r => {
-      if (r.result) {
-        this.balances = r.result
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getbalances, [true])).pipe(
+      tap((r) => {
+        if (r.result) {
+          this.balances = r.result
+        }
+      })
+    )
   }
 
   private refreshDLCWalletAccounting() {
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).pipe(tap(r => {
-      if (r.result) {
-        this.dlcWalletAccounting = r.result
-      }
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.getdlcwalletaccounting)).pipe(
+      tap((r) => {
+        if (r.result) {
+          this.dlcWalletAccounting = r.result
+        }
+      })
+    )
   }
 
   /** Import/Export */
@@ -543,27 +578,32 @@ export class WalletStateService {
   exportWallet(walletName?: string, passphrase?: string) {
     console.debug('exportWallet()', walletName)
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.exportseed, [walletName, passphrase])).pipe(tap(r => {
-      // console.debug(' exportseed', r) // TODO : Remove r
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.exportseed, [walletName, passphrase])).pipe(
+      tap((r) => {
+        // console.debug(' exportseed', r) // TODO : Remove r
+      })
+    )
   }
 
-  importSeedWordWallet(walletName: string|undefined, words: string, passphrase?: string) {
+  importSeedWordWallet(walletName: string | undefined, words: string, passphrase?: string) {
     console.debug('importSeedWordWallet()', walletName)
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importseed, [walletName, words, passphrase])).pipe(tap(r => {
-      console.debug(' importseed', r)
-      // TODO : Waiting on result: string === walletName
-      // success : {result: null, error: null}
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importseed, [walletName, words, passphrase])).pipe(
+      tap((r) => {
+        console.debug(' importseed', r)
+        // TODO : Waiting on result: string === walletName
+        // success : {result: null, error: null}
+      })
+    )
   }
 
-  importXprvWallet(walletName: string|undefined, xprv: string, passphrase?: string) {
+  importXprvWallet(walletName: string | undefined, xprv: string, passphrase?: string) {
     console.debug('importXprvWallet()', walletName)
 
-    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importxprv, [walletName, xprv, passphrase])).pipe(tap(r => {
-      console.debug(' importxprv', r)
-    }))
+    return this.messageService.sendMessage(getMessageBody(WalletMessageType.importxprv, [walletName, xprv, passphrase])).pipe(
+      tap((r) => {
+        console.debug(' importxprv', r)
+      })
+    )
   }
-
 }

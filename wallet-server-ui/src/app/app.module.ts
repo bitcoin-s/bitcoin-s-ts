@@ -43,11 +43,11 @@ import { ErrorDialogComponent } from './dialog/error/error.component'
 import { FeeRateDialogComponent } from './dialog/fee-rate-dialog/fee-rate-dialog.component'
 import { LogoutDialogComponent } from './dialog/logout/logout.component'
 import { NewAddressDialogComponent } from './dialog/new-address-dialog/new-address-dialog.component'
+import { NewUserOnboardingComponent } from './component/new-user-onboarding/new-user-onboarding.component'
 import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-dialog.component'
 
 import { AuthInterceptor } from './interceptor/auth-interceptor'
-import { ErrorInterceptor } from './interceptor/error-interceptor';
-
+import { ErrorInterceptor } from './interceptor/error-interceptor'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -95,6 +95,7 @@ export function appInitializerFactory(translate: TranslateService) {
     ImportExportComponent,
     ExportComponent,
     ImportComponent,
+    NewUserOnboardingComponent,
   ],
   imports: [
     BrowserModule,
@@ -106,9 +107,9 @@ export function appInitializerFactory(translate: TranslateService) {
       defaultLanguage: 'en',
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      }
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      },
     }),
     MaterialModule,
     NgChartsModule,
@@ -116,21 +117,24 @@ export function appInitializerFactory(translate: TranslateService) {
     ZXingScannerModule,
     AppRoutingModule,
   ],
-  providers: [{
+  providers: [
+    {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [TranslateService],
-      multi: true
-    }, {
+      multi: true,
+    },
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
-    }, {
+      multi: true,
+    },
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

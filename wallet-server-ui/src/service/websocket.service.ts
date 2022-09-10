@@ -16,7 +16,6 @@ import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmati
 import { AddressService } from './address.service'
 import { ContactService } from './contact-service'
 
-
 enum WebsocketMessageType {
   txprocessed = 'txprocessed',
   txbroadcast = 'txbroadcast',
@@ -45,22 +44,25 @@ const POLLING_TIME = 15000 // ms
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
-
   get state() {
     if (this._ws) {
       switch (this._ws.readyState) {
-        case 0: return 'connecting'
-        case 1: return 'open'
-        case 2: return 'closing'
-        case 3: return 'closed'
+        case 0:
+          return 'connecting'
+        case 1:
+          return 'open'
+        case 2:
+          return 'closing'
+        case 3:
+          return 'closed'
       }
     }
     return ''
   }
 
-  private _ws: WebSocket|null = null
+  private _ws: WebSocket | null = null
 
-  private pollingTimer$: Subscription;
+  private pollingTimer$: Subscription
 
   constructor(private walletStateService: WalletStateService, private dlcService: DLCService,
     private offerService: OfferService, private addressService: AddressService,
@@ -71,9 +73,9 @@ export class WebsocketService {
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
     // set ws protocol when using http and wss when using https
-    const protocol = window.location.protocol.replace('http', 'ws');
+    const protocol = window.location.protocol.replace('http', 'ws')
     // get location host
-    const host = window.location.host;
+    const host = window.location.host
     let websocketURL: string = `${protocol}//${host}${environment.wsApi}`
     const user = environment.user
     const password = this.authService.password
@@ -86,7 +88,7 @@ export class WebsocketService {
   startPolling() {
     // console.debug('WebsocketService.startPolling()')
     // Use different STARTUP_POLLING_DELAY to allow initial state to load via other channels before listening to Websocket updates
-    this.pollingTimer$ = timer(STARTUP_POLLING_DELAY, POLLING_TIME).subscribe(_ => {
+    this.pollingTimer$ = timer(STARTUP_POLLING_DELAY, POLLING_TIME).subscribe((_) => {
       // console.debug('Websocket polling timer', this._ws)
       if (this._ws === null || this._ws.readyState === WebSocket.CLOSED) {
         this.startWebsocket()
@@ -151,12 +153,12 @@ export class WebsocketService {
     } else {
       console.debug('handleMessage()', d, 'message:', message.type, message.payload)
     }
-    
+
     switch (message.type) {
       case WebsocketMessageType.txbroadcast:
       case WebsocketMessageType.txprocessed:
         // Nothing to do
-        break;
+        break
       case WebsocketMessageType.blockprocessed:
         const block = <BlockHeaderResponse>message.payload
         this.walletStateService.blockHeight = block.height
@@ -164,7 +166,7 @@ export class WebsocketService {
           // Not sure if we need to refresh everything here...
           this.walletStateService.refreshWalletState().subscribe()
         }
-        break;
+        break
       case WebsocketMessageType.dlcstatechange:
         if (this.walletStateService.isServerReady()) {
           const dlc = <DLCContract>message.payload
@@ -173,7 +175,7 @@ export class WebsocketService {
           const obs = this.dlcService.replaceDLC(dlc)
           let goToContract = false
           // Wait for ContractInfo to load before navigating
-          obs.subscribe(_ => {
+          obs.subscribe((_) => {
             // If someone just accepted a DLC Offer or signed a DLC Accept, move to Contract Detail view
             // Using both states because accepted/signed usually comes in too quickly to have transitioned
             // TODO : May only want to do this when user is in specific views, but doing it for any UI state right now
@@ -189,11 +191,11 @@ export class WebsocketService {
                   title: 'dialog.broadcastSuccess.title',
                   content: 'dialog.broadcastSuccess.content',
                   params: { txId: dlc.fundingTxId, eventId: contractInfo.oracleInfo.announcement.event.eventId },
-                  linksContent: "dialog.broadcastSuccess.linksContent",
+                  linksContent: 'dialog.broadcastSuccess.linksContent',
                   links: [this.walletStateService.mempoolTransactionURL(<string>dlc.fundingTxId, this.walletStateService.getNetwork())],
                   action: 'action.close',
                   showCancelButton: false,
-                }
+                },
               })
             }
             if (goToContract) {
@@ -201,36 +203,37 @@ export class WebsocketService {
             }
           })
         }
-        break;
+        break
       case WebsocketMessageType.reservedutxos:
         if (this.walletStateService.isServerReady()) {
           this.walletStateService.refreshBalances().subscribe()
         }
-        break;
+        break
       case WebsocketMessageType.newaddress:
         if (this.walletStateService.isServerReady()) {
           this.addressService.refreshUnfundedAddresses().subscribe()
-        } else { // Show new address when we haven't loaded state yet (waiting on backend sync)
+        } else {
+          // Show new address when we haven't loaded state yet (waiting on backend sync)
           const newAddress = <string>message.payload
           if (!this.addressService.unfundedAddresses) {
             this.addressService.unfundedAddresses = []
           }
           this.addressService.unfundedAddresses.push(newAddress)
         }
-        break;
+        break
       case WebsocketMessageType.dlcofferadd:
         const offer = <IncomingOffer>message.payload
         this.offerService.incomingOfferReceived(offer)
-        break;
+        break
       case WebsocketMessageType.dlcofferremove:
         const hash = <string>message.payload
         this.offerService.incomingOfferRemoved(hash)
-        break;
+        break
       case WebsocketMessageType.torstarted:
         // console.warn('torstarted')
         this.walletStateService.torStarted = true
         this.walletStateService.checkForServerReady()
-        break;
+        break
       case WebsocketMessageType.syncflagchanged:
         const syncing = <boolean>message.payload
         // console.warn('syncflagchanged', syncing)
@@ -238,15 +241,15 @@ export class WebsocketService {
         // sync flag sets and unsets with blockprocessed event. We only want to checkServerReady()
         // (and pay the cost of loading wallets and state) if it's not syncing and it was not ready previously
         // TODO : this may not be playing nice with rescan, doing work in the middle
-        if (!syncing && ![WalletServiceState.server_ready,WalletServiceState.wallet_rescan].includes(this.walletStateService.state)) {
+        if (!syncing && ![WalletServiceState.server_ready, WalletServiceState.wallet_rescan].includes(this.walletStateService.state)) {
           this.walletStateService.checkForServerReady()
         }
-        break;
+        break
       case WebsocketMessageType.rescancomplete:
         const walletName = <string>message.payload
         // Reload wallet info, will call refreshWalletState() during process
         this.walletStateService.initializeWallet().subscribe()
-        break;
+        break
       case WebsocketMessageType.feeratechange:
         const feeRate = <number>message.payload
         this.walletStateService.feeEstimate = feeRate
@@ -270,5 +273,4 @@ export class WebsocketService {
         console.error('handleMessage() unknown message.type', message)
     }
   }
-
 }
