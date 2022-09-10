@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: row;
 
-  background-color: #09081D;
+  background-color: #09081d;
 
   .app-logo {
     background: url("../../../assets/image/suredbits.svg");
@@ -67,13 +67,6 @@
       position: absolute;
       top: 0;
       left: 0;
-    }
-
-    .card-slide-container__card-slide-card {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
     }
   }
 

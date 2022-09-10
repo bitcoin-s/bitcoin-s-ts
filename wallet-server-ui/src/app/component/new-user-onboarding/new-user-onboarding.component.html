@@ -16,10 +16,8 @@
 
   <div class="main-content-container">
     <div [@stepSlider]="currentStep" class="card-slide-container">
-      <ng-container *ngFor="let card of onboardingStepCards; let index = index">
-        <div *ngIf="index == currentStep - 1" class="card-slide-container__card-slide">
-          <new-user-onboarding-card [card]="card" class="card-slide-container__card-slide-card"></new-user-onboarding-card>
-        </div>
+      <ng-container *ngFor="let card of onboardingStepCards; let cardIndex = index">
+        <new-user-onboarding-card [card]="card" *ngIf="cardIndex == currentStep - 1" class="card-slide-container__card-slide"></new-user-onboarding-card>
       </ng-container>
     </div>
 

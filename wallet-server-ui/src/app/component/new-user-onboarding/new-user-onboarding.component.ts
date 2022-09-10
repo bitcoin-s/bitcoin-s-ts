@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core'
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
 
-const slideLeft = [
-  query(':enter, :leave', style({ position: 'fixed', width: '100%' }), {
+const slideInFromRight = [
+  query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
     optional: true,
   }),
   group([
@@ -17,8 +17,8 @@ const slideLeft = [
   ]),
 ]
 
-const slideRight = [
-  query(':enter, :leave', style({ position: 'fixed', width: '100%' }), {
+const slideInFromLeft = [
+  query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
     optional: true,
   }),
   group([
@@ -39,8 +39,7 @@ const slideRight = [
     // the fade-in/fade-out animation for the top-level page.
     trigger('fadeOut', [transition(':leave', [query(':leave', animateChild(), { optional: true }), animate(300, style({ opacity: 0 }))])]),
 
-    // onboardingStepAnimations,
-    trigger('stepSlider', [transition(':increment', slideRight), transition(':decrement', slideLeft)]),
+    trigger('stepSlider', [transition(':increment', slideInFromLeft), transition(':decrement', slideInFromRight)]),
   ],
 })
 export class NewUserOnboardingComponent implements OnInit {
