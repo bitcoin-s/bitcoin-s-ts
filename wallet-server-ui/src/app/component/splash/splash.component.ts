@@ -1,6 +1,7 @@
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { animate, animateChild, query, style, transition, trigger } from '@angular/animations'
+import { Router } from '@angular/router'
 
+import { Component, OnInit } from '@angular/core'
 
 const SPLASH_KEY = 'noSplash'
 
@@ -8,21 +9,18 @@ const SPLASH_KEY = 'noSplash'
   selector: 'splash',
   templateUrl: './splash.component.html',
   animations: [
-  // the fade-in/fade-out animation.
-  trigger('fadeOut', [
-    transition(':leave', [
-      query(':leave', animateChild(), {optional: true}),
-      animate(300, style({opacity: 0}))
+    // the fade-in/fade-out animation.
+    trigger('fadeOut', [
+      transition(':leave', [query(':leave', animateChild(), { optional: true }), animate(300, style({ opacity: 0 }))]),
     ]),
-  ]),
-],
-  styleUrls: ['./splash.component.scss']
+  ],
+  styleUrls: ['./splash.component.scss'],
 })
 export class SplashComponent implements OnInit {
-
   showSplash = false
+  dontShowSplashAgain = false
 
-  constructor() { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     // Force reset splash key
@@ -32,13 +30,23 @@ export class SplashComponent implements OnInit {
     this.showSplash = show
   }
 
-  dontShowSplashAgainClick() {
-    console.debug('dontShowSplashAgainClick()')
-    localStorage.setItem(SPLASH_KEY, '1')
+  onStartOnboardingClicked() {
+    this.saveSplashSettings()
+    this.showSplash = false
+
+    this.router.navigate(['/onboarding'])
   }
 
-  onClick() {
-    this.showSplash = !this.showSplash
+  onSkipOnboardingClicked() {
+    this.saveSplashSettings()
+    this.showSplash = false
+
+    this.router.navigate(['/wallet'])
   }
 
+  saveSplashSettings() {
+    if (this.dontShowSplashAgain) {
+      localStorage.setItem(SPLASH_KEY, '1')
+    }
+  }
 }
