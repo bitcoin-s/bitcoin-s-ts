@@ -5,9 +5,11 @@
         <div class="app-logo"></div>
 
         <mat-action-list class="sidenav__menu-list">
-          <button mat-list-item *ngFor="let card of onboardingStepCards" (click)="onStepSelected(card.onboardingStep)">
-            <span class="material-icons-outlined sidenav__menu-list-item__icon">{{ stepIconName(card.onboardingStep) }} </span>
-            {{ card.menuTitle }}
+          <button mat-list-item *ngFor="let onboardingStep of onboardingStepCards" (click)="onStepSelected(onboardingStep.onboardingStep)">
+            <span class="material-icons-outlined sidenav__menu-list-item__icon">{{ stepIconName(onboardingStep.onboardingStep) }} </span>
+            <span translate>
+              {{ onboardingStep.menuTitleKey }}
+            </span>
           </button>
         </mat-action-list>
       </div>
@@ -16,8 +18,16 @@
 
   <div class="main-content-container">
     <div [@stepSlider]="currentStep" class="card-slide-container">
-      <ng-container *ngFor="let card of onboardingStepCards; let cardIndex = index">
-        <new-user-onboarding-card [card]="card" *ngIf="cardIndex == currentStep - 1" class="card-slide-container__card-slide"></new-user-onboarding-card>
+      <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
+        <new-user-onboarding-card [onboardingStep]="onboardingStep" *ngIf="cardIndex == currentStep - 1" class="card-slide-container__card-slide">
+        <!-- <button
+          *ngIf="onboardingStep.onboardingStep == 1"
+          mat-button
+          color="primary"
+        >
+          Back Up Now
+        </button> -->
+        </new-user-onboarding-card>
       </ng-container>
     </div>
 

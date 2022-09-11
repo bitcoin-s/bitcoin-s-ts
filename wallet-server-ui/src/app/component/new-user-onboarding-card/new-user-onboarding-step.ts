@@ -1,31 +1,44 @@
 export interface NewUserOnboardingStep {
-  id: number;
-  name?: string;
-  menuTitle: string;
-  onboardingStep: number;
-  descriptionText: string;
+  id: number
+  name?: string
+  menuTitleKey: string
+  cardTitleKey: string
+  onboardingStep: number
+  descriptionTextKey: string
+  animatedGraphicPath: string
 }
 
 export const onboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 1,
-    menuTitle: 'Wallet Seed Backup',
+    menuTitleKey: 'Wallet Seed Backup',
+    cardTitleKey: 'newUserOnboarding.card.step1.title',
     onboardingStep: 1,
-    descriptionText:
-      'Placeholder description text for why users should backup their mnemonic seed — and a brief overview of what that might entail before they select the option to do it.',
+    descriptionTextKey: 'newUserOnboarding.card.step1.description',
+    animatedGraphicPath: '/assets/lottie-animations/vault.json',
   },
   {
     id: 2,
-    menuTitle: 'Wallet Funding',
+    menuTitleKey: 'Wallet Funding',
+    cardTitleKey: 'newUserOnboarding.card.step2.title',
     onboardingStep: 2,
-    descriptionText:
-      'Placeholder description text for why users should deposit funds into their wallet — and a brief overview of what that might entail before they select the option to do it.',
+    descriptionTextKey: 'newUserOnboarding.card.step2.description',
+    animatedGraphicPath: '/assets/lottie-animations/bitcoin-wallet.json',
   },
   {
     id: 3,
-    menuTitle: 'Tor Address Sharing',
+    menuTitleKey: 'Tor Address Sharing',
+    cardTitleKey: 'newUserOnboarding.card.step3.title',
     onboardingStep: 3,
-    descriptionText:
-      'Placeholder description text for why users should share their wallet’s Tor address with a peer — and a brief overview of what that might entail before they select the option to do it.',
+    descriptionTextKey: 'newUserOnboarding.card.step3.description',
+    animatedGraphicPath: '/assets/lottie-animations/share-tor-address-1.json',
   },
-];
+  {
+    id: 4,
+    menuTitleKey: 'Understanding Sync',
+    cardTitleKey: 'newUserOnboarding.card.step4.title',
+    onboardingStep: 4,
+    descriptionTextKey: 'newUserOnboarding.card.step4.description',
+    animatedGraphicPath: '/assets/lottie-animations/sync-spinner.json',
+  },
+]
