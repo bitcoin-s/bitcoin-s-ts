@@ -48,6 +48,7 @@ import { SendFundsDialogComponent } from './dialog/send-funds-dialog/send-funds-
 
 import { AuthInterceptor } from './interceptor/auth-interceptor'
 import { ErrorInterceptor } from './interceptor/error-interceptor'
+import { NewUserOnboardingCardComponent } from './component/new-user-onboarding-card/new-user-onboarding-card.component'
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -96,6 +97,7 @@ export function appInitializerFactory(translate: TranslateService) {
     ExportComponent,
     ImportComponent,
     NewUserOnboardingComponent,
+    NewUserOnboardingCardComponent,
   ],
   imports: [
     BrowserModule,

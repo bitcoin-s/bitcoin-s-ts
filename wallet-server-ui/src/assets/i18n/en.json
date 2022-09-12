@@ -564,5 +564,18 @@
     "tor_started": "Tor Started",
     "server_ready": "Server Ready",
     "wallet_rescan": "Wallet Rescan"
+  },
+
+  "newUserOnboarding": {
+    "sidenav": {
+      "step1": "Wallet Seed Backup",
+      "step2": "Wallet Funding",
+      "step3": "Tor Address Sharing"
+    },
+    "card": {
+      "step1": {},
+      "step2": {},
+      "step3": {}
+    }
   }
 }
