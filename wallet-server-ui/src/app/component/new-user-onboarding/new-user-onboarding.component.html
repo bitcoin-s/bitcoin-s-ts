@@ -28,19 +28,20 @@
     <div [@stepSlider]="currentStep" class="card-slide-container">
       <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
         <new-user-onboarding-card [onboardingStep]="onboardingStep" *ngIf="cardIndex == currentStep - 1" class="card-slide-container__card-slide">
-        <!-- <button
-          *ngIf="onboardingStep.onboardingStep == 1"
-          mat-button
+        <button
+          *ngIf="onboardingStep.stepNumber == 1"
+          mat-flat-button
           color="primary"
+          (click)="onImportExport()"
         >
           Back Up Now
-        </button> -->
+        </button>
         </new-user-onboarding-card>
       </ng-container>
     </div>
 
     <div class="card-slide-controls-container">
-      <button mat-flat-button color="primary" type="button" (click)="onPreviousStepTapped()" [disabled]="currentStep == 1">Previous Step</button>
+      <button mat-flat-button color="basic" type="button" (click)="onPreviousStepTapped()" [disabled]="currentStep == 1">Previous Step</button>
 
       <button *ngIf="this.currentStep != this.onboardingStepCards.length" mat-flat-button color="primary" type="button" (click)="onNextStepTapped()">Next</button>
 

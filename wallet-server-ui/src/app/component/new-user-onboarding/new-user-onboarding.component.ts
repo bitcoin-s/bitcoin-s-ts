@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core'
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
 import { emojiForOnboardingStepNumber } from '~app/utils/new-user-onboarding/new-user-onboarding-utils'
+import { Router } from '@angular/router'
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -46,7 +47,7 @@ const slideInFromLeft = [
 export class NewUserOnboardingComponent implements OnInit {
   currentStep: number = 1
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   onboardingStepCards = onboardingSteps
 
@@ -68,9 +69,15 @@ export class NewUserOnboardingComponent implements OnInit {
     }
   }
 
-  onCompleteTapped() {}
+  onCompleteTapped() {
+    this.router.navigate(['/wallet'])
+  }
 
   onStepSelected(step: number) {
     this.currentStep = step
+  }
+
+  onImportExport() {
+    console.debug('onImportExport()')
   }
 }
