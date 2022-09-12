@@ -27,15 +27,100 @@
   <div class="main-content-container">
     <div [@stepSlider]="currentStep" class="card-slide-container">
       <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
-        <new-user-onboarding-card [onboardingStep]="onboardingStep" *ngIf="cardIndex == currentStep - 1" class="card-slide-container__card-slide">
-        <button
-          *ngIf="onboardingStep.stepNumber == 1"
-          mat-flat-button
-          color="primary"
-          (click)="onImportExport()"
+        <new-user-onboarding-card
+          [onboardingStep]="onboardingStep"
+          *ngIf="cardIndex == currentStep - 1"
+          class="card-slide-container__card"
         >
-          Back Up Now
-        </button>
+
+          <div class="card-slide-container__card__projected-content">
+
+            <!-- Step 1 -->
+
+            <button
+              class="card-slide-container__card__action-button"
+              *ngIf="onboardingStep.stepNumber == 1"
+              mat-flat-button
+              color="primary"
+              (click)="onImportExport()"
+            >
+              Back Up Now
+            </button>
+
+
+            <!-- Step 2 -->
+
+            <button
+              class="card-slide-container__card__action-button"
+              *ngIf="onboardingStep.stepNumber == 2"
+              mat-flat-button
+              color="primary"
+              (click)="backendService.getNewAddress()"
+            >
+              <span translate>
+                newUserOnboarding.card.step2.createNewAddress
+              </span>
+            </button>
+
+
+            <!-- Step 3 -->
+
+            <div
+              *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber == 3"
+              class="tor-dlc-host-address card-slide-container__card__info-widget"
+            >
+              <h2
+                class="info-widget__heading"
+                translate
+              >
+                network.torDLCHostAddress
+              </h2>
+
+              <code class="info-widget__code-text">
+                {{walletStateService.torDLCHostAddress}}
+              </code>
+
+              <button
+                mat-flat-button
+                class="copy-button"
+                color="primary"
+                matTooltip="{{ 'action.copyToClipboard' | translate }}"
+                (click)="copyToClipboard(walletStateService.torDLCHostAddress)"
+              >
+                <mat-icon class="mat-icon-sm">content_copy</mat-icon>
+                <span translate>
+                  newUserOnboarding.card.step3.copyAddress
+                </span>
+              </button>
+            </div>
+
+
+            <!-- Step 4 -->
+
+            <div
+              *ngIf="onboardingStep.stepNumber == 4"
+              class="tor-dlc-host-address card-slide-container__card__info-widget"
+            >
+
+              <h2
+                class="info-widget__heading"
+                translate
+              >
+                newUserOnboarding.card.step4.currentBlockHeight
+              </h2>
+
+              <div
+                class="block-height"
+                translate="status.blockHeightLabel"
+                [translateParams]="
+                { height: formatNumber(walletStateService.info.blockHeight) }"
+              >
+              </div>
+
+            </div>
+
+          </div>
+
         </new-user-onboarding-card>
       </ng-container>
     </div>

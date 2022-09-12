@@ -4,6 +4,9 @@ import { animate, animateChild, group, query, style, transition, trigger } from 
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
 import { emojiForOnboardingStepNumber } from '~app/utils/new-user-onboarding/new-user-onboarding-utils'
 import { Router } from '@angular/router'
+import { WalletStateService } from '~service/wallet-state-service'
+import { copyToClipboard, formatNumber } from '~util/utils'
+import { BackendService } from '~service/backend.service'
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -45,17 +48,17 @@ const slideInFromLeft = [
   ],
 })
 export class NewUserOnboardingComponent implements OnInit {
+  public copyToClipboard = copyToClipboard
+  public emojiForOnboardingStepNumber = emojiForOnboardingStepNumber
+  public formatNumber = formatNumber
+
   currentStep: number = 1
 
-  constructor(private router: Router) {}
+  constructor(public walletStateService: WalletStateService, public backendService: BackendService, private router: Router) {}
 
   onboardingStepCards = onboardingSteps
 
   ngOnInit() {}
-
-  emojiForOnboardingStepNumber(stepNumber: number): string {
-    return emojiForOnboardingStepNumber(stepNumber)
-  }
 
   onNextStepTapped() {
     if (this.currentStep < this.onboardingStepCards.length) {

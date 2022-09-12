@@ -1,12 +1,22 @@
 <div class="new-user-onboarding-card-container">
   <div class="new-user-onboarding-card">
-    <ng-lottie
+
+    <div class="new-user-onboarding-card__heading">
+      <ng-lottie
       class="new-user-onboarding-card__animated-graphic"
       [options]="graphicAnimationOptions">
-    </ng-lottie>
+      </ng-lottie>
 
-    <h1 translate>{{ onboardingStep.cardTitleKey }}</h1>
-    <p translate>{{ onboardingStep.descriptionTextKey }}</p>
+      <h1 translate>{{ onboardingStep.cardTitleKey }}</h1>
+    </div>
+
+
+    <p
+      class="new-user-onboarding-card__primary-description"
+      translate
+    >
+      {{ onboardingStep.descriptionTextKey }}
+    </p>
 
     <ng-content></ng-content>
   </div>

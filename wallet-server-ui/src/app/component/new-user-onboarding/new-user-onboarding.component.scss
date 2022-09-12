@@ -61,12 +61,37 @@
     width: 100%;
     position: relative;
 
-    .card-slide-container__card-slide {
+    .card-slide-container__card {
       height: 100%;
       width: 100%;
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    .card-slide-container__card__projected-content {
+      margin-top: 3rem;
+    }
+
+    .card-slide-container__card__info-widget {
+      background: rgb(40 40 40 / 67%);
+      border-radius: 0.2em;
+      padding: 1.45em 1.1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+
+      .info-widget__code-text {
+        background: rgb(0 0 0 / 38%);
+        border-radius: 0.5em;
+        padding: 0.8em 0.6em;
+      }
+
+      .info-widget__heading {
+        margin: 0;
+      }
     }
   }
 
