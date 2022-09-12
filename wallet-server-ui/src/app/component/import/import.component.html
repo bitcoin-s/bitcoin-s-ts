@@ -1,0 +1,47 @@
+<fieldset *ngIf="walletStateService.showWalletSelector" class="import">
+  <h4 translate>importexport.import</h4>
+  <div class="row radio-row">
+    <mat-radio-group class="import-type"
+      [value]="importType" (change)="updateImportType($event)">
+      <mat-radio-button *ngFor="let e of importTypes"
+        [value]="e">{{ 'importexport.importType.' + e | translate }}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <mat-form-field class="import-textarea mat-form-field-no-border-top w-100" appearance="outline">
+    <textarea matInput [(ngModel)]="importText" (ngModelChange)="validateImportText()" cdkTextareaAutosize cdkAutosizeMinRows="4"
+      placeholder="{{ 'importexport.importTypeDescription.' + importType | translate }}" type="text" maxlength="1024" autocomplete="off" spellcheck="false"
+      (paste)="onImportTextPaste($event)">
+    </textarea>
+    <mat-hint *ngIf="importText && !importValid && importType === ImportType.words">{{ 'importexport.importTypeDescription.words' | translate }}</mat-hint>
+  </mat-form-field>
+
+  <!-- Advanced : Passphrase -->
+  <mat-expansion-panel *ngIf="advancedVisible" class="expansion-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="row">
+      <label>
+        <mat-checkbox [(ngModel)]="importUsePassphrase" (change)="importPassphrase = ''"
+          matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
+      </label>
+      <mat-form-field class="passphrase-input w-100">
+        <input #importPassphraseInput [class.password]="hideImportPassphrase"
+          [(ngModel)]="importPassphrase" matInput type="text"
+          autocomplete="off" spellcheck="false"
+          placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!importUsePassphrase">
+        <mat-icon class="mat-icon-sm" matSuffix (click)="hideImportPassphrase = !hideImportPassphrase">{{hideImportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-hint *ngIf="importUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-form-field class="wallet-name-input w-100">
+    <input [(ngModel)]="importWalletName" matInput type="text" autocomplete="off" spellcheck="false"
+      placeholder="{{ 'importexport.walletName' | translate }}">
+  </mat-form-field>
+  <button class="w-100" mat-stroked-button (click)="importWallet()" [disabled]="!importValid || !importWalletName || executing">
+    <mat-icon class="material-icons-outlined">file_upload</mat-icon>
+    <span translate>importexport.import</span>
+  </button>
+</fieldset>
