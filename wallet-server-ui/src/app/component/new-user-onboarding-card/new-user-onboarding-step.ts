@@ -3,7 +3,7 @@ export interface NewUserOnboardingStep {
   name?: string
   menuTitleKey: string
   cardTitleKey: string
-  onboardingStep: number
+  stepNumber: number
   descriptionTextKey: string
   animatedGraphicPath: string
 }
@@ -13,7 +13,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
     id: 1,
     menuTitleKey: 'Wallet Seed Backup',
     cardTitleKey: 'newUserOnboarding.card.step1.title',
-    onboardingStep: 1,
+    stepNumber: 1,
     descriptionTextKey: 'newUserOnboarding.card.step1.description',
     animatedGraphicPath: '/assets/lottie-animations/vault.json',
   },
@@ -21,7 +21,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
     id: 2,
     menuTitleKey: 'Wallet Funding',
     cardTitleKey: 'newUserOnboarding.card.step2.title',
-    onboardingStep: 2,
+    stepNumber: 2,
     descriptionTextKey: 'newUserOnboarding.card.step2.description',
     animatedGraphicPath: '/assets/lottie-animations/bitcoin-wallet.json',
   },
@@ -29,7 +29,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
     id: 3,
     menuTitleKey: 'Tor Address Sharing',
     cardTitleKey: 'newUserOnboarding.card.step3.title',
-    onboardingStep: 3,
+    stepNumber: 3,
     descriptionTextKey: 'newUserOnboarding.card.step3.description',
     animatedGraphicPath: '/assets/lottie-animations/share-tor-address-1.json',
   },
@@ -37,7 +37,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
     id: 4,
     menuTitleKey: 'Understanding Sync',
     cardTitleKey: 'newUserOnboarding.card.step4.title',
-    onboardingStep: 4,
+    stepNumber: 4,
     descriptionTextKey: 'newUserOnboarding.card.step4.description',
     animatedGraphicPath: '/assets/lottie-animations/sync-spinner.json',
   },

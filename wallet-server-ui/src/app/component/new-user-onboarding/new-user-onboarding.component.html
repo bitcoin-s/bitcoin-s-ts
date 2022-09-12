@@ -5,8 +5,16 @@
         <div class="app-logo"></div>
 
         <mat-action-list class="sidenav__menu-list">
-          <button mat-list-item *ngFor="let onboardingStep of onboardingStepCards" (click)="onStepSelected(onboardingStep.onboardingStep)">
-            <span class="material-icons-outlined sidenav__menu-list-item__icon">{{ stepIconName(onboardingStep.onboardingStep) }} </span>
+          <button
+            mat-list-item
+            *ngFor="let onboardingStep of onboardingStepCards"
+            (click)="onStepSelected(onboardingStep.stepNumber)"
+          >
+            <span
+              class="material-icons-outlined sidenav__menu-list-item__icon">
+              {{ emojiForOnboardingStepNumber(onboardingStep.stepNumber) }}
+            </span>
+
             <span translate>
               {{ onboardingStep.menuTitleKey }}
             </span>

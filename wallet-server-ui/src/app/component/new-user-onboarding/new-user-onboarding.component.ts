@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
+import { emojiForOnboardingStepNumber } from '~app/utils/new-user-onboarding/new-user-onboarding-utils'
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -51,17 +52,8 @@ export class NewUserOnboardingComponent implements OnInit {
 
   ngOnInit() {}
 
-  stepIconName(step: number): string {
-    switch (step) {
-      case 1:
-        return 'looks_one'
-      case 2:
-        return 'looks_two'
-      case 3:
-        return 'looks_3'
-      default:
-        return ''
-    }
+  emojiForOnboardingStepNumber(stepNumber: number): string {
+    return emojiForOnboardingStepNumber(stepNumber)
   }
 
   onNextStepTapped() {
