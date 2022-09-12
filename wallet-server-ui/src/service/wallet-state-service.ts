@@ -241,7 +241,7 @@ export class WalletStateService {
     return this.refreshBlockchainInfo().pipe(
       retryWhen((errors) => {
         return errors.pipe(
-          tap((_) => {
+          tap((error) => {
             this.state = WalletServiceState.offline
             this.showRestartDialog = false
             // Handle proxy restart when token has gone invalid
