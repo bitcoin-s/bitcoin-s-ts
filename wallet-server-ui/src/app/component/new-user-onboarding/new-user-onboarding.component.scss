@@ -48,6 +48,10 @@
     .sidenav__menu-list-item__icon {
       margin-right: 1em;
     }
+
+    .sidenav__menu-list-item__title {
+      color: #fff;
+    }
   }
 
   .main-content-container {
@@ -105,5 +109,18 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    button {
+      color: #fff;
+    }
+
+    button[color="basic"] {
+      background-color: gray;
+    }
+
+    button:disabled {
+      background-color: gray;
+      opacity: 0.3;
+    }
   }
 }

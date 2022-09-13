@@ -10,9 +10,7 @@ const SPLASH_KEY = 'noSplash'
   templateUrl: './splash.component.html',
   animations: [
     // the fade-in/fade-out animation.
-    trigger('fadeOut', [
-      transition(':leave', [query(':leave', animateChild(), { optional: true }), animate(300, style({ opacity: 0 }))]),
-    ]),
+    trigger('fadeOut', [transition(':leave', [query(':leave', animateChild(), { optional: true }), animate(300, style({ opacity: 0 }))])]),
   ],
   styleUrls: ['./splash.component.scss'],
 })
@@ -27,6 +25,7 @@ export class SplashComponent implements OnInit {
     // localStorage.removeItem(SPLASH_KEY)
 
     const show = localStorage.getItem(SPLASH_KEY) === null
+
     this.showSplash = show
   }
 

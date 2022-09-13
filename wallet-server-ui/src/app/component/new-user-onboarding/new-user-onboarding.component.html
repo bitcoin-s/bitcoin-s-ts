@@ -11,11 +11,15 @@
             (click)="onStepSelected(onboardingStep.stepNumber)"
           >
             <span
-              class="material-icons-outlined sidenav__menu-list-item__icon">
+              class="material-icons-outlined sidenav__menu-list-item__icon"
+            >
               {{ emojiForOnboardingStepNumber(onboardingStep.stepNumber) }}
             </span>
 
-            <span translate>
+            <span
+              translate
+              class="sidenav__menu-list-item__title"
+            >
               {{ onboardingStep.menuTitleKey }}
             </span>
           </button>
