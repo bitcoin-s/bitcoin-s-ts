@@ -7,6 +7,8 @@ import { Router } from '@angular/router'
 import { WalletStateService } from '~service/wallet-state-service'
 import { copyToClipboard, formatNumber } from '~util/utils'
 import { BackendService } from '~service/backend.service'
+import { MatDialog } from '@angular/material/dialog'
+import { ExportComponent } from '../export/export.component'
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -54,7 +56,7 @@ export class NewUserOnboardingComponent implements OnInit {
 
   currentStep: number = 1
 
-  constructor(public walletStateService: WalletStateService, public backendService: BackendService, private router: Router) {}
+  constructor(public walletStateService: WalletStateService, public backendService: BackendService, private router: Router, private dialog: MatDialog) {}
 
   onboardingStepCards = onboardingSteps
 
@@ -81,6 +83,6 @@ export class NewUserOnboardingComponent implements OnInit {
   }
 
   onImportExport() {
-    console.debug('onImportExport()')
+    this.dialog.open(ExportComponent)
   }
 }
