@@ -1,0 +1,44 @@
+<fieldset class="export">
+  <h4 translate>importexport.export</h4>
+  <div class="row export-radio-row">
+    <mat-radio-group class="export-type">
+      <mat-radio-button *ngFor="let e of [ExportType.seed_words_24]"
+        [value]="e" checked="true">{{ 'importexport.exportType.' + e | translate }}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Advanced : Passphrase -->
+  <mat-expansion-panel *ngIf="advancedVisible" class="expansion-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title translate>newOffer.advanced</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="row">
+      <label>
+        <mat-checkbox [(ngModel)]="exportUsePassphrase" (change)="exportPassphrase = ''"
+          matTooltip="{{ 'importexport.usePassphrase' | translate }}"></mat-checkbox>
+      </label>
+      <mat-form-field class="passphrase-input w-100">
+        <input #exportPassphraseInput [class.password]="hideExportPassphrase"
+          [(ngModel)]="exportPassphrase" matInput type="text"
+          autocomplete="off" spellcheck="false"
+          placeholder="{{ 'importexport.passphrase' | translate }}" [disabled]="!exportUsePassphrase">
+        <mat-icon class="mat-icon-sm" matSuffix
+          matTooltip="{{ 'importexport.showHidePassphrase' | translate }}"
+          (click)="hideExportPassphrase = !hideExportPassphrase">{{hideExportPassphrase ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-hint *ngIf="exportUsePassphrase">{{ 'importexport.passphraseDescription' | translate }}</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+  <mat-form-field class="wallet-select w-100">
+    <mat-label translate>importexport.walletName</mat-label>
+    <select matNativeControl [(ngModel)]="exportWalletName" (ngModelChange)="onWalletChange($event)">
+      <!-- Default wallet is not included in wallets[] -->
+      <option [ngValue]="''">{{ 'walletBalance.defaultWallet' | translate }}</option>
+      <option *ngFor="let w of walletStateService.wallets.value" [ngValue]="w">{{w}}</option>
+    </select>
+  </mat-form-field>
+  <button class="w-100" mat-stroked-button (click)="exportWallet()" [disabled]="executing">
+    <mat-icon class="material-icons-outlined">file_download</mat-icon>
+    <span translate>importexport.export</span>
+  </button>
+</fieldset>

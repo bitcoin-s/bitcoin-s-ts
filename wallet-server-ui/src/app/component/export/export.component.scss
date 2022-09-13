@@ -1,0 +1,32 @@
+.export {
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    margin-bottom: 0.5rem;
+
+    label {
+      margin-right: 0.5rem;
+    }
+    button {
+      flex: 1;
+      margin-bottom: 0;
+    }
+  }
+  .export-radio-row {
+    margin-bottom: 1rem;
+    .export-type {
+
+    }
+  }
+  .expansion-panel {
+    margin-bottom: 0.75rem;
+  }
+  .passphrase-input {
+
+  }
+  .wallet-select {
+
+  }
+}

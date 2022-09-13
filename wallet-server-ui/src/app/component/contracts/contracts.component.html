@@ -64,7 +64,7 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.eventId' | translate }}</th>
           <!-- Compiler Not happy with the following type of notation -->
           <td mat-cell *matCellDef="let contract">
-            {{ getContractInfo(contract.dlcId)?.oracleInfo?.announcement?.event?.eventId }}
+            {{ getContractInfo(contract.dlcId) && getContractInfo(contract.dlcId).oracleInfo.announcement.event.eventId || '' }}
           </td>
         </ng-container>
         <!-- Area for status flags or operation buttons -->
@@ -115,7 +115,14 @@
         </ng-container>
         <ng-container matColumnDef="realizedPNL">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.realizedPNL' | translate }}</th>
-          <td mat-cell class="numeric-cell" *matCellDef="let contract">{{ formatNumber(contract.pnl) }}</td>
+          <td mat-cell *matCellDef="let contract">
+            <div class="pnl-container">
+              <mat-icon *ngIf="contract.pnl > 0" matPrefix class="arrow-icon profit">arrow_drop_up</mat-icon>
+              <mat-icon *ngIf="contract.pnl < 0" matPrefix class="arrow-icon loss">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf="contract.pnl === 0" matPrefix class="arrow-icon even">trending_flat</mat-icon>
+              <span [class.profit]="contract.pnl > 0" [class.loss]="contract.pnl < 0">{{ formatNumber(contract.pnl) }}</span>
+            </div>
+          </td>
         </ng-container>
         <ng-container matColumnDef="rateOfReturn">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contracts.rateOfReturn' | translate }}</th>

@@ -16,7 +16,10 @@ export class AboutComponent implements OnInit {
   constructor(public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
-    this.walletStateService.getAboutInfo().subscribe()
+    // User can come to this page ahead of logging in, so this data may not have loaded yet
+    if (!this.walletStateService.buildConfig) {
+      this.walletStateService.getAboutInfo().subscribe()
+    }
   }
 
 }

@@ -42,5 +42,10 @@ $padding: 0.5rem;
     .mat-column-memo {
       white-space: pre-line;
     }
+    .mat-column-actions {
+      button.checking {
+        animation: blink 2s ease-in infinite;
+      }
+    }
   }
 }

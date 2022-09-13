@@ -30,6 +30,7 @@
     "network": "Network",
     "blockHeight": "Block Height",
     "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
+    "about": "About\n\nServer: {{serverVersion}}\nUI:        {{uiVersion}}",
     "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte",
     "torStarting": "Tor Starting",
     "initialBlockDownload": "Initial Block Download",
@@ -60,6 +61,7 @@
     "networkLabel": "Network: {{ network }}",
     "blockHeightLabel": "Block Height: {{ height }}",
     "feeEstimateLabel": "Fee Estimate: {{ fee }} sats/vbyte",
+    "bitcoin": "Bitcoin",
     "tor": "Tor",
     "serverState": "Server State",
     "dataConnection": "Data Connection",
@@ -120,6 +122,7 @@
     "fullRescanWarning": "Full Blockchain Rescan can take 8 hours on a Raspberry Pi",
     "rescan": "Rescan",
     "unreserveAllUTXOs": "Unreserve All UTXOs",
+    "downloads": "Downloads",
     "backup": "Download Wallet Backup",
     "downloadBitcoinsLog": "Download Bitcoin-s Log",
     "downloadProxyLog": "Download Proxy Log",
@@ -158,6 +161,7 @@
   },
 
   "buildAcceptOffer": {
+    "description": "Build a new Discreet Log Contract",
     "buildOffer": "Build Offer",
     "acceptOffer": "Accept Offer",
     "moreInfo": "More Information",
@@ -175,6 +179,7 @@
 
   "walletBalance": {
     "heading": "Wallet",
+    "description": "View Addresses and Balances",
     "balance": "Balance",
     "dlcReturns": "DLC Returns",
     "confirmedBalance": "Confirmed",
@@ -316,6 +321,7 @@
 
   "contracts": {
     "heading": "Contracts",
+    "description": "Your Discreet Log Contracts",
     "eventId": "Event Id",
     "peer": "Peer",
     "contractId": "Contract Id",
@@ -398,6 +404,7 @@
 
   "offers": {
     "heading": "Offers",
+    "description": "Incoming Offers from Peers",
     "addOffer": "Add Offer",
     "sendOffer": "Send Offer",
     "peer": "Peer",
@@ -419,7 +426,9 @@
     "alias": "Alias",
     "address": "Address",
     "memo": "Memo",
-    "noContacts": "No Contacts"
+    "noContacts": "No Contacts",
+    "checkConnection": "Check Network Connection\n\nStatus: {{status}}\nLast Checked: {{last}}",
+    "never": "Never"
   },
 
   "events": {

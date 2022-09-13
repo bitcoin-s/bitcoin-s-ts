@@ -37,6 +37,8 @@ import { LoginComponent } from './component/login/login.component'
 import { AddressLabelComponent } from './component/address-label/address-label.component'
 import { ContactsComponent } from './component/contacts/contacts.component'
 import { ImportExportComponent } from './component/import-export/import-export.component'
+import { ExportComponent } from './component/export/export.component'
+import { ImportComponent } from './component/import/import.component'
 
 import { ConfirmationDialogComponent } from './dialog/confirmation/confirmation.component'
 import { ErrorDialogComponent } from './dialog/error/error.component'
@@ -98,6 +100,8 @@ export function playerFactory() {
     AddressLabelComponent,
     ContactsComponent,
     ImportExportComponent,
+    ExportComponent,
+    ImportComponent,
     NewUserOnboardingComponent,
     NewUserOnboardingCardComponent,
   ],

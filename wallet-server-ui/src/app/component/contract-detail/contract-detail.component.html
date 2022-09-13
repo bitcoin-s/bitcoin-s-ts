@@ -128,15 +128,21 @@
       <!-- Payout -->
       <ng-container *ngIf="dlc.myPayout !== undefined && dlc.counterPartyPayout !== undefined && dlc.pnl !== undefined && dlc.rateOfReturn !== undefined">
         <label class="mat-form-label" translate>contractDetail.contractOutcome</label>
-        <div class="mat-form-field-row">
+        <div class="mat-form-field-row payout-group">
           <mat-form-field class="narrow">
+            <mat-icon *ngIf="dlc.pnl > 0" matPrefix class="arrow-icon profit">arrow_drop_up</mat-icon>
+            <mat-icon *ngIf="dlc.pnl < 0" matPrefix class="arrow-icon loss">arrow_drop_down</mat-icon>
+            <!-- Don't know if this is worth showing -->
+            <mat-icon *ngIf="dlc.pnl === 0" matPrefix class="arrow-icon even">trending_flat</mat-icon>
             <mat-label translate>contractDetail.pnl</mat-label>
-            <input matInput [value]="formatNumber(dlc.pnl)" readonly>
+            <input matInput [class.profit]="dlc.pnl > 0" [class.loss]="dlc.pnl < 0"
+              [value]="formatNumber(dlc.pnl)" readonly>
             <span matSuffix translate>unit.sats</span>
           </mat-form-field>
           <mat-form-field class="narrow">
             <mat-label translate>contractDetail.yourPayout</mat-label>
             <input matInput [value]="formatNumber(dlc.myPayout)" readonly>
+            <!-- <span class="rate-of-return" matSuffix>{{ dlc.rateOfReturn ? formatPercent(dlc.rateOfReturn, 0) : '' }}</span> -->
           </mat-form-field>
           <mat-form-field class="narrow">
             <mat-label translate>contractDetail.counterpartyPayout</mat-label>

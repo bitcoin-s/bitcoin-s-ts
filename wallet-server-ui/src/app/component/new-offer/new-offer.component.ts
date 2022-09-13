@@ -362,7 +362,7 @@ export class NewOfferComponent implements OnInit {
           if (r.result) {
             this.handleContractInfo(r.result)
           }
-        })
+        }, err => { this.executing = false })
     } else if (this.isNumeric()) {
       const numericPayoutVals = this.points
       // const maxCollateral = this.computeNumericMaxCollateral(numericPayoutVals)
@@ -375,7 +375,7 @@ export class NewOfferComponent implements OnInit {
         if (r.result) {
           this.handleContractInfo(r.result)
         }
-      })
+      }, err => { this.executing = false })
     }
   }
 
@@ -383,7 +383,7 @@ export class NewOfferComponent implements OnInit {
     const v = this.form.value
     const collateral = v.yourCollateral
     const feeRate = v.feeRate
-    const locktime = dateToSecondsSinceEpoch(new Date(this.event.maturity))
+    const locktime = null //don't set locktime, see: https://github.com/bitcoin-s/bitcoin-s/issues/4721
     const refundLT = dateToSecondsSinceEpoch(v.refundDate)
     const payoutAddress = v.externalPayoutAddress ? v.externalPayoutAddress.trim() : null
     const changeAddress = null
