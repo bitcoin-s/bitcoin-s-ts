@@ -10,9 +10,9 @@
   <mat-sidenav-container>
     <mat-sidenav-content>
       <!-- Shows over the top of any route -->
-      <div *ngIf="authService.isLoggedIn && !stateLoaded" class="spinner">
+      <!-- <div *ngIf="authService.isLoggedIn && !stateLoaded" class="spinner">
         <mat-spinner></mat-spinner>
-      </div>
+      </div> -->
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 

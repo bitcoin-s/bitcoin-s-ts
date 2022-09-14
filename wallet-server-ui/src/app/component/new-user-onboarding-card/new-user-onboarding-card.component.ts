@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NewUserOnboardingStep } from './new-user-onboarding-step';
+import { Component, Input, OnInit } from '@angular/core'
+import { AnimationOptions } from 'ngx-lottie'
+import { NewUserOnboardingStep } from './new-user-onboarding-step'
 
 @Component({
   selector: 'new-user-onboarding-card',
@@ -9,20 +10,13 @@ import { NewUserOnboardingStep } from './new-user-onboarding-step';
 export class NewUserOnboardingCardComponent implements OnInit {
   constructor() {}
 
-  @Input() card: NewUserOnboardingStep;
+  @Input() onboardingStep: NewUserOnboardingStep
 
-  ngOnInit(): void {}
+  public graphicAnimationOptions: AnimationOptions
 
-  cardTitle(): string {
-    switch (this.card.onboardingStep) {
-      case 1:
-        return 'Backup Your Wallet Seed';
-      case 2:
-        return 'Fund Your Wallet';
-      case 3:
-        return 'Share Your Tor Address';
-      default:
-        return '';
+  ngOnInit(): void {
+    this.graphicAnimationOptions = {
+      path: this.onboardingStep.animatedGraphicPath,
     }
   }
 }

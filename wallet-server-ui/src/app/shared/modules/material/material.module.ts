@@ -39,6 +39,7 @@ const materialModules = [
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatListModule,
   MatMenuModule,
   MatNativeDateModule,
   MatOptionModule,

@@ -568,14 +568,39 @@
 
   "newUserOnboarding": {
     "sidenav": {
-      "step1": "Wallet Seed Backup",
-      "step2": "Wallet Funding",
-      "step3": "Tor Address Sharing"
+      "step1": {
+        "title": "Wallet Seed Backup"
+      },
+      "step2": {
+        "title": "Wallet Funding"
+      },
+      "step3": {
+        "title": "Tor Address Sharing"
+      },
+      "step4": {
+        "title": "Understanding Sync"
+      }
     },
     "card": {
-      "step1": {},
-      "step2": {},
-      "step3": {}
+      "step1": {
+        "title": "Back Up Your Wallet Seed",
+        "description": "A 24-Word BIP39 Mnemonic Seed Phrase is the foundation for backing up your wallet. This can be used to recover it any given point in the future, on any given device or version of the app."
+      },
+      "step2": {
+        "title": "Fund Your Wallet",
+        "description": "Having some sats in your Bitcoin wallet is a must before you can participate in contracts and offers.",
+        "createNewAddress": "Create A New Address"
+      },
+      "step3": {
+        "title": "Share Your Tor Address",
+        "description": "To receive DLC offers from a counterparty, they'll need to know where to address them. Your wallet's Tor DLC Host Address serves as their point of contact for these communications.",
+        "copyAddress": "Copy Address"
+      },
+      "step4": {
+        "title": "Sync Up",
+        "description": "Newly created wallets will need to sync with the Bitcoin blockchain before they can be ready for use. Depending on the speed of your network connection, you may need to allow 30 minutes to 1 hour for this to complete.",
+        "currentBlockHeight": "Current Block Height"
+      }
     }
   }
 }

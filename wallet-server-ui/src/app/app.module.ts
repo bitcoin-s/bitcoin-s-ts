@@ -7,6 +7,8 @@ import { NgChartsModule } from 'ng2-charts'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 import { QrCodeModule } from 'ng-qrcode'
+import { LottieModule } from 'ngx-lottie'
+
 import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { MaterialModule } from './shared/modules/material/material.module'
@@ -61,6 +63,10 @@ export function appInitializerFactory(translate: TranslateService) {
     translate.setDefaultLang('en')
     return translate.use('en').toPromise()
   }
+}
+
+export function playerFactory() {
+  return import(/* webpackChunkName: 'lottie-web' */ 'lottie-web')
 }
 
 @NgModule({
@@ -118,6 +124,7 @@ export function appInitializerFactory(translate: TranslateService) {
     QrCodeModule,
     ZXingScannerModule,
     AppRoutingModule,
+    LottieModule.forRoot({ player: playerFactory }),
   ],
   providers: [
     {

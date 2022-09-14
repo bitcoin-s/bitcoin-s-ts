@@ -207,33 +207,41 @@ export class WalletStateService {
 
   private initialized = false // server state fully initialized
 
-  constructor(private dialog: MatDialog, private messageService: MessageService, private authService: AuthService,
-    private dlcService: DLCService, private offerService: OfferService, private addressService: AddressService,
-    private contactService: ContactService) {
-      this.dlcService.initialized.subscribe(v => {
-        if (v) this.checkInitialized()
-      })
-      this.offerService.initialized.subscribe(v => {
-        if (v) this.checkInitialized()
-      })
-    }
+  constructor(
+    private dialog: MatDialog,
+    private messageService: MessageService,
+    private authService: AuthService,
+    private dlcService: DLCService,
+    private offerService: OfferService,
+    private addressService: AddressService,
+    private contactService: ContactService
+  ) {
+    this.dlcService.initialized.subscribe((v) => {
+      if (v) this.checkInitialized()
+    })
+    this.offerService.initialized.subscribe((v) => {
+      if (v) this.checkInitialized()
+    })
+  }
 
-  private restartDialogTimer$ = timer(RESTART_DIALOG_DELAY).pipe(tap(_ => {
-    if (this.showRestartDialog) {
-      console.error('show tor restart dialog')
-      this.showRestartDialog = false // Don't show any more restart dialogs
-      const dialog = this.dialog.open(ConfirmationDialogComponent, {
-        data: {
-          title: 'dialog.torRestartRequired.title',
-          content: 'dialog.torRestartRequired.content',
-          params: { sec: RESTART_DIALOG_DELAY },
-          action: 'action.close',
-        }
-      })
-    } else {
-      console.debug('show tor restart dialog - showRestartDialog == false, nothing to do')
-    }
-  }))
+  private restartDialogTimer$ = timer(RESTART_DIALOG_DELAY).pipe(
+    tap((_) => {
+      if (this.showRestartDialog) {
+        console.error('show tor restart dialog')
+        this.showRestartDialog = false // Don't show any more restart dialogs
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'dialog.torRestartRequired.title',
+            content: 'dialog.torRestartRequired.content',
+            params: { sec: RESTART_DIALOG_DELAY },
+            action: 'action.close',
+          },
+        })
+      } else {
+        console.debug('show tor restart dialog - showRestartDialog == false, nothing to do')
+      }
+    })
+  )
 
   // Detect that backend is available and ready for interaction
   public waitForAppServer() {
@@ -280,10 +288,7 @@ export class WalletStateService {
 
   private initializeState() {
     console.debug('initializeState()')
-    return forkJoin([
-      this.offerService.loadIncomingOffers(),
-      this.contactService.loadContacts(),
-    ]).pipe(
+    return forkJoin([this.offerService.loadIncomingOffers(), this.contactService.loadContacts()]).pipe(
       tap(
         (r) => {
           this.initialized = true
@@ -321,35 +326,44 @@ export class WalletStateService {
         this.getFeeEstimate(),
         this.getDLCHostAddress(),
         this.getAboutInfo(), // So we can make tooltips
-      ]).pipe(tap(r => {
-        
-      }, err => {
-        console.error('initializeServerState() forkJoin error')
-      })).pipe(debounceTime(STATE_RETRY_DELAY))
+      ])
+        .pipe(
+          tap(
+            (r) => {},
+            (err) => {
+              console.error('initializeServerState() forkJoin error')
+            }
+          )
+        )
+        .pipe(debounceTime(STATE_RETRY_DELAY))
     }
     return this.initializeServerState$
   }
 
   private getServerVersion() {
-    return this.messageService.getServerVersion().pipe(tap(r => {
-      if (r.result) {
-        const v = r.result.version
-        this.serverVersion = v
-        const m = v.match(/([.\w]+-[.\w]+-[.\w]+)/)
-        if (m && m.length > 0) this.shortServerVersion = m[0] 
-        else this.shortServerVersion = v
-      }
-    }))
+    return this.messageService.getServerVersion().pipe(
+      tap((r) => {
+        if (r.result) {
+          const v = r.result.version
+          this.serverVersion = v
+          const m = v.match(/([.\w]+-[.\w]+-[.\w]+)/)
+          if (m && m.length > 0) this.shortServerVersion = m[0]
+          else this.shortServerVersion = v
+        }
+      })
+    )
   }
 
   private getBuildConfig() {
-    return this.messageService.buildConfig().pipe(tap(r => {
-      if (r) {
-        r.dateString = new Date(r.committedOn * 1000).toLocaleDateString()
-        this.buildConfig = r
-        this.shortUIVersion = this.buildConfig.version + ' ' + this.buildConfig.shortHash
-      }
-    }))
+    return this.messageService.buildConfig().pipe(
+      tap((r) => {
+        if (r) {
+          r.dateString = new Date(r.committedOn * 1000).toLocaleDateString()
+          this.buildConfig = r
+          this.shortUIVersion = this.buildConfig.version + ' ' + this.buildConfig.shortHash
+        }
+      })
+    )
   }
 
   getAboutInfo() {

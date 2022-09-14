@@ -2,6 +2,13 @@ import { Component, OnInit } from '@angular/core'
 
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
+import { emojiForOnboardingStepNumber } from '~app/utils/new-user-onboarding/new-user-onboarding-utils'
+import { Router } from '@angular/router'
+import { WalletStateService } from '~service/wallet-state-service'
+import { copyToClipboard, formatNumber } from '~util/utils'
+import { BackendService } from '~service/backend.service'
+import { MatDialog } from '@angular/material/dialog'
+import { ExportComponent } from '../export/export.component'
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -43,26 +50,17 @@ const slideInFromLeft = [
   ],
 })
 export class NewUserOnboardingComponent implements OnInit {
+  public copyToClipboard = copyToClipboard
+  public emojiForOnboardingStepNumber = emojiForOnboardingStepNumber
+  public formatNumber = formatNumber
+
   currentStep: number = 1
 
-  constructor() {}
+  constructor(public walletStateService: WalletStateService, public backendService: BackendService, private router: Router, private dialog: MatDialog) {}
 
   onboardingStepCards = onboardingSteps
 
   ngOnInit() {}
-
-  stepIconName(step: number): string {
-    switch (step) {
-      case 1:
-        return 'looks_one'
-      case 2:
-        return 'looks_two'
-      case 3:
-        return 'looks_3'
-      default:
-        return ''
-    }
-  }
 
   onNextStepTapped() {
     if (this.currentStep < this.onboardingStepCards.length) {
@@ -76,9 +74,15 @@ export class NewUserOnboardingComponent implements OnInit {
     }
   }
 
-  onCompleteTapped() {}
+  onCompleteTapped() {
+    this.router.navigate(['/wallet'])
+  }
 
   onStepSelected(step: number) {
     this.currentStep = step
+  }
+
+  onImportExport() {
+    this.dialog.open(ExportComponent)
   }
 }

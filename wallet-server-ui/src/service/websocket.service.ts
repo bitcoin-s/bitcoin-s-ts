@@ -30,7 +30,7 @@ enum WebsocketMessageType {
   rescancomplete = 'rescancomplete', // Wallet rescan complete
   feeratechange = 'feeratechange', // New fee rate estimate, payload in sats/vbyte
   dlcconnectioninitiated = 'dlcconnectioninitiated', // Tor peer connection ???
-  dlcconnectionestablished = 'dlcconnectionestablished', // Tor peer connection successfully established 
+  dlcconnectionestablished = 'dlcconnectionestablished', // Tor peer connection successfully established
   dlcconnectionfailed = 'dlcconnectionfailed', // Tor peer connection failed
 }
 
@@ -64,11 +64,16 @@ export class WebsocketService {
 
   private pollingTimer$: Subscription
 
-  constructor(private walletStateService: WalletStateService, private dlcService: DLCService,
-    private offerService: OfferService, private addressService: AddressService,
+  constructor(
+    private walletStateService: WalletStateService,
+    private dlcService: DLCService,
+    private offerService: OfferService,
+    private addressService: AddressService,
     private contactService: ContactService,
-    private router: Router, private authService: AuthService,
-    private dialog: MatDialog) {}
+    private router: Router,
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) {}
 
   private getWebsocketUrl(): string {
     // defaultt websocketURL = `ws://localhost:19999/events`
@@ -253,22 +258,22 @@ export class WebsocketService {
       case WebsocketMessageType.feeratechange:
         const feeRate = <number>message.payload
         this.walletStateService.feeEstimate = feeRate
-        break;
+        break
       case WebsocketMessageType.dlcconnectioninitiated:
         const addressConnectionInitiated = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionInitiated, undefined)
         console.debug('connectionCheck:', this.contactService.connectionCheck.value)
-        break;
+        break
       case WebsocketMessageType.dlcconnectionestablished:
         const addressConnectionEstablished = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionEstablished, true)
         console.debug('connectionCheck:', this.contactService.connectionCheck.value)
-        break;
+        break
       case WebsocketMessageType.dlcconnectionfailed:
         const addressConnectionFailed = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionFailed, false)
         console.debug('connectionCheck:', this.contactService.connectionCheck.value)
-        break;
+        break
       default:
         console.error('handleMessage() unknown message.type', message)
     }

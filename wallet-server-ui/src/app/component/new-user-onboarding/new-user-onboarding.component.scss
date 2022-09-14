@@ -48,6 +48,10 @@
     .sidenav__menu-list-item__icon {
       margin-right: 1em;
     }
+
+    .sidenav__menu-list-item__title {
+      color: #fff;
+    }
   }
 
   .main-content-container {
@@ -61,12 +65,36 @@
     width: 100%;
     position: relative;
 
-    .card-slide-container__card-slide {
-      height: 100%;
+    .card-slide-container__card {
       width: 100%;
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    .card-slide-container__card__projected-content {
+      margin-top: 3rem;
+    }
+
+    .card-slide-container__card__info-widget {
+      background: rgb(40 40 40 / 67%);
+      border-radius: 0.2em;
+      padding: 1.45em 1.1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+
+      .info-widget__code-text {
+        background: rgb(0 0 0 / 38%);
+        border-radius: 0.5em;
+        padding: 0.8em 0.6em;
+      }
+
+      .info-widget__heading {
+        margin: 0;
+      }
     }
   }
 
@@ -80,5 +108,18 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    button {
+      color: #fff;
+    }
+
+    button[color="basic"] {
+      background-color: gray;
+    }
+
+    button:disabled {
+      background-color: gray;
+      opacity: 0.3;
+    }
   }
 }
