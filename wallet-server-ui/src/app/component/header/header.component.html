@@ -186,10 +186,26 @@
           matTooltipPosition="below">sync_disabled</mat-icon>
 
         <!-- Initial Block Download indicator -->
-        <mat-icon *ngIf="walletStateService.info.isinitialblockdownload" class="initial-block-download" 
-          matTooltip="{{ 'header.initialBlockDownload' | translate }}"
-          matTooltipPosition="below">cloud_sync</mat-icon>
-
+        <ng-container *ngIf="walletStateService.info.isinitialblockdownload">
+          <mat-icon class="initial-block-download" 
+            matTooltip="{{ 'header.initialBlockDownload' | translate }}"
+            matTooltipPosition="below">cloud_sync</mat-icon>
+            <span *ngIf="!walletStateService.compactFilterHeaderBlockHeight && !walletStateService.compactFilterBlockHeight" class="block-height">
+            {{ 'header.blockHeight' | translate : {
+              blockHeight: formatNumber(walletStateService.info.blockHeight) } 
+            }}</span>
+            <span *ngIf="walletStateService.compactFilterHeaderBlockHeight && !walletStateService.compactFilterBlockHeight" class="block-height">
+            {{ 'header.compactFilterHeaderBlockHeight' | translate : {
+              blockHeight: formatNumber(walletStateService.compactFilterHeaderBlockHeight),
+              total: formatNumber(walletStateService.info.blockHeight) } 
+            }}</span>
+            <span *ngIf="walletStateService.compactFilterBlockHeight" class="block-height">
+            {{ 'header.compactFilterBlockHeight' | translate : {
+              blockHeight: formatNumber(walletStateService.compactFilterBlockHeight),
+              total: formatNumber(walletStateService.info.blockHeight) } 
+            }}</span>
+        </ng-container>
+        
         <!-- Blockchain syncing indicator -->
         <mat-icon *ngIf="walletStateService.info.syncing && !walletStateService.info.isinitialblockdownload" class="syncing" 
           matTooltip="{{ 'header.syncing' | translate }}"

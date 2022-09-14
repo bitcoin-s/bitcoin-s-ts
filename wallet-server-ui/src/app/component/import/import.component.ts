@@ -31,13 +31,13 @@ export class ImportComponent implements OnInit {
   importTypes = [ImportType.words, ImportType.xprv]
   importText: string
 
-  advancedVisible = false
   importUsePassphrase = false
   importPassphrase: string = ''
   hideImportPassphrase = true
   importWalletName: string
   importValid = false
-
+  
+  advancedVisible = false
   executing = false
 
   constructor(public walletStateService: WalletStateService, private dialog: MatDialog) {}

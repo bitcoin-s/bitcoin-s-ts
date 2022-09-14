@@ -93,6 +93,9 @@ export class WalletStateService {
   set blockHeight(height: number) {
     if (this.info) this.info.blockHeight = height
   }
+  // Used during IBD to show compactFilterHeader/compactFilter blockHeight received from Neutrino backend
+  compactFilterHeaderBlockHeight = 0 
+  compactFilterBlockHeight = 0
   torDLCHostAddress: string
   feeEstimate: number
 
