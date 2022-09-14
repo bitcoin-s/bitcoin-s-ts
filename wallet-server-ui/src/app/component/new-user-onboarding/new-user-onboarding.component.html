@@ -72,7 +72,7 @@
 
             <div
               *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber == 3"
-              class="tor-dlc-host-address card-slide-container__card__info-widget"
+              class="card-slide-container__card__info-widget"
             >
               <h2
                 class="info-widget__heading"
@@ -103,29 +103,61 @@
             <!-- Step 4 -->
 
             <div
+              class="card-slide-container__card__widget-grid"
               *ngIf="onboardingStep.stepNumber == 4"
-              class="tor-dlc-host-address card-slide-container__card__info-widget"
             >
-
-              <h2
-                class="info-widget__heading"
-                translate
+              <div
+                class="card-slide-container__card__info-widget"
               >
-                newUserOnboarding.card.step4.currentBlockHeight
-              </h2>
+                <h2
+                  class="info-widget__heading"
+                  translate
+                >
+                  newUserOnboarding.card.step4.currentBlockHeight
+                </h2>
+
+                <div
+                  class="block-height"
+                  translate="status.blockHeightLabel"
+                  [translateParams]="
+                  { height: formatNumber(walletStateService.info.blockHeight) }"
+                >
+                </div>
+              </div>
 
               <div
-                class="block-height"
-                translate="status.blockHeightLabel"
-                [translateParams]="
-                { height: formatNumber(walletStateService.info.blockHeight) }"
+                class="card-slide-container__card__info-widget"
               >
+
+                <h2
+                  class="info-widget__heading"
+                  translate
+                >
+                  newUserOnboarding.card.step4.serverState
+                </h2>
+
+                <div class="info-widget__state-label-item">
+                  <div *ngIf="walletStateService.info" class="initial-block-download">
+                    <label translate>
+                      <input type="checkbox" [checked]="walletStateService.info.isinitialblockdownload" disabled>
+                      network.initialBlockDownload
+                    </label>
+                  </div>
+                </div>
+
+                <div class="info-widget__state-label-item">
+                  <div *ngIf="walletStateService.info" class="syncing">
+                    <label translate>
+                      <input type="checkbox" [checked]="walletStateService.info.syncing" disabled>
+                      network.syncing
+                    </label>
+                  </div>
+                </div>
+
               </div>
 
             </div>
-
           </div>
-
         </new-user-onboarding-card>
       </ng-container>
     </div>
