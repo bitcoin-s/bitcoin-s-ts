@@ -76,13 +76,21 @@
       margin-top: 3rem;
     }
 
+    .card-slide-container__card__widget-grid {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2em;
+    }
+
     .card-slide-container__card__info-widget {
       background: rgb(40 40 40 / 67%);
       border-radius: 0.2em;
       padding: 1.45em 1.1em;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       gap: 1rem;
 
