@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core'
 
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
 import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
-import { emojiForOnboardingStepNumber } from '~app/utils/new-user-onboarding/new-user-onboarding-utils'
 import { Router } from '@angular/router'
 import { WalletStateService } from '~service/wallet-state-service'
 import { copyToClipboard, formatNumber } from '~util/utils'
@@ -51,7 +50,6 @@ const slideInFromLeft = [
 })
 export class NewUserOnboardingComponent implements OnInit {
   public copyToClipboard = copyToClipboard
-  public emojiForOnboardingStepNumber = emojiForOnboardingStepNumber
   public formatNumber = formatNumber
 
   currentStep: number = 1

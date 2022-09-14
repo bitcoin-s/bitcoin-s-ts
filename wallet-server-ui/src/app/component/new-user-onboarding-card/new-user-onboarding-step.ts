@@ -1,6 +1,7 @@
 export interface NewUserOnboardingStep {
   id: number
   name?: string
+  menuIconKey: string
   menuTitleKey: string
   cardTitleKey: string
   stepNumber: number
@@ -12,6 +13,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 1,
     menuTitleKey: 'Wallet Seed Backup',
+    menuIconKey: '1️⃣',
     cardTitleKey: 'newUserOnboarding.card.step1.title',
     stepNumber: 1,
     descriptionTextKey: 'newUserOnboarding.card.step1.description',
@@ -20,6 +22,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 2,
     menuTitleKey: 'Wallet Funding',
+    menuIconKey: '2️⃣',
     cardTitleKey: 'newUserOnboarding.card.step2.title',
     stepNumber: 2,
     descriptionTextKey: 'newUserOnboarding.card.step2.description',
@@ -28,6 +31,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 3,
     menuTitleKey: 'Tor Address Sharing',
+    menuIconKey: '3️⃣',
     cardTitleKey: 'newUserOnboarding.card.step3.title',
     stepNumber: 3,
     descriptionTextKey: 'newUserOnboarding.card.step3.description',
@@ -36,6 +40,7 @@ export const onboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 4,
     menuTitleKey: 'Understanding Sync',
+    menuIconKey: '4️⃣',
     cardTitleKey: 'newUserOnboarding.card.step4.title',
     stepNumber: 4,
     descriptionTextKey: 'newUserOnboarding.card.step4.description',
