@@ -2,11 +2,10 @@
   <nav class="header">
     <a mat-button class="app-button" routerLink="/">
       <!--
-      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png" 
+      <img class="app-logo" src="assets/image/302x302/bitcoin-s.png"
         alt="Suredbits">
       -->
-      <div class="app-logo" [ngClass]="walletStateService.state"></div>
-      <span translate>header.title</span>
+      <div class="app-logo"></div>
     </a>
 
     <ng-container *ngIf="authService.isLoggedOut">
@@ -41,7 +40,7 @@
 
       <!-- matTooltip="{{ 'header.walletBalance' | translate }}" -->
       <div *ngIf="walletStateService.balances" class="wallet-status"
-        matTooltip="{{ 'header.walletBalance' | translate: { 
+        matTooltip="{{ 'header.walletBalance' | translate: {
           confirmed: formatNumber(walletStateService.balances.confirmed),
           unconfirmed: formatNumber(walletStateService.balances.unconfirmed),
           reserved: formatNumber(walletStateService.balances.reserved),
@@ -58,7 +57,7 @@
           <span class="value">{{formatNumber(walletStateService.balances.confirmed)}}</span>
         </div>
       </div>
-  
+
       <div class="spacer-auto"></div>
 
       <button class="contacts-icon" mat-icon-button routerLink="/contacts" routerLinkActive="active"
@@ -66,7 +65,7 @@
         aria-label="Contacts">
         <mat-icon class="material-icons-outlined">contacts</mat-icon>
       </button>
-  
+
       <button *ngIf="walletStateService.balances" mat-icon-button class="wallet-icon"
         [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
         <span class="material-icons-outlined">account_balance_wallet</span>
@@ -107,7 +106,7 @@
           <span translate>dlcFile.chooseSign</span>
         </button>
       </mat-menu>
-  
+
       <button class="about-icon" mat-icon-button routerLink="/about" routerLinkActive="active"
         matTooltip="{{ 'header.about' | translate : {
           serverVersion: walletStateService.shortServerVersion,
@@ -152,19 +151,19 @@
           <span translate>action.logout</span>
         </button>
       </mat-menu>
-  
+
       <!-- walletStateService.state !== WalletServiceState.offline -->
       <a *ngIf="walletStateService.info"
         class="network-button" mat-button routerLink="/network" routerLinkActive="active"
         matTooltip="{{ 'header.networkStatus' | translate : {
           network: walletStateService.getNetwork(),
-          blockHeight: formatNumber(walletStateService.info.blockHeight), 
+          blockHeight: formatNumber(walletStateService.info.blockHeight),
           fee: walletStateService.feeEstimate } }}"
         matTooltipClass="ws-prewrap fs-medium lineheight-14">
-        <!-- <div 
+        <!-- <div
           matTooltip="{{ 'header.networkStatus' | translate : {
             network: walletStateService.getNetwork(),
-            blockHeight: formatNumber(walletStateService.info.blockHeight), 
+            blockHeight: formatNumber(walletStateService.info.blockHeight),
             fee: walletStateService.feeEstimate } }}"
           matTooltipClass="ws-prewrap fs-medium lineheight-14"> -->
           <!-- <div class="wallet-group">
@@ -181,45 +180,45 @@
 
       <ng-container *ngIf="walletStateService.info">
         <!-- Tor Starting indicator -->
-        <mat-icon *ngIf="walletStateService.info.torStarted === false" class="tor-starting" 
+        <mat-icon *ngIf="walletStateService.info.torStarted === false" class="tor-starting"
           matTooltip="{{ 'header.torStarting' | translate }}"
           matTooltipPosition="below">sync_disabled</mat-icon>
 
         <!-- Initial Block Download indicator -->
-        <mat-icon *ngIf="walletStateService.info.isinitialblockdownload" class="initial-block-download" 
+        <mat-icon *ngIf="walletStateService.info.isinitialblockdownload" class="initial-block-download"
           matTooltip="{{ 'header.initialBlockDownload' | translate }}"
           matTooltipPosition="below">cloud_sync</mat-icon>
 
         <!-- Blockchain syncing indicator -->
-        <mat-icon *ngIf="walletStateService.info.syncing && !walletStateService.info.isinitialblockdownload" class="syncing" 
+        <mat-icon *ngIf="walletStateService.info.syncing && !walletStateService.info.isinitialblockdownload" class="syncing"
           matTooltip="{{ 'header.syncing' | translate }}"
           matTooltipPosition="below">sync</mat-icon>
       </ng-container>
-      
+
       <!-- Wallet rescanning indicator -->
-      <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="rescanning" 
+      <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="rescanning"
         matTooltip="{{ 'header.rescanning' | translate }}"
         matTooltipPosition="below">sync_lock</mat-icon>
 
       <!--
       <div class="indicator-padding"></div>
-  
+
       <div class="backend-status">
         <div class="indicator" [ngClass]="walletStateService.state"
           matTooltip="{{ 'WalletServiceState.' + WalletServiceState[walletStateService.state] | translate }}"></div>
       </div>
       -->
-  
+
       <!--
-      <div *ngIf="walletStateService.info && walletStateService.state !== WalletServiceState.offline" 
-        class="network-status" 
+      <div *ngIf="walletStateService.info && walletStateService.state !== WalletServiceState.offline"
+        class="network-status"
         matTooltip="{{ 'status.feeEstimateLabel' | translate : { fee: walletStateService.feeEstimate } }}">
         <div class="network" translate="status.networkLabel"
           [translateParams]="{ network : walletStateService.getNetwork() }"></div>
         <div class="block-height" translate="status.blockHeightLabel"
           [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"></div>
       </div>
-  
+
       <div class="spacer-1"></div>
         -->
     </ng-container>
