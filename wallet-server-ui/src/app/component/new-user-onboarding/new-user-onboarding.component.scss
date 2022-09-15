@@ -57,6 +57,7 @@
   .main-content-container {
     flex: 3;
     position: relative;
+    overflow: scroll;
   }
 
   .card-slide-container {
@@ -108,7 +109,7 @@
 
   .card-slide-controls-container {
     z-index: 1;
-    position: absolute;
+    position: sticky;
     bottom: 0;
     left: 0;
     right: 0;
