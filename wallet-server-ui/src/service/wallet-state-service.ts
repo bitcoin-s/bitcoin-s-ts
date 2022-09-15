@@ -150,7 +150,7 @@ export class WalletStateService {
     console.debug('checkWalletCurrent() blockHeight:', this.info.blockHeight, this.wallet.value)
     if (this.wallet.value && this.wallet.value.height < this.info.blockHeight) {
       const w = this.wallet.value.walletName || 'Default Wallet'
-      const m = `This wallet (${w}) needs a rescan.\n\nWallet blockHeight: ${this.wallet.value.height}, current blockHeight: ${this.info.blockHeight}`
+      const m = `This wallet "${w}" needs a rescan.\n\nWallet blockHeight: ${this.wallet.value.height}, current blockHeight: ${this.info.blockHeight}`
       console.warn(m)
       // TODO : Dialog with offer to rescan wallet up-to-date?
       // this.rescanWallet(false, this.wallet.value.height /* +1? */)
