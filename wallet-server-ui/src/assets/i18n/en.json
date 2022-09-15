@@ -584,7 +584,8 @@
     "card": {
       "step1": {
         "title": "Back Up Your Wallet Seed",
-        "description": "A 24-Word BIP39 Mnemonic Seed Phrase is the foundation for backing up your wallet. This can be used to recover it any given point in the future, on any given device or version of the app."
+        "description": "A 24-Word BIP39 Mnemonic Seed Phrase is the foundation for backing up your wallet. This can be used to recover it any given point in the future, on any given device or version of the app.",
+        "backUpNow": "Back Up Now"
       },
       "step2": {
         "title": "Fund Your Wallet",
