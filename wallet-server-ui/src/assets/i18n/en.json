@@ -2,6 +2,7 @@
   "title": "Suredbits Wallet",
 
   "result": "Result",
+  "fraction": "{{ amount }} / {{ total }}",
 
   "splashScreen": {
     "heading": "Welcome to the Suredbits Wallet",
@@ -26,7 +27,9 @@
     "confirmed": "Confirmed",
     "total": "Total Balance",
     "network": "Network",
-    "blockHeight": "Block Height",
+    "headers": "Headers",
+    "compactFilterHeaders": "Compact Filter Headers",
+    "compactFilters": "Compact Filters",
     "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
     "about": "About\n\nServer: {{serverVersion}}\nUI:        {{uiVersion}}",
     "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte",

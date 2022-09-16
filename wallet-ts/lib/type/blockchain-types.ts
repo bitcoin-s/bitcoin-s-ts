@@ -33,3 +33,23 @@ export interface GetInfoResponse {
   isinitialblockdownload: boolean // Currently doing initial block download (IBD) to sync chain
   syncing: boolean // Blockchain data is currently syncing, goes true/false during syncs after IBD
 }
+
+// Websocket event types
+
+// compactfilterheaderprocessed
+export interface CompactFilterHeader {
+  hash: string
+  filterHash: string
+  previousFilterHeader: string
+  blockHash: string
+  height: number
+}
+
+// compactfilterprocessed
+export interface CompactFilter {
+  hash: string
+  filterType: string // "Basic" // TODO : Enum
+  height: number
+  blockHash: string
+  compactFilterBytes: string
+}

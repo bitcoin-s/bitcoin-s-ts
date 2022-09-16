@@ -373,16 +373,27 @@ mat-form-field {
 /** Header Menu */
 @import './scss/breakpoints';
 .cdk-overlay-container {
-  @include sm {
-    .mat-menu-item.about-menu-button {
-      display: none;
-    }
-    .mat-menu-item.contacts-menu-button {
+  @include lg {
+    .mat-menu-item.upload-menu-button {
       display: none;
     }
   }
   @include md {
+    .mat-menu-item.contacts-menu-button {
+      display: none;
+    }
     .mat-menu-item.network-menu-button {
+      display: none;
+    }
+    .mat-menu-item.create-menu-button {
+      display: none;
+    }
+  }
+  @include sm {
+    .mat-menu-item.offers-menu-button {
+      display: none;
+    }
+    .mat-menu-item.about-menu-button {
       display: none;
     }
   }

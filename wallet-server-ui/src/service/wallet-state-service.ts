@@ -93,6 +93,9 @@ export class WalletStateService {
   set blockHeight(height: number) {
     if (this.info) this.info.blockHeight = height
   }
+  // Used during IBD to show compactFilterHeader/compactFilter blockHeight received from Neutrino backend
+  compactFilterHeaderBlockHeight = 0 
+  compactFilterBlockHeight = 0
   torDLCHostAddress: string
   feeEstimate: number
 
@@ -147,7 +150,7 @@ export class WalletStateService {
     console.debug('checkWalletCurrent() blockHeight:', this.info.blockHeight, this.wallet.value)
     if (this.wallet.value && this.wallet.value.height < this.info.blockHeight) {
       const w = this.wallet.value.walletName || 'Default Wallet'
-      const m = `This wallet (${w}) needs a rescan.\n\nWallet blockHeight: ${this.wallet.value.height}, current blockHeight: ${this.info.blockHeight}`
+      const m = `This wallet "${w}" needs a rescan.\n\nWallet blockHeight: ${this.wallet.value.height}, current blockHeight: ${this.info.blockHeight}`
       console.warn(m)
       // TODO : Dialog with offer to rescan wallet up-to-date?
       // this.rescanWallet(false, this.wallet.value.height /* +1? */)
