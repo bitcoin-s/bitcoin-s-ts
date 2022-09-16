@@ -57,7 +57,7 @@
   .main-content-container {
     flex: 3;
     position: relative;
-    overflow: scroll;
+    overflow: hidden;
   }
 
   .card-slide-container {
@@ -65,6 +65,7 @@
     height: 100%;
     width: 100%;
     position: relative;
+    overflow: auto;
 
     .card-slide-container__card {
       width: 100%;

@@ -30,6 +30,7 @@
   </mat-sidenav-container>
 
   <div class="main-content-container">
+
     <div [@stepSlider]="currentStep" class="card-slide-container">
       <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
         <new-user-onboarding-card
