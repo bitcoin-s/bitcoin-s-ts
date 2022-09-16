@@ -5,16 +5,16 @@ import { Subscription, timer } from 'rxjs'
 
 import { environment } from '../environments/environment'
 
+import { AddressService } from '~service/address.service'
 import { AuthService } from '~service/auth.service'
+import { ContactService } from '~service/contact-service'
 import { DLCService } from '~service/dlc-service'
 import { OfferService } from '~service/offer-service'
 import { WalletServiceState, WalletStateService } from '~service/wallet-state-service'
 
-import { BlockHeaderResponse, DLCContract, DLCState, IncomingOffer } from '~type/wallet-server-types'
+import { BlockHeaderResponse, CompactFilter, CompactFilterHeader, DLCContract, DLCState, IncomingOffer } from '~type/wallet-server-types'
 
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
-import { AddressService } from './address.service'
-import { ContactService } from './contact-service'
 
 
 enum WebsocketMessageType {
@@ -33,6 +33,8 @@ enum WebsocketMessageType {
   dlcconnectioninitiated = 'dlcconnectioninitiated', // Tor peer connection ???
   dlcconnectionestablished = 'dlcconnectionestablished', // Tor peer connection successfully established 
   dlcconnectionfailed = 'dlcconnectionfailed', // Tor peer connection failed
+  compactfilterheaderprocessed = 'compactfilterheaderprocessed',
+  compactfilterprocessed = 'compactfilterprocessed',
 }
 
 export interface WebsocketMessage {
@@ -254,17 +256,24 @@ export class WebsocketService {
       case WebsocketMessageType.dlcconnectioninitiated:
         const addressConnectionInitiated = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionInitiated, undefined)
-        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
         break;
       case WebsocketMessageType.dlcconnectionestablished:
         const addressConnectionEstablished = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionEstablished, true)
-        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
         break;
       case WebsocketMessageType.dlcconnectionfailed:
         const addressConnectionFailed = <string>message.payload
         this.contactService.setConnectionCheck(addressConnectionFailed, false)
-        console.debug('connectionCheck:', this.contactService.connectionCheck.value)
+        break;
+      // syncs 2nd, about 50% of IBD time
+      case WebsocketMessageType.compactfilterheaderprocessed:
+        const compactFilterHeader = <CompactFilterHeader>message.payload
+        this.walletStateService.compactFilterHeaderBlockHeight = compactFilterHeader.height
+        break;
+      // syncs 3rd, about 2% of IBD time
+      case WebsocketMessageType.compactfilterprocessed:
+        const compactFilter = <CompactFilter>message.payload
+        this.walletStateService.compactFilterBlockHeight = compactFilter.height
         break;
       default:
         console.error('handleMessage() unknown message.type', message)

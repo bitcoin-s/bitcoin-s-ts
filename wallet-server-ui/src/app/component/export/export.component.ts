@@ -26,7 +26,6 @@ export class ExportComponent implements OnInit {
   exportWalletName: string = ''
 
   advancedVisible = false
-
   executing = false
 
   constructor(public walletStateService: WalletStateService, private dialog: MatDialog) {}

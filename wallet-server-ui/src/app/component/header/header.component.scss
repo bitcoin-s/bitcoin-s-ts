@@ -29,6 +29,7 @@ $appLogoHeight: 40px;
       width: 200px;
       background-repeat: no-repeat;
       background-size: cover;
+
       background-position: center;
       background-image: url("../../../assets/image/suredbits.svg");
     }
@@ -39,7 +40,16 @@ $appLogoHeight: 40px;
     background: rgba(0, 0, 0, 0.2);
   }
 
-  .network-button {
+  .tor-starting,
+  .initial-block-download,
+  .syncing,
+  .rescanning {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    animation: blink 2s ease-in infinite;
+  }
+
+  .network-link {
     padding-left: 12px;
     padding-right: 12px;
     .network-name {
@@ -54,17 +64,8 @@ $appLogoHeight: 40px;
       margin-bottom: 0.1rem;
     }
   }
-  .tor-starting,
-  .initial-block-download,
-  .syncing,
-  .rescanning {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    animation: blink 2s ease-in infinite;
-  }
 
-  .wallet-status,
-  .network-status2 {
+  .wallet-status {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -83,10 +84,29 @@ $appLogoHeight: 40px;
         padding-bottom: 0.25rem;
         white-space: nowrap;
         overflow: hidden;
-        font-size: smaller; // even smaller
       }
       .value {
       }
+    }
+  }
+
+  .ibd-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    font-size: smaller;
+
+    .block-height {
+      display: flex;
+      flex-direction: column;
+    }
+    .label {
+      padding-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .value {
     }
   }
 
@@ -125,33 +145,32 @@ $appLogoHeight: 40px;
   // Menu button conditional styling has to be in global styles.scss
 
   @include lt-lg {
-    // .wallet-status {
-    //   display: none;
-    // }
+    .wallet-icon {
+      display: none;
+    }
+    .upload-icon {
+      display: none;
+    }
   }
   @include lt-md {
-    .network-button {
-      display: none;
-    }
-    .network-status {
-      display: none;
-    }
-    .network-status2 {
+    .create-link {
       display: none;
     }
     .wallet-status {
       display: none;
     }
-  }
-
-  @include lt-sm {
-    .wallet-icon {
-      display: none;
-    }
     .contacts-icon {
       display: none;
     }
-    .upload-icon {
+    .network-link {
+      display: none;
+    }
+  }
+  @include lt-sm {
+    .offers-link {
+      display: none;
+    }
+    .about-icon {
       display: none;
     }
   }
