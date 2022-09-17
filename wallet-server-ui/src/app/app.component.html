@@ -1,5 +1,4 @@
 <div class="app-root mat-app-background">
-
   <splash></splash>
 
   <app-header
@@ -11,27 +10,36 @@
   <mat-sidenav-container>
     <mat-sidenav-content>
       <!-- Shows over the top of any route -->
-      <div *ngIf="authService.isLoggedIn && !stateLoaded" class="spinner">
+      <!-- <div *ngIf="authService.isLoggedIn && !stateLoaded" class="spinner">
         <mat-spinner></mat-spinner>
-      </div>
+      </div> -->
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 
-    <mat-sidenav #rightDrawer position="end" mode="over" (openedChange)="rightDrawerOpened($event)">
+    <mat-sidenav
+      #rightDrawer
+      position="end"
+      mode="over"
+      (openedChange)="rightDrawerOpened($event)"
+    >
       <div class="drawer-container">
-        <app-configuration *ngIf="configurationVisible"
-          (close)="onConfigurationClose()"></app-configuration>
+        <app-configuration
+          *ngIf="configurationVisible"
+          (close)="onConfigurationClose()"
+        ></app-configuration>
 
         <!-- Advanced -->
-        <app-debug *ngIf="advancedVisible"
-          (close)="onAdvancedClose()"></app-debug>
+        <app-debug
+          *ngIf="advancedVisible"
+          (close)="onAdvancedClose()"
+        ></app-debug>
 
         <!-- Import/Export -->
-        <app-import-export *ngIf="importExportVisible"
-          (close)="onImportExportClose()"></app-import-export>
+        <app-import-export
+          *ngIf="importExportVisible"
+          (close)="onImportExportClose()"
+        ></app-import-export>
       </div>
     </mat-sidenav>
-
   </mat-sidenav-container>
-
 </div>

@@ -1,4 +1,4 @@
-@import '../../../scss/material-theme.scss';
+@import "../../../scss/material-theme.scss";
 
 $light-foreground-palette: map-get($angular-default-theme, foreground);
 $light-background-palette: map-get($angular-default-theme, background);
@@ -6,10 +6,10 @@ $light-background-palette: map-get($angular-default-theme, background);
 $dark-foreground-palette: map-get($angular-dark-theme, foreground);
 $dark-background-palette: map-get($angular-dark-theme, background);
 
-@import '../../../scss/animations.scss';
-@import '../../../scss/_breakpoints.scss';
+@import "../../../scss/animations.scss";
+@import "../../../scss/_breakpoints.scss";
 
-$appLogoSize: 30px;
+$appLogoHeight: 40px;
 
 .header {
   display: flex;
@@ -23,33 +23,27 @@ $appLogoSize: 30px;
 
   .app-button {
     .app-logo {
-      display: inline-block;
-      width: $appLogoSize;
-      height: $appLogoSize;
+      height: $appLogoHeight;
       margin-right: 0.4rem;
 
+      width: 200px;
+      background-repeat: no-repeat;
       background-size: cover;
-      &.offline {
-        // reddish
-        background-image: url("../../../assets/image/302x302/bitcoin-s.png");
-      }
-      &.online, &.server_ready {
-        // green
-        background-image: url("../../../assets/image/302x302/bitcoin-s-testnet.png");
-      }
-      &.polling, &.tor_started, &.server_starting, &.wallet_rescan {
-        // yellow
-        background-image: url("../../../assets/image/302x302/bitcoin-s-signet.png");
-      }
+
+      background-position: center;
+      background-image: url("../../../assets/image/suredbits.svg");
     }
   }
 
   .mat-button.active,
   .mat-icon-button.active {
-    background: rgba(0,0,0,.2);
+    background: rgba(0, 0, 0, 0.2);
   }
 
-  .tor-starting, .initial-block-download, .syncing, .rescanning {
+  .tor-starting,
+  .initial-block-download,
+  .syncing,
+  .rescanning {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     animation: blink 2s ease-in infinite;
@@ -70,7 +64,7 @@ $appLogoSize: 30px;
       margin-bottom: 0.1rem;
     }
   }
-  
+
   .wallet-status {
     display: flex;
     flex-direction: row;
@@ -85,14 +79,13 @@ $appLogoSize: 30px;
       display: flex;
       flex-direction: column;
       margin-left: 2rem;
-  
+
       .label {
         padding-bottom: 0.25rem;
         white-space: nowrap;
         overflow: hidden;
       }
       .value {
-  
       }
     }
   }
@@ -114,7 +107,6 @@ $appLogoSize: 30px;
       overflow: hidden;
     }
     .value {
-
     }
   }
 
@@ -137,10 +129,14 @@ $appLogoSize: 30px;
     .offline {
       background-color: red;
     }
-    .online, .server_ready {
+    .online,
+    .server_ready {
       background-color: lime;
     }
-    .polling, .tor_started, .server_starting, .wallet_rescan {
+    .polling,
+    .tor_started,
+    .server_starting,
+    .wallet_rescan {
       background-color: yellow;
     }
   }
@@ -178,5 +174,4 @@ $appLogoSize: 30px;
       display: none;
     }
   }
-
 }

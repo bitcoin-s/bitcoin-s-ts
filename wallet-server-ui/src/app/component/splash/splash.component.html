@@ -1,12 +1,46 @@
-<div class="splash-screen" *ngIf="showSplash" @fadeOut>
-  <div class="app-splash-inner" (click)="onClick()">
-    <div class="app-logo"></div>
-    <div class="app-label" translate>splashScreen.heading</div>
+<div *ngIf="showSplash" @fadeOut>
+  <div class="splash-screen-overlay"></div>
+  <div class="splash-screen-overlay-inner-pattern"></div>
 
-    <p translate>splashScreen.betaSoftware</p>
-    <p translate>splashScreen.significantValue</p>
-    <p class="italic" translate>splashScreen.caveatEmptor</p>
-    <div class="vspacer-1"></div>
-    <button mat-raised-button (click)="dontShowSplashAgainClick()">{{ 'splashScreen.dontShowSplashAgain' | translate }}</button>
+  <div class="splash-screen">
+    <div class="app-splash-inner">
+      <div class="app-logo"></div>
+
+      <div class="app-label" translate>splashScreen.heading</div>
+
+      <p translate>splashScreen.betaSoftware</p>
+      <p translate>splashScreen.significantValue</p>
+
+      <div class="vspacer-1"></div>
+
+      <div class="button-group">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="onStartOnboardingClicked()"
+        >
+          {{ "splashScreen.startOnboardingButton" | translate }}
+        </button>
+
+        <div class="vspacer-1"></div>
+
+        <button mat-flat-button (click)="onSkipOnboardingClicked()" color="basic">
+          {{ "splashScreen.skipOnboardingButton" | translate }}
+        </button>
+      </div>
+
+      <div class="vspacer-4"></div>
+
+      <div>
+        <label translate>
+          <input type="checkbox" [(ngModel)]="dontShowSplashAgain" />
+          splashScreen.dontShowSplashAgain
+        </label>
+      </div>
+    </div>
+
+    <footer class="footer-section">
+      <p class="italic" translate>splashScreen.caveatEmptor</p>
+    </footer>
   </div>
 </div>

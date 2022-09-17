@@ -24,6 +24,7 @@ import { MatSortModule } from '@angular/material/sort'
 import { MatTableModule } from '@angular/material/table'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatListModule } from '@angular/material/list'
 
 const materialModules = [
   MatBadgeModule,
@@ -37,6 +38,8 @@ const materialModules = [
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatListModule,
+  MatListModule,
   MatMenuModule,
   MatNativeDateModule,
   MatOptionModule,
@@ -55,12 +58,7 @@ const materialModules = [
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    ...materialModules
-  ],
-  exports: [
-    ...materialModules
-  ]
+  imports: [CommonModule, ...materialModules],
+  exports: [...materialModules],
 })
-export class MaterialModule { }
+export class MaterialModule {}
