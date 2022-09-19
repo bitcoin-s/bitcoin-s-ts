@@ -120,6 +120,14 @@
         max-width: 200px;
       }
 
+      .mat-column-outcomes {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        max-width: 500px;
+        white-space: break-spaces; // allow long outcomes to wrap in cell
+        line-height: 1.3;
+      }
+
       .mat-column-signedOutcome {
         .signedOutcome-container {
           display: flex;

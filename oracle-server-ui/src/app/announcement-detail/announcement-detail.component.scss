@@ -14,6 +14,21 @@
     }
   }
 
+  .outcome-container {
+    display: flex;
+    flex-direction: column;
+
+    .outcome-label {
+      margin-bottom: 0.75rem;
+    }
+    .outcome-radio-group {
+      .outcome-radio {
+        margin-bottom: 0.75rem;
+        margin-right: 1rem;
+      }
+    }
+  }
+
   .sign-button {
     margin-top: 1rem;
   }

@@ -32,6 +32,7 @@
 
   "advanced": {
     "heading": "Advanced",
+    "downloads": "Downloads",
     "backup": "Download Oracle Backup",
     "downloadOracleServerLog": "Download Oracle Server Log",
     "downloadProxyLog": "Download Proxy Log",
@@ -157,6 +158,10 @@
     "exportStakingAddressWIF": {
       "title": "Staking Address WIF",
       "content": "{{ wif }}"
+    },
+    "closeNewAnnouncement": {
+      "title": "Close New Announcement",
+      "content": "You have started a new announcement. Are you sure you want to close?"
     }
   },
 
@@ -199,7 +204,9 @@
     "outcomes": "Outcomes",
     "outcomesPlaceholder": "Outcome1,Outcome2",
     "outcomesHint": "Outcomes seperated by commas",
-
+    "outcomePlaceholder": "Outcome {{value}}",
+    "addOutcome": "Add Outcome",
+    
     "minvalue": "Min Value",
     "maxvalue": "Max Value",
     "unit": "Unit",
@@ -262,7 +269,9 @@
     "yes": "Yes",
     "no": "No",
     "logout": "Logout",
-    "stay": "Stay"
+    "stay": "Stay",
+    "add": "Add",
+    "remove": "Remove"
   }
 
 }

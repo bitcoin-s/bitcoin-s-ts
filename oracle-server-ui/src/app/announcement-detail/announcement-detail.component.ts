@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
+import { MatRadioChange } from '@angular/material/radio'
 
 import { AlertType } from '~app/component/alert/alert.component'
 import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
@@ -48,9 +49,9 @@ export class AnnouncementDetailComponent implements OnInit {
   }
 
   constructor(private messageService: MessageService, private dialog: MatDialog, 
-    public oracleState: OracleStateService, public oracleExplorer: OracleExplorerService) { }
+    public oracleState: OracleStateService, public oracleExplorer: OracleExplorerService) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   // Proxies for knowing eventType
   isEnum() {
@@ -58,6 +59,11 @@ export class AnnouncementDetailComponent implements OnInit {
   }
   isNotEnum() {
     return Array.isArray(this.announcement.outcomes[0])
+  }
+
+  outcomeSelectionChange(outcome: MatRadioChange) {
+    console.debug('outcomeSelectionChange()', outcome, this.signEnumInput)
+    this.signEnumInput = outcome.value
   }
 
   onSignEnum() {

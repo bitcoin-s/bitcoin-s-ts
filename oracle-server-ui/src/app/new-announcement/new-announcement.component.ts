@@ -1,9 +1,11 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn, FormControl } from '@angular/forms'
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core'
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn, FormControl, FormArray } from '@angular/forms'
 import { MatDatepickerInput } from '@angular/material/datepicker'
+import { MatDialog } from '@angular/material/dialog'
 import { MatInput } from '@angular/material/input'
 
 import { AlertType } from '~app/component/alert/alert.component'
+import { ConfirmationDialogComponent } from '~app/dialog/confirmation/confirmation.component'
 
 import { MessageService } from '~service/message.service'
 import { OracleExplorerService } from '~service/oracle-explorer.service'
@@ -29,14 +31,14 @@ function positiveNumberValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const isNotOk = Number(control.value) <= 0;
     return isNotOk ? { nonPositive: { value: control.value } } : null
-  };
+  }
 }
 
 function nonNegativeNumberValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const isNotOk = Number(control.value) < 0;
     return isNotOk ? { negative: { value: control.value } } : null
-  };
+  }
 }
 
 function conditionalValidator(predicate: any, validator: any): ValidatorFn {
@@ -51,29 +53,24 @@ function conditionalValidator(predicate: any, validator: any): ValidatorFn {
   }
 }
 
-function outcomeValidator(): ValidatorFn {
+function outcomesValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const s = String(control.value)
-    if (s) {
+    const outcomes = <Array<{value: string}>>control.value
+    if (outcomes) {
+      // console.debug('outcomesValidator()', outcomes)
       const ret: any = {}
-      // Split outcomes on ',' and take out any whitespace
-      const outcomes = s.split(',')
-      outcomes.forEach(o => o.trim())
-      // Validate outcomes
       // Outcomes must not be empty string
-      const hasEmpty = outcomes.filter(i => i !== '')
+      const hasEmpty = outcomes.filter(i => i.value !== '')
       if (hasEmpty.length !== outcomes.length) {
         ret.outcomeHasEmpty = { value: control.value }
       }
       // Outcomes must be unique
-      const unique = [...new Set(outcomes)]
+      const unique = [...new Set(outcomes.map(o => o.value))]
+      // console.debug('unique', unique)
       if (unique.length !== outcomes.length) {
         ret.outcomeUnique = { value: control.value }
       }
-      // Must have two
-      if (outcomes.length === 0 || outcomes.length === 1) {
-        ret.outcomeMinTwo = { value: control.value }
-      }
+      // console.debug('ret:', ret)
       return ret
     }
     return null
@@ -85,7 +82,7 @@ function outcomeValidator(): ValidatorFn {
   templateUrl: './new-announcement.component.html',
   styleUrls: ['./new-announcement.component.scss']
 })
-export class NewAnnouncementComponent implements OnInit {
+export class NewAnnouncementComponent implements OnInit, AfterViewInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter()
 
@@ -114,11 +111,21 @@ export class NewAnnouncementComponent implements OnInit {
   minDate: Date
 
   private resetAnnouncementValues() {
+    if (this.outcomesArray) {
+      // Force down to 2 outcomes
+      while (this.outcomesArray.length !== 2) {
+        this.outcomesArray.removeAt(0, { emitEvent: false })
+      }
+      // Force outcomes back to empty
+      this.outcomesArray.setValue([{value: ''},{value: ''}])
+      this.outcomesArray.reset()
+    }
     if (this.enumForm) {
       this.enumForm.setValue({
         eventName: null,
         maturationTime: null,
-        outcomes: null,
+        // outcomes: null,
+        // outcomes: [{value: ''},{value: ''}], // This is not resetting when the number of outcomes has changed
       })
       this.enumForm.reset()
     }
@@ -137,7 +144,8 @@ export class NewAnnouncementComponent implements OnInit {
 
   oracleName: string
 
-  constructor(private formBuilder: UntypedFormBuilder, private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
+  constructor(private formBuilder: UntypedFormBuilder, private dialog: MatDialog,
+    private oracleState: OracleStateService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService) {
     // Set minimum Maturation date to tomorrow
     this.minDate = new Date()
     this.minDate.setDate(this.minDate.getDate() + 1)
@@ -152,11 +160,16 @@ export class NewAnnouncementComponent implements OnInit {
     })
   }
 
+  private outcomesArray: FormArray
+  private setOutcomeArrayValidators() { this.outcomesArray.setValidators([Validators.required,Validators.minLength(2),outcomesValidator()]) }
+
   private createForms() {
+    this.outcomesArray = this.formBuilder.array([this.newOutcome(), this.newOutcome()])
     this.enumForm = this.formBuilder.group({
       eventName: [null, Validators.required],
       maturationTime: [null, Validators.required],
-      outcomes: [null, [Validators.required,outcomeValidator()]],
+      // outcomes: [null, [Validators.required,outcomeValidator()]],
+      outcomes: this.outcomesArray,
     })
     this.numericForm = this.formBuilder.group({
       eventName: [null, Validators.required],
@@ -167,6 +180,29 @@ export class NewAnnouncementComponent implements OnInit {
       precision: [0, [Validators.required, nonNegativeNumberValidator()]],
     })
     this.announcementTypeChange()
+  }
+
+  ngAfterViewInit(): void {
+    // Have to set these later than init or these will start marked invalid
+    this.setOutcomeArrayValidators()
+  }
+
+  outcomes(): FormArray {
+    return this.enumForm.get('outcomes') as FormArray
+  }
+
+  private newOutcome(value = '') {
+    return this.formBuilder.group({ value })
+  }
+
+  addOutcome() {
+    console.debug('addOutcome()')
+    this.outcomes().push(this.newOutcome())
+  }
+
+  removeOutcome(index: number) {
+    console.debug('removeOutcome()', index)
+    this.outcomes().removeAt(index)
   }
 
   reset() {
@@ -198,8 +234,9 @@ export class NewAnnouncementComponent implements OnInit {
     switch (this.announcementType) { 
       case AnnouncementType.ENUM:
         // TODO : Process outcomes in component / make a custom component - https://netbasal.com/angular-formatters-and-parsers-8388e2599a0e
-        let outcomes = <string[]>v.outcomes.split(',')
-        outcomes = outcomes.map(o => o.trim())
+        // let outcomes = <string[]>v.outcomes.split(',')
+        // outcomes = outcomes.map(o => o.trim())
+        let outcomes = <string[]>v.outcomes.map((o:any) => o.value)
         console.debug('outcomes', outcomes)
         m = getMessageBody(MessageType.createenumannouncement, [v.eventName, v.maturationTime.toISOString(), outcomes])
         break
@@ -231,7 +268,30 @@ export class NewAnnouncementComponent implements OnInit {
 
   onClose() {
     console.debug('onClose()')
-    this.close.next()
+
+    // Warn before close
+    if (this.selectedForm.dirty) {
+      console.warn('form was dirty')
+      const dialog = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          title: 'dialog.closeNewAnnouncement.title',
+          content: 'dialog.closeNewAnnouncement.content',
+          action: 'action.yes',
+          actionColor: 'warn',
+          showCancelButton: true,
+        }
+      }).afterClosed().subscribe(result => {
+        console.debug(' onClose():', result)
+        if (result) {
+          this.close.next()
+        } else {
+          // Do nothing
+        }
+      })
+    } else {
+      console.debug('form was not dirty')
+      this.close.next()
+    }
   }
 
 }

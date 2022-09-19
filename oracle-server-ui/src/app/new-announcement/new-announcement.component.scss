@@ -30,4 +30,21 @@
     }
   }
 
+  .outcomes-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+  .outcomes {
+    margin-top: 0.75rem;
+
+    .outcome {
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+    }
+  }
+  .outcome-errors {
+    margin-left: 1.5rem;
+  }
+
 }

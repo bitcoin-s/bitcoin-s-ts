@@ -3,7 +3,8 @@
   <mat-drawer-container [hasBackdrop]="true" (backdropClick)="backdropClick()" >
 
     <!-- Left Drawer -->
-    <mat-drawer #leftDrawer mode="side">
+    <!-- Have not gotten escape key handling working with disableClose  (keydown.escape)="backdropClick()" -->
+    <mat-drawer #leftDrawer mode="side" disableClose>
       <div class="drawer-container">
         <new-announcement #newAnnouncement *ngIf="showNewAnnouncement" (close)="closeLeftDrawer()"></new-announcement>
       </div>
@@ -67,7 +68,7 @@
                 <ng-container *ngSwitchCase="undefined"></ng-container>
                 <ng-container *ngSwitchCase="null">
                   <button mat-icon-button
-                    matTooltip="{{'announcementTable.broadcastAnnouncement' | translate}}"
+                    matTooltip="{{ 'announcementTable.broadcastAnnouncement' | translate }}"
                     (click)="onAnnouncementClick(announcement); $event.stopPropagation()"
                   ><mat-icon class="material-icons-outlined">announcement</mat-icon>
                   </button>
