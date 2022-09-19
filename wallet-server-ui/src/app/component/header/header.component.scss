@@ -9,7 +9,7 @@ $dark-background-palette: map-get($angular-dark-theme, background);
 @import "../../../scss/animations.scss";
 @import "../../../scss/_breakpoints.scss";
 
-$appLogoHeight: 40px;
+$appLogoSize: 30px;
 
 .header {
   display: flex;
@@ -23,15 +23,14 @@ $appLogoHeight: 40px;
 
   .app-button {
     .app-logo {
-      height: $appLogoHeight;
+      display: inline-block;
+      width: $appLogoSize;
+      height: $appLogoSize;
       margin-right: 0.4rem;
 
-      width: 200px;
       background-repeat: no-repeat;
       background-size: cover;
-
-      background-position: center;
-      background-image: url("../../../assets/image/suredbits.svg");
+      background-image: url("../../../assets/image/302x302/bitcoin-s.png");
     }
   }
 
@@ -156,9 +155,6 @@ $appLogoHeight: 40px;
     .create-link {
       display: none;
     }
-    .wallet-status {
-      display: none;
-    }
     .contacts-icon {
       display: none;
     }
@@ -167,6 +163,9 @@ $appLogoHeight: 40px;
     }
   }
   @include lt-sm {
+    .wallet-status {
+      display: none;
+    }
     .offers-link {
       display: none;
     }

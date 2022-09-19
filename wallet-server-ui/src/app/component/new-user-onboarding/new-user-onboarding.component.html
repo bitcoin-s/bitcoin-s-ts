@@ -5,22 +5,14 @@
         <div class="app-logo"></div>
 
         <mat-action-list class="sidenav__menu-list">
-          <button
+          <button *ngFor="let onboardingStep of onboardingStepCards"
             mat-list-item
-            *ngFor="let onboardingStep of onboardingStepCards"
             (click)="onStepSelected(onboardingStep.stepNumber)"
           >
-            <span
-              translate
-              class="material-icons-outlined sidenav__menu-list-item__icon"
-            >
+            <span class="material-icons-outlined sidenav__menu-list-item__icon" translate>
               {{ onboardingStep.menuIconKey }}
             </span>
-
-            <span
-              translate
-              class="sidenav__menu-list-item__title"
-            >
+            <span class="sidenav__menu-list-item__title" translate>
               {{ onboardingStep.menuTitleKey }}
             </span>
           </button>
@@ -33,54 +25,36 @@
 
     <div [@stepSlider]="currentStep" class="card-slide-container">
       <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
-        <new-user-onboarding-card
-          [onboardingStep]="onboardingStep"
-          *ngIf="cardIndex == currentStep - 1"
+        <new-user-onboarding-card *ngIf="cardIndex == currentStep - 1"
           class="card-slide-container__card"
+          [onboardingStep]="onboardingStep"
         >
-
           <div class="card-slide-container__card__projected-content">
 
             <!-- Step 1 -->
-
-            <button
+            <button *ngIf="walletStateService.info && onboardingStep.stepNumber == 1"
               class="card-slide-container__card__action-button"
-              *ngIf="onboardingStep.stepNumber == 1"
-              mat-flat-button
-              color="primary"
-              (click)="onImportExport()"
-            >
+              mat-flat-button color="primary"
+              (click)="onImportExport()">
               <span translate>
                 newUserOnboarding.card.step1.backUpNow
               </span>
             </button>
 
-
             <!-- Step 2 -->
-
-            <button
+            <button *ngIf="walletStateService.info && onboardingStep.stepNumber == 2"
               class="card-slide-container__card__action-button"
-              *ngIf="onboardingStep.stepNumber == 2"
-              mat-flat-button
-              color="primary"
-              (click)="backendService.getNewAddress()"
-            >
+              mat-flat-button color="primary"
+              (click)="backendService.getNewAddress()">
               <span translate>
                 newUserOnboarding.card.step2.createNewAddress
               </span>
             </button>
 
-
             <!-- Step 3 -->
-
-            <div
-              *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber == 3"
-              class="card-slide-container__card__info-widget"
-            >
-              <h2
-                class="info-widget__heading"
-                translate
-              >
+            <div *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber == 3"
+              class="card-slide-container__card__info-widget">
+              <h2 class="info-widget__heading" translate>
                 network.torDLCHostAddress
               </h2>
 
@@ -88,10 +62,8 @@
                 {{walletStateService.torDLCHostAddress}}
               </code>
 
-              <button
-                mat-flat-button
-                class="copy-button"
-                color="primary"
+              <button class="copy-button"
+                mat-flat-button color="primary"
                 matTooltip="{{ 'action.copyToClipboard' | translate }}"
                 (click)="copyToClipboard(walletStateService.torDLCHostAddress)"
               >
@@ -102,45 +74,28 @@
               </button>
             </div>
 
-
             <!-- Step 4 -->
-
-            <div
-              class="card-slide-container__card__widget-grid"
-              *ngIf="onboardingStep.stepNumber == 4"
-            >
-              <div
-                class="card-slide-container__card__info-widget"
-              >
-                <h2
-                  class="info-widget__heading"
-                  translate
-                >
+            <div *ngIf="walletStateService.info && onboardingStep.stepNumber == 4"
+              class="card-slide-container__card__widget-grid">
+              <div class="card-slide-container__card__info-widget">
+                <h2 class="info-widget__heading" translate >
                   newUserOnboarding.card.step4.currentBlockHeight
                 </h2>
 
-                <div
-                  class="block-height"
+                <div class="block-height"
                   translate="status.blockHeightLabel"
-                  [translateParams]="
-                  { height: formatNumber(walletStateService.info.blockHeight) }"
+                  [translateParams]="{ height: formatNumber(walletStateService.info.blockHeight) }"
                 >
                 </div>
               </div>
 
-              <div
-                class="card-slide-container__card__info-widget"
-              >
-
-                <h2
-                  class="info-widget__heading"
-                  translate
-                >
+              <div class="card-slide-container__card__info-widget">
+                <h2 class="info-widget__heading" translate>
                   newUserOnboarding.card.step4.serverState
                 </h2>
 
                 <div class="info-widget__state-label-item">
-                  <div *ngIf="walletStateService.info" class="initial-block-download">
+                  <div class="initial-block-download">
                     <label translate>
                       <input type="checkbox" [checked]="walletStateService.info.isinitialblockdownload" disabled>
                       network.initialBlockDownload
@@ -149,16 +104,14 @@
                 </div>
 
                 <div class="info-widget__state-label-item">
-                  <div *ngIf="walletStateService.info" class="syncing">
+                  <div class="syncing">
                     <label translate>
                       <input type="checkbox" [checked]="walletStateService.info.syncing" disabled>
                       network.syncing
                     </label>
                   </div>
                 </div>
-
               </div>
-
             </div>
           </div>
         </new-user-onboarding-card>
@@ -166,11 +119,14 @@
     </div>
 
     <div class="card-slide-controls-container">
-      <button mat-flat-button color="basic" type="button" (click)="onPreviousStepTapped()" [disabled]="currentStep == 1">Previous Step</button>
-
-      <button *ngIf="this.currentStep != this.onboardingStepCards.length" mat-flat-button color="primary" type="button" (click)="onNextStepTapped()">Next</button>
-
-      <button *ngIf="this.currentStep == this.onboardingStepCards.length" mat-flat-button color="primary" type="button" (click)="onCompleteTapped()">Complete</button>
+      <button mat-flat-button color="basic" [disabled]="currentStep == 1" (click)="onPreviousStepTapped()" >
+        {{ 'newUserOnboarding.previousStep' | translate }}</button>
+      <button *ngIf="this.currentStep != this.onboardingStepCards.length" mat-flat-button color="primary" (click)="onNextStepTapped()">
+        {{ 'newUserOnboarding.next' | translate }}
+      </button>
+      <button *ngIf="this.currentStep == this.onboardingStepCards.length" mat-flat-button color="primary" (click)="onCompleteTapped()">
+        {{ 'newUserOnboarding.complete' | translate }}
+      </button>
     </div>
   </div>
 </div>

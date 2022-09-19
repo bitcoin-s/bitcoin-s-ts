@@ -8,7 +8,6 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 import { QrCodeModule } from 'ng-qrcode'
 import { LottieModule } from 'ngx-lottie'
-
 import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { MaterialModule } from './shared/modules/material/material.module'

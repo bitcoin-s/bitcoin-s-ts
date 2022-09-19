@@ -7,6 +7,7 @@
   <div class="operations">
     <div class="downloads">
       <label translate>advanced.downloads</label>
+
       <button mat-stroked-button (click)="downloadBackup()" [disabled]="executing">
         {{ 'advanced.backup' | translate }}
         <div class="spinner" *ngIf="backupExecuting">
@@ -27,46 +28,68 @@
     
     <app-alert *ngIf="fullRescan" [type]="AlertType.warn" message="advanced.fullRescanWarning" icon="warning_amber"></app-alert>
 
-    <div class="row">
-      <label>
-        <input type="checkbox" [(ngModel)]="fullRescan">
-        {{ 'advanced.fullBlockchainRescan' | translate }}
-      </label>
-      <button mat-stroked-button (click)="rescan()" [disabled]="executing">{{ 'advanced.rescan' | translate }}</button>
-    </div>
+    <div class="wallet">
+      <label translate>advanced.wallet</label>
 
-    <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
-      {{ 'advanced.unreserveAllUTXOs' | translate }}
-    </button>
+      <div class="row">
+        <label translate>
+          <input type="checkbox" [(ngModel)]="fullRescan">
+          advanced.fullBlockchainRescan
+        </label>
+        <button mat-stroked-button (click)="rescan()" [disabled]="executing">{{ 'advanced.rescan' | translate }}</button>
+      </div>
+
+      <button mat-stroked-button (click)="unreserveAllUTXOs()" [disabled]="executing">
+        {{ 'advanced.unreserveAllUTXOs' | translate }}
+      </button>
+    </div>
 
     <div class="vspacer-2"></div>
 
-    <div class="row">
-      <mat-form-field class="paste-input">
-        <input #txId matInput type="text" autocomplete="off" spellcheck="false"
-          placeholder="{{ 'advanced.transactionId' | translate }}">
-      </mat-form-field>
-      <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
-        {{ 'advanced.getTransaction' | translate }}
-      </button>
+    <div class="blockchain">
+      <label translate>advanced.blockchain</label>
+
+      <div class="row">
+        <mat-form-field class="paste-input">
+          <input #txId matInput type="text" autocomplete="off" spellcheck="false"
+            placeholder="{{ 'advanced.transactionId' | translate }}">
+        </mat-form-field>
+        <button mat-stroked-button (click)="getTransaction(txId.value)" [disabled]="executing">
+          {{ 'advanced.getTransaction' | translate }}
+        </button>
+      </div>
+      <div *ngIf="rawTransaction || decodedTransaction" class="column">
+        <label translate>advanced.raw</label>
+        <textarea class="raw-tx-textarea" rows="2" [(ngModel)]="rawTransaction"></textarea>
+        <label translate>advanced.decoded</label>
+        <textarea class="decoded-tx-textarea" [(ngModel)]="decodedTransaction"></textarea>
+      </div>
+      <app-alert *ngIf="transactionNotFound" [type]="AlertType.warn" message="advanced.transactionNotFoundInWallet"></app-alert>
     </div>
-    <div *ngIf="rawTransaction || decodedTransaction" class="column">
-      <label translate>advanced.raw</label>
-      <textarea class="raw-tx-textarea" rows="2" [(ngModel)]="rawTransaction"></textarea>
-      <label translate>advanced.decoded</label>
-      <textarea class="decoded-tx-textarea" [(ngModel)]="decodedTransaction"></textarea>
+
+    <div class="vspacer-1"></div>
+
+    <div class="application">
+      <label translate>advanced.application</label>
+
+      <div class="row">
+        <label translate>
+          <!-- Reset 'noSplash' in LocalStorage -->
+          <input type="checkbox" [(ngModel)]="noSplash" (ngModelChange)="onNoSplash()">
+          advanced.hideSplashScreen
+        </label>
+      </div>
     </div>
-    <app-alert *ngIf="transactionNotFound" [type]="AlertType.warn" message="advanced.transactionNotFoundInWallet"></app-alert>
 
     <div class="vspacer-2"></div>
 
     <h4 translate>advanced.alphaFeatures</h4>
 
     <div class="row">
-      <label>
+      <label translate>
         <!-- Enable loadwallet functionality and seed importing -->
         <input type="checkbox" [(ngModel)]="walletStateService.showWalletSelector">
-        {{ 'advanced.showWalletSelector' | translate }}
+        advanced.showWalletSelector
       </label>
     </div>
   </div>

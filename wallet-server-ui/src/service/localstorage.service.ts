@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core'
 
 
+export const NO_SPLASH_KEY = 'noSplash';
+
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {
 

@@ -16,27 +16,21 @@
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 
-    <mat-sidenav
-      #rightDrawer
-      position="end"
-      mode="over"
+    <mat-sidenav #rightDrawer position="end" mode="over"
       (openedChange)="rightDrawerOpened($event)"
     >
       <div class="drawer-container">
-        <app-configuration
-          *ngIf="configurationVisible"
+        <app-configuration *ngIf="configurationVisible"
           (close)="onConfigurationClose()"
         ></app-configuration>
 
         <!-- Advanced -->
-        <app-debug
-          *ngIf="advancedVisible"
+        <app-debug *ngIf="advancedVisible"
           (close)="onAdvancedClose()"
         ></app-debug>
 
         <!-- Import/Export -->
-        <app-import-export
-          *ngIf="importExportVisible"
+        <app-import-export *ngIf="importExportVisible"
           (close)="onImportExportClose()"
         ></app-import-export>
       </div>

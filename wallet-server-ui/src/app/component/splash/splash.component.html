@@ -14,9 +14,7 @@
       <div class="vspacer-1"></div>
 
       <div class="button-group">
-        <button
-          mat-flat-button
-          color="primary"
+        <button mat-flat-button color="primary"
           (click)="onStartOnboardingClicked()"
         >
           {{ "splashScreen.startOnboardingButton" | translate }}
@@ -24,7 +22,7 @@
 
         <div class="vspacer-1"></div>
 
-        <button mat-flat-button (click)="onSkipOnboardingClicked()" color="basic">
+        <button mat-flat-button color="basic" (click)="onSkipOnboardingClicked()">
           {{ "splashScreen.skipOnboardingButton" | translate }}
         </button>
       </div>
@@ -33,7 +31,7 @@
 
       <div>
         <label translate>
-          <input type="checkbox" [(ngModel)]="dontShowSplashAgain" />
+          <input type="checkbox" [(ngModel)]="dontShowSplashAgain">
           splashScreen.dontShowSplashAgain
         </label>
       </div>
