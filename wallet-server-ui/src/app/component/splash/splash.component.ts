@@ -1,9 +1,9 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations'
+import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
-import { Component, OnInit } from '@angular/core'
+import { NO_SPLASH_KEY } from '~service/localstorage.service'
 
-const SPLASH_KEY = 'noSplash'
 
 @Component({
   selector: 'splash',
@@ -24,7 +24,7 @@ export class SplashComponent implements OnInit {
     // Force reset splash key
     // localStorage.removeItem(SPLASH_KEY)
 
-    const show = localStorage.getItem(SPLASH_KEY) === null
+    const show = localStorage.getItem(NO_SPLASH_KEY) === null
 
     this.showSplash = show
   }
@@ -45,7 +45,7 @@ export class SplashComponent implements OnInit {
 
   saveSplashSettings() {
     if (this.dontShowSplashAgain) {
-      localStorage.setItem(SPLASH_KEY, '1')
+      localStorage.setItem(NO_SPLASH_KEY, '1')
     }
   }
 }

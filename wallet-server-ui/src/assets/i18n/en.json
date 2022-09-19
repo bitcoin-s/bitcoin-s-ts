@@ -129,11 +129,15 @@
     "backup": "Download Wallet Backup",
     "downloadBitcoinsLog": "Download Bitcoin-s Log",
     "downloadProxyLog": "Download Proxy Log",
+    "wallet": "Wallet",
+    "blockchain": "Blockchain",
     "transactionId": "Transaction Id",
     "getTransaction": "Get Transaction",
     "transactionNotFoundInWallet": "Transaction not found in wallet",
     "raw": "Raw",
     "decoded": "Decoded",
+    "application": "Application",
+    "hideSplashScreen": "Hide Splash Screen",
     "alphaFeatures": "Alpha Features",
     "showWalletSelector": "Show Wallet Selector and Seed Import"
   },
@@ -606,6 +610,9 @@
         "currentBlockHeight": "Current Block Height",
         "serverState": "Server State"
       }
-    }
+    },
+    "previousStep": "Previous Step",
+    "next": "Next",
+    "complete": "Complete"
   }
 }

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { TranslateService } from '@ngx-translate/core'
 import * as FileSaver from 'file-saver'
 
+import { LocalStorageService, NO_SPLASH_KEY } from '~service/localstorage.service'
 import { MessageService } from '~service/message.service'
 import { WalletStateService } from '~service/wallet-state-service'
 
@@ -34,14 +35,17 @@ export class DebugComponent implements OnInit {
   rawTransaction: string
   decodedTransaction: string
 
+  noSplash = false
+
   executing = false
   backupExecuting = false
 
   constructor(private messageService: MessageService, public walletStateService: WalletStateService,
+    private localStorageService: LocalStorageService,
     private translate: TranslateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    
+    this.noSplash = this.localStorageService.get(NO_SPLASH_KEY) !== null
   }
 
   onClose() {
@@ -195,6 +199,15 @@ export class DebugComponent implements OnInit {
       }
       this.executing = false
     }, err => { this.executing = false })
+  }
+
+  onNoSplash() {
+    console.debug('onNoSplash()', this.noSplash)
+    if (this.noSplash) {
+      this.localStorageService.set(NO_SPLASH_KEY, '1')
+    } else {
+      this.localStorageService.clear(NO_SPLASH_KEY)
+    }
   }
 
 }
