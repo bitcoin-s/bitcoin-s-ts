@@ -78,13 +78,20 @@ $padding: 0.5rem;
     }
 
     .mat-cell.mat-column-message {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      max-width: 300px;
       white-space: pre-wrap;
       word-wrap: break-word;
-      max-width: 300px;
+      line-height: 1.3;
     }
-    .mat-column-peer {
+    .mat-column-peer,
+    .mat-column-offerTLV,
+    .mat-column-hash,
+     {
       white-space: nowrap;
     }
+
 
     // Hide Outcomes and Attestations on narrow screens
     @include lt-md {

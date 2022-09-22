@@ -34,6 +34,7 @@
     "compactFilters": "Compact Filters",
     "walletBalance": "Wallet Balance (sats)\n\nConfirmed:\t{{confirmed}}\nUnconfirmed:\t{{unconfirmed}}\nReserved:\t{{reserved}}\nTotal:\t\t{{total}}",
     "about": "About\n\nServer: {{serverVersion}}\nUI:        {{uiVersion}}",
+    "serverDisconnected": "Server Disconnected - Attempting to Connect",
     "networkStatus": "Network Status\n\nNetwork:\t{{network}}\nBlock Height:\t{{blockHeight}}\nFee Estimate:\t{{fee}} sats/vbyte",
     "torStarting": "Tor Starting",
     "initialBlockDownload": "Initial Block Download",

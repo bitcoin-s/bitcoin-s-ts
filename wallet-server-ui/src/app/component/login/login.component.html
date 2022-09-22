@@ -1,5 +1,10 @@
 <section class="login-section">
 
+  <div *ngIf="authService.isLoggedIn && !walletStateService.stateLoaded.value"
+    class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+ 
   <div class="app-logo"></div>
   <div class="section-header">
     <h2 translate>title</h2>

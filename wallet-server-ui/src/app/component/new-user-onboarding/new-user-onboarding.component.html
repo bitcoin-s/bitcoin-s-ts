@@ -5,11 +5,11 @@
         <div class="app-logo"></div>
 
         <mat-action-list class="sidenav__menu-list">
-          <button *ngFor="let onboardingStep of onboardingStepCards"
+          <button *ngFor="let onboardingStep of NewUserOnboardingSteps"
             mat-list-item
             (click)="onStepSelected(onboardingStep.stepNumber)"
           >
-            <span class="material-icons-outlined sidenav__menu-list-item__icon" translate>
+            <span class="sidenav__menu-list-item__icon" translate>
               {{ onboardingStep.menuIconKey }}
             </span>
             <span class="sidenav__menu-list-item__title" translate>
@@ -24,27 +24,29 @@
   <div class="main-content-container">
 
     <div [@stepSlider]="currentStep" class="card-slide-container">
-      <ng-container *ngFor="let onboardingStep of onboardingStepCards; let cardIndex = index">
-        <new-user-onboarding-card *ngIf="cardIndex == currentStep - 1"
+      <ng-container *ngFor="let onboardingStep of NewUserOnboardingSteps; let cardIndex = index">
+        <new-user-onboarding-card *ngIf="cardIndex === currentStep - 1"
           class="card-slide-container__card"
           [onboardingStep]="onboardingStep"
         >
           <div class="card-slide-container__card__projected-content">
 
             <!-- Step 1 -->
-            <button *ngIf="walletStateService.info && onboardingStep.stepNumber == 1"
+            <button *ngIf="onboardingStep.stepNumber === 1"
               class="card-slide-container__card__action-button"
               mat-flat-button color="primary"
-              (click)="onImportExport()">
+              [disabled]="!walletStateService.info"
+              (click)="onExportSeed()">
               <span translate>
                 newUserOnboarding.card.step1.backUpNow
               </span>
             </button>
 
             <!-- Step 2 -->
-            <button *ngIf="walletStateService.info && onboardingStep.stepNumber == 2"
+            <button *ngIf="onboardingStep.stepNumber === 2"
               class="card-slide-container__card__action-button"
               mat-flat-button color="primary"
+              [disabled]="!walletStateService.info"
               (click)="backendService.getNewAddress()">
               <span translate>
                 newUserOnboarding.card.step2.createNewAddress
@@ -52,14 +54,14 @@
             </button>
 
             <!-- Step 3 -->
-            <div *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber == 3"
+            <div *ngIf="walletStateService.torDLCHostAddress && onboardingStep.stepNumber === 3"
               class="card-slide-container__card__info-widget">
               <h2 class="info-widget__heading" translate>
                 network.torDLCHostAddress
               </h2>
 
               <code class="info-widget__code-text">
-                {{walletStateService.torDLCHostAddress}}
+                {{ walletStateService.torDLCHostAddress }}
               </code>
 
               <button class="copy-button"
@@ -75,10 +77,10 @@
             </div>
 
             <!-- Step 4 -->
-            <div *ngIf="walletStateService.info && onboardingStep.stepNumber == 4"
+            <div *ngIf="walletStateService.info && onboardingStep.stepNumber === 4"
               class="card-slide-container__card__widget-grid">
               <div class="card-slide-container__card__info-widget">
-                <h2 class="info-widget__heading" translate >
+                <h2 class="info-widget__heading" translate>
                   newUserOnboarding.card.step4.currentBlockHeight
                 </h2>
 
@@ -119,13 +121,20 @@
     </div>
 
     <div class="card-slide-controls-container">
-      <button mat-flat-button color="basic" [disabled]="currentStep == 1" (click)="onPreviousStepTapped()" >
-        {{ 'newUserOnboarding.previousStep' | translate }}</button>
-      <button *ngIf="this.currentStep != this.onboardingStepCards.length" mat-flat-button color="primary" (click)="onNextStepTapped()">
-        {{ 'newUserOnboarding.next' | translate }}
+      <button mat-flat-button color="basic"
+        [disabled]="currentStep === 1"
+        (click)="onPreviousStep()" >
+        <span translate>newUserOnboarding.previousStep</span>
       </button>
-      <button *ngIf="this.currentStep == this.onboardingStepCards.length" mat-flat-button color="primary" (click)="onCompleteTapped()">
-        {{ 'newUserOnboarding.complete' | translate }}
+      <button *ngIf="currentStep !== NewUserOnboardingSteps.length"
+        mat-flat-button color="primary"
+        (click)="onNextStep()">
+        <span translate>newUserOnboarding.next</span>
+      </button>
+      <button *ngIf="currentStep === NewUserOnboardingSteps.length"
+        mat-flat-button color="primary"
+        (click)="onComplete()">
+        <span translate>newUserOnboarding.complete</span>
       </button>
     </div>
   </div>

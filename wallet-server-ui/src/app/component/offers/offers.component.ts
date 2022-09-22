@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { MatDrawer } from '@angular/material/sidenav'
 import { MatSort } from '@angular/material/sort'
 import { MatTable, MatTableDataSource } from '@angular/material/table'
@@ -14,7 +15,6 @@ import { OfferWithHex } from '~type/wallet-ui-types'
 import { copyToClipboard, formatISODateTime, formatNumber, formatShortHex, TOR_V3_ADDRESS, trimAndStripHTTPOnPaste, trimOnPaste, UPPERLOWER_CASE_HEX } from '~util/utils'
 
 import { environment } from '~environments'
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { regexValidator } from '~util/validators'
 
 

@@ -24,7 +24,9 @@ export class AddressService {
 
   uninitialize() {
     this.initialized.next(false)
-    // Could clear state
+    this.fundedAddresses = <FundedAddress[]><unknown>undefined
+    this.unfundedAddresses = <string[]><unknown>undefined
+    this.addressLabelMap = <any><unknown>undefined
   }
 
   initializeState() {

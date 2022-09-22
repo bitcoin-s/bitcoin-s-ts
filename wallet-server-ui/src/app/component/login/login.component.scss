@@ -1,5 +1,6 @@
 
 $appLogoSize: 100px;
+$spinnerSize: 100px;
 
 .login-section {
   height: 100%;
@@ -44,4 +45,18 @@ $appLogoSize: 100px;
       margin-right: 1rem;
     }
   }
+
+  // Overlay to show that state is loading
+  .spinner-container {
+    position: fixed;
+    z-index: 1031; /* High z-index so it is on top of the page */
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: $spinnerSize;
+    height: $spinnerSize;
+    margin: auto;
+  }
+  
 }

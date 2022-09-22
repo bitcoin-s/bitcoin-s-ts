@@ -1,8 +1,8 @@
 <header>
   <nav class="header">
-    <a mat-button class="app-button" routerLink="/">
+    <a mat-button class="app-link" routerLink="/">
       <div class="app-logo" alt="Suredbits"></div>
-      <span translate>header.title</span>
+      <!-- <span class="title" translate>header.title</span> -->
     </a>
 
     <!-- Logged Out-->
@@ -22,6 +22,9 @@
     <!-- Logged In -->
     <ng-container *ngIf="authService.isLoggedIn">
       <!-- Links -->
+      <a class="wallet-link" mat-button routerLink="/wallet" routerLinkActive="active"
+        matTooltip="{{ 'walletBalance.description' | translate }}">
+        {{ 'walletBalance.heading' | translate }}</a>
       <a class="contracts-link" mat-button routerLink="/contracts" routerLinkActive="active"
         matTooltip="{{ 'contracts.description' | translate }}">
         {{ 'contracts.heading' | translate }}</a>
@@ -34,10 +37,7 @@
       <a class="create-link" mat-button routerLink="/create" routerLinkActive="active"
         matTooltip="{{ 'buildAcceptOffer.description' | translate }}">
         {{ 'header.createDLC' | translate }}</a>
-      <a class="wallet-link" mat-button routerLink="/wallet" routerLinkActive="active"
-        matTooltip="{{ 'walletBalance.description' | translate }}">
-        {{ 'walletBalance.heading' | translate }}</a>
-
+      
       <!-- Wallet Balances -->
       <div *ngIf="walletStateService.balances" class="wallet-status"
         matTooltip="{{ 'header.walletBalance' | translate: { 
@@ -60,31 +60,34 @@
 
       <div class="spacer-auto"></div>
 
-      <!-- Network -->
-      <!-- walletStateService.state !== WalletServiceState.offline -->
-      <a *ngIf="walletStateService.info" class="network-link"
-        mat-button routerLink="/network" routerLinkActive="active"
-        matTooltip="{{ 'header.networkStatus' | translate : {
-          network: walletStateService.getNetwork(),
-          blockHeight: formatNumber(walletStateService.info.blockHeight), 
-          fee: walletStateService.feeEstimate } }}"
-        matTooltipClass="ws-prewrap fs-medium lineheight-14">
-        <mat-icon class="mat-icon-sm">cloud</mat-icon>
-        <span class="network-name">{{ walletStateService.getNetwork() }}</span>
-      </a>
-      <!-- Backend Disconnected -->
-      <a *ngIf="!walletStateService.info"
-        class="network-link" mat-button routerLink="/network" routerLinkActive="active">
-        <mat-icon class="mat-icon-sm">cloud_off</mat-icon>
-        <span class="network-name" translate>status.disconnected</span>
-      </a>
-
       <!-- Backend Status Indicators -->
-      <ng-container *ngIf="walletStateService.info">
-        <!-- Tor Starting indicator -->
-        <mat-icon *ngIf="walletStateService.info.torStarted === false" class="tor-starting" 
-          matTooltip="{{ 'header.torStarting' | translate }}"
-          matTooltipPosition="below">sync_disabled</mat-icon>
+      <ng-container *ngIf="walletStateService.info; else disconnected">
+        <!-- Network -->
+        <a class="network-link"
+          mat-button routerLink="/network" routerLinkActive="active"
+          matTooltip="{{ 'header.networkStatus' | translate : {
+            network: walletStateService.getNetwork(),
+            blockHeight: formatNumber(walletStateService.info.blockHeight), 
+            fee: walletStateService.feeEstimate } }}"
+          matTooltipClass="ws-prewrap fs-medium lineheight-14">
+          <!-- Tor Starting indicator -->
+          <ng-container *ngIf="walletStateService.info.torStarted === false; else syncing">
+            <mat-icon *ngIf="walletStateService.info.torStarted === false" class="tor-starting" 
+              matTooltip="{{ 'header.torStarting' | translate }}"
+              matTooltipPosition="left">thunderstorm</mat-icon>
+          </ng-container>
+          <!-- Blockchain syncing indicator -->
+          <ng-template #syncing>
+            <mat-icon *ngIf="walletStateService.info.syncing; else ready" class="syncing" 
+              matTooltip="{{ 'header.syncing' | translate }}"
+              matTooltipPosition="left">cloud_download</mat-icon>
+          </ng-template>
+          <ng-template #ready>
+            <mat-icon class="mat-icon-sm">cloud</mat-icon>
+          </ng-template>
+
+          <span class="network-name">{{ walletStateService.getNetwork() }}</span>
+        </a>
 
         <!-- Initial Block Download indicator -->
         <div *ngIf="walletStateService.info.isinitialblockdownload" class="ibd-container" 
@@ -110,19 +113,22 @@
               total: formatNumber(walletStateService.info.blockHeight) } }}</span>
           </div>
         </div>
-        
-        <!-- Blockchain syncing indicator -->
-        <mat-icon *ngIf="walletStateService.info.syncing && !walletStateService.info.isinitialblockdownload" class="syncing" 
-          matTooltip="{{ 'header.syncing' | translate }}"
-          matTooltipPosition="below">sync</mat-icon>
       </ng-container>
-      
+
+      <!-- Backend Disconnected -->
+      <ng-template #disconnected>
+        <a class="network-disconnected-link" mat-button routerLink="/network" routerLinkActive="active"
+          matTooltip="{{ 'header.serverDisconnected' | translate }}"
+          matTooltipPosition="below">
+          <mat-icon class="mat-icon-sm backend-disconnected">cloud_off</mat-icon>
+          <span class="network-name" translate>status.disconnected</span>
+        </a>
+      </ng-template>
+
       <!-- Wallet rescanning indicator -->
       <mat-icon *ngIf="walletStateService.wallet.value?.rescan" class="rescanning" 
         matTooltip="{{ 'header.rescanning' | translate }}"
         matTooltipPosition="below">sync_lock</mat-icon>
-
-      <div class="spacer-auto"></div>
 
       <!-- Contacts -->
       <button class="contacts-icon" mat-icon-button routerLink="/contacts" routerLinkActive="active"
@@ -134,6 +140,7 @@
       <!-- Wallet Actions -->
       <!-- *ngIf="walletStateService.balances" not sure whether Send Funds should be exposed/enabled without balances available-->
       <button mat-icon-button class="wallet-icon"
+        [disabled]="!walletStateService.stateLoaded.value"
         [matMenuTriggerFor]="walletMenu" aria-label="Wallet">
         <span class="material-icons-outlined">account_balance_wallet</span>
       </button>
@@ -150,6 +157,7 @@
 
       <!-- Manual DLC File Upload -->
       <button mat-icon-button class="upload-icon"
+        [disabled]="!walletStateService.stateLoaded.value"
         matTooltip="{{ 'dlcFile.uploadADLCFile' | translate }}"
         [matMenuTriggerFor]="uploadMenu" aria-label="Upload a DLC File">
         <span class="material-icons-outlined">file_upload</span>
@@ -213,7 +221,8 @@
           <mat-icon class="material-icons-outlined">contacts</mat-icon>
           <span translate>contacts.heading</span>
         </button>
-        <button class="upload-menu-button" mat-menu-item [matMenuTriggerFor]="uploadMenu">
+        <button class="upload-menu-button" mat-menu-item [matMenuTriggerFor]="uploadMenu"
+          [disabled]="!walletStateService.stateLoaded.value">
           <mat-icon class="material-icons-outlined">file_upload</mat-icon>
           <span translate>dlcFile.uploadADLCFile</span>
         </button>

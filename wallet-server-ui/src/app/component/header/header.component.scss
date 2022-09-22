@@ -9,7 +9,7 @@ $dark-background-palette: map-get($angular-dark-theme, background);
 @import "../../../scss/animations.scss";
 @import "../../../scss/_breakpoints.scss";
 
-$appLogoSize: 30px;
+$appLogoSize: 36px;
 
 .header {
   display: flex;
@@ -21,16 +21,21 @@ $appLogoSize: 30px;
   background-color: mat-color($angular-primary, default);
   color: mat-color($dark-foreground-palette, text);
 
-  .app-button {
+  .app-link {
+    padding: 0 0.5rem;
+    min-width: $appLogoSize;
+
     .app-logo {
       display: inline-block;
       width: $appLogoSize;
       height: $appLogoSize;
-      margin-right: 0.4rem;
 
       background-repeat: no-repeat;
       background-size: cover;
       background-image: url("../../../assets/image/302x302/bitcoin-s.png");
+    }
+    .title {
+      margin-left: 0.4rem;
     }
   }
 
@@ -39,16 +44,21 @@ $appLogoSize: 30px;
     background: rgba(0, 0, 0, 0.2);
   }
 
-  .tor-starting,
   .initial-block-download,
-  .syncing,
   .rescanning {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     animation: blink 2s ease-in infinite;
   }
 
-  .network-link {
+  .backend-disconnected,
+  .tor-starting,
+  .syncing {
+    animation: blink 2s ease-in infinite;
+  }
+
+  .network-link,
+  .network-disconnected-link {
     padding-left: 12px;
     padding-right: 12px;
     .network-name {
@@ -68,16 +78,14 @@ $appLogoSize: 30px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    column-gap: 0.6rem;
 
-    // margin-left: 1rem;
     margin-right: 0.5rem;
     font-size: smaller;
 
     .wallet-group {
       display: flex;
       flex-direction: column;
-      margin-left: 2rem;
+      margin-left: 1.5rem;
 
       .label {
         padding-bottom: 0.25rem;
@@ -163,9 +171,9 @@ $appLogoSize: 30px;
     }
   }
   @include lt-sm {
-    .wallet-status {
-      display: none;
-    }
+    // .wallet-status {
+    //   display: none;
+    // }
     .offers-link {
       display: none;
     }

@@ -1,4 +1,4 @@
-<fieldset *ngIf="walletStateService.showWalletSelector" class="import">
+<fieldset *ngIf="walletStateService.showWalletSelector" class="import" [disabled]="!walletStateService.stateLoaded.value">
   <h4 translate>importexport.import</h4>
   <div class="row radio-row">
     <mat-radio-group class="import-type"

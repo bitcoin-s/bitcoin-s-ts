@@ -33,8 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
   advancedVisible = false
   importExportVisible = false
 
-  stateLoaded = false
-
   loggedIn$: Subscription
   loggedOut$: Subscription
   subscriptions: Subscription[]
@@ -73,7 +71,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.appServerReady$.unsubscribe()
     this.walletStateService.uninitialize()
     this.websocketService.stopPolling()
-    this.stateLoaded = false
     this.rightDrawer.close()
     this.router.navigate(['/login'], { queryParams: { loggedOut: 1 } })
   }
@@ -95,16 +92,16 @@ export class AppComponent implements OnInit, OnDestroy {
   private createSubscriptions() {
     if (this.subscriptions) this.destroySubscriptions()
     this.subscriptions = []
-    let sub = this.walletStateService.stateLoaded.subscribe(_ => {
-      this.stateLoaded = true
-      console.debug('stateLoaded:', this.router.url)
-
-      // Check current route and set route based on wallet and dlc state after initialization
-      if (this.router.url.startsWith('/login')) {
-        if (this.dlcService.dlcs.value.length > 0) {
-          this.router.navigate(['/contracts'])
-        } else { // if (this.walletStateService.balances.total > 0) {
-          this.router.navigate(['/wallet'])
+    let sub = this.walletStateService.stateLoaded.subscribe((loaded: boolean) => {
+      if (loaded) {
+        console.debug('stateLoaded:', this.router.url, 'loaded:', loaded)
+        // Check current route and set route based on wallet and dlc state after initialization
+        if (this.router.url.startsWith('/login')) {
+          if (this.dlcService.dlcs.value.length > 0) {
+            this.router.navigate(['/contracts'])
+          } else { // if (this.walletStateService.balances.total > 0) {
+            this.router.navigate(['/wallet'])
+          }
         }
       }
     })

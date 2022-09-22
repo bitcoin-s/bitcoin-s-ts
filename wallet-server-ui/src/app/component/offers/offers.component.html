@@ -6,7 +6,7 @@
       </div>
 
       <form *ngIf="debug" class="form-container" [formGroup]="form" autocomplete="off">
-        <fieldset>
+        <fieldset [disabled]="!offerService.initialized.value">
           <mat-form-field>
             <textarea matInput formControlName="message" cdkTextareaAutosize
               placeholder="{{ 'offers.message' | translate }}" type="text" maxlength="1024" autocomplete="off"
@@ -65,7 +65,7 @@
             <ng-template #peerAddress>
               <span class="peer">{{ formatShortHex(offer.peer) }}</span>
               <button mat-icon-button class="mat-icon-button-sm"
-                matTooltip="{{ 'action.copyToClipboard' | translate }}"
+                matTooltip="{{ 'action.copyToClipboard' | translate }}" matTooltipPosition="right"
                 (click)="copyToClipboard(offer.peer); $event.stopPropagation()">
                 <mat-icon class="mat-icon-sm material-icons-outlined">content_copy</mat-icon>
               </button>
@@ -109,7 +109,7 @@
           <td mat-cell *matCellDef="let offer">
             <span>{{ formatShortHex(offer.offerTLV) }}</span>
             <button mat-icon-button class="mat-icon-button-sm"
-              matTooltip="{{ 'action.copyToClipboard' | translate }}"
+              matTooltip="{{ 'action.copyToClipboard' | translate }}" matTooltipPosition="right"
               (click)="copyToClipboard(offer.offerTLV); $event.stopPropagation()">
               <mat-icon class="mat-icon-sm material-icons-outlined">content_copy</mat-icon>
             </button>
@@ -120,7 +120,7 @@
           <td mat-cell *matCellDef="let offer">
             <span>{{ formatShortHex(offer.hash) }}</span>
             <button mat-icon-button class="mat-icon-button-sm"
-              matTooltip="{{ 'action.copyToClipboard' | translate }}"
+              matTooltip="{{ 'action.copyToClipboard' | translate }}" matTooltipPosition="right"
               (click)="copyToClipboard(offer.hash); $event.stopPropagation()">
               <mat-icon class="mat-icon-sm material-icons-outlined">content_copy</mat-icon>
             </button>
@@ -134,7 +134,7 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
           <td mat-cell *matCellDef="let offer">
             <button mat-icon-button (click)="onDelete(offer); $event.stopPropagation()"
-              matTooltip="{{ 'action.delete' | translate }}"
+              matTooltip="{{ 'action.delete' | translate }}" matTooltipPosition="left"
             >
               <mat-icon class="material-icons-outlined">delete</mat-icon>
             </button>
