@@ -169,7 +169,7 @@
   },
 
   "buildAcceptOffer": {
-    "description": "Build a new Discreet Log Contract",
+    "description": "Build a Discreet Log Contract",
     "buildOffer": "Build Offer",
     "acceptOffer": "Accept Offer",
     "moreInfo": "More Information",
@@ -187,7 +187,7 @@
 
   "walletBalance": {
     "heading": "Wallet",
-    "description": "View Addresses and Balances",
+    "description": "Balances and Addresses",
     "balance": "Balance",
     "dlcReturns": "DLC Returns",
     "confirmedBalance": "Confirmed",
@@ -329,7 +329,7 @@
 
   "contracts": {
     "heading": "Contracts",
-    "description": "Your Discreet Log Contracts",
+    "description": "Discreet Log Contracts",
     "eventId": "Event Id",
     "peer": "Peer",
     "contractId": "Contract Id",
@@ -449,10 +449,10 @@
 
   "dlcFile": {
     "heading": "DLC File Operations",
-    "uploadADLCFile": "Upload a DLC File",
-    "chooseOffer": "Choose Offer DLC File to Accept",
-    "chooseAccept": "Choose Accepted DLC File to Sign",
-    "chooseSign": "Choose Signed DLC File to Broadcast"
+    "uploadADLCFile": "Upload DLC File",
+    "offer": "Offer DLC File to Accept",
+    "accept": "Accepted DLC File to Sign",
+    "sign": "Signed DLC File to Broadcast"
   },
 
   "dlcFileDescription": {

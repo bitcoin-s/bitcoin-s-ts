@@ -151,6 +151,11 @@ $appLogoSize: 36px;
   // Responsive Sizing and Visibility
   // Menu button conditional styling has to be in global styles.scss
 
+  @include lt-xl {
+    .title {
+      display: none;
+    }
+  }
   @include lt-lg {
     .wallet-icon {
       display: none;

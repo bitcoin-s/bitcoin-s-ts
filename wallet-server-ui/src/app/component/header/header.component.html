@@ -2,7 +2,7 @@
   <nav class="header">
     <a mat-button class="app-link" routerLink="/">
       <div class="app-logo" alt="Suredbits"></div>
-      <!-- <span class="title" translate>header.title</span> -->
+      <span class="title" translate>header.title</span>
     </a>
 
     <!-- Logged Out-->
@@ -167,19 +167,19 @@
           onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.offer)"/>
         <button mat-menu-item (click)="acceptInput.click()">
           <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
-          <span translate>dlcFile.chooseOffer</span>
+          <span translate>dlcFile.offer</span>
         </button>
         <input #signInput hidden="true" type="file"
           onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.accept)"/>
         <button mat-menu-item (click)="signInput.click()">
           <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
-          <span translate>dlcFile.chooseAccept</span>
+          <span translate>dlcFile.accept</span>
         </button>
         <input #broadcastInput hidden="true" type="file"
           onclick="this.value=null" (change)="dlcFileService.onFileSelection($event, DLCFileType.sign)"/>
         <button mat-menu-item (click)="broadcastInput.click()">
           <!-- <mat-icon class="material-icons-outlined">file_upload</mat-icon> -->
-          <span translate>dlcFile.chooseSign</span>
+          <span translate>dlcFile.sign</span>
         </button>
       </mat-menu>
 
