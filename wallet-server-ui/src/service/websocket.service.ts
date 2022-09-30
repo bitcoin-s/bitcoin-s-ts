@@ -35,6 +35,18 @@ enum WebsocketMessageType {
   dlcconnectionfailed = 'dlcconnectionfailed', // Tor peer connection failed
   compactfilterheaderprocessed = 'compactfilterheaderprocessed',
   compactfilterprocessed = 'compactfilterprocessed',
+
+  // Peer interaction Status Messages
+  // SendOffer TLV
+  dlcoffersendsucceed = 'dlcoffersendsucceed',
+  dlcoffersendfailed = 'dlcoffersendfailed',
+  // DLCAccept TLV
+  dlcacceptsucceed = 'dlcacceptsucceed',
+  dlcacceptfailed = 'dlcacceptfailed',
+  // DLCSign TLV
+  dlcsignsucceed = 'dlcsignsucceed',
+  dlcsignfailed = 'dlcsignfailed',
+
 }
 
 export interface WebsocketMessage {
@@ -275,8 +287,37 @@ export class WebsocketService {
         const compactFilter = <CompactFilter>message.payload
         this.walletStateService.compactFilterBlockHeight = compactFilter.height
         break;
+
+      // Peer interaction Status Messages
+      case WebsocketMessageType.dlcoffersendsucceed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcoffersendfailed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcacceptsucceed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcacceptfailed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcsignsucceed: // const contractId = <string>message.payload
+        break;
+      case WebsocketMessageType.dlcsignfailed: // const contractId = <string>message.payload
+        this.getPeerInteractionDialog(message.type, <string>message.payload)
+        break;
       default:
         console.error('handleMessage() unknown message.type', message)
+    }
+  }
+
+  getPeerInteractionDialog(t: WebsocketMessageType, id: string) {
+    let k = ''
+    switch (t) {
+      case WebsocketMessageType.dlcsignfailed: k = 'dlcSignFailure'; break
+      default: console.error('unknown peer interaction type', t)
+    }
+    if (k) {
+      const dialog = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          title: `dialog.${k}.title`,
+          content: `dialog.${k}.content`,
+          params: { id },
+          action: 'action.close',
+        }
+      })
     }
   }
 

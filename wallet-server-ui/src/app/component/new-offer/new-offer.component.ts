@@ -402,7 +402,7 @@ export class NewOfferComponent implements OnInit {
         if (this.offerType === OfferType.TOR) {
           const v = this.typeForm.value
           this.offerService.sendIncomingOffer(this.newOfferResult, v.peerAddress, v.message)
-          .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+          .subscribe(r => {
             console.warn(' sendIncomingOffer', r)
             if (r.result) {
               this.offerSent = true

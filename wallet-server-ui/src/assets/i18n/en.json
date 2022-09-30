@@ -556,6 +556,18 @@
     "torRestartRequired": {
       "title": "Restart Required",
       "content": "Tor failed to start. Please restart the server/this application/your Umbrel device."
+    },
+    "sendOfferError": {
+      "title": "Send Offer Error",
+      "content": "{{error}}"
+    },
+    "acceptOfferError": {
+      "title": "Accept Offer Error",
+      "content": "{{error}}"
+    },
+    "dlcSignFailure": {
+      "title": "DLC Sign Failure",
+      "content": "{{id}}"
     }
   },
 

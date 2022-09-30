@@ -1,9 +1,14 @@
 <section class="accept-offer" *ngIf="offer">
   <div class="section-header">
     <h2 translate>acceptOffer.heading</h2>
-    <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
-      <mat-icon>close</mat-icon>
-    </button>
+    <div class="section-header-button-group">
+      <div *ngIf="executing" class="spinner">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+      <button mat-icon-button class="close-button" matTooltip="{{ 'action.close' | translate }}" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="message" class="message-container">
