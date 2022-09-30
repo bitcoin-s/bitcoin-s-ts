@@ -5,6 +5,9 @@
   </div>
 
   <div class="wallet-state horizontal-pane">
+
+    <!-- Wallet Selector -->
+    <!-- alpha flag currently required - showWalletSelector -->
     <!-- walletName must have been set and there must be more than one wallet -->
     <div *ngIf="walletStateService.showWalletSelector && walletName !== undefined && walletStateService.wallets.value.length > 1" class="pane wallet-name">
       <div class="wallet-select">
@@ -44,6 +47,8 @@
         </mat-expansion-panel>
       </div>
     </div>
+
+    <!-- Balances -->
     <div *ngIf="walletStateService.balances" class="pane balances">
       <label translate>walletBalance.balance</label>
       <div class="balance-group">
@@ -84,18 +89,24 @@
     </div>
     -->
     
+    <!-- Actions -->
     <div class="pane buttons">
-      <button mat-flat-button color="primary" (click)="backendService.getNewAddress()">
+      <button mat-flat-button color="primary"
+        [disabled]="!walletStateService.wallet.value"
+        (click)="backendService.getNewAddress()">
         <mat-icon>add</mat-icon>
         <span translate>walletBalance.getNewAddress</span>
       </button>
-      <button mat-flat-button color="primary" (click)="backendService.sendFunds()">
+      <button mat-flat-button color="primary"
+        [disabled]="!walletStateService.wallet.value"
+        (click)="backendService.sendFunds()">
         <mat-icon class="material-icons-outlined">send</mat-icon>
         <span translate>walletBalance.sendFunds</span>
       </button>
     </div>
   </div>
 
+  <!-- Funded Addresses -->
   <div class="utxos-container horizontal-pane">
     <div *ngIf="addressService.fundedAddresses" class="pane utxos">
       <label translate>walletBalance.fundedAddresses</label>
@@ -117,6 +128,7 @@
     </div>
   </div>
 
+  <!-- Unfunded Addresses -->
   <div class="utxos-container horizontal-pane">
     <div *ngIf="addressService.unfundedAddresses" class="pane utxos">
       <label translate>walletBalance.unfundedAddresses</label>

@@ -25,7 +25,8 @@ export class DLCService {
 
   uninitialize() {
     this.initialized.next(false)
-    // Could clear state
+    this.dlcs.next([])
+    this.contractInfos.next({})
   }
 
   /** DLCs */

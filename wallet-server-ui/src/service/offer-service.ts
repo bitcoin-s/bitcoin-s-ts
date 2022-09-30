@@ -35,7 +35,8 @@ export class OfferService {
 
   uninitialize() {
     this.initialized.next(false)
-    // Could clear state
+    this.offers.next([])
+    this.decodedOffers.next({})
   }
 
   loadIncomingOffers() {

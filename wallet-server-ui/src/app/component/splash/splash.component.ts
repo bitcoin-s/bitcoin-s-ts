@@ -40,7 +40,7 @@ export class SplashComponent implements OnInit {
     this.saveSplashSettings()
     this.showSplash = false
 
-    this.router.navigate(['/wallet'])
+    // this.router.navigate(['/wallet']) // this defeats any route that is reloading
   }
 
   saveSplashSettings() {

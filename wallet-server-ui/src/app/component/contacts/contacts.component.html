@@ -4,7 +4,7 @@
   </div>
 
   <form class="form-container" [formGroup]="form" autocomplete="off">
-    <fieldset>
+    <fieldset [disabled]="!contactService.initialized.value">
       <mat-form-field>
         <input matInput formControlName="alias"
           placeholder="{{ 'contacts.alias' | translate }}" type="text" maxlength="1024" autocomplete="off" spellcheck="false"

@@ -9,7 +9,7 @@ export interface NewUserOnboardingStep {
   animatedGraphicPath: string
 }
 
-export const onboardingSteps: NewUserOnboardingStep[] = [
+export const NewUserOnboardingSteps: NewUserOnboardingStep[] = [
   {
     id: 1,
     menuTitleKey: 'Wallet Seed Backup',

@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core'
-
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations'
-import { onboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
-import { Router } from '@angular/router'
-import { WalletStateService } from '~service/wallet-state-service'
-import { copyToClipboard, formatNumber } from '~util/utils'
-import { BackendService } from '~service/backend.service'
+import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
+import { Router } from '@angular/router'
+
+import { BackendService } from '~service/backend.service'
+import { WalletStateService } from '~service/wallet-state-service'
+
+import { copyToClipboard, formatNumber } from '~util/utils'
+
 import { ExportComponent } from '../export/export.component'
+import { NewUserOnboardingSteps } from '../new-user-onboarding-card/new-user-onboarding-step'
+
 
 const slideInFromRight = [
   query(':enter, :leave', style({ position: 'absolute', width: '100%' }), {
@@ -49,38 +52,45 @@ const slideInFromLeft = [
   ],
 })
 export class NewUserOnboardingComponent implements OnInit {
+
   public copyToClipboard = copyToClipboard
   public formatNumber = formatNumber
 
-  currentStep: number = 1
+  public NewUserOnboardingSteps = NewUserOnboardingSteps
 
-  constructor(public walletStateService: WalletStateService, public backendService: BackendService, private router: Router, private dialog: MatDialog) {}
+  currentStep = 1
 
-  onboardingStepCards = onboardingSteps
+  constructor(public walletStateService: WalletStateService, public backendService: BackendService,
+    private router: Router, private dialog: MatDialog) {}
 
   ngOnInit() {}
 
-  onNextStepTapped() {
-    if (this.currentStep < this.onboardingStepCards.length) {
+  onNextStep() {
+    console.debug('onNextStep()')
+    if (this.currentStep < this.NewUserOnboardingSteps.length) {
       this.currentStep += 1
     }
   }
 
-  onPreviousStepTapped() {
+  onPreviousStep() {
+    console.debug('onPreviousStep()')
     if (this.currentStep > 0) {
       this.currentStep -= 1
     }
   }
 
-  onCompleteTapped() {
+  onComplete() {
+    console.debug('onComplete()')
     this.router.navigate(['/wallet'])
   }
 
   onStepSelected(step: number) {
+    console.debug('onStepSelected()')
     this.currentStep = step
   }
 
-  onImportExport() {
+  onExportSeed() {
+    console.debug('onExportSeed()')
     this.dialog.open(ExportComponent)
   }
 }

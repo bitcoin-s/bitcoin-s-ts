@@ -6,11 +6,14 @@ import { Subscription } from 'rxjs'
 import { environment } from '../../../environments/environment'
 
 import { AuthService } from '~service/auth.service'
-import { AlertType } from '../alert/alert.component'
-
 import { MessageService } from '~service/message.service'
+import { WalletStateService } from '~service/wallet-state-service'
+
 import { BlockchainMessageType, WalletMessageType } from '~type/wallet-server-types'
+
 import { getMessageBody } from '~util/wallet-server-util'
+
+import { AlertType } from '../alert/alert.component'
 
 
 @Component({
@@ -35,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private fb: UntypedFormBuilder, private route: ActivatedRoute,
     public authService: AuthService, private router: Router,
-    private messageService: MessageService) { }
+    private messageService: MessageService, public walletStateService: WalletStateService) { }
 
   ngOnInit(): void {
     this.queryParams$ = this.route.queryParams

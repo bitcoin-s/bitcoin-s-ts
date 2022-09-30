@@ -70,7 +70,8 @@ export class ContactService {
 
   uninitialize() {
     this.initialized.next(false)
-    // Could clear state
+    this.contacts.next([])
+    this.connectionCheck.next({})
   }
 
   loadContacts() {

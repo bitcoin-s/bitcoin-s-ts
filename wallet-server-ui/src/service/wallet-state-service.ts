@@ -204,7 +204,7 @@ export class WalletStateService {
   }
 
   // Full State Loaded signal
-  stateLoaded: EventEmitter<void> = new EventEmitter()
+  stateLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false)
 
   private initialized = false // server state fully initialized
 
@@ -271,13 +271,9 @@ export class WalletStateService {
   private checkInitialized() {
     if (this.initialized && this.dlcService.initialized.value && this.offerService.initialized.value) {
       console.debug('WalletStateService.checkInitialized() stateLoaded going', this.state)
-      this.stateLoaded.next() // initial state loaded event
+      this.stateLoaded.next(true) // initial state loaded event
     }
   }
-
-  // private readonly initializeState$ = this.initializeState().pipe(
-  //   debounceTime(STATE_RETRY_DELAY),
-  // )
 
   private initializeState() {
     console.debug('initializeState()')
@@ -296,7 +292,11 @@ export class WalletStateService {
 
   public uninitialize() {
     console.debug('WalletStateService.uninitialize()')
+    this.stateLoaded.next(false)
     this.state = WalletServiceState.offline
+    this.info = <GetInfoResponse><unknown>undefined
+    this.balances = <Balances><unknown>undefined
+    this.dlcWalletAccounting = <DLCWalletAccounting><unknown>undefined
     this.initialized = false
     this.uninitializeWallet()
     this.dlcService.uninitialize()
