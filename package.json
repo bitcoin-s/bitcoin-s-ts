@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-s-ts",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "scripts": {
     "clean": "./cleanDist.sh && tsc --build --clean",
     "build": "tsc --build",
