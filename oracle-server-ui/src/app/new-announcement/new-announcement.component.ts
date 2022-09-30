@@ -266,12 +266,14 @@ export class NewAnnouncementComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /** Warn user if they are closing a semi-built Announcement then emit close event */
   onClose() {
     console.debug('onClose()')
 
-    // Warn before close
-    if (this.selectedForm.dirty) {
-      console.warn('form was dirty')
+    if (this.announcementCreated) {
+      this.close.next()
+    } else if (this.selectedForm.dirty) {
+      // Warn before close
       const dialog = this.dialog.open(ConfirmationDialogComponent, {
         data: {
           title: 'dialog.closeNewAnnouncement.title',
@@ -284,12 +286,10 @@ export class NewAnnouncementComponent implements OnInit, AfterViewInit {
         console.debug(' onClose():', result)
         if (result) {
           this.close.next()
-        } else {
-          // Do nothing
         }
+        // else Canceled, do nothing
       })
     } else {
-      console.debug('form was not dirty')
       this.close.next()
     }
   }
