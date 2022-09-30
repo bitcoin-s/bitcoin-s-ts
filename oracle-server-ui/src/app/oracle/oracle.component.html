@@ -3,7 +3,8 @@
   <mat-drawer-container [hasBackdrop]="true" (backdropClick)="backdropClick()" >
 
     <!-- Left Drawer -->
-    <mat-drawer #leftDrawer mode="side">
+    <!-- Have not gotten escape key handling working with disableClose  (keydown.escape)="backdropClick()" -->
+    <mat-drawer #leftDrawer mode="side" disableClose>
       <div class="drawer-container">
         <new-announcement #newAnnouncement *ngIf="showNewAnnouncement" (close)="closeLeftDrawer()"></new-announcement>
       </div>
@@ -16,19 +17,24 @@
         <form class="oracle-form">
           <mat-form-field>
             <mat-label translate>oracle.name</mat-label>
-            <input matInput name="oracleName" type="text" [(ngModel)]="oracleName" (blur)="onOracleName()" (keydown.Enter)="onOracleNameEnter($event)" [readonly]="oracleNameReadOnly">
+            <input matInput name="oracleName" type="text"
+              [(ngModel)]="oracleName" (blur)="onOracleName()"
+              (keydown.Enter)="onOracleNameEnter($event)" [readonly]="oracleNameReadOnly">
           </mat-form-field>
           <mat-form-field>
             <mat-label translate>oracle.publicKey</mat-label>
-            <input matInput name="publicKey" type="text" [(ngModel)]="oracleState.publicKey" readonly="true">
+            <input matInput name="publicKey" type="text"
+              [(ngModel)]="oracleState.publicKey" readonly="true">
           </mat-form-field>
           <mat-form-field>
             <mat-label translate>oracle.stakingAddress</mat-label>
-            <input matInput name="stakingAddress" type="text" [(ngModel)]="oracleState.stakingAddress" readonly="true">
+            <input matInput name="stakingAddress" type="text"
+              [(ngModel)]="oracleState.stakingAddress" readonly="true">
           </mat-form-field>
           <mat-form-field>
             <mat-label translate>oracle.stakedAmount</mat-label>
-            <input matInput name="stakedAmount" type="text" [(ngModel)]="oracleState.stakedAmount" readonly="true">
+            <input matInput name="stakedAmount" type="text"
+              [(ngModel)]="oracleState.stakedAmount" readonly="true">
           </mat-form-field>
         </form>
       </div>
@@ -67,7 +73,7 @@
                 <ng-container *ngSwitchCase="undefined"></ng-container>
                 <ng-container *ngSwitchCase="null">
                   <button mat-icon-button
-                    matTooltip="{{'announcementTable.broadcastAnnouncement' | translate}}"
+                    matTooltip="{{ 'announcementTable.broadcastAnnouncement' | translate }}"
                     (click)="onAnnouncementClick(announcement); $event.stopPropagation()"
                   ><mat-icon class="material-icons-outlined">announcement</mat-icon>
                   </button>

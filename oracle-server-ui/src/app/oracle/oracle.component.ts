@@ -130,9 +130,14 @@ export class OracleComponent implements OnInit, AfterViewInit {
 
   backdropClick() {
     console.debug('backdropClick()')
-    this.detailAnnouncement = undefined
-    if (this.newAnnouncement)
-      this.newAnnouncement.reset()
+
+    if (this.newAnnouncement) {
+      console.warn(' newAnnouncement')
+      this.newAnnouncement.onClose()
+    } else {
+      this.hideLeftDrawerItems()
+      this.hideRightDrawerItems()
+    }
   }
 
   /** Oracle Explorer handlers */

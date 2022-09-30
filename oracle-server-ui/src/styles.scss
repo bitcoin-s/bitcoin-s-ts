@@ -53,6 +53,24 @@ fieldset {
 
 /** Material Design */
 
+/** Buttons */
+
+.mat-flat-button.mat-flat-button-sm,
+.mat-stroked-button.mat-stroked-button-sm {
+  padding: 0 8px;
+  line-height: 24px;
+  font-size: 12px;
+  min-width: 40px;
+}
+
+.mat-stroked-icon-button {
+  .mat-button-wrapper {
+    span {
+      margin-left: 0.5rem;
+    }
+  }
+}
+
 /** Material Design Forms */
 
 // Center checkbox in pseudo-mat-form-field
@@ -62,6 +80,19 @@ fieldset {
 
   mat-checkbox {
     margin: auto;
+  }
+}
+
+.mat-form-field-suffix {
+  .mat-flat-button-sm, .mat-stroked-button-sm {
+    vertical-align: super;
+  }
+  .mat-button-toggle-sm {
+    vertical-align: super;
+  }
+
+  button ~ button {
+    margin-left: 0.25rem;
   }
 }
 

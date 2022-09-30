@@ -42,7 +42,7 @@ export function formatOutcomes(outcomes: any[]): string {
       return signed ? '-' + outcome + DIGIT_SPACER + outcome : '0' + DIGIT_SPACER + outcome
     } else {
       // enum and all other outcomes
-      return '' + outcomes
+      return '' + outcomes.join(', ')
     }
   } else {
     return ''

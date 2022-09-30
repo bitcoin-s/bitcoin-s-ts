@@ -6,6 +6,15 @@
     flex-direction: column;
   }
 
+  .downloads {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 0.5rem;
+    }
+  }
+
   button {
     margin-bottom: 0.5rem;
   }

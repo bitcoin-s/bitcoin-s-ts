@@ -4,6 +4,12 @@
     <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
   </div>
 
+  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createAnnouncement.error.oracleName" icon="warning_amber"></app-alert>
+
+  <app-alert *ngIf="announcementCreated" [type]="AlertType.success" message="createAnnouncement.success.created" icon="check_circle"></app-alert>
+
+  <div *ngIf="!oracleName || announcementCreated" class="vspacer-2"></div>
+
   <mat-radio-group class="announcement-type"
     [(ngModel)]="announcementType" (ngModelChange)="announcementTypeChange()"
     [disabled]="announcementCreated">
@@ -35,6 +41,7 @@
         <app-more-info matSuffix tooltip="createAnnouncementDescription.maturationTime"></app-more-info>
       </mat-form-field>
 
+      <!-- Text Field based Outcomes
       <mat-form-field>
         <mat-label translate>createAnnouncement.outcomes</mat-label>
         <input matInput formControlName="outcomes" type="text" autocomplete="off"
@@ -51,6 +58,48 @@
           {{ 'createAnnouncementErrors.outcomeMinTwo' | translate }}
         </mat-error>
       </mat-form-field>
+      -->
+
+      <div formArrayName="outcomes" class="outcomes">
+        <div class="outcomes-label">
+          <mat-label translate>createAnnouncement.outcomes</mat-label>
+          <div class="spacer-auto"></div>
+          <button mat-stroked-button color="primary" class="mat-stroked-button mat-stroked-icon-button"
+            (click)="addOutcome()">
+            <mat-icon>add_circle</mat-icon>
+            <span translate>createAnnouncement.addOutcome</span>
+          </button>
+          <app-more-info matSuffix tooltip="createAnnouncementDescription.outcomes"></app-more-info>
+        </div>
+        <div *ngFor="let outcome of outcomes().controls; let outcomeIndex=index" [formGroupName]="outcomeIndex" class="outcome">
+          <!-- <div class="outcome" [formGroupName]="outcomeIndex"> -->
+            <mat-form-field class="w-100">
+              <input matInput formControlName="value" type="text" autocomplete="off" spellcheck="false" required
+                placeholder="{{ 'createAnnouncement.outcomePlaceholder' | translate : {
+                  value: outcomeIndex + 1
+                } }}">
+              <button matSuffix mat-icon-button color="primary" class="mat-icon-button"
+                (click)="removeOutcome(outcomeIndex)"
+                [disabled]="outcomes().length < 3"
+                matTooltip="{{ 'action.remove' | translate }}">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </mat-form-field>
+          <!-- </div> -->
+        </div>
+        <div *ngIf="enumForm.controls.outcomes.touched" class="outcome-errors">
+          <mat-error *ngIf="enumForm.controls.outcomes.errors?.outcomeHasEmpty">
+            {{ 'createAnnouncementErrors.outcomeHasEmpty' | translate }}
+          </mat-error>
+          <mat-error *ngIf="enumForm.controls.outcomes.errors?.outcomeUnique">
+            {{ 'createAnnouncementErrors.outcomeUnique' | translate }}
+          </mat-error>
+          <mat-error *ngIf="enumForm.controls.outcomes.errors?.outcomeMinTwo">
+            {{ 'createAnnouncementErrors.outcomeMinTwo' | translate }}
+          </mat-error>
+        </div>
+      </div>
+
     </fieldset>
   </form>
 
@@ -105,9 +154,5 @@
 
   <button class="create-button" mat-raised-button color="primary" (click)="onCreateAnnouncement()"
     [disabled]="!oracleName || selectedForm.invalid || loading || announcementCreated">{{ 'create' | translate }}</button>
-  
-  <app-alert *ngIf="!oracleName" [type]="AlertType.warn" message="createAnnouncement.error.oracleName" icon="warning_amber"></app-alert>
-
-  <app-alert *ngIf="announcementCreated" [type]="AlertType.success" message="createAnnouncement.success.created" icon="check_circle"></app-alert>
 
 </section>

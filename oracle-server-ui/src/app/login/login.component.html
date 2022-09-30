@@ -18,7 +18,7 @@
       </mat-form-field>
     </fieldset>
     <div class="button-group">
-      <button mat-flat-button color="primary" (click)="login()" [disabled]="executing">
+      <button mat-flat-button color="primary" (click)="login()" [disabled]="executing || authService.isLoggedIn">
         {{ 'login.login' | translate }}
         <div class="spinner" *ngIf="loginExecuting">
           <mat-spinner diameter="20"></mat-spinner>

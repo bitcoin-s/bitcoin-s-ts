@@ -3,7 +3,12 @@
     <h2 translate>announcementDetail.heading</h2>
     <button mat-icon-button class="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
   </div>
+
+  <app-alert *ngIf="showAttestationDeleted" [type]="AlertType.success" message="announcementDetail.attestationDeleted" icon="check_circle"></app-alert>
+  <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="announcementDetail.outcomeSigned" icon="check_circle"></app-alert>
   
+  <div *ngIf="showAttestationDeleted || showSigningSuccess" class="vspacer-2"></div>
+
   <form class="form-container">
     <mat-form-field>
       <mat-label translate>createAnnouncement.name</mat-label>
@@ -28,6 +33,7 @@
 
     <ng-container *ngIf="announcement.signedOutcome === null">
       <ng-container *ngIf="isEnum()">
+        <!-- Text Input Outcome Impl
         <mat-form-field>
           <mat-label translate>outcome</mat-label>
           <input matInput name="signEnum" type="text" autocomplete="off"
@@ -35,6 +41,15 @@
             placeholder="{{ announcement.outcomes.join() }}">
           <mat-hint *ngIf="signEnumInput && !announcement.outcomes.includes(signEnumInput)" align="start" translate [translateParams]="{ outcomes: announcement.outcomes.join() }">announcementDetail.outcomeMustBeInSet</mat-hint>
         </mat-form-field>
+        -->
+        <div class="outcome-container">
+          <mat-label class="outcome-label" translate>outcome</mat-label>
+          <mat-radio-group class="outcome-radio-group" name="signEnum"
+            [value]="signEnumInput" (change)="outcomeSelectionChange($event)">
+            <mat-radio-button *ngFor="let o of announcement.outcomes" class="outcome-radio"
+              [value]="o">{{ o }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
         <button class="sign-button" mat-raised-button color="primary" (click)="onSignEnum()" [disabled]="!announcement.outcomes.includes(signEnumInput)">
           {{ 'oracleOperations.signenum' | translate }}</button>
       </ng-container>
@@ -49,10 +64,6 @@
           {{ 'oracleOperations.signdigits' | translate }}</button>
       </ng-container>
     </ng-container>
-
-    <app-alert *ngIf="showAttestationDeleted" [type]="AlertType.success" message="announcementDetail.attestationDeleted" icon="check_circle"></app-alert>
-    <app-alert *ngIf="showSigningSuccess" [type]="AlertType.success" message="announcementDetail.outcomeSigned" icon="check_circle"></app-alert>
-
   </form>
 
   <div class="status">
