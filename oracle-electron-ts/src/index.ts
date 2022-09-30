@@ -176,7 +176,7 @@ let mainWindow: BrowserWindow = null
 const createWindow = (): void => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1080,
+    width: 1205,
     height: 900,
     icon: path.join(__dirname, 'assets/icon.png'), // Linux app icon
     webPreferences: {
