@@ -54,6 +54,11 @@ export interface WebsocketMessage {
   payload: any
 }
 
+export interface WebsocketIdErrorPayload {
+  id: string
+  error: string
+}
+
 const STARTUP_POLLING_DELAY = 0 // ms
 const POLLING_TIME = 15000 // ms
 
@@ -160,8 +165,9 @@ export class WebsocketService {
 
   private handleMessage(message: WebsocketMessage) {
     const d = new Date().toISOString()
-    if (message.type === WebsocketMessageType.blockprocessed) {
-      // just too many to log, overwhelms browser
+    if ([WebsocketMessageType.blockprocessed,
+      WebsocketMessageType.compactfilterheaderprocessed].includes(message.type)) {
+      // just too many to log
     } else {
       console.debug('handleMessage()', d, 'message:', message.type, message.payload)
     }
@@ -290,23 +296,26 @@ export class WebsocketService {
 
       // Peer interaction Status Messages
       case WebsocketMessageType.dlcoffersendsucceed: // const temporaryContractId = <string>message.payload
-      case WebsocketMessageType.dlcoffersendfailed: // const temporaryContractId = <string>message.payload
       case WebsocketMessageType.dlcacceptsucceed: // const temporaryContractId = <string>message.payload
-      case WebsocketMessageType.dlcacceptfailed: // const temporaryContractId = <string>message.payload
       case WebsocketMessageType.dlcsignsucceed: // const contractId = <string>message.payload
         break;
+      case WebsocketMessageType.dlcoffersendfailed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcacceptfailed: // const temporaryContractId = <string>message.payload
       case WebsocketMessageType.dlcsignfailed: // const contractId = <string>message.payload
-        this.getPeerInteractionDialog(message.type, <string>message.payload)
+        const p = <WebsocketIdErrorPayload>message.payload
+        this.getPeerInteractionDialog(message.type, p.id, p.error)
         break;
       default:
         console.error('handleMessage() unknown message.type', message)
     }
   }
 
-  getPeerInteractionDialog(t: WebsocketMessageType, id: string) {
+  getPeerInteractionDialog(t: WebsocketMessageType, id: string, error: string) {
     let k = ''
     switch (t) {
-      case WebsocketMessageType.dlcsignfailed: k = 'dlcSignFailure'; break
+      case WebsocketMessageType.dlcoffersendfailed: k = 'sendOfferFailed'; break
+      case WebsocketMessageType.dlcacceptfailed: k = 'dlcAcceptFailed'; break
+      case WebsocketMessageType.dlcsignfailed: k = 'dlcSignFailed'; break
       default: console.error('unknown peer interaction type', t)
     }
     if (k) {
@@ -314,7 +323,7 @@ export class WebsocketService {
         data: {
           title: `dialog.${k}.title`,
           content: `dialog.${k}.content`,
-          params: { id },
+          params: { id, error },
           action: 'action.close',
         }
       })

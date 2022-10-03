@@ -253,13 +253,7 @@ export class AcceptOfferComponent implements OnInit {
         [this.offer.hex, peerAddress, payoutAddress, changeAddress])).subscribe(r => {
           console.warn('acceptdlc', r)
           if (r.error) { // 'Cannot connect to ...onion:2862 via Tor'
-            const dialog = this.dialog.open(ErrorDialogComponent, {
-              data: {
-                title: 'dialog.acceptOfferError.title',
-                content: 'dialog.acceptOfferError.content',
-                params: { error: r.error },
-              }
-            })
+            // Handling via websocket dlcacceptfailed now
           } else if (r.result) { 
             this.result = 'acceptOffer.tor.success'
             // this.walletStateService.refreshDLCStates() // using websocket now

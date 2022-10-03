@@ -123,13 +123,7 @@ export class OfferService {
     .pipe(tap(r => {
       console.debug(' offer-send', r)
       if (r.error) { // 'Cannot connect to ...onion:2862 via Tor'
-        const dialog = this.dialog.open(ErrorDialogComponent, {
-          data: {
-            title: 'dialog.sendOfferError.title',
-            content: 'dialog.sendOfferError.content',
-            params: { error: r.error },
-          }
-        })
+        // Handling via websocket dlcoffersendfailed now
       } else if (r.result) { // hash.hex
         
       }
