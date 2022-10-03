@@ -23,13 +23,24 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label translate>oracle.publicKey</mat-label>
-            <input matInput name="publicKey" type="text"
-              [(ngModel)]="oracleState.publicKey" readonly="true">
+            <input class="public-key-input" matInput name="publicKey" type="text"
+              [(ngModel)]="oracleState.oracleState.publicKey" readonly="true">
+            <button mat-icon-button matSuffix
+              matTooltip="{{ 'action.copyToClipboard' | translate }}"
+              (click)="copyToClipboard(oracleState.oracleState.publicKey)">
+              <mat-icon>content_copy</mat-icon>
+            </button>
           </mat-form-field>
+          <!-- Confusing Users -->
           <mat-form-field>
             <mat-label translate>oracle.stakingAddress</mat-label>
-            <input matInput name="stakingAddress" type="text"
-              [(ngModel)]="oracleState.stakingAddress" readonly="true">
+            <input class="staking-address-input" matInput name="stakingAddress" type="text"
+              [(ngModel)]="oracleState.oracleState.stakingAddress" readonly="true">
+            <button mat-icon-button matSuffix
+              matTooltip="{{ 'action.copyToClipboard' | translate }}"
+              (click)="copyToClipboard(oracleState.oracleState.stakingAddress)">
+              <mat-icon>content_copy</mat-icon>
+            </button>
           </mat-form-field>
           <mat-form-field>
             <mat-label translate>oracle.stakedAmount</mat-label>
@@ -102,7 +113,7 @@
             <td mat-cell *matCellDef="let announcement">
               <div *ngIf="announcement.signedOutcome !== null" class="signedOutcome-container">
                 <span class="outcome-label">{{ announcement.signedOutcome }}</span>
-    
+
                 <ng-container *ngIf="oracleName && oracleState.oeAnnouncements.value[announcement.eventName] === undefined">
                   <mat-spinner class="spinner" diameter="20"></mat-spinner>
                 </ng-container>

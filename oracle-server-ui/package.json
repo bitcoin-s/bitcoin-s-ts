@@ -30,6 +30,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "file-saver": "^2.0.5",
+    "oracle-server-ts": "file:../oracle-server-ts",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"

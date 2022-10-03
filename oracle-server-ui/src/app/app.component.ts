@@ -37,11 +37,10 @@ export class AppComponent implements OnInit, OnDestroy {
   loggedIn$: Subscription
   loggedOut$: Subscription
   subscriptions: Subscription[]
-  appServerReady$: Subscription
 
   constructor(private titleService: Title, private translate: TranslateService, public router: Router,
     public messageService: MessageService, private snackBar: MatSnackBar, public authService: AuthService,
-    private oracleStateService: OracleStateService, private overlay: OverlayContainer) {
+    private oracleService: OracleStateService, private overlay: OverlayContainer) {
     this.loggedIn$ = this.authService.loggedIn.subscribe(r => {
       console.debug('loggedIn')
       this.onLogin()
@@ -55,17 +54,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private onLogin() {
     this.createSubscriptions()
-    this.appServerReady$ = this.oracleStateService.waitForAppServer().subscribe(r => {
-      console.debug(' waitForAppServer()', r)
-      this.appServerReady$.unsubscribe()
-      this.oracleStateService.initializeState()
-    })
+    // Initialize oracle server state
+    this.oracleService.initialize()
   }
 
   private createSubscriptions() {
     if (this.subscriptions) this.destroySubscriptions()
     this.subscriptions = []
-    let sub = this.oracleStateService.stateLoaded.subscribe(_ => {
+    let sub = this.oracleService.stateLoaded.subscribe(_ => {
       this.stateLoaded = true
       console.debug('stateLoaded:', this.router.url)
 
@@ -80,10 +76,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private onLogout() {
     this.destroySubscriptions()
-    if (this.appServerReady$)
-      this.appServerReady$.unsubscribe()
     this.stateLoaded = false
     this.rightDrawer.close()
+    this.oracleService.uninitialize()
     this.router.navigate(['/login'], { queryParams: { loggedOut: 1 } })
   }
 
