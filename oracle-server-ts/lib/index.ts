@@ -10,7 +10,7 @@ import { MessageType, OracleAnnouncement, OracleEvent, OracleResponse } from './
 import { validateEnumOutcomes } from './util/validation-util.js'
 
 // Expose all 'common' endpoints
-export * from 'common-ts/index'
+export * from 'common-ts/index.js'
 
 
 const DEBUG = true // log actions in console.debug
