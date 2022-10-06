@@ -346,12 +346,24 @@
             autocomplete="off" spellcheck="false" maxlength="1024"
             placeholder="{{ 'acceptOffer.peerAddressPlaceholder' | translate }}"
             (paste)="peerAddressValue = trimAndStripHTTPOnPaste($event)">
+          <!-- Contact Selection -->
+          <button mat-stroked-button matSuffix class="mat-stroked-icon-button-md" [matMenuTriggerFor]="contactMenu"
+            matTooltip="{{ 'contacts.selectContact' | translate }}"
+            [disabled]="!contactService.contacts.value || contactService.contacts.value.length === 0">
+            <mat-icon class="material-icons-outlined">person_add</mat-icon></button>
+          <mat-menu #contactMenu="matMenu" xPosition="before">
+            <button mat-menu-item *ngFor="let contact of contactService.contacts.value"
+              (click)="onOfferedContact(contact)">{{ contact.alias }}</button>
+          </mat-menu>
           <app-more-info matSuffix tooltip="newOfferDescription.peerAddress"></app-more-info>
         </mat-form-field>
         <app-alert *ngIf="peerAddress?.errors?.['dontMatchInvalid']"
           [type]="AlertType.error" message="error.cannotSendToOwnHostAddress" icon="error_outline"></app-alert>
       </fieldset>
     </form>
+
+    <app-alert *ngIf="offerSent" [type]="AlertType.success" icon="check_circle"
+      message="newOffer.offerSent"></app-alert>
 
     <div class="execute-container">
       <div class="button-group">
@@ -366,8 +378,6 @@
       </div>
     </div>
 
-    <app-alert *ngIf="offerSent" [type]="AlertType.success" icon="check_circle"
-      message="newOffer.offerSent"></app-alert>
   </div>
 
   <!-- Signing Accept -->

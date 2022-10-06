@@ -530,8 +530,7 @@ export class ContractDetailComponent implements OnInit {
     const v = this.offerForm.value
 
     this.executing = true
-    this.offerService.sendIncomingOffer(this.dlc.temporaryContractId, v.peerAddress, v.message)
-    .pipe(catchError(error => of({ result: null }))).subscribe(r => {
+    this.offerService.sendIncomingOffer(this.dlc.temporaryContractId, v.peerAddress, v.message).subscribe(r => {
       console.warn(' sendIncomingOffer', r)
       if (r.result) {
         this.offerSent = true
@@ -619,6 +618,13 @@ export class ContractDetailComponent implements OnInit {
         })
       }
     })
+  }
+
+  onOfferedContact(contact: Contact) {
+    console.debug('onOfferedContact()', contact)
+    if (contact) {
+      this.peerAddressValue = contact.address
+    }
   }
 
 }

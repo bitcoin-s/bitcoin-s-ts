@@ -311,7 +311,7 @@ mat-form-field {
 
 .execute-container {
   margin-top: 2rem;
-  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
   
   .button-group {
     display: flex;
@@ -323,7 +323,7 @@ mat-form-field {
       margin-right: 1rem;
     }
     .spinner {
-      margin-left: 1rem;
+      margin-left: 0.5rem;
     }
   }
 }

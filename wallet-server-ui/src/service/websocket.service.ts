@@ -35,11 +35,28 @@ enum WebsocketMessageType {
   dlcconnectionfailed = 'dlcconnectionfailed', // Tor peer connection failed
   compactfilterheaderprocessed = 'compactfilterheaderprocessed',
   compactfilterprocessed = 'compactfilterprocessed',
+
+  // Peer interaction Status Messages
+  // SendOffer TLV
+  dlcoffersendsucceed = 'dlcoffersendsucceed',
+  dlcoffersendfailed = 'dlcoffersendfailed',
+  // DLCAccept TLV
+  dlcacceptsucceed = 'dlcacceptsucceed',
+  dlcacceptfailed = 'dlcacceptfailed',
+  // DLCSign TLV
+  dlcsignsucceed = 'dlcsignsucceed',
+  dlcsignfailed = 'dlcsignfailed',
+
 }
 
 export interface WebsocketMessage {
   type: WebsocketMessageType
   payload: any
+}
+
+export interface WebsocketIdErrorPayload {
+  id: string
+  error: string
 }
 
 const STARTUP_POLLING_DELAY = 0 // ms
@@ -148,8 +165,9 @@ export class WebsocketService {
 
   private handleMessage(message: WebsocketMessage) {
     const d = new Date().toISOString()
-    if (message.type === WebsocketMessageType.blockprocessed) {
-      // just too many to log, overwhelms browser
+    if ([WebsocketMessageType.blockprocessed,
+      WebsocketMessageType.compactfilterheaderprocessed].includes(message.type)) {
+      // just too many to log
     } else {
       console.debug('handleMessage()', d, 'message:', message.type, message.payload)
     }
@@ -275,8 +293,40 @@ export class WebsocketService {
         const compactFilter = <CompactFilter>message.payload
         this.walletStateService.compactFilterBlockHeight = compactFilter.height
         break;
+
+      // Peer interaction Status Messages
+      case WebsocketMessageType.dlcoffersendsucceed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcacceptsucceed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcsignsucceed: // const contractId = <string>message.payload
+        break;
+      case WebsocketMessageType.dlcoffersendfailed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcacceptfailed: // const temporaryContractId = <string>message.payload
+      case WebsocketMessageType.dlcsignfailed: // const contractId = <string>message.payload
+        const p = <WebsocketIdErrorPayload>message.payload
+        this.getPeerInteractionDialog(message.type, p.id, p.error)
+        break;
       default:
         console.error('handleMessage() unknown message.type', message)
+    }
+  }
+
+  getPeerInteractionDialog(t: WebsocketMessageType, id: string, error: string) {
+    let k = ''
+    switch (t) {
+      case WebsocketMessageType.dlcoffersendfailed: k = 'sendOfferFailed'; break
+      case WebsocketMessageType.dlcacceptfailed: k = 'dlcAcceptFailed'; break
+      case WebsocketMessageType.dlcsignfailed: k = 'dlcSignFailed'; break
+      default: console.error('unknown peer interaction type', t)
+    }
+    if (k) {
+      const dialog = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          title: `dialog.${k}.title`,
+          content: `dialog.${k}.content`,
+          params: { id, error },
+          action: 'action.close',
+        }
+      })
     }
   }
 
