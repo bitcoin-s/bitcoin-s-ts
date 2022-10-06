@@ -82,9 +82,9 @@ export class OracleStateService {
 
     return OracleTS.WaitForServer()
     .pipe(
-      tap(_ => { console.warn(' after WalletTS.WaitForServer()') }),
+      tap(_ => { console.warn(' after OracleTS.WaitForServer()') }),
       switchMap(_ => OracleTS.InitializeOracleState()),
-      tap(_ => { console.warn(' after WalletTS.InitializeOracleState()') }),
+      tap(_ => { console.warn(' after OracleTS.InitializeOracleState()') }),
       switchMap(_ => this.initializeState()),
       tap(_ => { console.warn(' after initializeState()') }))
     .subscribe(r => {
