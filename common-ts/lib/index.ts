@@ -31,36 +31,62 @@ export function ConfigureAuthorizationHeaderFromUserPassword(user: string, passw
 
 /** Send any ServerMessage */
 export function SendServerMessage(message: ServerMessage, customConfig = {}): Promise<ServerResponse<any>> {
-  if (message) {
-    const headers: any = { 'Content-Type': 'application/json' }
-    if (AUTHORIZATION_HEADER) headers['Authorization'] = AUTHORIZATION_HEADER
-    const config: any = {
-      method: 'POST',
-      // mode: 'no-cors', // 'same-origin',
-      ...customConfig,
-      headers: {
-        ...headers,
-      },
-      body: JSON.stringify(message)
-    }
+  if (!message) return Promise.reject(Error('SendServerMessage() null message'))
 
-    // console.debug('config:', config)
-
-    return fetch(`${SERVER_URL}`, config)
-      .then(async response => {
-        // if (response.status === 401) {
-        //   // autologout / redirect
-        // }
-        if (response.ok) {
-          return <ServerResponse<any>> await response.json()
-        } else {
-          const errorMessage = await response.text()
-          return Promise.reject(new Error(errorMessage))
-        }
-      })
-  } else {
-    return Promise.reject(Error('SendServerMessage() null message'))
+  const headers: any = { 'Content-Type': 'application/json' }
+  if (AUTHORIZATION_HEADER) headers['Authorization'] = AUTHORIZATION_HEADER
+  const config: any = {
+    method: 'POST',
+    // mode: 'no-cors', // 'same-origin',
+    ...customConfig,
+    headers: {
+      ...headers,
+    },
+    body: JSON.stringify(message)
   }
+
+  // console.debug('config:', config)
+
+  return fetch(`${SERVER_URL}`, config)
+    .then(async response => {
+      // if (response.status === 401) {
+      //   // autologout / redirect
+      // }
+      if (response.ok) {
+        return <ServerResponse<any>> await response.json()
+      } else {
+        const errorMessage = await response.text()
+        return Promise.reject(new Error(errorMessage))
+      }
+    })
+}
+
+const OFFLINE_POLLING_TIME = 5000 // ms
+export async function PollingLoop(message?: ServerMessage, delay = OFFLINE_POLLING_TIME) {
+  if (!message) message = getMessageBody(MessageType.getversion)
+  let shouldContinue = true // doesn't really control anything
+  let r: Promise<ServerResponse<any>>
+  function wait(ms = delay) {
+    // console.debug('wait', ms)
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    })
+  }
+  while (shouldContinue) {
+    try {
+      const r = await SendServerMessage(message)
+      shouldContinue = false
+      return r
+    } catch (err) {
+      await wait()
+    }
+  }
+}
+
+import { from, Observable } from 'rxjs'
+
+export function PollingLoopObs(message?: ServerMessage, delay = OFFLINE_POLLING_TIME): Observable<ServerResponse<any> | undefined> {
+  return from(PollingLoop(message, delay))
 }
 
 /** Common bitcoin-s message functions */ 
@@ -70,21 +96,17 @@ export function GetVersion(): Promise<ServerResponse<VersionResponse>> {
   if (DEBUG) console.debug('GetVersion()')
 
   const m = getMessageBody(MessageType.getversion)
-  return SendServerMessage(m).then(response => {
-    return <ServerResponse<VersionResponse>>response
-  })
+  return SendServerMessage(m)
 }
 
 /** Zip Server DataDir */
-export function ZipDataDir(path: string) {
+export function ZipDataDir(path: string): Promise<ServerResponse<string|null>> {
   if (DEBUG) console.debug('ZipDataDir()')
   validateString(path, 'ZipDataDir()', 'path')
 
   const m = getMessageBody(MessageType.zipdatadir, [path])
-  return SendServerMessage(m).then(response => {
-    // result: 'failure' / null
-    return <ServerResponse<string|null>>response
-  })
+  // result: 'failure' / null
+  return SendServerMessage(m)
 }
 
 /** New Observable functions */

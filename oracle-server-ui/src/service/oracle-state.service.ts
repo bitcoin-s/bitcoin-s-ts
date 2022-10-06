@@ -79,10 +79,16 @@ export class OracleStateService {
     if (token) {
       OracleTS.ConfigureAuthorizationHeader('Bearer ' + token)
     }
-    return OracleTS.WaitForServer().subscribe(r => {
-      OracleTS.InitializeOracleState().subscribe(r => {
-        this.initializeState()
-      })
+
+    return OracleTS.WaitForServer()
+    .pipe(
+      tap(_ => { console.warn(' after WalletTS.WaitForServer()') }),
+      switchMap(_ => OracleTS.InitializeOracleState()),
+      tap(_ => { console.warn(' after WalletTS.InitializeOracleState()') }),
+      switchMap(_ => this.initializeState()),
+      tap(_ => { console.warn(' after initializeState()') }))
+    .subscribe(r => {
+      console.warn(' done with initialize() chain')
     })
   }
 
@@ -99,10 +105,10 @@ export class OracleStateService {
       this.getOracleName(),
       this.getStakingBalance(),
       this.getAnnouncementsFromOracleExplorer(),
-    ]).subscribe(_ => {
+    ]).pipe(tap(_ => {
       console.debug(' initializedState() initialized')
       this.stateLoaded.next()
-    })
+    }))
   }
 
   private getBuildConfig() {

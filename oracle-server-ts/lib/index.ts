@@ -11,7 +11,7 @@ import { validateEnumOutcomes } from './util/validation-util.js'
 
 // Expose all 'common' endpoints
 export * from 'common-ts/index.js'
-
+import { PollingLoopObs } from 'common-ts/index.js'
 
 const DEBUG = true // log actions in console.debug
 
@@ -73,14 +73,8 @@ function addEventToState(a: OracleAnnouncement|null) {
 /** Detect that backend is available and ready for interaction */
 export function WaitForServer() {
   if (DEBUG) console.debug('WaitForServer()')
-  return from(<Promise<ServerResponse<VersionResponse>>>GetVersion()).pipe(
-    retryWhen(errors => {
-      return errors.pipe(
-        tap(_ => { if (DEBUG) console.debug('polling') }),
-        delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
-      );
-    })
-  )
+
+  return PollingLoopObs()
 }
 
 /** Load all data in OracleState and Announcement data */
@@ -98,6 +92,7 @@ export function InitializeOracleState() {
 
 /** Observable wrapped GetVersion() state fn */
 function getServerVersion() {
+  // if (DEBUG) console.debug('getServerVersion()')
   return from(<Promise<ServerResponse<VersionResponse>>>GetVersion()).pipe(tap(r => {
     if (r.result) {
       if (DEBUG) console.debug('getServerVersion()', r.result.version)
