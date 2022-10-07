@@ -1,7 +1,7 @@
 import { BehaviorSubject, forkJoin, from, Observable, of, timer } from 'rxjs'
 import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
 
-import { SendServerMessage, GetVersion } from 'common-ts/index.js'
+import { SendServerMessage, GetVersion, PollingLoopObs } from 'common-ts/index.js'
 import { ServerResponse, VersionResponse } from 'common-ts/type/server-types'
 import { getMessageBody } from 'common-ts/util/message-util.js'
 import { validateISODateString, validateNumber, validateString } from 'common-ts/util/validation-util.js'
@@ -11,7 +11,6 @@ import { validateEnumOutcomes } from './util/validation-util.js'
 
 // Expose all 'common' endpoints
 export * from 'common-ts/index.js'
-import { PollingLoopObs } from 'common-ts/index.js'
 
 const DEBUG = true // log actions in console.debug
 
@@ -71,7 +70,7 @@ function addEventToState(a: OracleAnnouncement|null) {
 /** OracleTS Support Functions */
 
 /** Detect that backend is available and ready for interaction */
-export function WaitForServer() {
+export function WaitForServer(): Observable<ServerResponse<any> | undefined> {
   if (DEBUG) console.debug('WaitForServer()')
 
   return PollingLoopObs()

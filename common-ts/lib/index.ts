@@ -65,12 +65,10 @@ const OFFLINE_POLLING_TIME = 5000 // ms
 export async function PollingLoop(message?: ServerMessage, delay = OFFLINE_POLLING_TIME) {
   if (!message) message = getMessageBody(MessageType.getversion)
   let shouldContinue = true // doesn't really control anything
-  let r: Promise<ServerResponse<any>>
+  let r: ServerResponse<any>
   function wait(ms = delay) {
     // console.debug('wait', ms)
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    })
+    return new Promise(resolve => { setTimeout(resolve, ms); })
   }
   while (shouldContinue) {
     try {
@@ -108,35 +106,6 @@ export function ZipDataDir(path: string): Promise<ServerResponse<string|null>> {
   // result: 'failure' / null
   return SendServerMessage(m)
 }
-
-/** New Observable functions */
-
-// import { BehaviorSubject, forkJoin, from, of, timer } from 'rxjs'
-// import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
-
-// const OFFLINE_POLLING_TIME = 5000 // ms
-
-// Detect that backend is available and ready for interaction
-// export function WaitForServer() {
-//   console.debug('WaitForServer()')
-//   return from(GetVersion()).pipe(
-//     retryWhen(errors => {
-//       return errors.pipe(
-//         tap(_ => { if (DEBUG) console.debug('polling server') }),
-//         delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
-//       );
-//     }),
-//     tap(version => {
-//       if (version.result) {
-//         if (DEBUG) console.debug('WaitForServer()', version.result.version)
-//         // Update state model
-//         const s = state.getValue()
-//         s.version = version.result.version
-//         state.next(s)
-//       }
-//     })
-//   )
-// }
 
 /** TODO : Inheritable Shared State Model? */
 
