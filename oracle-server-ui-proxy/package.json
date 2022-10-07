@@ -8,8 +8,8 @@
   },
   "scripts": {
     "build": "node --loader ts-node/esm --es-module-specifier-resolution=node ./build/buildVersion.ts && ./fixup.sh && cp config.json build.json ./dist/cjs && cp config.json build.json ./dist/mjs",
-    "start": "node --loader ts-node/esm --es-module-specifier-resolution=node server.ts",
-    "startlocal": "DEFAULT_UI_PASSWORD=none BITCOIN_S_ORACLE_RPC_PASSWORD=password node --loader ts-node/esm --es-module-specifier-resolution=node server.ts",
+    "start": "node --loader ts-node/esm --es-module-specifier-resolution=node --experimental-fetch server.ts",
+    "startlocal": "DEFAULT_UI_PASSWORD=none BITCOIN_S_ORACLE_RPC_PASSWORD=password node --loader ts-node/esm --es-module-specifier-resolution=node --experimental-fetch server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack"
   },
