@@ -271,7 +271,8 @@
     "logout": "Logout",
     "stay": "Stay",
     "add": "Add",
-    "remove": "Remove"
+    "remove": "Remove",
+    "copyToClipboard": "Copy to Clipboard"
   }
 
 }

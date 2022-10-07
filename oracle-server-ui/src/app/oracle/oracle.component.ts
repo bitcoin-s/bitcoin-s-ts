@@ -17,7 +17,7 @@ import { OracleStateService } from '~service/oracle-state.service'
 import { OracleAnnouncement } from '~type/oracle-server-types'
 
 import { formatOutcomes } from '~util/oracle-server-util'
-import { KrystalBullImages } from '~util/ui-util'
+import { copyToClipboard, KrystalBullImages } from '~util/ui-util'
 
 
 @Component({
@@ -28,6 +28,7 @@ import { KrystalBullImages } from '~util/ui-util'
 export class OracleComponent implements OnInit, AfterViewInit {
 
   public KrystalBullImages = KrystalBullImages
+  public copyToClipboard = copyToClipboard
   public formatOutcomes = formatOutcomes
 
   @ViewChild('leftDrawer') leftDrawer: MatDrawer
@@ -70,14 +71,15 @@ export class OracleComponent implements OnInit, AfterViewInit {
     this.oracleExplorerService.serverOracleName.subscribe(serverSet => {
       this.oracleNameReadOnly = serverSet
     })
-    this.onRefreshAnnouncements()
+    // Used to trigger announcement loading here, now using OracleTS auto-loading
+    // this.onRefreshAnnouncements()
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
 
-    this.oracleState.flatAnnouncements.subscribe(_ => {
-      this.dataSource.data = this.oracleState.flatAnnouncements.value
+    this.oracleState.OracleTS.Announcements.subscribe(a => {
+      this.dataSource.data = a
       this.table.renderRows()
     })
   }

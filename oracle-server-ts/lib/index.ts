@@ -1,18 +1,210 @@
-import { SendServerMessage } from 'common-ts/index.js'
+import { BehaviorSubject, forkJoin, from, Observable, of, timer } from 'rxjs'
+import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
+
+import { SendServerMessage, GetVersion, PollingLoopObs } from 'common-ts/index.js'
+import { ServerResponse, VersionResponse } from 'common-ts/type/server-types'
 import { getMessageBody } from 'common-ts/util/message-util.js'
 import { validateISODateString, validateNumber, validateString } from 'common-ts/util/validation-util.js'
 
-import { MessageType, OracleEvent, OracleResponse } from './type/oracle-server-types'
+import { MessageType, OracleAnnouncement, OracleEvent, OracleResponse } from './type/oracle-server-types'
 import { validateEnumOutcomes } from './util/validation-util.js'
 
 // Expose all 'common' endpoints
 export * from 'common-ts/index.js'
 
+const DEBUG = true // log actions in console.debug
+
+const OFFLINE_POLLING_TIME = 5000 // ms
+
+/** Oracle Server State Holding */
+
+export interface OracleStateModel { // extends CommonStateModel possible?
+  version: string
+  publicKey: string
+  stakingAddress: string
+  oracleName: string
+}
+
+class OracleStateImpl /*extends CommonStateImpl*/ implements OracleStateModel {
+  version: string
+  publicKey: string
+  stakingAddress: string
+  oracleName: string
+}
+
+const state = new BehaviorSubject<OracleStateModel>(new OracleStateImpl())
+/** Exposed OracleState */
+export const OracleState = state.asObservable()
+/** Clear OracleTS OracleState */
+export function ClearOracleState() {
+  state.next(new OracleStateImpl())
+}
+
+type OracleServerAnnouncementMap = { [eventName: string]: OracleAnnouncement }
+
+// Announcement state
+const announcementNames: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
+const announcements: BehaviorSubject<OracleServerAnnouncementMap> = new BehaviorSubject({})
+const flatAnnouncements: BehaviorSubject<OracleAnnouncement[]> = new BehaviorSubject<OracleAnnouncement[]>([])
+
+/** Exposed Announcement State */
+export const Announcements = flatAnnouncements.asObservable()
+/** Clear OracleTS Announcement State */
+export function ClearAnnouncementState() {
+  announcementNames.next([])
+  announcements.next({})
+  flatAnnouncements.next([])
+}
+
+function updateFlatAnnouncements() {
+  flatAnnouncements.next([...flatAnnouncements.value])
+}
+
+function addEventToState(a: OracleAnnouncement|null) {
+  if (a) {
+    announcements.value[a.eventName] = a
+    flatAnnouncements.value.push(a)
+  }
+}
+
+/** OracleTS Support Functions */
+
+/** Detect that backend is available and ready for interaction */
+export function WaitForServer(): Observable<ServerResponse<any> | undefined> {
+  if (DEBUG) console.debug('WaitForServer()')
+
+  return PollingLoopObs()
+}
+
+/** Load all data in OracleState and Announcement data */
+export function InitializeOracleState() {
+  return forkJoin([
+    getServerVersion(),
+    getPublicKey(),
+    getStakingAddress(),
+    getOracleName(),
+    GetAllAnnouncementsAndDetails(), // could require separate call to init
+  ]).pipe(tap(results => {
+    if (DEBUG) console.debug('InitializeOracleState()', results)
+  }))
+}
+
+/** Observable wrapped GetVersion() state fn */
+function getServerVersion() {
+  // if (DEBUG) console.debug('getServerVersion()')
+  return from(<Promise<ServerResponse<VersionResponse>>>GetVersion()).pipe(tap(r => {
+    if (r.result) {
+      if (DEBUG) console.debug('getServerVersion()', r.result.version)
+      const s = state.getValue()
+      s.version = r.result.version
+      state.next(s)
+    }
+  }))
+}
+
+/** Observable wrapped GetPublicKey() state fn */
+function getPublicKey() {
+  return from(GetPublicKey()).pipe(tap(r => {
+    if (r.result) {
+      if (DEBUG) console.debug('getPublicKey()', r.result)
+      const s = state.getValue()
+      s.publicKey = r.result
+      state.next(s)
+    }
+  }))
+}
+
+/** Observable wrapped GetStakingAddress() state fn */
+function getStakingAddress() {
+  return from(GetStakingAddress()).pipe(tap(r => {
+    if (r.result) {
+      if (DEBUG) console.debug('getStakingAddress()', r.result)
+      const s = state.getValue()
+      s.stakingAddress = r.result
+      state.next(s)
+    }
+  }))
+}
+
+/** Observable wrapped GetOracleName() state fn */
+function getOracleName() {
+  return from(GetOracleName()).pipe(tap(r => {
+    if (r.result) {
+      if (DEBUG) console.debug('getOracleName()', r.result)
+      const s = state.getValue()
+      s.oracleName = r.result
+      state.next(s)
+    }
+  }))
+}
+
+/** Observable wrapped ListAnnouncements then getAllAnnouncementDetails() */
+export function GetAllAnnouncementsAndDetails(): Observable<OracleResponse<OracleEvent>[] | null> {
+  if (DEBUG) console.debug('GetAllAnnouncementsAndDetails()')
+  flatAnnouncements.next([])
+  const obs = from(ListAnnouncements())
+    .pipe(tap(r => {
+      if (r.result) {
+        announcementNames.next(<string[]>r.result)
+      }
+    }), switchMap(_ => getAllAnnouncementDetails()),
+    tap(r => {
+      if (r) {
+        for (const e of r) {
+          addEventToState(<OracleAnnouncement>e.result)
+        }
+        updateFlatAnnouncements()
+      }
+    })
+    // , switchMap(_ => getAnnouncementsFromOracleExplorer())
+    )
+  return obs
+}
+
+/** Observable wrapped GetAnnouncement for all announcementNames */
+function getAllAnnouncementDetails() {
+  if (DEBUG) console.debug('getAllAnnouncementDetails()')
+  if (announcementNames.value.length > 0) {
+    const obs = forkJoin(announcementNames.value.map(a => GetAnnouncement(a)))
+    obs.pipe(tap(r => {
+      if (r) {
+        for (const e of r) {
+          addEventToState(<OracleAnnouncement>e.result)
+        }
+        updateFlatAnnouncements()
+      }
+    }))
+    return obs
+  }
+  return of(null)
+}
+
+/** Reloads an Announcement after signing to update field values */
+export function ReloadAnnouncement(a: OracleAnnouncement) {
+  console.debug('ReloadAnnouncement()', a)
+  // Remove previous event state
+  const i = flatAnnouncements.value.findIndex(i => i.eventName === a.eventName)
+  if (i !== -1) {
+    flatAnnouncements.value.splice(i, 1)
+  }
+  let announcement: OracleAnnouncement|null = null
+  const obs = from(GetAnnouncement(a.eventName))
+    .pipe(tap(r => {
+      if (r.result) {
+        announcement = <OracleAnnouncement>r.result
+        addEventToState(announcement)
+        updateFlatAnnouncements()
+      }
+    })
+    , switchMap(_ => of(announcement))
+    )
+  return obs
+}
 
 /** Specific Oracle Server message functions */
 
-export function GetPublicKey() {
-  console.debug('GetPublicKey()')
+export function GetPublicKey(): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('GetPublicKey()')
 
   const m = getMessageBody(MessageType.getpublickey)
   return SendServerMessage(m).then(response => {
@@ -20,8 +212,8 @@ export function GetPublicKey() {
   })
 }
 
-export function GetStakingAddress() {
-  console.debug('GetStakingAddress()')
+export function GetStakingAddress(): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('GetStakingAddress()')
 
   const m = getMessageBody(MessageType.getstakingaddress)
   return SendServerMessage(m).then(response => {
@@ -29,8 +221,8 @@ export function GetStakingAddress() {
   })
 }
 
-export function ExportStakingAddressWIF() {
-  console.debug('ExportStakingAddressWIF()')
+export function ExportStakingAddressWIF(): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('ExportStakingAddressWIF()')
 
   const m = getMessageBody(MessageType.exportstakingaddresswif)
   return SendServerMessage(m).then(response => {
@@ -38,8 +230,8 @@ export function ExportStakingAddressWIF() {
   })
 }
 
-export function ListAnnouncements() {
-  console.debug('ListAnnouncements()')
+export function ListAnnouncements(): Promise<OracleResponse<string[]>> {
+  if (DEBUG) console.debug('ListAnnouncements()')
 
   const m = getMessageBody(MessageType.listannouncements)
   return SendServerMessage(m).then(response => {
@@ -47,8 +239,8 @@ export function ListAnnouncements() {
   })
 }
 
-export function SignMessage(message: string) {
-  console.debug('SignMessage()', message)
+export function SignMessage(message: string): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('SignMessage()', message)
   validateString(message, 'SignMessage()', 'message')
 
   const m = getMessageBody(MessageType.signmessage, [message])
@@ -57,8 +249,8 @@ export function SignMessage(message: string) {
   })
 }
 
-export function GetAnnouncement(eventName: string) {
-  console.debug('GetAnnouncement()', eventName)
+export function GetAnnouncement(eventName: string): Promise<OracleResponse<OracleEvent>> {
+  if (DEBUG) console.debug('GetAnnouncement()', eventName)
   validateString(eventName, 'GetAnnouncement()', 'eventName')
 
   const m = getMessageBody(MessageType.getannouncement, [eventName])
@@ -67,8 +259,9 @@ export function GetAnnouncement(eventName: string) {
   })
 }
  
-export function CreateEnumAnnouncement(eventName: string, maturationTimeISOString: string, outcomes: string[]) {
-  console.debug('CreateEnumAnnouncement()', eventName, maturationTimeISOString, outcomes)
+export function CreateEnumAnnouncement(eventName: string,
+    maturationTimeISOString: string, outcomes: string[]): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('CreateEnumAnnouncement()', eventName, maturationTimeISOString, outcomes)
   validateString(eventName, 'CreateEnumAnnouncement()', 'eventName')
   validateISODateString(maturationTimeISOString, 'CreateEnumAnnouncement()', 'maturationTimeISOString')
   validateEnumOutcomes(outcomes, 'CreateEnumAnnouncement()')
@@ -79,8 +272,10 @@ export function CreateEnumAnnouncement(eventName: string, maturationTimeISOStrin
   })
 }
 
-export function CreateNumericAnnouncement(eventName: string, maturationTimeISOString: string, minValue: number, maxValue: number, unit: string, precision: number) {
-  console.debug('CreateNumericAnnouncement()', eventName, maturationTimeISOString, minValue, maxValue, unit, precision)
+export function CreateNumericAnnouncement(eventName: string, 
+    maturationTimeISOString: string, minValue: number, maxValue: number,
+    unit: string, precision: number): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('CreateNumericAnnouncement()', eventName, maturationTimeISOString, minValue, maxValue, unit, precision)
   validateString(eventName, 'CreateNumericAnnouncement()', 'eventName')
   validateISODateString(maturationTimeISOString, 'CreateNumericAnnouncement()', 'maturationTimeISOString')
   validateNumber(minValue, 'CreateNumericAnnouncement()', 'minValue')
@@ -96,8 +291,8 @@ export function CreateNumericAnnouncement(eventName: string, maturationTimeISOSt
   })
 }
 
-export function SignEnum(eventName: string, outcome: string) {
-  console.debug('SignEnum()', eventName, outcome)
+export function SignEnum(eventName: string, outcome: string): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('SignEnum()', eventName, outcome)
   validateString(eventName, 'SignEnum()', 'eventName')
   validateString(outcome, 'SignEnum()', 'outcome')
 
@@ -107,8 +302,8 @@ export function SignEnum(eventName: string, outcome: string) {
   })
 }
 
-export function SignDigits(eventName: string, outcome: number) {
-  console.debug('SignDigits()', eventName, outcome)
+export function SignDigits(eventName: string, outcome: number): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('SignDigits()', eventName, outcome)
   validateString(eventName, 'SignDigits()', 'eventName')
   validateNumber(outcome, 'SignDigits()', 'outcome')
 
@@ -118,8 +313,8 @@ export function SignDigits(eventName: string, outcome: number) {
   })
 }
 
-export function GetSignatures(eventName: string) {
-  console.debug('GetSignatures()', eventName)
+export function GetSignatures(eventName: string): Promise<OracleResponse<OracleEvent>> {
+  if (DEBUG) console.debug('GetSignatures()', eventName)
   validateString(eventName, 'GetSignatures()', 'eventName')
 
   const m = getMessageBody(MessageType.getsignatures, [eventName])
@@ -128,8 +323,8 @@ export function GetSignatures(eventName: string) {
   })
 }
 
-export function DeleteAnnouncement(eventName: string) {
-  console.debug('DeleteAnnouncement()', eventName)
+export function DeleteAnnouncement(eventName: string): Promise<OracleResponse<OracleEvent>> {
+  if (DEBUG) console.debug('DeleteAnnouncement()', eventName)
   validateString(eventName, 'DeleteAnnouncement()', 'eventName')
 
   const m = getMessageBody(MessageType.deleteannouncement, [eventName])
@@ -138,8 +333,8 @@ export function DeleteAnnouncement(eventName: string) {
   })
 }
 
-export function DeleteAttestation(eventName: string) {
-  console.debug('DeleteAttestation()', eventName)
+export function DeleteAttestation(eventName: string): Promise<OracleResponse<OracleEvent>> {
+  if (DEBUG) console.debug('DeleteAttestation()', eventName)
   validateString(eventName, 'DeleteAttestation()', 'eventName')
 
   const m = getMessageBody(MessageType.deleteattestation, [eventName])
@@ -148,8 +343,8 @@ export function DeleteAttestation(eventName: string) {
   })
 }
 
-export function GetOracleName() {
-  console.debug('GetOracleName()')
+export function GetOracleName(): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('GetOracleName()')
 
   const m = getMessageBody(MessageType.getoraclename)
   return SendServerMessage(m).then(response => {
@@ -157,8 +352,8 @@ export function GetOracleName() {
   })
 }
 
-export function SetOracleName(oracleName: string) {
-  console.debug('SetOracleName()', oracleName)
+export function SetOracleName(oracleName: string): Promise<OracleResponse<string>> {
+  if (DEBUG) console.debug('SetOracleName()', oracleName)
 
   const m = getMessageBody(MessageType.setoraclename, [oracleName])
   return SendServerMessage(m).then(response => {

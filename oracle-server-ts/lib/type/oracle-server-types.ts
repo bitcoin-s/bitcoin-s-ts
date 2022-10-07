@@ -33,6 +33,26 @@ export const enum MessageType {
   // signevent = 'signevent',
 }
 
+// Serverside OracleAnnouncement response
+export interface OracleAnnouncement {
+  announcementSignature: string
+  announcementTLV: string
+  attestations: string
+  eventDescriptorTLV: string
+  eventName: string
+  eventTLV: string
+  maturationTime: string // "2030-01-03T00:30:00Z"
+  maturationTimeEpoch: number // 1893630600
+  nonces: string[]
+  outcomes: string[] // enum: ["value","value2"], numeric: [["number"]]
+  signedOutcome: string|null
+  signingVersion: string
+
+  // ids
+  announcementTLVsha256: string
+  eventDescriptorTLVsha256: string
+}
+
 // Serverside OracleEvent response
 export interface OracleEvent {
   announcementSignature: string

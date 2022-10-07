@@ -1,6 +1,11 @@
-import { EventEmitter, Injectable, OnInit } from '@angular/core'
-import { BehaviorSubject, forkJoin, of, timer } from 'rxjs'
-import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators'
+import { EventEmitter, Injectable } from '@angular/core'
+import { BehaviorSubject, forkJoin, of } from 'rxjs'
+import { switchMap, tap } from 'rxjs/operators'
+
+import * as OracleTS from 'oracle-server-ts/index'
+import { OracleStateModel } from 'oracle-server-ts/index'
+
+import { environment } from '~environments'
 
 import { BuildConfig } from '~type/proxy-server-types'
 import { MessageType, OracleAnnouncement } from '~type/oracle-server-types'
@@ -8,39 +13,41 @@ import { OracleAnnouncementsResponse } from '~type/oracle-explorer-types'
 
 import { getMessageBody } from '~util/oracle-server-util'
 
+import { AuthService } from './auth.service'
 import { BlockstreamService } from './blockstream-service'
 import { MempoolService } from './mempool-service'
 import { MessageService } from './message.service'
 import { OracleExplorerService } from './oracle-explorer.service'
 
 
-const OFFLINE_POLLING_TIME = 5000 // ms
-
-type OracleServerAnnouncementMap = { [eventName: string]: OracleAnnouncement }
 type OracleExplorerAnnouncementMap = { [eventName: string]: OracleAnnouncementsResponse }
 
 @Injectable({ providedIn: 'root' })
 export class OracleStateService {
 
-  serverVersion = ''
+  /** OracleTS data pass through */
+  // get commonState() { return OracleTS.CommonState }
+  get OracleTS() { return OracleTS } // Common library exposure point
+  private _oracleState: OracleStateModel
+  get oracleState() { return this._oracleState }
+  private _announcements: OracleAnnouncement[]
+  get announcements() { return this._announcements }
+
+  /** Pass through OracleTS functions */
+  getAllAnnouncements() { return OracleTS.GetAllAnnouncementsAndDetails() }
+  reloadAnnouncement(announcement: OracleAnnouncement) {
+    let announce: OracleAnnouncement|null = null
+    return OracleTS.ReloadAnnouncement(announcement).pipe(switchMap(a => {
+      announce = a
+      if (a) return this.getOEAnnouncement(a)
+      else return of(null)
+    }), switchMap(_ => of(announce)))
+  }
+
+  /** Proxy server build data */
   buildConfig: BuildConfig
 
-  // oracleName = '' // lives on OracleExpolorer service for now
-  publicKey = ''
-  stakingAddress = ''
   stakedAmount = ''
-
-  // Server state
-  announcementNames: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
-  announcements: BehaviorSubject<OracleServerAnnouncementMap> = new BehaviorSubject({})
-  flatAnnouncements: BehaviorSubject<OracleAnnouncement[]> = new BehaviorSubject<OracleAnnouncement[]>([])
-
-  private addEventToState(a: OracleAnnouncement|null) {
-    if (a) {
-      this.announcements.value[a.eventName] = a
-      this.flatAnnouncements.value.push(a)
-    }
-  }
 
   // Oracle Explorer state
   oeAnnouncements: BehaviorSubject<OracleExplorerAnnouncementMap> = new BehaviorSubject({}) // should this index on sha256 id instead?
@@ -48,53 +55,59 @@ export class OracleStateService {
   // Initial State Loaded signal
   stateLoaded: EventEmitter<void> = new EventEmitter()
 
-  private updateFlatAnnouncements() {
-    this.flatAnnouncements.next([...this.flatAnnouncements.value])
-  }
-
   private updateAnnouncements() {
     this.oeAnnouncements.next(Object.assign({}, this.oeAnnouncements.value))
   }
 
-  constructor(private messageService: MessageService, private oracleExplorerService: OracleExplorerService, 
+  constructor(private authService: AuthService, private messageService: MessageService, private oracleExplorerService: OracleExplorerService, 
     private blockstreamService: BlockstreamService, private mempoolService: MempoolService) {
     
+      OracleTS.OracleState.subscribe(os => {
+        this._oracleState = os
+      })
+      OracleTS.Announcements.subscribe(as => {
+        this._announcements = as
+      })
   }
 
-  // Detect that backend is available and ready for interaction
-  public waitForAppServer() {
-    console.debug('waitForAppServer()')
-    return this.getServerVersion().pipe(
-      retryWhen(errors => {
-        return errors.pipe(
-          tap(_ => console.debug('polling oracleServer')),
-          delayWhen(_ => timer(OFFLINE_POLLING_TIME)),
-        );
-      }),
-      tap(_ => {})
-    )
-  }
+  /** Configure OracleTS, wait for backend server, and load state */
+  initialize() {
+    console.debug('initialize()')
+    // Communicate with OracleTS via proxy server
+    OracleTS.ConfigureServerURL(environment.oracleServerApi)
+    const token = this.authService.getToken()
+    if (token) {
+      OracleTS.ConfigureAuthorizationHeader('Bearer ' + token)
+    }
 
-  initializeState() {
-    console.debug('initializeState()')
-
-    return forkJoin([
-      this.getServerVersion(),
-      // this.getBuildConfig(),
-      this.getPublicKeyAndOracleName(),
-      this.getStakingAddressAndBalance(),
-      // this.getAllAnnouncements(), // pulling in oracle component
-    ]).subscribe(_ => {
-      console.debug(' initializedState() initialized')
-      this.stateLoaded.next()
+    return OracleTS.WaitForServer()
+    .pipe(
+      tap(_ => { console.warn(' after OracleTS.WaitForServer()') }),
+      switchMap(_ => OracleTS.InitializeOracleState()),
+      tap(_ => { console.warn(' after OracleTS.InitializeOracleState()') }),
+      switchMap(_ => this.initializeState()),
+      tap(_ => { console.warn(' after initializeState()') }))
+    .subscribe(r => {
+      console.warn(' done with initialize() chain')
     })
   }
 
-  private getServerVersion() {
-    return this.messageService.getServerVersion().pipe(tap(r => {
-      if (r.result) {
-        this.serverVersion = r.result.version;
-      }
+  uninitialize() {
+    console.debug('uninitialize()')
+    OracleTS.ClearOracleState()
+    OracleTS.ClearAnnouncementState()
+  }
+
+  /** Load anything locally that needs to follow OracleTS loading */
+  initializeState() {
+    console.debug('initializeState()')
+    return forkJoin([
+      this.getOracleName(),
+      this.getStakingBalance(),
+      this.getAnnouncementsFromOracleExplorer(),
+    ]).pipe(tap(_ => {
+      console.debug(' initializedState() initialized')
+      this.stateLoaded.next()
     }))
   }
 
@@ -114,33 +127,19 @@ export class OracleStateService {
     ])
   }
 
-  private getPublicKeyAndOracleName() {
-    console.debug('getPublicKeyAndOracleName()')
-    return this.messageService.sendMessage(getMessageBody(MessageType.getpublickey)).pipe(tap(r => {
-      if (r.result) {
-        this.publicKey = r.result
-      }
-    }), switchMap(_ => {
-      if (!this.oracleExplorerService.oracleName.value)
-        return this.oracleExplorerService.getLocalOracleName(this.publicKey)
-      else return of(null)
-    }))
-  }
-
-  private getStakingAddressAndBalance() {
-    console.debug('getStakingAddressAndBalance()')
-    return this.messageService.sendMessage(getMessageBody(MessageType.getstakingaddress)).pipe(tap(r => {
-      if (r.result) {
-        this.stakingAddress = r.result
-      }
-    }), switchMap(_ => this.getStakingBalance()))
+  private getOracleName() {
+    console.debug('getOracleName()')
+    if (this.oracleState.publicKey && !this.oracleExplorerService.oracleName.value)
+      return this.oracleExplorerService.getLocalOracleName(this.oracleState.publicKey)
+    else return of(null)
   }
 
   getStakingBalance() {
-    console.debug('getStakingBalance()')
-    if (this.stakingAddress) {
-      return this.mempoolService.getBalance(this.stakingAddress).pipe(tap(r => {
+    console.debug('getStakingBalance()', this.oracleState.stakingAddress)
+    if (this.oracleState.stakingAddress) {
+      return this.mempoolService.getBalance(this.oracleState.stakingAddress).pipe(tap(r => {
         this.stakedAmount = this.blockstreamService.balanceFromGetBalance(r).toString()
+        console.debug('stakedAmount:', this.stakedAmount)
       }))
     }
     return of(null)
@@ -153,72 +152,12 @@ export class OracleStateService {
     }))
   }
 
-  getAllAnnouncements() {
-    console.debug('getAllAnnouncements()')
-    this.flatAnnouncements.next([])
-    const obs = this.messageService.sendMessage(getMessageBody(MessageType.listannouncements))
-      .pipe(tap(r => {
-        if (r.result) {
-          this.announcementNames.next(<string[]>r.result)
-        }
-      }), switchMap(_ => this.getAllAnnouncementDetails()),
-      tap(r => {
-        if (r) {
-          for (const e of r) {
-            this.addEventToState(<OracleAnnouncement>e.result)
-          }
-          this.updateFlatAnnouncements()
-        }
-      }), switchMap(_ => this.getAnnouncementsFromOracleExplorer()))
-    return obs
-  }
-
-  private getAllAnnouncementDetails() {
-    console.debug('getAllAnnouncementDetails()')
-    if (this.announcementNames.value.length > 0) {
-      const obs = forkJoin(this.announcementNames.value.map(a => this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [a]))))
-      obs.pipe(tap(r => {
-        if (r) {
-          for (const e of r) {
-            this.addEventToState(<OracleAnnouncement>e.result)
-          }
-          this.updateFlatAnnouncements()
-        }
-      }))
-      return obs
-    }
-    return of(null)
-  }
-
-  // Reloads an Announcement after signing to update field values
-  reloadAnnouncement(a: OracleAnnouncement) {
-    console.debug('reloadAnnouncement()', a)
-    // Remove previous event state
-    const i = this.flatAnnouncements.value.findIndex(i => i.eventName === a.eventName)
-    if (i !== -1) {
-      this.flatAnnouncements.value.splice(i, 1)
-    }
-    let announcement: OracleAnnouncement|null = null
-    const obs = this.messageService.sendMessage(getMessageBody(MessageType.getannouncement, [a.eventName]))
-      .pipe(tap(r => {
-        if (r.result) {
-          announcement = r.result
-          this.addEventToState(announcement)
-          this.updateFlatAnnouncements()
-        }
-      }), switchMap(_ => {
-        if (announcement) return this.getOEAnnouncement(announcement)
-        else return of(null)
-      }), switchMap(_ => of(announcement)))
-    return obs
-  }
-
   private getAnnouncementsFromOracleExplorer() {
-    console.debug('getAnnouncementsFromOracleExplorer()', this.flatAnnouncements.value)
+    console.debug('getAnnouncementsFromOracleExplorer()', this.announcements)
     this.oeAnnouncements.next({})
-    if (this.flatAnnouncements.value.length > 0) {
+    if (this.announcements.length > 0) {
       // Have seen these 403 against the Production Oracle Server over Tor
-      const obs = forkJoin(this.flatAnnouncements.value.map(e => this.oeAnnouncements.value[e.eventName] ? 
+      const obs = forkJoin(this.announcements.map(e => this.oeAnnouncements.value[e.eventName] ? 
         of(this.oeAnnouncements.value[e.eventName]) : this.getOEAnnouncement(e)))
       return obs
     }
@@ -227,7 +166,7 @@ export class OracleStateService {
 
   // Check if the event is published to the oracle explorer
   getOEAnnouncement(a: OracleAnnouncement) {
-    console.debug('getOEAnnouncement()', a)
+    // console.debug('getOEAnnouncement()', a.announcementTLVsha256)
     const obs = this.oracleExplorerService.getAnnouncement(a.announcementTLVsha256)
       .pipe(tap(r => {
         console.debug('getOEAnnouncement()', a.announcementTLVsha256, r)

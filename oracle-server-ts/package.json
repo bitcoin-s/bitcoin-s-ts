@@ -23,20 +23,23 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/mjs/*"]
+      "*": [
+        "dist/mjs/*"
+      ]
     }
   },
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "node --loader ts-node/esm --es-module-specifier-resolution=node test.js",
-    "demo": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/demo.ts",
-    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node ./lib/tests.ts"
+    "test": "node --loader ts-node/esm --es-module-specifier-resolution=node --experimental-fetch test.js",
+    "demo": "node --loader ts-node/esm --es-module-specifier-resolution=node --experimental-fetch ./lib/demo.ts",
+    "tests": "node --loader ts-node/esm --es-module-specifier-resolution=node --experimental-fetch ./lib/tests.ts"
   },
   "dependencies": {
-    "common-ts": "file:../common-ts"
+    "common-ts": "file:../common-ts",
+    "rxjs": "~7.5.0"
   },
   "devDependencies": {
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   }
 }

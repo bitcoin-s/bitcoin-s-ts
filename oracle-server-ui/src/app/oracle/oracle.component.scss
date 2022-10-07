@@ -33,14 +33,16 @@
     }
 
     .oracle-form {
-      flex: 1;
-      max-width: 600px;
-      
       display: flex;
       flex-direction: column;
       justify-content: center;
 
       margin: 1rem 1rem 0 1rem;
+
+      .public-key-input,
+      .staking-address-input {
+        text-overflow: ellipsis;
+      }
     }
   }
 
