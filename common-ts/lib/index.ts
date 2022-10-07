@@ -119,13 +119,3 @@ export function ZipDataDir(path: string): Promise<ServerResponse<string|null>> {
 
 // const state = new BehaviorSubject<CommonStateModel>(new CommonStateImpl())
 // export const CommonState = state.asObservable()
-
-// export default {
-//   // ...ENTRY_POINTS
-//   ConfigureServerURL,
-//   ConfigureAuthorizationHeader,
-//   ConfigureAuthorizationHeaderFromUserPassword,
-//   SendServerMessage,
-//   GetVersion,
-//   ZipDataDir
-// };
