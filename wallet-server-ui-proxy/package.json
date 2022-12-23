@@ -41,7 +41,7 @@
     "common-ts": "file:../common-ts",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "socks-proxy-agent": "^6.1.0",
     "winston": "^3.3.3"
   },
